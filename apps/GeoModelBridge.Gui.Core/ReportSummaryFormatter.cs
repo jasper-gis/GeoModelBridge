@@ -172,8 +172,6 @@ public static class ReportSummaryFormatter
     private static Description Describe(Entry entry)
     {
         var code = entry.Code;
-        if (code == "WRITER_FAILED" && entry.Message.Contains("PRO_JPEG_UNSUPPORTED", StringComparison.Ordinal))
-            return new(code + "PRO_JPEG_UNSUPPORTED", "ArcGIS Pro 无法直接接收模型中的 JPEG", "使用 GIS 静态兼容从源 FBX 重新转换，程序会在安全条件下补齐 JPEG 文件头；无法安全修复时请重新导出标准 JPEG。");
         if (code == "EMPTY_ANIMATION_IGNORED") return new(code, "已忽略空动画记录", "文件中只有空动画容器，不含实际动画曲线，不影响保存的静态姿态。");
         if (code == "DEFAULT_MATERIAL_ASSIGNED") return new(code, "未指定材质的表面已使用默认材质", "请在目标软件中检查默认颜色是否符合需要。");
         if (code == "UV_SETS_REDUCED") return new(code, "已保留当前漫反射贴图使用的 UV", "未参与当前贴图采样的额外 UV 通道不写入输出。");

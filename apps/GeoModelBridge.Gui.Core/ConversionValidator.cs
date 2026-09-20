@@ -33,8 +33,8 @@ public static partial class ConversionValidator
         CheckNumber(settings.OriginZ, "原点 Z", issues);
         if (settings.FeatureClass is null || !FeatureClassPattern().IsMatch(settings.FeatureClass))
             issues.Add("要素类名称须以英文字母开头，长度为 1–64 个字符，仅使用英文字母、数字和下划线。");
-        if (settings.Backend is not ("native-filegdb" or "arcgis-pro"))
-            issues.Add("请选择独立 FileGDB 或 ArcGIS Pro 转换方式。");
+        if (settings.Backend != "native-filegdb")
+            issues.Add("仅支持原生 FileGDB 转换方式。");
         if (settings.Profile is not ("gis-static" or "strict"))
             issues.Add("请选择 GIS 静态兼容或严格检查转换策略。");
         if (output is not null)

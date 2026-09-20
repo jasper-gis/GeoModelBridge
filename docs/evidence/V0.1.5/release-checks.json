@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "case": "reject_legacy_backend_install",
+      "passed": true
+    },
+    {
+      "case": "preserve_existing_archive",
+      "passed": true
+    },
+    {
+      "case": "reject_bad_sdk_archive_before_extraction",
+      "passed": true
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-"""Package source, installed programs and verified examples, excluding development caches."""
+"""Validate or package native-only source, installed programs and verified examples."""
 import argparse
 import hashlib
 import json
@@ -9,60 +9,93 @@ import zipfile
 
 root = Path(__file__).resolve().parents[1]
 version = (root / "VERSION").read_text(encoding="utf-8").strip()
-parser = argparse.ArgumentParser()
-parser.add_argument("--output", type=Path, required=True)
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("--output", type=Path, help="New ZIP outside the project; only needed when creating an archive")
+parser.add_argument("--install-dir", type=Path, default=root / "dist")
+parser.add_argument("--examples-dir", type=Path, default=root / "examples" / f"V{version}")
+parser.add_argument("--check-only", action="store_true", help="Validate without creating an archive")
 args = parser.parse_args()
-output = args.output.resolve()
-if output.exists() or root in output.parents:
-    raise SystemExit("Output must be a new archive outside the project directory")
-cli = root / "dist/bin/geomodelbridge.exe"
-writer = root / "dist/bin/arcgis-pro/GeoModelBridge.ProWriter.dll"
-native = root / "dist/bin/native-filegdb/GeoModelBridge.NativeWriter.exe"
+install = args.install_dir.resolve()
+examples = args.examples_dir.resolve()
+output = args.output.resolve() if args.output else None
+if not args.check_only and output is None:
+    parser.error("--output is required unless --check-only is used")
+if output is not None and (output.exists() or output.with_suffix(output.suffix + ".sha256").exists() or root == output or root in output.parents):
+    raise SystemExit("Archive and checksum must be new paths outside the project")
+if (install / "bin/arcgis-pro").exists():
+    raise SystemExit("Install directory contains a removed backend; use a new native-only installation")
+cli = install / "bin/geomodelbridge.exe"
+native = install / "bin/native-filegdb/GeoModelBridge.NativeWriter.exe"
 runtime = native.with_name("FileGDBAPI.dll")
-if not all(p.is_file() for p in (cli, writer, native, runtime)):
-    raise SystemExit("Build both release backends and explicitly include the official FileGDB runtime first")
+if not all(p.is_file() for p in (cli, native, runtime)):
+    raise SystemExit("Build the native release and include the official FileGDB runtime first")
 subprocess.run([sys.executable, str(root / "scripts/check_version.py")], check=True)
-subprocess.run([sys.executable, str(root / "scripts/verify_dependencies.py")], check=True)
+subprocess.run([sys.executable, str(root / "scripts/verify_dependencies.py"), "--install-dir", str(install)], check=True)
 actual = subprocess.check_output([str(cli), "--version"], text=True).strip()
 if actual != f"GeoModelBridge V{version}":
     raise SystemExit("CLI and source version do not match")
-pro_help = subprocess.check_output(["dotnet", str(writer), "--help"], text=True)
-if pro_help.splitlines()[0] != f"GeoModelBridge ArcGIS Pro adapter {version}":
-    raise SystemExit("Pro writer and source version do not match")
-summary = root / "examples" / f"V{version}" / "verification-summary.json"
-if not summary.is_file() or json.loads(summary.read_text(encoding="utf-8"))["status"] != "passed":
-    raise SystemExit("Generate and verify the release examples first")
-crosscheck = root / "docs/evidence" / f"V{version}" / "native-independent-pro/summary.json"
-if not crosscheck.is_file():
-    raise SystemExit("Verify the native outputs independently with scripts/verify_native_with_pro.py first")
-cross = json.loads(crosscheck.read_text(encoding="utf-8"))
-if cross["status"] != "passed" or cross["cases"] != 14:
-    raise SystemExit("All 14 native reference outputs must pass independent Pro readback")
 native_probe = json.loads(subprocess.check_output([str(native), "--probe"], text=True))
-if native_probe.get("version") != version or native_probe.get("status") != "available":
+if (native_probe.get("version") != version or native_probe.get("status") != "available"
+        or native_probe.get("backend") != "native-filegdb" or native_probe.get("arcgis_pro_required") is not False):
     raise SystemExit("Native writer version/runtime does not match the release")
-
+summary_path = examples / "verification-summary.json"
+if not summary_path.is_file():
+    raise SystemExit("Generate native release examples with scripts/generate_examples.py first")
+summary = json.loads(summary_path.read_text(encoding="utf-8"))
+cases = summary.get("gdb_cases", [])
+expected_names = {"color-cube", "uv-plane", "mixed-materials", "alpha-plane", "seam-cube",
+                  "colored_quad", "textured_quad", "embedded_quad", "uv_transform", "instanced_mirror",
+                  "multi_material", "no_material", "sloped_normals", "binary_blender"}
+if (summary.get("version") != version or summary.get("backend") != "native-filegdb"
+        or summary.get("status") != "passed" or summary.get("standalone_copy_verified") is not True
+        or len(cases) != 14 or {c.get("name") for c in cases} != expected_names
+        or not all(c.get("passed") is True for c in cases)):
+    raise SystemExit("All 14 native examples and standalone copy must pass for the current release")
+# Reopen the actual GDBs. A stale or edited summary alone is not release evidence.
+import tempfile
+with tempfile.TemporaryDirectory(prefix="gmb-package-check-") as work:
+    for name in sorted(expected_names):
+        expected = examples / "reports" / (name + ".json")
+        report = json.loads(expected.read_text(encoding="utf-8"))
+        if report.get("version") != version or report.get("backend") != "native-filegdb":
+            raise SystemExit("Example report does not match this native release: " + name)
+        subprocess.run([str(native), "--verify-gdb", str(examples / "filegdb" / (name + ".gdb")),
+                        "--expected-report", str(expected), "--report", str(Path(work) / (name + ".json"))],
+                       check=True, stdout=subprocess.DEVNULL)
+    subprocess.run([str(native), "--verify-gdb", str(examples / "standalone/alpha-plane-copy.gdb"),
+                    "--expected-report", str(examples / "reports/alpha-plane.json"),
+                    "--report", str(Path(work) / "standalone.json")], check=True, stdout=subprocess.DEVNULL)
+# Enumerate source through Git, never by recursively sweeping local results or older releases.
+source_roots = {"src", "include", "backends", "apps", "tests", "scripts", "third_party", "docs", ".github"}
+source_files = {"AGENTS.md", "README.md", "VERSION", "CHANGELOG.md", "THIRD_PARTY_NOTICES.md", "CMakeLists.txt", "CMakePresets.json", ".gitignore", ".gitattributes", "examples/README.md"}
+files = {}
+listing = subprocess.check_output(["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=root).decode("utf-8").split("\0")
+for name in sorted(set(listing)):
+    rel = Path(name)
+    if not name or (name not in source_files and rel.parts[0] not in source_roots):
+        continue
+    if {"bin", "obj", "build", "__pycache__"}.intersection(rel.parts):
+        continue
+    path = root / rel
+    if path.is_file(): files[rel.as_posix()] = path
+for name in ["bin/geomodelbridge.exe", "bin/native-filegdb/GeoModelBridge.NativeWriter.exe", "bin/native-filegdb/FileGDBAPI.dll", "bin/geomodelbridgeGUI.exe", "bin/demo/textured_quad.fbx", "bin/demo/checker.png"]:
+    path = install / name
+    if path.is_file(): files["dist/" + name] = path
+for directory, prefix in [(install / "licenses", "dist/licenses"), (examples, "examples/V" + version)]:
+    for path in sorted(directory.rglob("*")):
+        if path.is_file() and not path.name.endswith(".lock"):
+            files[prefix + "/" + path.relative_to(directory).as_posix()] = path
+if args.check_only:
+    print(f"Validated native-only V{version}: {len(files)} package files; no archive created")
+    raise SystemExit(0)
 output.parent.mkdir(parents=True, exist_ok=True)
-count = 0
 with zipfile.ZipFile(output, "x", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
-    for file in sorted(root.rglob("*")):
-        if not file.is_file():
-            continue
-        relative = file.relative_to(root)
-        if any(part in {".git", "build", "__pycache__", ".vs"} for part in relative.parts):
-            continue
-        if relative.parts[0] == "backends" and any(part in {"bin", "obj"} for part in relative.parts[2:]):
-            continue
-        if file.name.endswith(".lock"):
-            continue
-        archive.write(file, (Path("GeoModelBridge") / relative).as_posix())
-        count += 1
+    for relative, path in sorted(files.items()):
+        archive.write(path, "GeoModelBridge/" + relative)
 with zipfile.ZipFile(output) as archive:
-    problem = archive.testzip()
-    if problem:
-        raise SystemExit(f"Archive integrity check failed: {problem}")
-digest = hashlib.sha256(output.read_bytes()).hexdigest()
-checksum = output.with_suffix(output.suffix + ".sha256")
-with checksum.open("x", encoding="utf-8") as file:
+    if problem := archive.testzip(): raise SystemExit(f"Archive integrity check failed: {problem}")
+with output.open("rb") as file:
+    digest = hashlib.file_digest(file, "sha256").hexdigest()
+with output.with_suffix(output.suffix + ".sha256").open("x", encoding="utf-8") as file:
     file.write(f"{digest}  {output.name}\n")
-print(f"Packaged {count} files: {output}\nSHA256 {digest}")
+print(f"Packaged {len(files)} files: {output}\nSHA256 {digest}")

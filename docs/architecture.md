@@ -1,4 +1,4 @@
-# V0.1.4 架构
+# V0.1.5 架构
 
 ```mermaid
 flowchart LR
@@ -7,51 +7,25 @@ flowchart LR
   FBX[静态 FBX 与图片] --> R[ufbx Reader / C++17]
   R --> S[统一 Scene 与严格验证]
   F[人工测试网格] --> S
-  S --> B[Scene Bundle 与原始图片]
-  B --> P[ArcGIS Pro CoreHost 后端]
-  B --> N[原生 C++ FileGDB API 后端]
-  P --> G[FileGDB Multipatch]
-  N --> G
-  G --> V[关库重开核对 / JSON 报告]
-  G --> A[目标软件固定视角图形验收]
+  S --> B[Scene Bundle 与图片]
+  B --> N[原生 C++ FileGDB API]
+  N --> G[FileGDB Multipatch]
+  G --> V[关闭重开核对 / JSON 报告]
+  G --> A[目标软件独立图形验收]
 ```
 
-Reader 与数据库 API 无直接依赖。C++ 内核使用 `gmb::Scene` 表达 Nodes、Meshes、Materials、Textures、坐标元数据与诊断。每个节点实例展开为独立网格；顶点是完整角点，避免位置相同但 UV/法线不同的点被合并。纹理按 SHA-256 内容寻址，材质绑定独立保留。
+Reader 与数据库 SDK 无直接依赖。C++ 内核使用 `gmb::Scene` 表达 Nodes、Meshes、Materials、Textures、坐标元数据与诊断。节点实例展开为独立网格；顶点保留完整角点，不能只按位置合并 UV/法线接缝。节点变换、轴向、单位和 origin 在中间包前完成，写入端不得重复变换。
 
-Windows GUI 使用 WPF，独立界面逻辑项目处理参数校验与异步子进程调用。它直接调用同目录 CLI，参数逐项传递，不拼接 shell 命令；窗口显示日志与真实报告结果。GUI 不加载 FileGDB 或 Pro 数据库 API，也不改变 Scene 协议与材质处理规则。
+GUI 是自包含 WPF 程序，通过无 shell 的参数数组调用 CLI。CLI 只发现 `native-filegdb/GeoModelBridge.NativeWriter.exe` 或显式配置的原生可执行程序；不调用托管 DLL、Pro 授权初始化或 ArcPy。移除后端的请求、错误后端的报告均被拒绝。
 
-`conversion_profile` 随 Scene Bundle 和写库报告传递；CLI 与 GUI 均核对实际报告策略与请求一致。CLI 默认 `strict`，GUI 显式显示并默认选择 `gis-static`。兼容处理只发生在 Reader，按材质/网格记录诊断；后端仍执行完整几何、UV、材质和纹理核验。GUI 的中文摘要是展示层，不能替代成功状态核验。具体政策见 [compatibility.md](compatibility.md)。
+Scene Bundle 是 JSON 与资源文件组成的进程边界。CLI 默认严格模式，GUI 默认显式 GIS 静态兼容；`conversion_profile` 随 bundle 和报告传递并核对。兼容处理发生在 Reader，写入端仍执行完整几何、UV、材质和纹理检查。V0.1.4 引入的流式 JSON 写出与有界日志保留。[协议](bundle-format.md) · [转换策略](compatibility.md)
 
-V0.1.3 缓存每个网格材质的 UV 选择；中间 `scene.json` 使用紧凑 JSON，避免角点数组的重复缩进占用磁盘。用户报告仍保留可读缩进，数据值和角点边界不变。
+原生端以 MSVC x64 编译，链接官方 FileGDB API 1.5.5 和 Windows 系统组件，WIC 解码图片。按官方扩展 Shape Buffer 文档构造 Multipatch，每网格一个要素，三角形按材质分 patch。PNG 解码为未预乘 RGBA8，JPEG 保留支持的容器字节，所有有 UV 的 patch 写入 `S=U,T=1-V`。不翻转图片行序、不静默丢弃未知材质通道。
 
-V0.1.4 对网格角点和三角形逐项序列化到文件流，避免同时保留完整 JSON DOM 与其字符串副本。仍使用相同的 JSON 数值和字符串编码，原有临时目录、失败清理及新路径保护不变。GUI 分块排空进程的两路输出，对每路仅发送有限的预览与折叠摘要；原始转换报告不截断。
+数据库先写入本次创建的暂存目录，关闭重开后核对几何、材质、纹理及存储精度，通过才提交最终路径。独立副本模式只凭源报告核对要素属性与 ShapeBuffer SHA-256，不读取 FBX、bundle 或源贴图。内容散列用于一致性比较，不是数字签名。单库单线程写入，清理只涉及本次创建的路径。
 
-GIS 静态策略还可在 Reader 中修复安全识别的 JPEG 文件封装：只补 JFIF APP0，不重新压缩或旋转图片，原始和修复后的散列进入诊断。两个后端都消费同一份明确记录的中间包字节；它们不各自隐式转码。严格模式拒绝需要修复的封装。
+部署依赖为 Windows、Microsoft C++ 运行库和独立 FileGDB API。完整发布附带 release DLL、原始许可和来源散列；GUI 自带 .NET。构建、自动测试、样例生成及打包均无 Pro 依赖。历史跨 SDK 读取证据不作为当前发布门槛；图形验收单独记录。
 
-Reader 统一右手 Z-up/米，烘焙 geometry_to_world；负行列式调整三角形绕序，法线用逆转置转换。源节点矩阵只作追溯信息。坐标模块另做平移和 WKID 赋值，不重新应用源矩阵。
+CLI 退出码：0 成功；2 用法或已有路径冲突；3 策略验证不通过；4 不支持/不可用后端；5 写入端失败；6 解析、IO 或其他错误。`inspected`、`prepared`、`written_and_readback_verified` 表示不同阶段。
 
-Scene Bundle 是可审阅、可复制的内部协议，**不是 FileGDB 替代品**。契约见 [bundle-format.md](bundle-format.md)。后端通过进程参数调用，没有把文件名拼进 shell 命令；.NET/Pro 依赖不进入 C++ 库。CLI 通过 `--backend` 选择后端，验证其最终报告状态、后端名称、版本、要素类、要素数和重开读回级别后才报告转换成功；外部旧 writer 不能绕过当前版本的 UV 规则。
-
-原生后端是独立 MSVC x64 程序，直接使用官方 FileGDB API 1.5.5 创建数据库、要素类与包含材质/纹理的 Multipatch ShapeBuffer，转换进程不加载 Pro。它使用 Windows WIC 解码 PNG，JPEG 仍保留压缩字节。SDK 的 Microsoft C++ ABI 不与 MinGW 构建的内核跨库混用；两者通过文件和进程边界协作。本交付附带官方 release FileGDBAPI.dll、原始许可和来源记录；完整 SDK、开发工具、调试库与 Pro 程序集不打包。
-
-Pro 后端将三角形按材质分为 PatchType.Triangles，每个网格成为一个要素。写入先发生在新建临时 GDB，关闭连接后重开核对；通过才移动到最终路径。PNG 存未预乘 RGBA8；JPEG 保留原压缩文件内容。材质 RGB/透明度、UV 和空间坐标的目标存储精度在报告中说明。法线的 builder 单精度值和 GDB 的 1/128 分量量化分开核对；报告记录源法线摘要及方向误差，不把量化误写为无损。
-
-两个后端均对所有有 UV 的 patch 在目标写入阶段应用 `S=U, T=1-V`，未绑定纹理的材质也采用相同 UV 语义。Scene Bundle 保留 FBX 源 UV，PNG 解码行序和 JPEG 文件字节不倒置。目标读回验证与映射后的 UV 比较，源 UV 与目标 UV 不再以原数值相同作为方向正确的依据。该变化修复首版显示调查中发现的上下方向差异；当前图形结果见 [V0.1.1 验证记录](validation-v0.1.1.md)。
-
-每个后端的读回器只证明其核对项；跨后端核验和目标软件显示另行完成。原生后端支持 `--input <bundle> --verify-gdb` 的源数据对照，也支持 `--verify-gdb <copied.gdb> --expected-report <native-report.json> --report <new.json>` 的独立副本核验。后者不读取原 bundle，核对原报告保存的要素属性与完整目标 ShapeBuffer 散列；该内容散列用于一致性对照，不是数字签名或来源认证。
-
-数据库写入保持单线程。没有性能优先的并行写库或跨模型共享数据库状态。超大模型、运行时间和内存峰值需要在正确性验收后基于真实数据测量。
-
-## 错误契约
-
-CLI 退出码：0 成功；2 用法/已有输出冲突；3 所选策略下验证不通过；4 后端不可用；5 后端执行失败；6 输入解析/IO/其他操作失败。所有失败均不得生成“完整保真成功”的报告。中间包 `prepared`、检查 `inspected`、目标库 `written_and_readback_verified` 为不同状态。
-
-## 核实过的技术依据
-
-- [ufbx 节点、坐标空间与变换](https://ufbx.github.io/elements/nodes/)
-- [ufbx 网格与实例材质](https://ufbx.github.io/elements/meshes/)
-- [ufbx 材质/纹理参考](https://ufbx.github.io/reference)
-- [Esri Pro SDK 官方仓库](https://github.com/Esri/arcgis-pro-sdk)
-- [Esri FileGDB API 官方仓库](https://github.com/Esri/file-geodatabase-api)
-
-Pro 几何/材质 API 的签名由本机 3.6.2 的 ArcGIS.Core.xml 与 CoreHost.xml 确认。原生材料缓冲区实现以官方 SDK 头文件及其随附格式资料为依据；接口存在、源码完成、SDK 自身读回、跨后端读取、目标显示属于不同证据，实际验收结果单独记录。
+依据：[ufbx 节点与坐标](https://ufbx.github.io/elements/nodes/)、[网格与实例材质](https://ufbx.github.io/elements/meshes/)、[FileGDB API 官方仓库](https://github.com/Esri/file-geodatabase-api) 及 [固定 SDK 来源](../backends/native-filegdb/sdk-sources.json)。

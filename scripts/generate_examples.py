@@ -1,4 +1,4 @@
-"""Produce and verify complete references using either installed writer backend."""
+"""Produce and verify complete references using the installed native FileGDB writer."""
 import argparse
 import json
 from pathlib import Path
@@ -9,13 +9,13 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--output", required=True, type=Path, help="New output directory; existing directories are rejected")
 parser.add_argument("--cli", type=Path)
 parser.add_argument("--writer", type=Path)
-parser.add_argument("--backend", choices=("arcgis-pro", "native-filegdb"), default="arcgis-pro")
+parser.add_argument("--backend", choices=("native-filegdb",), default="native-filegdb")
 args = parser.parse_args()
 project = Path(__file__).resolve().parents[1]
 version = (project / "VERSION").read_text(encoding="utf-8").strip()
 cli = (args.cli or project / "dist/bin/geomodelbridge.exe").resolve()
-writer_name = "arcgis-pro/GeoModelBridge.ProWriter.exe" if args.backend == "arcgis-pro" else "native-filegdb/GeoModelBridge.NativeWriter.exe"
-writer = (args.writer or project / "dist/bin" / writer_name).resolve()
+writer_name = "native-filegdb/GeoModelBridge.NativeWriter.exe"
+writer = (args.writer or cli.parent / writer_name).resolve()
 out = args.output.resolve()
 out.mkdir(parents=True, exist_ok=False)
 

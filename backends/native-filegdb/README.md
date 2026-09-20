@@ -1,4 +1,4 @@
-# Native FileGDB 后端 · V0.1.4
+# Native FileGDB 后端 · V0.1.5
 
 这个 Windows x64 C++17 后端把 Scene Bundle 中的几何、RGB、透明度、UV 和 PNG/JPEG 纹理直接写入新 FileGDB Multipatch。转换时不加载 ArcGIS Pro、不调用 ArcPy、不借用 Pro 导出的 Shape Buffer。第三方 Esri FileGDB API 负责数据库文件格式，项目代码按 Esri 公开文档独立生成扩展 Multipatch Shape Buffer。
 
@@ -42,7 +42,7 @@ cmake --install build/native --prefix dist
 
 此后端必须用 MSVC ABI 编译。主 C++ 引擎可继续用 MinGW；两者通过独立进程和 Scene Bundle 协议通信，不混用 C++ STL ABI。
 
-原生后端只链接 release `FileGDBAPI.lib`，支持 `Release`、`RelWithDebInfo` 和 `MinSizeRel`，固定 `/MD` 与 `_ITERATOR_DEBUG_LEVEL=0`。`Debug` 会在配置阶段拒绝，以免 `/MDd` 或调试迭代器布局跨越 SDK 的 STL ABI。主引擎和 Pro 后端的 Debug 构建不受这个限制影响。
+原生后端只链接 release `FileGDBAPI.lib`，支持 `Release`、`RelWithDebInfo` 和 `MinSizeRel`，固定 `/MD` 与 `_ITERATOR_DEBUG_LEVEL=0`。`Debug` 会在配置阶段拒绝，以免 `/MDd` 或调试迭代器布局跨越 SDK 的 STL ABI。主引擎的 Debug 构建不受这个限制影响。
 
 ## 存储规则与范围
 
@@ -60,7 +60,7 @@ cmake --install build/native --prefix dist
 
 原生写入后关闭并重开数据库，核验几何、patch 材质绑定、UV、法线量化、RGB/透明度/culling、纹理字节/尺寸/格式及空间参考。成功状态为 `written_and_readback_verified`，`backend=native-filegdb`、`verification.level=closed_reopened_file_geodatabase`。独立复制验证对逐 feature 回读 Shape Buffer SHA256、属性和 WKID 做精确比对。
 
-V0.1.3 报告还记录输入 bundle 的 `conversion_profile` 和兼容处理标记；writer 不会再次求值动画或执行材质烘焙。原生自回读与 ArcGIS Pro 独立读取是不同验收。本次用户模型补充 3 张 JPEG 的 JFIF 标记后，本后端写入与自回读 56 个要素通过，原生成果经独立 Pro 对照 bundle 核验 69,936 个三角形及 12 张贴图通过。目标软件外观验收仍需另行完成。
+V0.1.3 报告还记录输入 bundle 的 `conversion_profile` 和兼容处理标记；writer 不会再次求值动画或执行材质烘焙。以下为 V0.1.3 历史证据，不属于当前运行或发布要求：原生自回读与独立 SDK 读取是不同验收。当时的用户模型补充 3 张 JPEG 的 JFIF 标记后，本后端写入与自回读 56 个要素通过，原生成果经独立 Pro 对照 bundle 核验 69,936 个三角形及 12 张贴图通过。目标软件外观验收仍需另行完成。
 
 原生坐标分辨率为 `1e-5` 米，本机 Pro 后端为 `1e-4` 米；该模型两份成果的 XYZ 最大差约 `5.00083e-5` 米，UV、法线、材质与纹理一致。因此不同 writer 产生的精确 signature 不同，不能使用跨 writer signature 匹配来宣称两份成果逐位相等。同一份原生成果的复制核验仍严格检查其原生报告。
 

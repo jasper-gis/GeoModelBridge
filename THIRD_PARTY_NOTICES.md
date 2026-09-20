@@ -15,10 +15,6 @@
 
 The exact distributed files and SHA-256 digests are in `third_party/manifest.json`. `scripts/verify_dependencies.py` verifies them offline. No dependency is fetched automatically during C++ configuration.
 
-## Esri ArcGIS Pro
-
-The optional Pro adapter references an installed and licensed ArcGIS Pro runtime. Esri assemblies, SDK packages, license files, and credentials are **not redistributed**. Installation, licensing, platform and redistributable restrictions remain governed by Esri's terms.
-
 ## Esri FileGDB API 1.5.5
 
 V0.1.1 adds a separate Windows x64 native backend that links against the official FileGDB API SDK. This release includes the unmodified release `FileGDBAPI.dll`, its original Apache-2.0 license, `userestrictions.txt`, upstream Windows README, and a source/hash record under `dist/licenses/filegdb-api/`. The provenance and exact hashes are also recorded in `backends/native-filegdb/sdk-sources.json`.
@@ -37,7 +33,7 @@ V0.1.2 adds the self-contained Windows x64 `geomodelbridgeGUI.exe`. Its single-f
 - `microsoft.windowsdesktop.app.runtime.win-x64/8.0.26/LICENSE` from the Windows Desktop runtime package. This package does not contain a separate third-party notices file.
 - `manifest.json` records the resolved package versions, official NuGet sources, repository commits, package SHA-512 digests and copied notice SHA-256 digests. Original license text and line endings are unchanged.
 
-`scripts/build.ps1 -WithGui` runs `scripts/install_dotnet_licenses.py` after publication. It reads the actual `project.assets.json`, finds those exact runtime versions in the configured NuGet package folders, verifies each local package archive against its NuGet SHA-512 file, and copies its original notices. The complete NuGet packages, development SDK, and compiler are not copied into the distribution. The GUI's included .NET runtime is separate from the Pro adapter's installed-runtime requirements.
+`scripts/build.ps1 -WithGui` runs `scripts/install_dotnet_licenses.py` after publication. It reads the actual `project.assets.json`, finds those exact runtime versions in the configured NuGet package folders, verifies each local package archive against its NuGet SHA-512 file, and copies its original notices. The complete NuGet packages, development SDK, and compiler are not copied into the distribution. The GUI embeds its runtime independently of installed desktop GIS software.
 
 ## Project and fixtures
 

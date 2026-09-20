@@ -6,7 +6,7 @@ using GeoModelBridge.Gui.Core;
 
 internal static class Program
 {
-    private const string Version = "0.1.4";
+    private const string Version = "0.1.5";
     private static readonly List<TestCase> Results = [];
     private static string Work = "";
     private static string Input = "";
@@ -151,6 +151,7 @@ internal static class Program
         File.WriteAllText(existingReport, "User report must remain untouched.");
         Test("reject_existing_report", () => Invalid(Settings with { ReportPath = existingReport }));
         Test("reject_unknown_backend", () => Invalid(Settings with { Backend = "shell" }));
+        Test("reject_removed_pro_backend", () => Invalid(Settings with { Backend = "arcgis-pro" }));
         Test("default_profile_is_gis_static", () => Assert(new ConversionSettings().Profile == "gis-static", "GUI default policy is not static GIS."));
         foreach (var profile in new[] { "strict", "gis-static" })
             Test("accept_profile_" + profile, () => Valid(Settings with { Profile = profile }));
@@ -219,7 +220,7 @@ internal static class Program
         {
             ["version"] = Version,
             ["status"] = "written_and_readback_verified",
-            ["backend"] = settings.Backend == "arcgis-pro" ? "arcgis-pro-corehost" : "native-filegdb",
+            ["backend"] = "native-filegdb",
             ["conversion_profile"] = settings.Profile,
             ["output"] = Path.GetFullPath(settings.OutputPath),
             ["feature_class"] = settings.FeatureClass,
@@ -248,8 +249,12 @@ internal static class Program
     private static void ReportTests()
     {
         Test("accept_matching_reopened_gdb_report", () => Assert(ReportVerifier.Verify(GoodReport().ToJsonString(), Settings) is not null, "No parsed report."));
-        var proSettings = Settings with { Backend = "arcgis-pro" };
-        Test("accept_matching_pro_backend_report", () => Assert(ReportVerifier.Verify(GoodReport(proSettings).ToJsonString(), proSettings) is not null, "No parsed Pro report."));
+        Test("reject_pro_settings_even_with_native_report", () =>
+        {
+            try { ReportVerifier.Verify(GoodReport().ToJsonString(), Settings with { Backend = "arcgis-pro" }); }
+            catch (InvalidDataException) { return; }
+            throw new InvalidOperationException("Removed backend was accepted.");
+        });
         RejectedReport("reject_old_report_version", report => report["version"] = "0.1.1");
         RejectedReport("reject_missing_report_version", report => report.Remove("version"));
         RejectedReport("reject_missing_conversion_profile", report => report.Remove("conversion_profile"));
@@ -469,6 +474,11 @@ internal static class Program
         var missingDirectory = Path.Combine(Work, "missing-installation");
         var engine = new EngineService(missingDirectory);
         Test("missing_engine_detected", () => Assert(!engine.IsEnginePresent, "Missing engine reported present."));
+        await TestAsync("removed_backend_probe_rejected_before_engine_discovery", async () =>
+        {
+            var result = await engine.ProbeBackendAsync("arcgis-pro");
+            Assert(!result.Success && result.Message.Contains("仅支持原生"), "Removed backend reached discovery.");
+        });
         await TestAsync("missing_engine_probe_is_actionable", async () =>
         {
             var result = await engine.ProbeBackendAsync("native-filegdb");
@@ -655,7 +665,7 @@ internal static class Program
         var service = new EngineService(engineDirectory);
         await TestAsync("native_backend_runtime_probe", async () =>
         {
-            Assert(service.IsEnginePresent, "Built V0.1.4 engine is absent: " + service.EnginePath);
+            Assert(service.IsEnginePresent, "Built V0.1.5 engine is absent: " + service.EnginePath);
             var probe = await service.ProbeBackendAsync("native-filegdb");
             Assert(probe.Success, probe.Message);
         });

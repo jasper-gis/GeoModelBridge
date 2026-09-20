@@ -48,7 +48,6 @@ public static class ReportVerifier
     internal static string ExpectedBackend(string backend) => backend switch
     {
         "native-filegdb" => "native-filegdb",
-        "arcgis-pro" => "arcgis-pro-corehost",
         _ => throw new InvalidDataException("未知转换方式。")
     };
     internal static string Text(JsonElement element, string name) => element.GetProperty(name).GetString() ?? throw new InvalidDataException($"报告字段 {name} 为空。");

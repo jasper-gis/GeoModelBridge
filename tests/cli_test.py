@@ -74,10 +74,28 @@ def read_bundle(directory):
 def main():
     exe = Path(sys.argv[1]).resolve()
     assert exe.is_file(), f"Executable not found: {exe}"
-    assert "0.1.4" in invoke(exe, "--version").stdout
-    invoke(exe, "doctor")
+    assert "0.1.5" in invoke(exe, "--version").stdout
+    doctor = json.loads(invoke(exe, "doctor").stdout)
+    assert "native_filegdb" in doctor and "arcgis_pro" not in doctor
+    assert "arcgis-pro" not in invoke(exe, "--help").stdout
     with tempfile.TemporaryDirectory(prefix="geomodelbridge-cli-") as scratch:
         root = Path(scratch)
+        # Removed backends must fail before input parsing or writer dispatch.
+        for backend in ["arcgis-pro", "arcgis-pro-corehost", "unknown"]:
+            output = root / (backend + ".gdb")
+            result = invoke(exe, "convert", root / "missing.fbx", "--output", output,
+                            "--backend", backend, "--wkid", 32650, "--origin", 0, 0, 0,
+                            expect_success=False)
+            assert result.returncode == 4 and "Only native-filegdb" in result.stderr
+            assert not output.exists()
+            report = json.loads(Path(str(output) + ".report.json").read_text(encoding="utf-8"))
+            assert report["status"] == "failed" and report["diagnostics"][0]["code"] == "BACKEND_UNAVAILABLE"
+        fake_dll = root / "writer.dll"
+        fake_dll.write_bytes(b"not a native executable")
+        result = invoke(exe, "convert", Path(sys.argv[2]) / "textured_quad.fbx",
+                        "--output", root / "managed.gdb", "--writer", fake_dll,
+                        "--wkid", 32650, "--origin", 0, 0, 0, expect_success=False)
+        assert result.returncode == 2 and not (root / "managed.gdb").exists()
         all_fixtures = root / "reference-fixtures"
         invoke(exe, "fixture", "all", "--output", all_fixtures)
         names = {"color-cube", "uv-plane", "mixed-materials", "alpha-plane", "seam-cube"}

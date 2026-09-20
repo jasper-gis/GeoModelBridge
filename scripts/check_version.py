@@ -19,12 +19,8 @@ DECLARATIONS = (
     ("CMakeLists.txt", rf"project\(GeoModelBridge\s+VERSION\s+({SEMVER})\b", 1),
     ("backends/native-filegdb/CMakeLists.txt", rf"project\(GeoModelBridgeNative\s+VERSION\s+({SEMVER})\b", 1),
     ("include/gmb/scene.hpp", rf'\bversion\s*=\s*"({SEMVER})"', 1),
-    ("backends/arcgis-pro/GeoModelBridge.ArcGISPro.csproj", rf"<Version>({SEMVER})</Version>", 1),
     ("apps/GeoModelBridge.Gui/GeoModelBridge.Gui.csproj", rf"<Version>({SEMVER})</Version>", 1),
-    ("backends/arcgis-pro/Program.cs", rf"GeoModelBridge ArcGIS Pro adapter ({SEMVER})", 1),
-    ("backends/arcgis-pro/Writer.cs", rf'\bversion\s*=\s*"({SEMVER})"', 3),
     ("tests/cli_test.py", rf'assert "({SEMVER})" in invoke\(exe, "--version"\)', 1),
-    ("backends/arcgis-pro/tests/integration.py", rf"\bversion='({SEMVER})'", 1),
     ("backends/native-filegdb/tests/integration.py", rf"\bversion='({SEMVER})'", 1),
 )
 

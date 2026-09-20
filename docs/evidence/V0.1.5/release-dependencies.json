@@ -1,0 +1,92 @@
+{
+  "bin/geomodelbridge.exe": {
+    "sha256": "c25594afa4827e7acccb2fed32641b59a79aa88526a2086a246dedfd03f4b7fe",
+    "size": 734208,
+    "imports": [
+      "SHELL32.dll",
+      "KERNEL32.dll",
+      "MSVCP140.dll",
+      "MSVCP140_2.dll",
+      "VCRUNTIME140.dll",
+      "VCRUNTIME140_1.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll"
+    ]
+  },
+  "bin/native-filegdb/GeoModelBridge.NativeWriter.exe": {
+    "sha256": "d212bf43be77a655935e29a4141ce94bcabc0ae1681dc39ff87e1c6cee2542ce",
+    "size": 401920,
+    "imports": [
+      "FileGDBAPI.dll",
+      "ole32.dll",
+      "KERNEL32.dll",
+      "MSVCP140.dll",
+      "VCRUNTIME140.dll",
+      "VCRUNTIME140_1.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll"
+    ]
+  },
+  "bin/native-filegdb/FileGDBAPI.dll": {
+    "sha256": "894d19ec53988f6378b13ad1ee02716c2853b7b1c7040efa0dfe71393be91400",
+    "size": 14443416,
+    "imports": [
+      "KERNEL32.dll",
+      "ole32.dll",
+      "OLEAUT32.dll",
+      "MSVCP140.dll",
+      "VCRUNTIME140_1.dll",
+      "VCRUNTIME140.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-utility-l1-1-0.dll",
+      "api-ms-win-crt-time-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "SHLWAPI.dll",
+      "bcrypt.dll",
+      "ADVAPI32.dll"
+    ]
+  },
+  "bin/geomodelbridgeGUI.exe": {
+    "sha256": "515fa9ae174eefd2d612589202f5acdd2d8a3ac371caff9a62a8dabb00052970",
+    "size": 71743077,
+    "imports": [
+      "KERNEL32.dll",
+      "ADVAPI32.dll",
+      "ole32.dll",
+      "OLEAUT32.dll",
+      "USER32.dll",
+      "SHELL32.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll",
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-utility-l1-1-0.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-time-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll"
+    ]
+  }
+}

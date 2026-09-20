@@ -1,3 +1,5 @@
+> 历史资料（V0.1.1–V0.1.4）：相关 Pro 脚本已从当前工程移除，下文仅记录当时的方法。旧工具见 [初始化提交](https://github.com/jasper-gis/GeoModelBridge/tree/9343edd/scripts)，不属于 V0.1.5 部署要求。
+
 # ArcGIS Pro 图形验收工程
 
 `scripts/create_visual_project.py` 使用本机已授权 ArcGIS Pro 的 ArcPy 创建一个新的 `.aprx`，并导出固定视角的 PNG。它只读源 GDB，不重写几何、颜色、UV、贴图或透明度。工程准备成功不等于图形验收通过；必须查看实际渲染并记录结果。

@@ -1,5 +1,7 @@
 name: build-and-test
 on: [push, pull_request]
+permissions:
+  contents: read
 jobs:
   core:
     strategy:
@@ -12,7 +14,36 @@ jobs:
         with:
           python-version: '3.12'
       - run: python scripts/verify_dependencies.py
+      - run: python scripts/check_version.py
       - run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DGMB_BUILD_TESTS=ON
       - run: cmake --build build --config Release --parallel 2
       - run: ctest --test-dir build -C Release --output-on-failure
-  # Pro integration requires a licensed Windows installation and is run locally.
+  native-windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Check desktop GIS is absent
+        shell: pwsh
+        run: |
+          if ((Test-Path 'C:/Program Files/ArcGIS/Pro') -or (Test-Path 'HKLM:/SOFTWARE/ESRI/ArcGISPro') -or (Test-Path 'HKCU:/SOFTWARE/ESRI/ArcGISPro')) {
+            throw 'Native CI must run without ArcGIS Pro installed.'
+          }
+      - run: python scripts/fetch_filegdb_sdk.py --output build/filegdb-sdk
+      - name: Build native release and GUI
+        shell: pwsh
+        run: |
+          $vs = & "${env:ProgramFiles(x86)}/Microsoft Visual Studio/Installer/vswhere.exe" -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+          Import-Module (Join-Path $vs 'Common7/Tools/Microsoft.VisualStudio.DevShell.dll')
+          Enter-VsDevShell -VsInstallPath $vs -SkipAutomaticLocation -DevCmdArguments '-arch=x64 -host_arch=x64'
+          ./scripts/build.ps1 -WithNative -WithGui -FileGDBApiRoot (Join-Path $PWD 'build/filegdb-sdk') -IncludeFileGDBRuntime
+      - run: python backends/native-filegdb/tests/integration.py --writer dist/bin/native-filegdb/GeoModelBridge.NativeWriter.exe --work artifacts/native
+      - run: dotnet run --project apps/GeoModelBridge.Gui.Tests -c Release -- --work artifacts/gui --engine-dir dist/bin --fixtures tests/fixtures
+      - run: python tests/native_deployment_test.py --install-dir dist --work artifacts/deployment
+      - run: python scripts/generate_examples.py --output artifacts/examples
+      - run: python scripts/package.py --examples-dir artifacts/examples --check-only

@@ -39,7 +39,7 @@ void help() {
         "  geomodelbridge inspect INPUT.fbx [--report NEW.json] [--texture-dir DIR]\n"
         "  geomodelbridge prepare INPUT.fbx --output NEW_BUNDLE [OPTIONS]\n"
         "  geomodelbridge fixture NAME|all --output NEW_DIR [OPTIONS]\n"
-        "  geomodelbridge convert INPUT.fbx --output NEW.gdb --backend native-filegdb|arcgis-pro\n"
+        "  geomodelbridge convert INPUT.fbx --output NEW.gdb [--backend native-filegdb]\n"
         "      --wkid PROJECTED_METRIC_WKID --origin X Y Z [--writer WRITER_PATH] [OPTIONS]\n\n"
         "Options: --report NEW.json, --texture-dir DIR (repeatable), --wkid N,\n"
         "         --origin X Y Z, --feature-class NAME (convert only),\n"
@@ -157,17 +157,17 @@ int run_process(const std::vector<std::string>& args,const fs::path& log_path) {
     return WIFEXITED(status)?WEXITSTATUS(status):5;
 #endif
 }
-fs::path default_writer(const std::string& argv0,const std::string& backend) {
-    if(const auto* env=std::getenv(backend=="native-filegdb"?"GMB_NATIVE_WRITER":"GMB_PRO_WRITER"))return fs::u8path(env);
+fs::path default_writer(const std::string& argv0) {
+    if(const auto* env=std::getenv("GMB_NATIVE_WRITER"))return fs::u8path(env);
     fs::path exe=fs::absolute(fs::u8path(argv0));
 #ifdef _WIN32
     wchar_t path[32768];auto len=GetModuleFileNameW(nullptr,path,32768);if(len>0&&len<32768)exe=fs::path(std::wstring(path,len));
 #endif
-    if(backend=="native-filegdb")return exe.parent_path()/"native-filegdb"/"GeoModelBridge.NativeWriter.exe";
-    return exe.parent_path()/"arcgis-pro"/"GeoModelBridge.ProWriter.dll";
+    return exe.parent_path()/"native-filegdb"/"GeoModelBridge.NativeWriter.exe";
 }
 int convert(const gmb::Scene& scene,Options& o,const std::string& argv0) {
-    if(o.writer.empty())o.writer=default_writer(argv0,o.backend);
+    if(o.writer.empty())o.writer=default_writer(argv0);
+    if(o.writer.extension()==".dll")throw UsageError("--writer must name the native executable, not a managed DLL.");
     if(!fs::is_regular_file(o.writer)) {
         std::cerr<<o.backend<<" writer not found: "<<o.writer.u8string()<<"\nBuild the selected backend, or pass --writer.\n";
         if(!o.report.empty())gmb::write_report(scene,{{gmb::Severity::error,"BACKEND_UNAVAILABLE","The selected writer executable was not found.",o.writer.u8string()}},"failed",o.report,o.backend);
@@ -183,7 +183,6 @@ int convert(const gmb::Scene& scene,Options& o,const std::string& argv0) {
     struct Cleanup {fs::path path;~Cleanup(){std::error_code ec;fs::remove_all(path,ec);}} cleanup{temp};
     gmb::write_bundle(scene,temp/"bundle");
     std::vector<std::string> args;
-    if(o.writer.extension()==".dll")args.push_back("dotnet");
     args.push_back(fs::absolute(o.writer).u8string());
     args.insert(args.end(),{"--input",(temp/"bundle").u8string(),"--output",output.u8string(),"--feature-class",o.feature_class,"--report",fs::absolute(o.report).u8string()});
     const auto code=run_process(args,temp/"writer.log");
@@ -202,7 +201,7 @@ int convert(const gmb::Scene& scene,Options& o,const std::string& argv0) {
        verified.value("version","")!=gmb::version ||
        verified.value("feature_class","")!=o.feature_class ||
        verified.value("conversion_profile","")!=scene.conversion_profile ||
-       verified.value("backend","")!=(o.backend=="native-filegdb"?"native-filegdb":"arcgis-pro-corehost") ||
+       verified.value("backend","")!="native-filegdb" ||
        !verified.at("verification").value("geometry_material_uv_texture_readback",false) ||
        verified.at("verification").value("level","")!="closed_reopened_file_geodatabase" ||
        fs::weakly_canonical(fs::u8path(verified.value("output","")))!=fs::weakly_canonical(output) ||
@@ -216,19 +215,17 @@ int main_utf8(const std::vector<std::string>& args) {
     if(args.size()==2&&args[1]=="--version") {std::cout<<"GeoModelBridge V"<<gmb::version<<"\n";return 0;}
     if(args.size()==2&&args[1]=="doctor") {
         std::cout<<json({{"version",gmb::version},{"fbx_reader","ufbx 0.23.0"},{"scene_bundle","available"},
-            {"native_filegdb",{{"writer_path",default_writer(args[0],"native-filegdb").u8string()},{"writer_present",fs::is_regular_file(default_writer(args[0],"native-filegdb"))},
-                {"runtime","Requires the native writer and FileGDB API runtime. Run writer --probe to test."}}},
-            {"arcgis_pro",{{"writer_path",default_writer(args[0],"arcgis-pro").u8string()},{"writer_present",fs::is_regular_file(default_writer(args[0],"arcgis-pro"))},
-                {"runtime","Requires Windows, installed ArcGIS Pro 3.6 and its usable license. Run writer --probe to test."}}}}).dump(2)<<"\n";
+            {"native_filegdb",{{"writer_path",default_writer(args[0]).u8string()},{"writer_present",fs::is_regular_file(default_writer(args[0]))},
+                {"runtime","Requires Windows x64, FileGDB API and Microsoft C++ runtimes. Run writer --probe to test."}}}}).dump(2)<<"\n";
         return 0;
     }
     Options o;
     try {
         o=parse(args);
-        if(o.command=="convert"&&o.backend!="arcgis-pro"&&o.backend!="native-filegdb") {
-            const auto reason="Unknown backend '"+o.backend+"'. Choose native-filegdb or arcgis-pro.";
+        if(o.backend!="native-filegdb") {
+            const auto reason="Unsupported backend '"+o.backend+"'. Only native-filegdb is supported.";
             gmb::Scene s;s.source=o.input;
-            gmb::write_report(s,{{gmb::Severity::error,"BACKEND_UNAVAILABLE",reason,o.backend}},"failed",o.report,o.backend);
+            if(!o.report.empty())gmb::write_report(s,{{gmb::Severity::error,"BACKEND_UNAVAILABLE",reason,o.backend}},"failed",o.report,o.backend);
             std::cerr<<reason<<"\n";return 4;
         }
         if(o.command=="fixture"&&o.input=="all") {

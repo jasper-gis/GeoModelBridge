@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(GeoModelBridge VERSION 0.1.4 LANGUAGES C CXX)
+project(GeoModelBridge VERSION 0.1.5 LANGUAGES C CXX)
 
 option(GMB_BUILD_TESTS "Build correctness tests" ON)
 option(GMB_STATIC_RUNTIME "Link MinGW runtime statically for a portable CLI" ON)

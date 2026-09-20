@@ -60,21 +60,19 @@ public sealed class EngineService
             return new(false, "已有转换或环境检查正在运行，请等待完成。");
         try
         {
-            if (backend is not ("native-filegdb" or "arcgis-pro")) return new(false, "请选择有效的转换方式。");
+            if (backend != "native-filegdb") return new(false, "仅支持原生 FileGDB 转换方式。");
             Stage(progress, "正在检查转换引擎版本…");
             var engine = await CheckEngineAsync(progress).ConfigureAwait(false);
             if (!engine.Success) return engine;
-            var environmentName = backend == "native-filegdb" ? "GMB_NATIVE_WRITER" : "GMB_PRO_WRITER";
-            var configured = Environment.GetEnvironmentVariable(environmentName);
+            var configured = Environment.GetEnvironmentVariable("GMB_NATIVE_WRITER");
             var writer = string.IsNullOrEmpty(configured)
-                ? Path.Combine(baseDirectory, backend == "native-filegdb" ? "native-filegdb" : "arcgis-pro",
-                    backend == "native-filegdb" ? "GeoModelBridge.NativeWriter.exe" : "GeoModelBridge.ProWriter.dll")
+                ? Path.Combine(baseDirectory, "native-filegdb", "GeoModelBridge.NativeWriter.exe")
                 : Path.GetFullPath(configured, baseDirectory);
             if (!File.Exists(writer)) return new(false, "找不到所选写入端，请保留完整程序目录及其子文件夹。" + Environment.NewLine + writer);
-            Stage(progress, backend == "native-filegdb" ? "正在检查独立 FileGDB 写入端…" : "正在检查 ArcGIS Pro 运行环境与授权…");
-            var info = string.Equals(Path.GetExtension(writer), ".dll", StringComparison.OrdinalIgnoreCase)
-                ? ConversionCommand.StartInfo("dotnet", [writer, "--probe"])
-                : ConversionCommand.StartInfo(writer, ["--probe"]);
+            if (string.Equals(Path.GetExtension(writer), ".dll", StringComparison.OrdinalIgnoreCase))
+                return new(false, "写入端必须为原生可执行程序，不能使用托管 DLL。");
+            Stage(progress, "正在检查原生 FileGDB 写入端…");
+            var info = ConversionCommand.StartInfo(writer, ["--probe"]);
             info.WorkingDirectory = baseDirectory;
             var result = await RunAsync(info, progress).ConfigureAwait(false);
             if (result.ExitCode != 0) return new(false, $"写入端环境检查未通过（退出代码 {result.ExitCode}）。请检查运行库及安装状态。" + Environment.NewLine + ProcessDetails(result));
@@ -83,9 +81,8 @@ public sealed class EngineService
             ReportVerifier.Require(ReportVerifier.Text(root, "status") == "available", "写入端未报告环境可用。");
             ReportVerifier.Require(ReportVerifier.Text(root, "backend") == ReportVerifier.ExpectedBackend(backend), "写入端与所选转换方式不一致。");
             ReportVerifier.Require(ReportVerifier.Text(root, "version") == ProductInfo.Version, "写入端版本与 GUI 版本不一致，请使用同一版本完整目录。");
-            if (backend == "arcgis-pro") ReportVerifier.Require(root.GetProperty("license_initialized").GetBoolean(), "ArcGIS Pro 授权初始化未确认。");
-            else ReportVerifier.Require(!root.GetProperty("arcgis_pro_required").GetBoolean(), "独立写入端的运行要求不符合预期。");
-            return new(true, backend == "native-filegdb" ? $"独立 FileGDB 转换环境可用（V{ProductInfo.Version}），无需 ArcGIS Pro。" : $"ArcGIS Pro 转换环境与授权可用（V{ProductInfo.Version}）。");
+            ReportVerifier.Require(!root.GetProperty("arcgis_pro_required").GetBoolean(), "独立写入端的运行要求不符合预期。");
+            return new(true, $"原生 FileGDB 转换环境可用（V{ProductInfo.Version}），无需 ArcGIS Pro。");
         }
         catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException or Win32Exception or InvalidOperationException or ArgumentException or JsonException or KeyNotFoundException)
         { return new(false, "环境检查未通过：" + FriendlyError(ex)); }

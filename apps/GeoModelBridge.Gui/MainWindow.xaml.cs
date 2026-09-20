@@ -30,7 +30,7 @@ public partial class MainWindow : Window
             AppendLog("请选择 FBX 或点击“加载演示”。");
     }
 
-    private string Backend => (BackendBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "native-filegdb";
+    private const string Backend = "native-filegdb";
     private string Profile => (ProfileBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "gis-static";
 
     private ConversionSettings Settings() => new()
@@ -227,13 +227,6 @@ public partial class MainWindow : Window
             TextureDirectoriesBox.Text = string.Join(Environment.NewLine, TextureDirectoriesBox.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Append(dialog.FolderName).Distinct(StringComparer.OrdinalIgnoreCase));
     }
 
-    private void Backend_Changed(object sender, SelectionChangedEventArgs e)
-    {
-        if (BackendHint is null) return;
-        BackendHint.Text = Backend == "native-filegdb"
-            ? "无需 ArcGIS Pro，使用随程序提供的 FileGDB 运行库。"
-            : "需要本机安装 ArcGIS Pro 且许可可用；可先检查运行环境。";
-    }
 
     private void Profile_Changed(object sender, SelectionChangedEventArgs e)
     {
@@ -258,7 +251,6 @@ public partial class MainWindow : Window
         OriginYBox.Text = "3000000";
         OriginZBox.Text = "100";
         FeatureClassBox.Text = "Models";
-        BackendBox.SelectedIndex = 0;
         ProfileBox.SelectedIndex = 0;
         TextureDirectoriesBox.Clear();
         DemoNotice.Visibility = Visibility.Visible;
@@ -328,7 +320,7 @@ public partial class MainWindow : Window
         "1. 选择一个静态 FBX。外置 PNG/JPEG 通常放在模型目录中；其他位置可在转换选项中添加贴图目录。\n\n" +
         "2. 指定尚不存在的 .gdb 输出路径。默认要素类名为 Models，已有数据库不会被覆盖。\n\n" +
         "3. 填写米制投影坐标系 WKID 和 XYZ 原点。模型先统一 Z-up、米制，再进行平移。这里不会重投影、旋转配准或推断真实位置；已经使用目标坐标的模型也应明确填写所需偏移。\n\n" +
-        "4. 默认独立后端不依赖 Pro。ArcGIS Pro 后端需要本机安装及许可；可先点击“检查运行环境”。\n\n" +
+        "4. 使用原生 FileGDB 后端，无需安装 ArcGIS Pro；可先点击“检查运行环境”。\n\n" +
         "5. 默认 GIS 静态兼容按 FBX 保存的姿态转换，省略环境光、高光和反射通道，删除有限坐标的零面积面；还可修复符合条件的 JPEG 封装，保留原压缩图像数据，不重新压缩图像。每项处理都会记录。它不会选择动画第 0 帧，也不会跳过所有错误。如需保留某一动画帧或渲染外观，请先在建模软件中导出静态快照或烘焙漫反射贴图。可切换严格检查，遇到这些内容时停止。\n\n" +
         "6. 开始转换后请保留窗口。完成后查看输出目录和报告。中文报告按原因归并诊断，也可切换查看原始 JSON。程序核验几何、UV、材质与内嵌图片，实际颜色、透明与接缝显示仍需目标软件验收。\n\n" +
         "仅测试程序时，可使用“加载演示”，它会填入明确的测试坐标。\n\n" +
