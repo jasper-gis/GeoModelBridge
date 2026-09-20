@@ -1,0 +1,635 @@
+{
+  "version": "0.1.3",
+  "status": "passed",
+  "test_count": 125,
+  "failed_count": 0,
+  "real_native_conversion_requested": true,
+  "graphical_acceptance_performed": false,
+  "tests": [
+    {
+      "Name": "valid_chinese_spaces_ampersand_paths",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "finite_signed_decimal_origin",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_wkid_\u0022\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_wkid_\u0022 \u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_wkid_\u00220\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_wkid_\u0022-1\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_wkid_\u0022EPSG:32650\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_wkid_\u002232650.5\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_wkid_\u00222147483648\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_x_\u0022\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_y_\u0022\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_z_\u0022\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_x_\u0022NaN\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_y_\u0022NaN\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_z_\u0022NaN\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_x_\u0022Infinity\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_y_\u0022Infinity\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_z_\u0022Infinity\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_x_\u0022-Infinity\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_y_\u0022-Infinity\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_z_\u0022-Infinity\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_x_\u00221e999\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_y_\u00221e999\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_z_\u00221e999\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_x_\u0022abc\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_y_\u0022abc\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_z_\u0022abc\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_x_\u00221,25\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_y_\u00221,25\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_origin_z_\u00221,25\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_missing_input",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_empty_input",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_non_fbx_input",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_empty_output",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_non_gdb_output",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_existing_gdb_directory",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_existing_gdb_file",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_existing_report",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_unknown_backend",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "default_profile_is_gis_static",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "accept_profile_strict",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "accept_profile_gis-static",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_profile_\u0022\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_profile_\u0022Strict\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_profile_\u0022auto\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_profile_\u0022gis-static --ignore-errors\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_feature_class_\u0022\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_feature_class_\u0022Bad name\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_feature_class_\u0022bad;table\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_feature_class_\u0022../outside\u0022",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_missing_texture_directory",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "validation_does_not_touch_existing_files",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "arguments_preserve_paths_as_single_tokens",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "process_uses_argument_list_without_shell",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "default_report_is_absolute_next_to_output",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "arguments_preserve_explicit_profile_strict",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "arguments_preserve_explicit_profile_gis-static",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "accept_matching_reopened_gdb_report",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "accept_matching_pro_backend_report",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_old_report_version",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_missing_report_version",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_missing_conversion_profile",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_mismatched_conversion_profile",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_failed_report_status",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_report_wrong_backend",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_report_wrong_output",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_report_relative_output",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_report_wrong_feature_class",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_report_missing_verification",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_report_unverified_geometry",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_report_wrong_verification_level",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_report_zero_features",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_report_negative_features",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_report_fractional_features",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_report_wrong_wkid",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_report_geographic_crs",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_report_missing_crs",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_success_report_with_reader_error",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_malformed_json_report",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "hundreds_of_diagnostics_grouped_without_losing_total",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "unknown_error_is_visible_and_never_success",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "both_diagnostic_arrays_are_counted",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "compatibility_adjustment_is_explicit_STATIC_POSE_USED",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "compatibility_adjustment_is_explicit_MATERIAL_CHANNEL_OMITTED",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "compatibility_adjustment_is_explicit_DEGENERATE_TRIANGLES_REMOVED",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "compatibility_adjustment_is_explicit_JPEG_CONTAINER_NORMALIZED",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "unsupported_texture_diagnostics_have_chinese_causes_and_next_steps",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "jpeg_repairs_are_counted_as_texture_records_without_recompression_claims",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "jpeg_failure_remains_a_chinese_blocking_error_JPEG_CONTAINER_REQUIRES_NORMALIZATION",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "jpeg_failure_remains_a_chinese_blocking_error_JPEG_CONTAINER_UNSUPPORTED",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "jpeg_compatibility_warning_never_hides_an_unknown_error",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "empty_animation_stack_is_not_rendering_loss",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "removed_triangle_totals_are_distinct_from_warning_records",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "removed_triangle_total_never_guessed_six",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "removed_triangle_total_never_guessed_0006",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "removed_triangle_total_never_guessed_9223372036854775808",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "removed_triangle_sum_overflow_does_not_crash_or_wrap",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "report_statistics_display_only_well_typed_nonnegative_counts",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "summary_never_claims_gdb_success_for_failed",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "summary_never_claims_gdb_success_for_rejected",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "summary_never_claims_gdb_success_for_prepared",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "summary_never_claims_gdb_success_for_inspected",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "summary_never_claims_gdb_success_for_",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "summary_rejects_invalid_shape_{broken",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "summary_rejects_invalid_shape_[]",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "summary_rejects_invalid_shape_{\u0022diagnostics\u0022:{}}",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "summary_rejects_invalid_shape_{\u0022diagnostics\u0022:[42]}",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "missing_engine_detected",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "missing_engine_probe_is_actionable",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "missing_engine_conversion_is_failure",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "reject_old_engine_version_before_conversion",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "zero_exit_without_report_is_not_success",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "valid_report_without_gdb_is_not_success",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "mismatched_report_is_returned_as_actionable_failure",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "failed-report-zero-exit_is_readable_and_never_success",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "failed-report-nonzero-exit_is_readable_and_never_success",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "new_engine_without_writer_has_actionable_probe_failure",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "runtime_rejects_probe-old-version",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "runtime_rejects_probe-failed-status",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "runtime_rejects_probe-wrong-backend",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "runtime_rejects_probe-needs-pro",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "runtime_rejects_probe-invalid-json",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "native_backend_runtime_probe",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "real_native_textured_conversion_from_gui_service",
+      "Passed": true,
+      "Detail": null
+    },
+    {
+      "Name": "repeat_conversion_refuses_to_overwrite_gdb_and_report",
+      "Passed": true,
+      "Detail": null
+    }
+  ]
+}

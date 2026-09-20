@@ -1,0 +1,1607 @@
+{
+  "status": "independent_native_readback_verified",
+  "version": "0.1.3",
+  "backend": "arcgis-pro-corehost",
+  "geodatabase": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\results\\V0.1.3\\ZT-01(1).gdb",
+  "expected_bundle": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\work\\v013\\real-normalized-bundle",
+  "expected_scene_sha256": "555c2683a5127ad1a23ed527279fddafe641134f2b57cc124d4882c61bffc83c",
+  "feature_class": "Models",
+  "feature_count": 56,
+  "triangle_count": 69936,
+  "unique_texture_count": 12,
+  "textured_patch_count": 19,
+  "elapsed_seconds": 16.6263041,
+  "verification": {
+    "geometry_and_uv_against_source_bundle": true,
+    "coordinate_tolerance_xy": "2*ArcGIS spatial-reference XY resolution",
+    "coordinate_tolerance_z": "2/ArcGIS spatial-reference Z scale",
+    "uv_tolerance": "max(1,abs(expected))*2e-6",
+    "exact_normal_codec_prediction": true,
+    "exact_material_color_opacity_culling": true,
+    "exact_source_jpeg_bytes_and_decoded_png_rgba": true,
+    "texture_dimensions_and_compression": true,
+    "no_geodatabase_write_performed": true,
+    "graphical_acceptance": "pending"
+  },
+  "checks": [
+    {
+      "mesh_index": 0,
+      "mesh_name": "\u8DEF\u9762_001",
+      "source_node": "57",
+      "point_count": 3720,
+      "patch_count": 1,
+      "material_count": 1,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 0,
+          "corner_count": 3720,
+          "geometry_normal_uv_hash": "8b9365aa14cb2197da01ea3c69d6894815359efecfd93d0fa4f49eb2b10d32af",
+          "texture_sha256": "1fcfaae0131ffb6699681c4cc87b7d9baa6b4821cc874c97298a04649e5d00de",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 1,
+      "mesh_name": "\u6807\u7EBF3",
+      "source_node": "58",
+      "point_count": 936,
+      "patch_count": 1,
+      "material_count": 1,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 1,
+          "corner_count": 936,
+          "geometry_normal_uv_hash": "c0a55a3efacade917d354882195a8aaf7057003dc0e97b25e042404d7b804259",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 2,
+      "mesh_name": "\u6807\u7EBF2",
+      "source_node": "59",
+      "point_count": 1332,
+      "patch_count": 1,
+      "material_count": 1,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 2,
+          "corner_count": 1332,
+          "geometry_normal_uv_hash": "072be66fea9f1a68f272630fdaa0ca8bd824a125a8f512dc28ceea7fea93a297",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 3,
+      "mesh_name": "\u6807\u7EBF4",
+      "source_node": "60",
+      "point_count": 1944,
+      "patch_count": 1,
+      "material_count": 1,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 1,
+          "corner_count": 1944,
+          "geometry_normal_uv_hash": "14332f62993e906673f4dd6e8abce63ff2ebf0f6ca53b387573dbb4577eeafab",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 4,
+      "mesh_name": "\u8349\u5730-001",
+      "source_node": "61",
+      "point_count": 2184,
+      "patch_count": 1,
+      "material_count": 1,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 3,
+          "corner_count": 2184,
+          "geometry_normal_uv_hash": "96e066c5c173b0ba518b27ab6a318855dc6df9032376169bdbff6698d309e504",
+          "texture_sha256": "079b8a07739e982ebc1a42295b883537977542c17ca61778200a70211225479c",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 5,
+      "mesh_name": "\u6807\u7EBF5",
+      "source_node": "62",
+      "point_count": 1272,
+      "patch_count": 1,
+      "material_count": 1,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 2,
+          "corner_count": 1272,
+          "geometry_normal_uv_hash": "a25932f5e73f1ce9b482e0f20654ca634b9841912bc0561004ace16dccda18f5",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 6,
+      "mesh_name": "\u6807\u7EBF1",
+      "source_node": "63",
+      "point_count": 480,
+      "patch_count": 1,
+      "material_count": 1,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 1,
+          "corner_count": 480,
+          "geometry_normal_uv_hash": "af0dce215851e9536c9fb31b3d35e2047ca44aa917545130a2be478e0bfd7cd8",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 7,
+      "mesh_name": "\u9053\u7259",
+      "source_node": "64",
+      "point_count": 2952,
+      "patch_count": 1,
+      "material_count": 1,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 0,
+          "corner_count": 2952,
+          "geometry_normal_uv_hash": "7695740c7ebf107905e3b1f2447e89c30912edb5a5128499ffdbf6f42dab5f14",
+          "texture_sha256": "1fcfaae0131ffb6699681c4cc87b7d9baa6b4821cc874c97298a04649e5d00de",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 8,
+      "mesh_name": "\u7EA2\u7EFF\u706F1",
+      "source_node": "65",
+      "point_count": 1260,
+      "patch_count": 3,
+      "material_count": 3,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 4,
+          "corner_count": 396,
+          "geometry_normal_uv_hash": "f691cc7956533c9fa91dd289ecbc5241bd236570d5f24c8cfe25df0944879328",
+          "texture_sha256": "3d40a57788c519db955b51a344b539c2cc44d33330af1f52ddba2bfeb51a79d6",
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 5,
+          "corner_count": 840,
+          "geometry_normal_uv_hash": "4f759328ca1d2b0b562b43be59786de70bbaf6aa0b83178150288914177de3f8",
+          "texture_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+          "passed": true
+        },
+        {
+          "patch_index": 2,
+          "material_index": 2,
+          "source_material": 6,
+          "corner_count": 24,
+          "geometry_normal_uv_hash": "c8dd9c83931b10f712cf07445bc258a58cef2c0347e30d1c8f8849f79e5ac7aa",
+          "texture_sha256": "a7c2bfbab00fd1a3c3dd2dcf7f43b0f226ae1255a66948f9ee9dc453dc909c2a",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 9,
+      "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F13",
+      "source_node": "66",
+      "point_count": 858,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 7,
+          "corner_count": 474,
+          "geometry_normal_uv_hash": "1772d8ff89a2bd178a11bd0b81ce470b108ad1215453ac7b269d277f21e5babe",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 8,
+          "corner_count": 384,
+          "geometry_normal_uv_hash": "79e82b3c3cd7b66493a4e52ca0515d67ad1f321a2d812079e47e37d4bd97f8b5",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 10,
+      "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F12",
+      "source_node": "67",
+      "point_count": 858,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 7,
+          "corner_count": 474,
+          "geometry_normal_uv_hash": "6f2a88aa7b9199da7729f49f27b3b375e62333a84d8d70254172d0d7ffec6b65",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 8,
+          "corner_count": 384,
+          "geometry_normal_uv_hash": "9a8cbd34b688cf87798809a10d84e0c2f4fee4b8c0a1ae59babbd4c7ca97e356",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 11,
+      "mesh_name": "\u8DEF\u724C4",
+      "source_node": "68",
+      "point_count": 4524,
+      "patch_count": 3,
+      "material_count": 3,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 9,
+          "corner_count": 372,
+          "geometry_normal_uv_hash": "951fe5c85c02644d283e63247f8b40e6a9e948e59e54a1d1825edf8d21eb9d28",
+          "texture_sha256": "5e2e36f16676e4b533f583652452ccf79be59773530f65ccb8e7d744d9d2ab2a",
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 5,
+          "corner_count": 840,
+          "geometry_normal_uv_hash": "38ec39f7d641beb4170fa6012d085e1a726181128f75e3ff609ec90d71e72e4c",
+          "texture_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+          "passed": true
+        },
+        {
+          "patch_index": 2,
+          "material_index": 2,
+          "source_material": 10,
+          "corner_count": 3312,
+          "geometry_normal_uv_hash": "77e47e2148a02e333cf76469b8724ad67527acae87546a89ec3237d2b36ad527",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 12,
+      "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F11",
+      "source_node": "69",
+      "point_count": 858,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 7,
+          "corner_count": 474,
+          "geometry_normal_uv_hash": "506857d7fa56cc52218f760b894cdaf8b18cc764de2f69e583fed4f6f110af0e",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 8,
+          "corner_count": 384,
+          "geometry_normal_uv_hash": "5079150945b29387d9bf986f5d1aa97601fa12b44f8ae4dac35520528d5fa486",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 13,
+      "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F14",
+      "source_node": "70",
+      "point_count": 858,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 7,
+          "corner_count": 474,
+          "geometry_normal_uv_hash": "819825a4b5f887853b9e892057c38870388482e7407006f2138ea35c4b0777c7",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 8,
+          "corner_count": 384,
+          "geometry_normal_uv_hash": "a0c200910337fbcf63b08b4ad358760557ac10ba233eed584f8275d12ac5eb14",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 14,
+      "mesh_name": "\u8DEF\u706F8",
+      "source_node": "71",
+      "point_count": 7710,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 11,
+          "corner_count": 7374,
+          "geometry_normal_uv_hash": "1ac7f6014a74eb7b693ce9c0d8bda1b1ac0cb4a7d2f578ee1d3b9bf901053e7d",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 12,
+          "corner_count": 336,
+          "geometry_normal_uv_hash": "9d4bf7056f7a29970e3308c9d497599a44a15792b5ead9da8174a324b2611f02",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 15,
+      "mesh_name": "\u8DEF\u724C1",
+      "source_node": "72",
+      "point_count": 3048,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 13,
+          "corner_count": 864,
+          "geometry_normal_uv_hash": "0cb99d48b11087964b4cb869b2ae70d60a73162cef66607d51831e604819dc5e",
+          "texture_sha256": "95e1fe873ba51e73f6e6ed33abc8dce78698fc48ee05faaf39f04ccbbe79c79f",
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 5,
+          "corner_count": 2184,
+          "geometry_normal_uv_hash": "8fbab87908c23655049bb43840e6aaa742a5b4f8bc370a91445cb1fd52d60581",
+          "texture_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 16,
+      "mesh_name": "\u8DEF\u706F9",
+      "source_node": "73",
+      "point_count": 7710,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 11,
+          "corner_count": 7374,
+          "geometry_normal_uv_hash": "a478af6bc06e86f0199837d1071695c7546fe1373129810f9a37eb42a87a5b08",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 12,
+          "corner_count": 336,
+          "geometry_normal_uv_hash": "c0541a8a84581c00d5ee1591943eeb1648aa25f6497d0141590798ffa2723083",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 17,
+      "mesh_name": "\u8DEF\u724C3",
+      "source_node": "74",
+      "point_count": 36,
+      "patch_count": 1,
+      "material_count": 1,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 14,
+          "corner_count": 36,
+          "geometry_normal_uv_hash": "00455e8dae51398936f11d18facff00a1da7fa9cce90ba9ccab4e5c5e91bfd41",
+          "texture_sha256": "b7f27d9e5a1a1d2c1f0337d3dda54aa58299de0308596032dcbeeaf4a800e10d",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 18,
+      "mesh_name": "\u8DEF\u724C6",
+      "source_node": "75",
+      "point_count": 3276,
+      "patch_count": 3,
+      "material_count": 3,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 15,
+          "corner_count": 2616,
+          "geometry_normal_uv_hash": "954c4e0d8e4fbda44a3e6efb5ed951adc88f25bb5d025a4836a4483a1ff3beee",
+          "texture_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 16,
+          "corner_count": 246,
+          "geometry_normal_uv_hash": "939f464560bb9a704ec1a0d2b2b47500b881530c2ab615128e0817eedad5a865",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 2,
+          "material_index": 2,
+          "source_material": 17,
+          "corner_count": 414,
+          "geometry_normal_uv_hash": "8d32c27629757aa2c7400d9023c97b893d54ed902ea6b107caed935a1f9b21fc",
+          "texture_sha256": "c935b4c3344855818bd6bd476b3199bda190a129e24ae8cf28c82a6cf41abcac",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 19,
+      "mesh_name": "\u8DEF\u724C7",
+      "source_node": "76",
+      "point_count": 3096,
+      "patch_count": 3,
+      "material_count": 3,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 18,
+          "corner_count": 2544,
+          "geometry_normal_uv_hash": "da5db58f742facc60d194dd71371cef11e73005af2cff9a437bf63991727caa5",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 19,
+          "corner_count": 276,
+          "geometry_normal_uv_hash": "98b894df549cb968014c7c04423eed069d597e76e40c6d084e4783206a5ba922",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 2,
+          "material_index": 2,
+          "source_material": 20,
+          "corner_count": 276,
+          "geometry_normal_uv_hash": "3bc189445490d8ca7750c03ed2af36376d2c2fe0caa9e6ffad5cf106d9bce34e",
+          "texture_sha256": "fa23cd7f25b4bc8381326ca195ab648441a3f4480c0a471fd3e41f75280ffd6e",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 20,
+      "mesh_name": "\u8DEF\u706F10",
+      "source_node": "77",
+      "point_count": 8238,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 11,
+          "corner_count": 7902,
+          "geometry_normal_uv_hash": "f5b54d87ef5c46b52d184b889fc73b18c3eb1653585ab26ab71d46f28c5be5e0",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 12,
+          "corner_count": 336,
+          "geometry_normal_uv_hash": "fd7343d28c5ba0a99180387a192a1c53d5afd5c8ca72e814bd8009954b3a305f",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 21,
+      "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F17",
+      "source_node": "78",
+      "point_count": 858,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 7,
+          "corner_count": 474,
+          "geometry_normal_uv_hash": "b8138521021df5003091874073350ce274d13a5e0c54188cb9955dc57e46a670",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 8,
+          "corner_count": 384,
+          "geometry_normal_uv_hash": "431d104c656c5e3269e7aa1d9630f05e08d9774eb0e307269b9c7a15f2507999",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 22,
+      "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F18",
+      "source_node": "79",
+      "point_count": 858,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 7,
+          "corner_count": 474,
+          "geometry_normal_uv_hash": "81dabfbc31641b465ffe608d1419398a7206ddaa56c1496bb519025cc509d6de",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 8,
+          "corner_count": 384,
+          "geometry_normal_uv_hash": "c0ef8f2b4da143ca491c945a40193bf7afaedca465b5e5c101975db27f463f8f",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 23,
+      "mesh_name": "\u9EC4\u8272\u8B66\u793A\u67F12",
+      "source_node": "80",
+      "point_count": 1050,
+      "patch_count": 1,
+      "material_count": 1,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 21,
+          "corner_count": 1050,
+          "geometry_normal_uv_hash": "0e2cc8da045e1c3c8d629b3969d380eda1ce17843ea2f7acb740df3e823b5f01",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 24,
+      "mesh_name": "\u8DEF\u706F11",
+      "source_node": "81",
+      "point_count": 8238,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 11,
+          "corner_count": 7902,
+          "geometry_normal_uv_hash": "8427e08817e075a8a457a5c81b574a160d437bd66a1e105398d49465cb6b9a3b",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 12,
+          "corner_count": 336,
+          "geometry_normal_uv_hash": "963efb0cf4b0236c3ccff25deb8fb3b31575bbad4afff7c3193ac35d84ed14fb",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 25,
+      "mesh_name": "\u8F6E\u5ED3\u68073",
+      "source_node": "82",
+      "point_count": 348,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 22,
+          "corner_count": 258,
+          "geometry_normal_uv_hash": "76794be36cc3108f0d4c48ee0322710cc7a6d06331b049c8e877c85e5e817ee1",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 23,
+          "corner_count": 90,
+          "geometry_normal_uv_hash": "577d8f128f6c48dffef534fd7f1c9ffba775d5163201c050532acf53f3d22d6d",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 26,
+      "mesh_name": "\u8DEF\u706F12",
+      "source_node": "83",
+      "point_count": 8238,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 11,
+          "corner_count": 7902,
+          "geometry_normal_uv_hash": "c088e6e02189d9eb8677c8cbeb5b90f0b7f363d13e3a0eb79833c6e18b3b8aad",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 12,
+          "corner_count": 336,
+          "geometry_normal_uv_hash": "62c49200da97fa3280e265930a3d2145d0583e3a9b2df4c5f85c0a8696cb3a5a",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 27,
+      "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F19",
+      "source_node": "84",
+      "point_count": 858,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 7,
+          "corner_count": 474,
+          "geometry_normal_uv_hash": "8a0858ab0933f89149b7d1cff6def341c2551ef91f21f5bc0b632cf12798ba02",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 8,
+          "corner_count": 384,
+          "geometry_normal_uv_hash": "fa605033c8f7d9040c7e87c9f907bd85a4e692d0bd2bbf5558b79729d62e38ad",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 28,
+      "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F110",
+      "source_node": "85",
+      "point_count": 858,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 7,
+          "corner_count": 474,
+          "geometry_normal_uv_hash": "f481231f9e263b76a35c70271fa885fda61a2cef3c6d8f4f67d504e0896c8ce8",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 8,
+          "corner_count": 384,
+          "geometry_normal_uv_hash": "782d1bfa4d8201994ac60c731192b506e125d632b3d84413948a9599765b32b1",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 29,
+      "mesh_name": "\u8F6E\u5ED3\u68074",
+      "source_node": "86",
+      "point_count": 348,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 22,
+          "corner_count": 258,
+          "geometry_normal_uv_hash": "d1acf27bf7278fc57e3b9f66f4b50f09ab8998b40d66839328a7b2476c4ee5a0",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 23,
+          "corner_count": 90,
+          "geometry_normal_uv_hash": "7683512ae62aa55a47104bc6107860bf01c6df84abb1f1c0e020526b271a9210",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 30,
+      "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F112",
+      "source_node": "87",
+      "point_count": 858,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 7,
+          "corner_count": 474,
+          "geometry_normal_uv_hash": "1388a793178aae20f2e567fca7252325a5f1c873affc969f68fc80703d08a287",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 8,
+          "corner_count": 384,
+          "geometry_normal_uv_hash": "488339567683abc5a2752e990f715dfe7d500f9d06efa4b69cae3d35f9bd1fcf",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 31,
+      "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F111",
+      "source_node": "88",
+      "point_count": 858,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 7,
+          "corner_count": 474,
+          "geometry_normal_uv_hash": "f0dd865905ed03a28a4f3e68a5e7bb481b7ca0ac29902d2718866598a6aa72f9",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 8,
+          "corner_count": 384,
+          "geometry_normal_uv_hash": "47a46d0211307bedce375f272dc87b23c5fe6fe1d8080819f6067bd7ec80484b",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 32,
+      "mesh_name": "\u8DEF\u706F13",
+      "source_node": "89",
+      "point_count": 8238,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 11,
+          "corner_count": 7902,
+          "geometry_normal_uv_hash": "e4343a08f709ed0ad3e2f7ca119ab9a21d411e6b122e31b03005a3d8ac099165",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 12,
+          "corner_count": 336,
+          "geometry_normal_uv_hash": "aae6d17161172a851fdf511747c88dbd202a1b43937b24bb57903866f95e54b3",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 33,
+      "mesh_name": "\u6751\u78911",
+      "source_node": "90",
+      "point_count": 300,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 24,
+          "corner_count": 78,
+          "geometry_normal_uv_hash": "a563277e300d1abc32450e7d8aef016722638b5859b0b76633fe59cbcecf3766",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 25,
+          "corner_count": 222,
+          "geometry_normal_uv_hash": "f25755de72d571218f1ba4272d89d81372cd0e4d67f2856f3e2530472fd75908",
+          "texture_sha256": "72fc8c09d33c765dc26efc74e6896ddd126eaa1261873f6247dfb869eee4e01e",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 34,
+      "mesh_name": "\u8DEF\u724C5",
+      "source_node": "91",
+      "point_count": 4524,
+      "patch_count": 3,
+      "material_count": 3,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 9,
+          "corner_count": 372,
+          "geometry_normal_uv_hash": "b323918186a4dce91112e303e1e48bed0f5ad20f7f5dd9fde870a8dab250d2af",
+          "texture_sha256": "5e2e36f16676e4b533f583652452ccf79be59773530f65ccb8e7d744d9d2ab2a",
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 5,
+          "corner_count": 840,
+          "geometry_normal_uv_hash": "6d8449852899e9b715b3673c447b9a9a50f1d55a21d0905ad8db206a060cacf0",
+          "texture_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+          "passed": true
+        },
+        {
+          "patch_index": 2,
+          "material_index": 2,
+          "source_material": 10,
+          "corner_count": 3312,
+          "geometry_normal_uv_hash": "716658edfac6bc8a86d13ab1af0a35a38381ce2d480dce18845c7f455679a2a5",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 35,
+      "mesh_name": "\u8DEF\u706F14",
+      "source_node": "92",
+      "point_count": 8238,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 11,
+          "corner_count": 7902,
+          "geometry_normal_uv_hash": "1f2de98acbaf3ee117de94522fc50caa3dccff041274da41864e17861708c410",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 12,
+          "corner_count": 336,
+          "geometry_normal_uv_hash": "02a66733222fafad59074a6a58d97b52a8ffc1e207e7f3682e07571228e5f580",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 36,
+      "mesh_name": "\u8DEF\u706F15",
+      "source_node": "93",
+      "point_count": 8238,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 11,
+          "corner_count": 7902,
+          "geometry_normal_uv_hash": "6775d5a00ef4f0a1e0cc911a380d3f98023f70773fb9a7cdb66797db38df3453",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 12,
+          "corner_count": 336,
+          "geometry_normal_uv_hash": "c4e79764a9d1ba4278ec4353129071ad3c03ed104075b7f80e3ded5bce0a9c06",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 37,
+      "mesh_name": "\u8DEF\u706F16",
+      "source_node": "94",
+      "point_count": 8238,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 11,
+          "corner_count": 7902,
+          "geometry_normal_uv_hash": "099d947fb06ee455c3c38ef84e28bfdd50f5ac3d10552fac84f5721a8b4eb973",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 12,
+          "corner_count": 336,
+          "geometry_normal_uv_hash": "feddf2eb08512f30f6f85dd9ea329e52a7a75d8e0d0089a5169b433a9e84fabb",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 38,
+      "mesh_name": "\u8DEF\u706F17",
+      "source_node": "95",
+      "point_count": 8238,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 11,
+          "corner_count": 7902,
+          "geometry_normal_uv_hash": "c8d3ba43f1bbe88ba09a64a7397ef76a86234dd6843485895c342db3a14bb556",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 12,
+          "corner_count": 336,
+          "geometry_normal_uv_hash": "db5a03ed8f0858abe412919a3904c1e99569e6e140e27f7436a1cffa49cec43d",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 39,
+      "mesh_name": "\u8DEF\u706F18",
+      "source_node": "96",
+      "point_count": 7710,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 11,
+          "corner_count": 7374,
+          "geometry_normal_uv_hash": "d4751af07bebf8b6463c4ac306e1a6d087ed169ea52b56a9744ad5d93a5f1758",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 12,
+          "corner_count": 336,
+          "geometry_normal_uv_hash": "03738e1774b530e6e773c6b2292162b2eea66770fcdf232451b77156ae1bfb48",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 40,
+      "mesh_name": "\u8DEF\u706F19",
+      "source_node": "97",
+      "point_count": 7710,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 11,
+          "corner_count": 7374,
+          "geometry_normal_uv_hash": "399c89fcfc2aa8724b83e412617ed9d7c9424d35c6ae09c11651eabed0cc6e7c",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 12,
+          "corner_count": 336,
+          "geometry_normal_uv_hash": "9678a7c32712772f450480532cfdd95834db5cc980cd03aa088e989ea9aa730d",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 41,
+      "mesh_name": "\u8DEF\u706F20",
+      "source_node": "98",
+      "point_count": 7710,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 11,
+          "corner_count": 7374,
+          "geometry_normal_uv_hash": "fa588c4a2fbcf9f55886e08ef3d3f94f17228a521397d9eb66932ca46710f40c",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 12,
+          "corner_count": 336,
+          "geometry_normal_uv_hash": "223bd7129f3f132894dda7770c32546659e64f18a64988efa835109b633f60f1",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 42,
+      "mesh_name": "\u8F6E\u5ED3\u68072",
+      "source_node": "99",
+      "point_count": 348,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 22,
+          "corner_count": 258,
+          "geometry_normal_uv_hash": "2c36f3d4119534e6f62ba90266a3201bc6bcdf14017826920d303c784b47cdcb",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 23,
+          "corner_count": 90,
+          "geometry_normal_uv_hash": "02279dd1f4fdf3c8a1362f1c65002496185fb8bc29c21e2099f255c5213286c2",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 43,
+      "mesh_name": "\u8DEF\u68691",
+      "source_node": "100",
+      "point_count": 2220,
+      "patch_count": 3,
+      "material_count": 3,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 26,
+          "corner_count": 384,
+          "geometry_normal_uv_hash": "feeba661cdee30666a14a5789a0d4ce44433c8f1df1260760e2baf5c9333db1e",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 27,
+          "corner_count": 1482,
+          "geometry_normal_uv_hash": "b598a1d66aef4b413d112859d8f70d9c1322dc572f052e4103415b4f3476a61d",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 2,
+          "material_index": 2,
+          "source_material": 28,
+          "corner_count": 354,
+          "geometry_normal_uv_hash": "137bfa776a95404bc65adddf52d34278ebd2a1419b0ec9826a49e2c35ebf16be",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 44,
+      "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F15",
+      "source_node": "101",
+      "point_count": 858,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 7,
+          "corner_count": 474,
+          "geometry_normal_uv_hash": "266227c9c1367478bd7f6a0d040ac10216e336ee73a519119d9f690be3970188",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 8,
+          "corner_count": 384,
+          "geometry_normal_uv_hash": "9d804a9ee6b8edd7a894a6af87d840aeac6e5dd1870baafb3e7dbf7d64bb2736",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 45,
+      "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F16",
+      "source_node": "102",
+      "point_count": 858,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 7,
+          "corner_count": 474,
+          "geometry_normal_uv_hash": "444e459f3373cb3e8feaf7bdfe7f7d3efa0d02a8d27b9369b7357ff8c2fd3ff0",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 8,
+          "corner_count": 384,
+          "geometry_normal_uv_hash": "b1fc163b9b1ac93543dab20e6ade010b04d68c852027990f5926486acb8e54ce",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 46,
+      "mesh_name": "\u8F6E\u5ED3\u68071",
+      "source_node": "103",
+      "point_count": 348,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 22,
+          "corner_count": 258,
+          "geometry_normal_uv_hash": "15b11237cd893b19a21a272c12ea3e50f6b8273bd4360a82913e76a9ca739e87",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 23,
+          "corner_count": 90,
+          "geometry_normal_uv_hash": "5e7cedaaca48e89a99fa2f6fb2618d5953f4565edc490e2a67a6d5e10e68d0d5",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 47,
+      "mesh_name": "\u8DEF\u706F7",
+      "source_node": "104",
+      "point_count": 7710,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 11,
+          "corner_count": 7374,
+          "geometry_normal_uv_hash": "f57bb21ddbc453cdfc48a9ee03d5618b942e89238f7df13598f902f28f8073cd",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 12,
+          "corner_count": 336,
+          "geometry_normal_uv_hash": "1250c7a0b9f2fc59c88312a820037bc314a23bf835a4c3ca9d3ec9d8644b4fe2",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 48,
+      "mesh_name": "\u8DEF\u706F6",
+      "source_node": "105",
+      "point_count": 7710,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 11,
+          "corner_count": 7374,
+          "geometry_normal_uv_hash": "e5c1ab4833b73da548942a18caefa5d19aa8af339425f321617b5beb5b198733",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 12,
+          "corner_count": 336,
+          "geometry_normal_uv_hash": "095175b40170386eebdd1bd16b7fe8b6e1c29e8b26865031a31d54395e8105c7",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 49,
+      "mesh_name": "\u8DEF\u706F4",
+      "source_node": "106",
+      "point_count": 7710,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 11,
+          "corner_count": 7374,
+          "geometry_normal_uv_hash": "0bdf58755ac096810eaedfc6f07894368baead340b3eba6d2139b754d39a1e8e",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 12,
+          "corner_count": 336,
+          "geometry_normal_uv_hash": "2bcf567ac0cf2634de5f98303e84b0731cf609288969b32caa98364079046d1d",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 50,
+      "mesh_name": "\u8DEF\u706F5",
+      "source_node": "107",
+      "point_count": 7710,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 11,
+          "corner_count": 7374,
+          "geometry_normal_uv_hash": "6218e83adf444ae1f58fd90af11d698c649e1bf26ee7ec82a35b13ed7118a9cd",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 12,
+          "corner_count": 336,
+          "geometry_normal_uv_hash": "4ff7ba54f7ab136e526bf720987579dee7985f3abc2aef20983caa41f91746b0",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 51,
+      "mesh_name": "\u8DEF\u706F2",
+      "source_node": "108",
+      "point_count": 7710,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 11,
+          "corner_count": 7374,
+          "geometry_normal_uv_hash": "3eee1ee062ed4bfceec9bdd5e4175f32848066ac0d2fc31613ea67d13f72c962",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 12,
+          "corner_count": 336,
+          "geometry_normal_uv_hash": "346556b25783b906bc8f0af9f90d3a46ceefcf2208bc0d2701de676a4818995b",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 52,
+      "mesh_name": "\u8DEF\u706F3",
+      "source_node": "109",
+      "point_count": 7710,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 11,
+          "corner_count": 7374,
+          "geometry_normal_uv_hash": "8287ca9d44b86ef0f56b3e93d9da804523826cd1019c2773e33394474d57f01c",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 12,
+          "corner_count": 336,
+          "geometry_normal_uv_hash": "ee47750b8fbc14db01a84e92a6705cc8a5373bda6c4e2f5757e914fab73a237f",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 53,
+      "mesh_name": "\u8DEF\u706F1",
+      "source_node": "110",
+      "point_count": 7710,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 11,
+          "corner_count": 7374,
+          "geometry_normal_uv_hash": "1e50d390f1bc335440a63c8276b96193c21a7cefa08c6b10d048ea098fb352b5",
+          "texture_sha256": null,
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 12,
+          "corner_count": 336,
+          "geometry_normal_uv_hash": "d52bae723e5f31b0f1b239c9f1657155de839f113c8d12b0f38ece1146d5fa2d",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 54,
+      "mesh_name": "\u9EC4\u8272\u8B66\u793A\u67F11",
+      "source_node": "111",
+      "point_count": 1050,
+      "patch_count": 1,
+      "material_count": 1,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 21,
+          "corner_count": 1050,
+          "geometry_normal_uv_hash": "6c7fd821e0add3d3d9555676a4e8d989fb43897fb3996a1286f7aa35164b248f",
+          "texture_sha256": null,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "mesh_index": 55,
+      "mesh_name": "\u8DEF\u724C2",
+      "source_node": "112",
+      "point_count": 492,
+      "patch_count": 2,
+      "material_count": 2,
+      "patches": [
+        {
+          "patch_index": 0,
+          "material_index": 0,
+          "source_material": 5,
+          "corner_count": 372,
+          "geometry_normal_uv_hash": "1bfa4a18205d2929a7e4019f6e53c00ecf3ae93f336e0f0690c88ef5e572b967",
+          "texture_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+          "passed": true
+        },
+        {
+          "patch_index": 1,
+          "material_index": 1,
+          "source_material": 29,
+          "corner_count": 120,
+          "geometry_normal_uv_hash": "18601c91666ae1a2a6a4f410c55a16dcd5e0432017193f174fee490ef8a427b2",
+          "texture_sha256": "a7e8df6cd5d6b86ec0fa9b8913ca8d6a8720d468c3ad5ce372bcea9735251d72",
+          "passed": true
+        }
+      ],
+      "passed": true
+    }
+  ]
+}

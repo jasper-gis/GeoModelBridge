@@ -1,0 +1,87 @@
+Start testing: Sep 20 21:09 中国标准时间
+----------------------------------------------------------
+1/4 Testing: core
+1/4 Test: core
+Command: "C:/Users/Jasper/Documents/Codex/2026-09-20/gen/work/build/v0.1.1/gmb_core_tests.exe"
+Directory: C:/Users/Jasper/Documents/Codex/2026-09-20/gen/work/build/v0.1.1
+"core" start time: Sep 20 21:09 中国标准时间
+Output:
+----------------------------------------------------------
+PASS all synthetic reference scenes validate
+PASS SHA-256 standard vectors
+PASS out-of-range triangle index
+PASS textured triangle without corner UV
+PASS nonfinite position
+PASS nonfinite UV
+PASS nonfinite normal
+PASS nonfinite material color
+PASS out-of-range material
+PASS out-of-range texture reference
+PASS missing texture bytes
+PASS unsupported texture format
+PASS mismatched declared texture format
+PASS repeated triangle index
+PASS collinear triangle
+PASS explicit origin translates geometry only
+PASS local translation and omitted origin stay distinct
+PASS UV seams and hard edges survive bundle preparation
+PASS bundle preserves texture bytes and refuses existing output
+PASS invalid scene leaves no partial bundle
+PASSED 0 test group(s) failed
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Passed.
+"core" end time: Sep 20 21:09 中国标准时间
+"core" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/4 Testing: cli
+2/4 Test: cli
+Command: "C:/Users/Jasper/AppData/Local/hermes/hermes-agent/venv/Scripts/python.exe" "C:/Users/Jasper/Documents/Codex/2026-09-20/gen/outputs/GeoModelBridge/tests/cli_test.py" "C:/Users/Jasper/Documents/Codex/2026-09-20/gen/work/build/v0.1.1/geomodelbridge.exe" "C:/Users/Jasper/Documents/Codex/2026-09-20/gen/outputs/GeoModelBridge/tests/fixtures"
+Directory: C:/Users/Jasper/Documents/Codex/2026-09-20/gen/work/build/v0.1.1
+"cli" start time: Sep 20 21:09 中国标准时间
+Output:
+----------------------------------------------------------
+PASS CLI, bundle integrity, original image bytes, PNG alpha, placement, and overwrite protection
+<end of output>
+Test time =   0.34 sec
+----------------------------------------------------------
+Test Passed.
+"cli" end time: Sep 20 21:09 中国标准时间
+"cli" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/4 Testing: reader_integration
+3/4 Test: reader_integration
+Command: "C:/Users/Jasper/AppData/Local/hermes/hermes-agent/venv/Scripts/python.exe" "C:/Users/Jasper/Documents/Codex/2026-09-20/gen/outputs/GeoModelBridge/tests/reader_integration_test.py" "C:/Users/Jasper/Documents/Codex/2026-09-20/gen/work/build/v0.1.1/geomodelbridge.exe" "C:/Users/Jasper/Documents/Codex/2026-09-20/gen/outputs/GeoModelBridge/tests/fixtures"
+Directory: C:/Users/Jasper/Documents/Codex/2026-09-20/gen/work/build/v0.1.1
+"reader_integration" start time: Sep 20 21:09 中国标准时间
+Output:
+----------------------------------------------------------
+PASS actual FBX parsing, units, transforms, mirrors, materials, selected UVs, original external/embedded textures, diagnostics and failure reports
+<end of output>
+Test time =   0.34 sec
+----------------------------------------------------------
+Test Passed.
+"reader_integration" end time: Sep 20 21:09 中国标准时间
+"reader_integration" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/4 Testing: binary_fbx
+4/4 Test: binary_fbx
+Command: "C:/Users/Jasper/AppData/Local/hermes/hermes-agent/venv/Scripts/python.exe" "C:/Users/Jasper/Documents/Codex/2026-09-20/gen/outputs/GeoModelBridge/tests/binary_fbx_test.py" "C:/Users/Jasper/Documents/Codex/2026-09-20/gen/work/build/v0.1.1/geomodelbridge.exe" "C:/Users/Jasper/Documents/Codex/2026-09-20/gen/outputs/GeoModelBridge/tests/fixtures"
+Directory: C:/Users/Jasper/Documents/Codex/2026-09-20/gen/work/build/v0.1.1
+"binary_fbx" start time: Sep 20 21:09 中国标准时间
+Output:
+----------------------------------------------------------
+PASS upstream binary FBX: verified original bytes, Unicode input, geometry, normals, UV seams, and strict rejection
+<end of output>
+Test time =   0.15 sec
+----------------------------------------------------------
+Test Passed.
+"binary_fbx" end time: Sep 20 21:09 中国标准时间
+"binary_fbx" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Sep 20 21:09 中国标准时间

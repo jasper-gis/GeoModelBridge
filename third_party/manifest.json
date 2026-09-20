@@ -1,0 +1,41 @@
+{
+  "dependencies": [
+    {
+      "revision": "fcc5d6ba444cfd3eb80677dba5e37e493941abe5",
+      "source": "https://github.com/ufbx/ufbx",
+      "files": [
+        {
+          "path": "third_party/ufbx/ufbx.c",
+          "sha256": "7d8d6ae4373f71692f295ff49ee0826466306ebcaa80b0e587c13ed047b98cea"
+        },
+        {
+          "path": "third_party/ufbx/ufbx.h",
+          "sha256": "942481725372d2ac4da5e77a062b47c20054a3440e7ee09a6043f99fe1f130ed"
+        },
+        {
+          "path": "third_party/ufbx/LICENSE",
+          "sha256": "0dd48ebadf52273c736256325c8f078c03c8bb4facee22a4122de0ad3f615391"
+        }
+      ],
+      "version": "0.23.0",
+      "name": "ufbx"
+    },
+    {
+      "revision": "v3.12.0",
+      "source": "https://github.com/nlohmann/json",
+      "files": [
+        {
+          "path": "third_party/nlohmann/json.hpp",
+          "sha256": "aaf127c04cb31c406e5b04a63f1ae89369fccde6d8fa7cdda1ed4f32dfc5de63"
+        },
+        {
+          "path": "third_party/nlohmann/LICENSE.MIT",
+          "sha256": "46a65cffd1ea955132d95a8dd921640714a8d6b537d2e4e482d31145ae95b603"
+        }
+      ],
+      "version": "3.12.0",
+      "name": "nlohmann/json"
+    }
+  ],
+  "schema_version": 1
+}

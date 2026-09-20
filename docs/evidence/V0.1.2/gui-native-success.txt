@@ -1,0 +1,95 @@
+Window: "GeoModelBridge · V0.1.2", App: geomodelbridgeGUI.exe.
+	0 窗口 GeoModelBridge · V0.1.2 Secondary Actions: Raise
+		1 标题栏 (settable, string) Value: GeoModelBridge · V0.1.2
+			2 菜单栏 系统 ID: MenuBar
+				3 菜单项 系统
+			4 按钮 最小化
+			5 按钮 最大化
+			6 按钮 关闭
+		7 文本 GeoModel
+		8 文本 Bridge
+		9 文本 三维模型转换工具
+		10 文本 ▣ 模型转换
+		11 文本 FBX → MULTIPATCH
+		12 文本 V0.1.2 · Windows x64
+		13 按钮 使用说明 ↗
+			14 文本 使用说明 ↗
+		15 文本 FBX → FileGDB
+		16 文本 将静态模型转换为带材质的 Multipatch
+		17 按钮 加载演示 Description: 加载项目测试模型，并填入仅供演示的坐标。不会立即转换。 ID: DemoButton
+			18 文本 加载演示
+		19 窗格
+			20 文本 01 选择模型与输出
+			21 文本 输入 FBX
+			22 编辑 (settable, string) 输入FBX路径 Description: 可输入路径或拖入一个 FBX 文件 Value: C:\Users\Jasper\Documents\codex\2026-09-20\gen\outputs\geomodelbridge\dist\bin\demo\textured_quad.fbx ID: InputPathBox
+			23 按钮 浏览…
+				24 文本 浏览…
+			25 文本 输出地理数据库 (.gdb)
+			26 编辑 (settable, string) 输出GDB路径 Description: 请输入尚不存在的新 .gdb 目录路径 Value: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\work\gui-v012\ui-run\GUI演示.gdb ID: OutputPathBox
+			27 按钮 目录…
+				28 文本 目录…
+			29 文本 输出必须为新路径，现有数据库不会被覆盖。
+			30 文本 02 设置模型位置
+			31 文本 投影坐标系 WKID（米制）
+			32 编辑 (settable, string) WKID Description: 例如 32650 表示 WGS 84 / UTM zone 50N；请按模型的实际坐标系填写 Value: 32650 ID: WkidBox
+			33 文本 原点 X（米）
+			34 编辑 (settable, string) 原点X Value: 500000 ID: OriginXBox
+			35 文本 原点 Y（米）
+			36 编辑 (settable, string) 原点Y Value: 3000000 ID: OriginYBox
+			37 文本 原点 Z（米）
+			38 编辑 (settable, string) 原点Z Value: 100 ID: OriginZBox
+			39 文本 模型将统一为 Z 轴向上、米制，再加上原点偏移。此设置不执行重投影或地理配准。
+			75 文本 当前为演示坐标，不代表模型的真实地理位置。
+			40 组 转换选项
+				41 按钮 转换选项 ID: HeaderSite
+					42 文本 转换选项
+				43 文本 转换后端
+				44 组合框 转换后端 ID: BackendBox
+				45 文本 无需 ArcGIS Pro，使用随程序提供的 FileGDB 运行库。 ID: BackendHint
+				46 文本 输出要素类名称
+				47 编辑 (settable, string) 要素类名称 Value: Models ID: FeatureClassBox
+				48 文本 额外贴图目录（可选，每行一个）
+				49 按钮 添加…
+					50 文本 添加…
+				51 编辑 (settable, string) 额外贴图目录 ID: TextureDirectoriesBox
+			52 滚动条 (settable, float) Value: 0 ID: VerticalScrollBar
+				53 按钮 (disabled) ID: PART_LineUpButton
+				54 按钮 (disabled) ID: PageUp
+				55 按钮 (disabled) ID: PageDown
+				56 缩略 (disabled)
+				57 按钮 (disabled) ID: PART_LineDownButton
+		58 文本 运行状态
+		59 文本 转换完成 ID: StatusTitle
+		60 窗格 已生成 1 个要素，数据库重新打开核验通过。 耗时 0.2 秒。 有 1 条提示，请查看报告。 颜色、透明效果及接缝仍需在目标软件中检查。
+			61 文本 已生成 1 个要素，数据库重新打开核验通过。 耗时 0.2 秒。 有 1 条提示，请查看报告。 颜色、透明效果及接缝仍需在目标软件中检查。 ID: StatusMessage
+		62 按钮 检查运行环境 ID: ProbeButton
+			63 文本 检查运行环境
+		64 文本 转换日志
+		65 编辑 转换日志 Value: [21:43:41] 正在检查转换引擎版本… [21:43:41] GeoModelBridge V0.1.2 [21:43:41] 正在启动转换：读取 FBX、写入 GDB 并回读核验… [21:43:41] WARNING [UV_SETS_REDUCED] node:Quad: Only each material's selected UV coordinates are retained per corner; extra unsampled UV channels are omitted. [21:43:41] GDB written and checked by native-filegdb: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\work\gui-v012\ui-run\GUI演示.gdb [21:43:41] Report: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\work\gui-v012\ui-run\GUI演示.gdb.report.json [21:43:41] Visual acceptance for this output requires separate inspection. [21:43:41] 转换进程已结束，正在核对结果报告… [21:43:41] 输出：C:\Users\Jasper\Documents\Codex\2026-09-20\gen\work\gui-v012\ui-run\GUI演示.gdb [21:43:41] 报告：C:\Users\Jasper\Documents\Codex\2026-09-20\gen\work\gui-v012\ui-run\GUI演示.gdb.report.json ID: LogBox
+			77 滚动条 (settable, float) Value: 190.5566666666669 ID: VerticalScrollBar
+				78 按钮 (disabled) ID: PART_LineUpButton
+				79 按钮 (disabled) ID: PageUp
+				80 按钮 (disabled) ID: PageDown
+				81 缩略 (disabled)
+				82 按钮 (disabled) ID: PART_LineDownButton
+		66 按钮 打开输出目录 ↗ ID: OpenOutputButton
+			67 文本 打开输出目录 ↗
+		68 按钮 查看转换报告 ID: ReportButton
+			69 文本 查看转换报告
+		70 文本 保留常规颜色、UV 与内嵌贴图
+		71 文本 遇到不支持的材质会说明原因；完成后可查看详细报告。
+		72 按钮 开始转换 → ID: ConvertButton
+			73 文本 开始转换 →
+
+Document text: ```
+[21:43:41] 正在检查转换引擎版本…
+[21:43:41] GeoModelBridge V0.1.2
+[21:43:41] 正在启动转换：读取 FBX、写入 GDB 并回读核验…
+[21:43:41] WARNING [UV_SETS_REDUCED] node:Quad: Only each material's selected UV coordinates are retained per corner; extra unsampled UV channels are omitted.
+[21:43:41] GDB written and checked by native-filegdb: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\work\gui-v012\ui-run\GUI演示.gdb
+[21:43:41] Report: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\work\gui-v012\ui-run\GUI演示.gdb.report.json
+[21:43:41] Visual acceptance for this output requires separate inspection.
+[21:43:41] 转换进程已结束，正在核对结果报告…
+[21:43:41] 输出：C:\Users\Jasper\Documents\Codex\2026-09-20\gen\work\gui-v012\ui-run\GUI演示.gdb
+[21:43:41] 报告：C:\Users\Jasper\Documents\Codex\2026-09-20\gen\work\gui-v012\ui-run\GUI演示.gdb.report.json
+```

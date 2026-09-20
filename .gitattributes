@@ -1,0 +1,10 @@
+* text=auto eol=lf
+# Preserve exact upstream/fixture bytes, including upstream license whitespace.
+third_party/** -text -whitespace
+tests/fixtures/** -text -whitespace
+*.png binary
+*.jpg binary
+*.fbx binary
+*.exe binary
+*.dll binary
+*.zip binary

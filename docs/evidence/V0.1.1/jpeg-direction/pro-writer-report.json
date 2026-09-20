@@ -1,0 +1,143 @@
+{
+  "status": "written_and_readback_verified",
+  "version": "0.1.1",
+  "backend": "arcgis-pro-corehost",
+  "input": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\docs\\evidence\\V0.1.1\\jpeg-direction\\source-bundle",
+  "source": "generated:jpeg-uv-direction-acceptance",
+  "reader_diagnostics": [],
+  "output": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\docs\\evidence\\V0.1.1\\jpeg-direction\\pro-jpeg-plane.gdb",
+  "feature_class": "Models",
+  "timestamp_utc": "2026-09-20T13:02:30.0157638+00:00",
+  "assembly_version": "13.6.0.0",
+  "texture_coordinate_policy": {
+    "source": "FBX UV: V=0 at bottom",
+    "target": "FileGDB texture row: T=0 at top",
+    "mapping": "S=U; T=1-V",
+    "image_rows_reordered": false
+  },
+  "coordinate_system": {
+    "wkid": 32650,
+    "name": "WGS_1984_UTM_Zone_50N",
+    "projected": true,
+    "unit": "meter",
+    "source_coordinates_assigned_without_reprojection": true,
+    "origin_already_applied_by_reader": [
+      500000,
+      3000000,
+      100
+    ]
+  },
+  "verification": {
+    "level": "closed_reopened_file_geodatabase",
+    "graphical_acceptance": "pending_manual_review_in_target_software",
+    "feature_count": 1,
+    "geometry_material_uv_texture_readback": true,
+    "coordinate_tolerance_xy": 0.0002,
+    "coordinate_tolerance_z": 0.0002,
+    "uv_float_tolerance": "max(1,abs(value))*2e-6",
+    "normal_storage_model": "Exact component check against floor(float32(source)*128\u002B0.5)/128; empirically verified with ArcGIS Pro 3.6.2, not an Esri cross-version guarantee.",
+    "checks": [
+      {
+        "mesh_index": 0,
+        "mesh_name": "orientation-plane",
+        "source_node": "generated:orientation-plane",
+        "source_vertices": 4,
+        "written_corner_vertices": 6,
+        "patches": 1,
+        "materials": 1,
+        "texture_coordinate_count": 6,
+        "textured_patches": 1,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 6,
+          "quantized_corner_normal_count": 0,
+          "source_normals_sha256": "ced5b88ecbb703c17089878fd45097da5be7d1049d67f7e443ee00cff08dfd01",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 0,
+          "max_component_error": 0,
+          "max_angular_error_degrees": 0,
+          "max_vector_length_error": 0
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 6,
+          "patch_count": 1,
+          "material_count": 1,
+          "wkid": 32650,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "34826dc2350af1b3a6391528893401cd881d65dc64d803add1830426a6ad98a1",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 6,
+              "uv_count": 6,
+              "material_index": 0,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": true,
+              "texture_sha256": "aefee6ad6a7c5cc986190df94b1da12a7487604a4cec3a8a7efb7002bc2fa686",
+              "texture_width": 128,
+              "texture_height": 128,
+              "texture_bytes_per_pixel": 3,
+              "texture_compression": "CompressionJPEG"
+            }
+          ]
+        },
+        "passed": true
+      }
+    ]
+  },
+  "material_quantization": [
+    {
+      "index": 0,
+      "name": "UV direction",
+      "source_rgba": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "stored_rgb8": [
+        255,
+        255,
+        255
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    }
+  ],
+  "textures": [
+    {
+      "index": 0,
+      "source_sha256": "aefee6ad6a7c5cc986190df94b1da12a7487604a4cec3a8a7efb7002bc2fa686",
+      "storage": "jpeg_original_bytes",
+      "width": 128,
+      "height": 128,
+      "bytes_per_pixel": 3,
+      "stored_byte_length": 13034,
+      "stored_sha256": "aefee6ad6a7c5cc986190df94b1da12a7487604a4cec3a8a7efb7002bc2fa686",
+      "readback_bytes_equal": true
+    }
+  ],
+  "limitations": [
+    "Requires a licensed, installed ArcGIS Pro; this is not the native FileGDB API backend.",
+    "RGB quantizes to 8-bit; material opacity quantizes to whole-percent transparency.",
+    "FileGDB normal components quantize to a 1/128 grid in tested Pro 3.6.2; source normal hashes and actual component/angular errors are reported. Normals are not lossless or renormalized.",
+    "PNG is stored as top-left row-major unpremultiplied RGBA8; original PNG container metadata is retained only in the source bundle.",
+    "JPEG compressed bytes are preserved without re-encoding; ICC appearance and UV orientation require visual acceptance.",
+    "No reprojection, datum conversion, vertical-datum conversion, or texture baking is performed.",
+    "The writer validates SDK readback, not how ArcGIS Pro or GeoScene renders the result."
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "upstream": "https://github.com/ufbx/ufbx",
+  "revision": "fcc5d6ba444cfd3eb80677dba5e37e493941abe5",
+  "tag": "v0.23.0",
+  "license": "Upstream dual MIT / Unlicense; original LICENSE retained unchanged.",
+  "files": [
+    {
+      "file": "blender_293_half_smooth_cube_7400_binary.fbx",
+      "source_url": "https://raw.githubusercontent.com/ufbx/ufbx/fcc5d6ba444cfd3eb80677dba5e37e493941abe5/data/blender_293_half_smooth_cube_7400_binary.fbx",
+      "bytes": 11580,
+      "sha256": "04136e53b563e89b32f34f09dbf2cb7a0979d270ba0c770a1a8ae12c8fe09f83"
+    },
+    {
+      "file": "maya_cube_7400_binary.fbx",
+      "source_url": "https://raw.githubusercontent.com/ufbx/ufbx/fcc5d6ba444cfd3eb80677dba5e37e493941abe5/data/maya_cube_7400_binary.fbx",
+      "bytes": 20144,
+      "sha256": "4c827bcdfd01807dbe55e14ab074dad9d8b23e41a3f400904c60ef70d32b9f23"
+    },
+    {
+      "file": "LICENSE",
+      "source_url": "https://raw.githubusercontent.com/ufbx/ufbx/fcc5d6ba444cfd3eb80677dba5e37e493941abe5/LICENSE",
+      "bytes": 2631,
+      "sha256": "0dd48ebadf52273c736256325c8f078c03c8bb4facee22a4122de0ad3f615391"
+    }
+  ]
+}

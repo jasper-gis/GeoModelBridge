@@ -1,0 +1,28 @@
+{
+  "scope": "CLI prepare only; Windows process peak working set, includes reader and bundle serialization; no GDB writer",
+  "executable": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\work\\build\\v0.1.4\\geomodelbridge.exe",
+  "input": "C:\\Users\\Jasper\\Documents\\Codex\\aaaaa\\ZT-01(1).FBX",
+  "runs": [
+    {
+      "run": 1,
+      "elapsed_seconds": 0.6832959000003029,
+      "peak_working_set_bytes": 60305408,
+      "scene_json_bytes": 40086059,
+      "scene_json_sha256": "555c2683a5127ad1a23ed527279fddafe641134f2b57cc124d4882c61bffc83c"
+    },
+    {
+      "run": 2,
+      "elapsed_seconds": 0.6055839999989985,
+      "peak_working_set_bytes": 59564032,
+      "scene_json_bytes": 40086059,
+      "scene_json_sha256": "555c2683a5127ad1a23ed527279fddafe641134f2b57cc124d4882c61bffc83c"
+    },
+    {
+      "run": 3,
+      "elapsed_seconds": 0.6047144000003755,
+      "peak_working_set_bytes": 59609088,
+      "scene_json_bytes": 40086059,
+      "scene_json_sha256": "555c2683a5127ad1a23ed527279fddafe641134f2b57cc124d4882c61bffc83c"
+    }
+  ]
+}

@@ -1,0 +1,232 @@
+{
+  "backend": "none",
+  "conversion_profile": "strict",
+  "coordinate_operation": "FBX units/axes and static node transforms baked; optional origin translation. No CRS reprojection.",
+  "counts": {
+    "corner_vertices": 209826,
+    "materials": 30,
+    "meshes": 56,
+    "texture_bytes": 6153003,
+    "textures": 12,
+    "triangles": 69942
+  },
+  "diagnostics": [
+    {
+      "code": "UNSUPPORTED_ANIMATION",
+      "context": "scene",
+      "message": "Animation data is present; export an explicit static snapshot or explicitly select the GIS static profile.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:01 - Default",
+      "message": "Active ambient is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "JPEG_CONTAINER_REQUIRES_NORMALIZATION",
+      "context": "texture:贴图 #0",
+      "message": "ArcGIS requires a leading JFIF marker for this Exif/Adobe JPEG. Explicitly select gis-static to add the marker without recompressing image data.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:道路-白线",
+      "message": "Active ambient is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:道路-黄线",
+      "message": "Active ambient is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:CD-０１",
+      "message": "Active ambient is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:ND-002",
+      "message": "Active specular is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "JPEG_CONTAINER_REQUIRES_NORMALIZATION",
+      "context": "texture:base_color_texture",
+      "message": "ArcGIS requires a leading JFIF marker for this Exif/Adobe JPEG. Explicitly select gis-static to add the marker without recompressing image data.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:ND-010",
+      "message": "Active specular is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:Material.002",
+      "message": "Active specular is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:Material",
+      "message": "Active specular is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:ND-009",
+      "message": "Active specular is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:杆件.004",
+      "message": "Active reflection is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_TEXTURE_CHANNEL",
+      "context": "material:杆件.004",
+      "message": "Only the diffuse/base-color texture channel is supported (FBX channel 6).",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_TEXTURE_CONNECTION",
+      "context": "material:杆件.004",
+      "message": "Unrepresented material texture connection: ReflectionColor",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:Material.001",
+      "message": "Active specular is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:ND-003",
+      "message": "Active specular is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:箱体.002",
+      "message": "Active reflection is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_TEXTURE_CHANNEL",
+      "context": "material:箱体.002",
+      "message": "Only the diffuse/base-color texture channel is supported (FBX channel 6).",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_TEXTURE_CONNECTION",
+      "context": "material:箱体.002",
+      "message": "Unrepresented material texture connection: ReflectionColor",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:Material.009",
+      "message": "Active specular is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:Material.005",
+      "message": "Active specular is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:Material.006",
+      "message": "Active specular is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:Material.013",
+      "message": "Active specular is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:ND-008",
+      "message": "Active specular is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:Material.011",
+      "message": "Active specular is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:Material.012",
+      "message": "Active specular is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "UNSUPPORTED_MATERIAL_CHANNEL",
+      "context": "material:ND-007",
+      "message": "Active specular is not represented; bake its appearance explicitly.",
+      "severity": "error"
+    },
+    {
+      "code": "DEGENERATE_TRIANGLE",
+      "context": "路桩1",
+      "message": "Triangle has zero or nonfinite area.",
+      "severity": "error"
+    },
+    {
+      "code": "DEGENERATE_TRIANGLE",
+      "context": "路桩1",
+      "message": "Triangle has zero or nonfinite area.",
+      "severity": "error"
+    },
+    {
+      "code": "DEGENERATE_TRIANGLE",
+      "context": "路桩1",
+      "message": "Triangle has zero or nonfinite area.",
+      "severity": "error"
+    },
+    {
+      "code": "DEGENERATE_TRIANGLE",
+      "context": "路桩1",
+      "message": "Triangle has zero or nonfinite area.",
+      "severity": "error"
+    },
+    {
+      "code": "DEGENERATE_TRIANGLE",
+      "context": "路桩1",
+      "message": "Triangle has zero or nonfinite area.",
+      "severity": "error"
+    },
+    {
+      "code": "DEGENERATE_TRIANGLE",
+      "context": "路桩1",
+      "message": "Triangle has zero or nonfinite area.",
+      "severity": "error"
+    }
+  ],
+  "fidelity": {
+    "compatibility_adjustments": false,
+    "gdb_readback_verified": false,
+    "gdb_written": false,
+    "note": "Prepared/inspected geometry is not evidence of successful FileGDB conversion. Writer reports contain database verification results.",
+    "strict_validation_passed": false,
+    "validation_passed": false,
+    "visual_acceptance": "pending"
+  },
+  "schema_version": 1,
+  "source": "C:\\Users\\Jasper\\Documents\\Codex\\aaaaa\\ZT-01(1).FBX",
+  "status": "rejected",
+  "version": "0.1.3"
+}

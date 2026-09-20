@@ -1,0 +1,78 @@
+Window: "GeoModelBridge · 转换报告", App: geomodelbridgeGUI.exe.
+	0 窗口 GeoModelBridge · 转换报告 Secondary Actions: Raise
+		1 标题栏 (settable, string) Value: GeoModelBridge · 转换报告
+			2 菜单栏 系统 ID: MenuBar
+				3 菜单项 系统
+			4 按钮 最小化
+			5 按钮 最大化
+			6 按钮 关闭
+		7 选项卡
+			8 选项卡项 (selectable) 中文摘要
+				9 文本 中文摘要
+				10 编辑 Value: 已完成转换，存在明确的兼容处理。 • 已使用模型保存的静态姿态：1 条（如 整个场景）。 • 已省略环境光通道：4 条（如 01 - Default、道路-白线）。 • 已修复 JPEG 封装（不重新压缩图像）：3 条贴图记录（如 texture:贴图 #0、texture:base_color_texture）。 • 已省略高光通道：15 条（如 ND-002、ND-010）。 • 已省略反射通道：2 条（如 杆件.004、箱体.002）。 • 已移除零面积三角形：共删除 6 个面（1 条记录）（如 node:路桩1）。 兼容处理可能改变原模型的渲染效果，请在目标软件中检查外观。 报告信息 版本：0.1.3 输入模型：C:\Users\Jasper\Documents\Codex\aaaaa\ZT-01(1).FBX 输出数据库：C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\results\V0.1.3\ZT-01(1).gdb 转换后端：native-filegdb 转换策略：GIS 静态兼容 已回读要素数：56 贴图记录数：12 材质量化记录数：30 错误 0 条；警告 26 条。 按原因归并的诊断 【警告】已使用模型保存的静态姿态（1 条） 涉及对象示例：整个场景 说明：不会导出动画时间轴，也不会自动选择某一动画帧。 诊断代码：STATIC_POSE_USED 【警告】已省略环境光通道（4 条） 涉及对象示例：01 - Default、道路-白线、道路-黄线、CD-０１ 说明：保留常规颜色、漫反射贴图和 UV；环境光、高光或反射效果可能与源模型不同。 诊断代码：MATERIAL_CHANNEL_OMITTED 【警告】已修复 JPEG 封装（不重新压缩图像）（3 条） 涉及对象示例：texture:贴图 #0、texture:base_color_texture 说明：已补入兼容所需的 JFIF 标记（18 字节）；原压缩图像数据保持不变，没有重新压缩或重采样图像。 诊断代码：JPEG_CONTAINER_NORMALIZED 【警告】已省略高光通道（15 条） 涉及对象示例：ND-002、ND-010、Material.002、Material 说明：保留常规颜色、漫反射贴图和 UV；环境光、高光或反射效果可能与源模型不同。 诊断代码：MATERIAL_CHANNEL_OMITTED 【警告】已省略反射通道（2 条） 涉及对象示例：杆件.004、箱体.002 说明：保留常规颜色、漫反射贴图和 UV；环境光、高光或反射效果可能与源模型不同。 诊断代码：MATERIAL_CHANNEL_OMITTED 【警告】已移除零面积三角形（1 条） 处理数量：共删除 6 个零面积三角形。 涉及对象示例：node:路桩1 说明：仅删除无法形成可见表面的退化面，非有限坐标仍会报错。 诊断代码：DEGENERATE_TRIANGLES_REMOVED 完整逐项信息、坐标与精度说明请查看“原始 JSON”页签。 回读核验不等于外观验收，颜色、透明与接缝显示仍需在目标软件中检查。
+					11 滚动条 (settable, float) Value: 0 ID: VerticalScrollBar
+						12 按钮 (disabled) ID: PART_LineUpButton
+						13 按钮 (disabled) ID: PageUp
+						14 按钮 (disabled) ID: PageDown
+						15 缩略 (disabled)
+						16 按钮 (disabled) ID: PART_LineDownButton
+			17 选项卡项 (selectable) 原始 JSON
+				18 文本 原始 JSON
+
+Document text: ```
+已完成转换，存在明确的兼容处理。
+• 已使用模型保存的静态姿态：1 条（如 整个场景）。
+• 已省略环境光通道：4 条（如 01 - Default、道路-白线）。
+• 已修复 JPEG 封装（不重新压缩图像）：3 条贴图记录（如 texture:贴图 #0、texture:base_color_texture）。
+• 已省略高光通道：15 条（如 ND-002、ND-010）。
+• 已省略反射通道：2 条（如 杆件.004、箱体.002）。
+• 已移除零面积三角形：共删除 6 个面（1 条记录）（如 node:路桩1）。
+兼容处理可能改变原模型的渲染效果，请在目标软件中检查外观。
+
+报告信息
+版本：0.1.3
+输入模型：C:\Users\Jasper\Documents\Codex\aaaaa\ZT-01(1).FBX
+输出数据库：C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\results\V0.1.3\ZT-01(1).gdb
+转换后端：native-filegdb
+转换策略：GIS 静态兼容
+已回读要素数：56
+贴图记录数：12
+材质量化记录数：30
+错误 0 条；警告 26 条。
+
+按原因归并的诊断
+
+【警告】已使用模型保存的静态姿态（1 条）
+涉及对象示例：整个场景
+说明：不会导出动画时间轴，也不会自动选择某一动画帧。
+诊断代码：STATIC_POSE_USED
+
+【警告】已省略环境光通道（4 条）
+涉及对象示例：01 - Default、道路-白线、道路-黄线、CD-０１
+说明：保留常规颜色、漫反射贴图和 UV；环境光、高光或反射效果可能与源模型不同。
+诊断代码：MATERIAL_CHANNEL_OMITTED
+
+【警告】已修复 JPEG 封装（不重新压缩图像）（3 条）
+涉及对象示例：texture:贴图 #0、texture:base_color_texture
+说明：已补入兼容所需的 JFIF 标记（18 字节）；原压缩图像数据保持不变，没有重新压缩或重采样图像。
+诊断代码：JPEG_CONTAINER_NORMALIZED
+
+【警告】已省略高光通道（15 条）
+涉及对象示例：ND-002、ND-010、Material.002、Material
+说明：保留常规颜色、漫反射贴图和 UV；环境光、高光或反射效果可能与源模型不同。
+诊断代码：MATERIAL_CHANNEL_OMITTED
+
+【警告】已省略反射通道（2 条）
+涉及对象示例：杆件.004、箱体.002
+说明：保留常规颜色、漫反射贴图和 UV；环境光、高光或反射效果可能与源模型不同。
+诊断代码：MATERIAL_CHANNEL_OMITTED
+
+【警告】已移除零面积三角形（1 条）
+处理数量：共删除 6 个零面积三角形。
+涉及对象示例：node:路桩1
+说明：仅删除无法形成可见表面的退化面，非有限坐标仍会报错。
+诊断代码：DEGENERATE_TRIANGLES_REMOVED
+
+完整逐项信息、坐标与精度说明请查看“原始 JSON”页签。
+回读核验不等于外观验收，颜色、透明与接缝显示仍需在目标软件中检查。
+```

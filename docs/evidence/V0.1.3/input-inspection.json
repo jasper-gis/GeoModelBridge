@@ -1,0 +1,184 @@
+{
+  "backend": "none",
+  "conversion_profile": "gis-static",
+  "coordinate_operation": "FBX units/axes and static node transforms baked; optional origin translation. No CRS reprojection.",
+  "counts": {
+    "corner_vertices": 209808,
+    "materials": 30,
+    "meshes": 56,
+    "texture_bytes": 6153057,
+    "textures": 12,
+    "triangles": 69936
+  },
+  "diagnostics": [
+    {
+      "code": "STATIC_POSE_USED",
+      "context": "scene",
+      "message": "GIS static profile uses the FBX saved static pose without evaluating an animation time; 144 animation curves and 48 animated properties are omitted. Deformers are not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:01 - Default",
+      "message": "GIS static profile omits ambient parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "JPEG_CONTAINER_NORMALIZED",
+      "context": "texture:贴图 #0",
+      "message": "Added an 18-byte JFIF marker to explicit Adobe YCbCr JPEG; original image scan and all original metadata bytes are retained without recompression. Source SHA-256 52f1762965d7f3c406d52ceb2c1f3ec9668dcada3a7beb1301b82e21220a49e8; stored container SHA-256 1fcfaae0131ffb6699681c4cc87b7d9baa6b4821cc874c97298a04649e5d00de.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:道路-白线",
+      "message": "GIS static profile omits ambient parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:道路-黄线",
+      "message": "GIS static profile omits ambient parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:CD-０１",
+      "message": "GIS static profile omits ambient parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:ND-002",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "JPEG_CONTAINER_NORMALIZED",
+      "context": "texture:base_color_texture",
+      "message": "Added an 18-byte JFIF marker to explicit Adobe YCbCr JPEG; original image scan and all original metadata bytes are retained without recompression. Source SHA-256 7a666d0d9275ddc9488737ab85c6c2bb470c74bbe19f146332f7bc32447dc58a; stored container SHA-256 3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:ND-010",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:Material.002",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:Material",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:ND-009",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:杆件.004",
+      "message": "GIS static profile omits reflection parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:Material.001",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:ND-003",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:箱体.002",
+      "message": "GIS static profile omits reflection parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "JPEG_CONTAINER_NORMALIZED",
+      "context": "texture:base_color_texture",
+      "message": "Added an 18-byte JFIF marker to explicit Adobe YCbCr JPEG; original image scan and all original metadata bytes are retained without recompression. Source SHA-256 6af32f0f80e383541bdb95a14e72930bf9226141e081d98370c119fd9ce012e1; stored container SHA-256 fa23cd7f25b4bc8381326ca195ab648441a3f4480c0a471fd3e41f75280ffd6e.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:Material.009",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:Material.005",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:Material.006",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:Material.013",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:ND-008",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:Material.011",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:Material.012",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "DEGENERATE_TRIANGLES_REMOVED",
+      "context": "node:路桩1",
+      "message": "GIS static profile removed 6 strictly zero-area triangles; no area tolerance was used.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:ND-007",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    }
+  ],
+  "fidelity": {
+    "compatibility_adjustments": true,
+    "gdb_readback_verified": false,
+    "gdb_written": false,
+    "note": "Prepared/inspected geometry is not evidence of successful FileGDB conversion. Writer reports contain database verification results.",
+    "strict_validation_passed": false,
+    "validation_passed": true,
+    "visual_acceptance": "pending"
+  },
+  "schema_version": 1,
+  "source": "C:\\Users\\Jasper\\Documents\\Codex\\aaaaa\\ZT-01(1).FBX",
+  "status": "inspected",
+  "version": "0.1.3"
+}

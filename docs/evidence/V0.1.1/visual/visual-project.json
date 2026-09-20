@@ -1,0 +1,355 @@
+{
+  "version": "V0.1.1",
+  "arcgis_pro_version": "3.6.2",
+  "template": "c:\\program files\\arcgis\\pro\\Resources\\ArcToolBox\\Services\\routingservices\\data\\Blank.aprx",
+  "source_examples": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1",
+  "project": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\visual\\GeoModelBridge-visual-V0.1.1.aprx",
+  "status": "prepared_not_visually_accepted",
+  "projection": "Perspective",
+  "cases": [
+    {
+      "name": "color-cube",
+      "source_gdb": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\filegdb\\color-cube.gdb",
+      "bounds": [
+        499999.5,
+        2999999.5,
+        99.5,
+        500000.5,
+        3000000.5,
+        100.5
+      ],
+      "elevation": "ABSOLUTE_HEIGHT",
+      "is_3d_layer": true,
+      "views": [
+        {
+          "view": "oblique",
+          "camera": {
+            "X": 500002.30940107675,
+            "Y": 2999997.6905989232,
+            "Z": 102.3094010767585,
+            "heading": -45.0,
+            "pitch": -35.264389682754654,
+            "roll": 0.0,
+            "mode": "LOCAL"
+          },
+          "render": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\docs\\evidence\\V0.1.1\\visual\\renders\\color-cube-oblique.png"
+        },
+        {
+          "view": "opposite",
+          "camera": {
+            "X": 499997.69059892325,
+            "Y": 3000002.3094010768,
+            "Z": 97.6905989232415,
+            "heading": 135.0,
+            "pitch": 35.264389682754654,
+            "roll": 0.0,
+            "mode": "LOCAL"
+          },
+          "render": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\docs\\evidence\\V0.1.1\\visual\\renders\\color-cube-opposite.png"
+        },
+        {
+          "view": "top",
+          "camera": {
+            "X": 500000.0,
+            "Y": 3000000.0,
+            "Z": 103.0,
+            "heading": 0.0,
+            "pitch": -90.0,
+            "roll": 0.0,
+            "mode": "LOCAL"
+          },
+          "render": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\docs\\evidence\\V0.1.1\\visual\\renders\\color-cube-top.png"
+        }
+      ],
+      "elevation_surface_count": 0,
+      "layer_count": 1
+    },
+    {
+      "name": "uv-plane",
+      "source_gdb": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\filegdb\\uv-plane.gdb",
+      "bounds": [
+        500000.0,
+        3000000.0,
+        100.0,
+        500001.0,
+        3000001.0,
+        100.0
+      ],
+      "elevation": "ABSOLUTE_HEIGHT",
+      "is_3d_layer": true,
+      "views": [
+        {
+          "view": "top",
+          "camera": {
+            "X": 500000.5,
+            "Y": 3000000.5,
+            "Z": 103.0,
+            "heading": 0.0,
+            "pitch": -90.0,
+            "roll": 0.0,
+            "mode": "LOCAL"
+          },
+          "render": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\docs\\evidence\\V0.1.1\\visual\\renders\\uv-plane-top.png"
+        }
+      ],
+      "elevation_surface_count": 0,
+      "layer_count": 1
+    },
+    {
+      "name": "mixed-materials",
+      "source_gdb": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\filegdb\\mixed-materials.gdb",
+      "bounds": [
+        500000.0,
+        3000000.0,
+        100.0,
+        500003.5,
+        3000001.0,
+        100.0
+      ],
+      "elevation": "ABSOLUTE_HEIGHT",
+      "is_3d_layer": true,
+      "views": [
+        {
+          "view": "oblique",
+          "camera": {
+            "X": 500009.83290376863,
+            "Y": 2999992.417096231,
+            "Z": 108.08290376865476,
+            "heading": -45.0,
+            "pitch": -35.264389682754654,
+            "roll": 0.0,
+            "mode": "LOCAL"
+          },
+          "render": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\docs\\evidence\\V0.1.1\\visual\\renders\\mixed-materials-oblique.png"
+        },
+        {
+          "view": "top",
+          "camera": {
+            "X": 500001.75,
+            "Y": 3000000.5,
+            "Z": 110.5,
+            "heading": 0.0,
+            "pitch": -90.0,
+            "roll": 0.0,
+            "mode": "LOCAL"
+          },
+          "render": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\docs\\evidence\\V0.1.1\\visual\\renders\\mixed-materials-top.png"
+        }
+      ],
+      "elevation_surface_count": 0,
+      "layer_count": 1
+    },
+    {
+      "name": "alpha-plane",
+      "source_gdb": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\filegdb\\alpha-plane.gdb",
+      "bounds": [
+        500000.0,
+        3000000.0,
+        100.0,
+        500001.0,
+        3000001.0,
+        100.0
+      ],
+      "elevation": "ABSOLUTE_HEIGHT",
+      "is_3d_layer": true,
+      "views": [
+        {
+          "view": "top",
+          "camera": {
+            "X": 500000.5,
+            "Y": 3000000.5,
+            "Z": 103.0,
+            "heading": 0.0,
+            "pitch": -90.0,
+            "roll": 0.0,
+            "mode": "LOCAL"
+          },
+          "render": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\docs\\evidence\\V0.1.1\\visual\\renders\\alpha-plane-top.png"
+        }
+      ],
+      "elevation_surface_count": 0,
+      "layer_count": 1
+    },
+    {
+      "name": "seam-cube",
+      "source_gdb": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\filegdb\\seam-cube.gdb",
+      "bounds": [
+        499999.5,
+        2999999.5,
+        99.5,
+        500000.5,
+        3000000.5,
+        100.5
+      ],
+      "elevation": "ABSOLUTE_HEIGHT",
+      "is_3d_layer": true,
+      "views": [
+        {
+          "view": "oblique",
+          "camera": {
+            "X": 500002.30940107675,
+            "Y": 2999997.6905989232,
+            "Z": 102.3094010767585,
+            "heading": -45.0,
+            "pitch": -35.264389682754654,
+            "roll": 0.0,
+            "mode": "LOCAL"
+          },
+          "render": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\docs\\evidence\\V0.1.1\\visual\\renders\\seam-cube-oblique.png"
+        },
+        {
+          "view": "opposite",
+          "camera": {
+            "X": 499997.69059892325,
+            "Y": 3000002.3094010768,
+            "Z": 97.6905989232415,
+            "heading": 135.0,
+            "pitch": 35.264389682754654,
+            "roll": 0.0,
+            "mode": "LOCAL"
+          },
+          "render": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\docs\\evidence\\V0.1.1\\visual\\renders\\seam-cube-opposite.png"
+        },
+        {
+          "view": "top",
+          "camera": {
+            "X": 500000.0,
+            "Y": 3000000.0,
+            "Z": 103.0,
+            "heading": 0.0,
+            "pitch": -90.0,
+            "roll": 0.0,
+            "mode": "LOCAL"
+          },
+          "render": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\docs\\evidence\\V0.1.1\\visual\\renders\\seam-cube-top.png"
+        }
+      ],
+      "elevation_surface_count": 0,
+      "layer_count": 1
+    },
+    {
+      "name": "standalone-copy",
+      "source_gdb": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\standalone\\alpha-plane-copy.gdb",
+      "bounds": [
+        500000.0,
+        3000000.0,
+        100.0,
+        500001.0,
+        3000001.0,
+        100.0
+      ],
+      "elevation": "ABSOLUTE_HEIGHT",
+      "is_3d_layer": true,
+      "views": [
+        {
+          "view": "top",
+          "camera": {
+            "X": 500000.5,
+            "Y": 3000000.5,
+            "Z": 103.0,
+            "heading": 0.0,
+            "pitch": -90.0,
+            "roll": 0.0,
+            "mode": "LOCAL"
+          },
+          "render": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\docs\\evidence\\V0.1.1\\visual\\renders\\standalone-copy-top.png"
+        }
+      ],
+      "elevation_surface_count": 0,
+      "layer_count": 1
+    },
+    {
+      "name": "native-uv-plane",
+      "source_gdb": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\native\\filegdb\\uv-plane.gdb",
+      "bounds": [
+        500000.0,
+        3000000.0,
+        100.0,
+        500001.0,
+        3000001.0,
+        100.0
+      ],
+      "elevation": "ABSOLUTE_HEIGHT",
+      "is_3d_layer": true,
+      "views": [
+        {
+          "view": "top",
+          "camera": {
+            "X": 500000.5,
+            "Y": 3000000.5,
+            "Z": 103.0,
+            "heading": 0.0,
+            "pitch": -90.0,
+            "roll": 0.0,
+            "mode": "LOCAL"
+          },
+          "render": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\docs\\evidence\\V0.1.1\\visual\\renders\\native-uv-plane-top.png"
+        }
+      ],
+      "elevation_surface_count": 0,
+      "layer_count": 1
+    },
+    {
+      "name": "pro-jpeg-plane",
+      "source_gdb": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\docs\\evidence\\V0.1.1\\jpeg-direction\\pro-jpeg-plane.gdb",
+      "bounds": [
+        500000.0,
+        3000000.0,
+        100.0,
+        500001.0,
+        3000001.0,
+        100.0
+      ],
+      "elevation": "ABSOLUTE_HEIGHT",
+      "is_3d_layer": true,
+      "views": [
+        {
+          "view": "top",
+          "camera": {
+            "X": 500000.5,
+            "Y": 3000000.5,
+            "Z": 103.0,
+            "heading": 0.0,
+            "pitch": -90.0,
+            "roll": 0.0,
+            "mode": "LOCAL"
+          },
+          "render": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\docs\\evidence\\V0.1.1\\visual\\renders\\pro-jpeg-plane-top.png"
+        }
+      ],
+      "elevation_surface_count": 0,
+      "layer_count": 1
+    },
+    {
+      "name": "native-jpeg-plane",
+      "source_gdb": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\docs\\evidence\\V0.1.1\\jpeg-direction\\native-jpeg-plane.gdb",
+      "bounds": [
+        500000.0,
+        3000000.0,
+        100.0,
+        500001.0,
+        3000001.0,
+        100.0
+      ],
+      "elevation": "ABSOLUTE_HEIGHT",
+      "is_3d_layer": true,
+      "views": [
+        {
+          "view": "top",
+          "camera": {
+            "X": 500000.5,
+            "Y": 3000000.5,
+            "Z": 103.0,
+            "heading": 0.0,
+            "pitch": -90.0,
+            "roll": 0.0,
+            "mode": "LOCAL"
+          },
+          "render": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\docs\\evidence\\V0.1.1\\visual\\renders\\native-jpeg-plane-top.png"
+        }
+      ],
+      "elevation_surface_count": 0,
+      "layer_count": 1
+    }
+  ]
+}

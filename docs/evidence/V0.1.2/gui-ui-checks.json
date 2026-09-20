@@ -1,0 +1,26 @@
+{
+  "version": "0.1.2",
+  "date": "2026-09-20",
+  "method": "Actual published WPF executable operated using Windows accessibility and screenshots",
+  "executable": "dist/bin/geomodelbridgeGUI.exe",
+  "executable_size_bytes": 71728518,
+  "executable_sha256": "9271f88fd24d1b50a839a391279c7e1e75d110af4893713cdc42a8f54917288f",
+  "checks": [
+    {"name": "launch_chinese_window_and_readable_buttons", "passed": true},
+    {"name": "blank_fields_rejected_with_chinese_messages", "passed": true},
+    {"name": "native_backend_environment_probe", "passed": true},
+    {"name": "demo_populates_fields_without_starting_conversion", "passed": true},
+    {"name": "demo_coordinates_visibly_marked", "passed": true},
+    {"name": "convert_button_writes_and_reopens_textured_native_gdb", "passed": true, "feature_count": 1, "evidence": "gui-native-report.json"},
+    {"name": "report_button_opens_actual_json_in_readonly_window", "passed": true},
+    {"name": "repeat_output_rejected", "passed": true, "all_gdb_and_report_sha256_unchanged": true},
+    {"name": "changing_demo_source_clears_wkid_and_xyz", "passed": true, "evidence": "gui-demo-reset.txt"},
+    {"name": "backend_selection_and_pro_licensed_probe", "passed": true, "evidence": "gui-pro-probe.txt"},
+    {"name": "idle_window_closes_normally", "passed": true}
+  ],
+  "limitations": [
+    "The blank-field behavior was exercised before the final button-foreground and status-scroll layout change; validation code did not change.",
+    "Actual window conversion exercised the native backend; Pro writing is separately covered by pro-tests.json.",
+    "No clean-machine installation test or target 3D scene visual acceptance was performed."
+  ]
+}

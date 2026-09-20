@@ -1,0 +1,132 @@
+{
+  "status": "passed",
+  "verification": "Native FileGDB outputs read by ArcGIS Pro CoreHost and compared to the signatures of separately generated Pro outputs from the same inputs",
+  "compared": [
+    "coordinates",
+    "normals",
+    "UV",
+    "material binding",
+    "RGB8",
+    "opacity",
+    "culling",
+    "embedded texture dimensions and exact bytes",
+    "mesh attributes",
+    "WKID"
+  ],
+  "cases": 14,
+  "results": [
+    {
+      "name": "color-cube",
+      "passed": true,
+      "native_geodatabase": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\native\\filegdb\\color-cube.gdb",
+      "reference_report": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\reports\\color-cube.json",
+      "stdout": "{\"status\":\"standalone_copy_verified\",\"report\":\"C:\\\\Users\\\\Jasper\\\\Documents\\\\Codex\\\\2026-09-20\\\\gen\\\\outputs\\\\GeoModelBridge\\\\docs\\\\evidence\\\\V0.1.1\\\\native-independent-pro\\\\color-cube.json\",\"feature_count\":1,\"independent_of_bundle\":true}",
+      "stderr": ""
+    },
+    {
+      "name": "uv-plane",
+      "passed": true,
+      "native_geodatabase": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\native\\filegdb\\uv-plane.gdb",
+      "reference_report": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\reports\\uv-plane.json",
+      "stdout": "{\"status\":\"standalone_copy_verified\",\"report\":\"C:\\\\Users\\\\Jasper\\\\Documents\\\\Codex\\\\2026-09-20\\\\gen\\\\outputs\\\\GeoModelBridge\\\\docs\\\\evidence\\\\V0.1.1\\\\native-independent-pro\\\\uv-plane.json\",\"feature_count\":1,\"independent_of_bundle\":true}",
+      "stderr": ""
+    },
+    {
+      "name": "mixed-materials",
+      "passed": true,
+      "native_geodatabase": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\native\\filegdb\\mixed-materials.gdb",
+      "reference_report": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\reports\\mixed-materials.json",
+      "stdout": "{\"status\":\"standalone_copy_verified\",\"report\":\"C:\\\\Users\\\\Jasper\\\\Documents\\\\Codex\\\\2026-09-20\\\\gen\\\\outputs\\\\GeoModelBridge\\\\docs\\\\evidence\\\\V0.1.1\\\\native-independent-pro\\\\mixed-materials.json\",\"feature_count\":1,\"independent_of_bundle\":true}",
+      "stderr": ""
+    },
+    {
+      "name": "alpha-plane",
+      "passed": true,
+      "native_geodatabase": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\native\\filegdb\\alpha-plane.gdb",
+      "reference_report": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\reports\\alpha-plane.json",
+      "stdout": "{\"status\":\"standalone_copy_verified\",\"report\":\"C:\\\\Users\\\\Jasper\\\\Documents\\\\Codex\\\\2026-09-20\\\\gen\\\\outputs\\\\GeoModelBridge\\\\docs\\\\evidence\\\\V0.1.1\\\\native-independent-pro\\\\alpha-plane.json\",\"feature_count\":1,\"independent_of_bundle\":true}",
+      "stderr": ""
+    },
+    {
+      "name": "seam-cube",
+      "passed": true,
+      "native_geodatabase": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\native\\filegdb\\seam-cube.gdb",
+      "reference_report": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\reports\\seam-cube.json",
+      "stdout": "{\"status\":\"standalone_copy_verified\",\"report\":\"C:\\\\Users\\\\Jasper\\\\Documents\\\\Codex\\\\2026-09-20\\\\gen\\\\outputs\\\\GeoModelBridge\\\\docs\\\\evidence\\\\V0.1.1\\\\native-independent-pro\\\\seam-cube.json\",\"feature_count\":1,\"independent_of_bundle\":true}",
+      "stderr": ""
+    },
+    {
+      "name": "colored_quad",
+      "passed": true,
+      "native_geodatabase": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\native\\filegdb\\colored_quad.gdb",
+      "reference_report": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\reports\\colored_quad.json",
+      "stdout": "{\"status\":\"standalone_copy_verified\",\"report\":\"C:\\\\Users\\\\Jasper\\\\Documents\\\\Codex\\\\2026-09-20\\\\gen\\\\outputs\\\\GeoModelBridge\\\\docs\\\\evidence\\\\V0.1.1\\\\native-independent-pro\\\\colored_quad.json\",\"feature_count\":1,\"independent_of_bundle\":true}",
+      "stderr": ""
+    },
+    {
+      "name": "textured_quad",
+      "passed": true,
+      "native_geodatabase": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\native\\filegdb\\textured_quad.gdb",
+      "reference_report": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\reports\\textured_quad.json",
+      "stdout": "{\"status\":\"standalone_copy_verified\",\"report\":\"C:\\\\Users\\\\Jasper\\\\Documents\\\\Codex\\\\2026-09-20\\\\gen\\\\outputs\\\\GeoModelBridge\\\\docs\\\\evidence\\\\V0.1.1\\\\native-independent-pro\\\\textured_quad.json\",\"feature_count\":1,\"independent_of_bundle\":true}",
+      "stderr": ""
+    },
+    {
+      "name": "embedded_quad",
+      "passed": true,
+      "native_geodatabase": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\native\\filegdb\\embedded_quad.gdb",
+      "reference_report": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\reports\\embedded_quad.json",
+      "stdout": "{\"status\":\"standalone_copy_verified\",\"report\":\"C:\\\\Users\\\\Jasper\\\\Documents\\\\Codex\\\\2026-09-20\\\\gen\\\\outputs\\\\GeoModelBridge\\\\docs\\\\evidence\\\\V0.1.1\\\\native-independent-pro\\\\embedded_quad.json\",\"feature_count\":1,\"independent_of_bundle\":true}",
+      "stderr": ""
+    },
+    {
+      "name": "uv_transform",
+      "passed": true,
+      "native_geodatabase": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\native\\filegdb\\uv_transform.gdb",
+      "reference_report": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\reports\\uv_transform.json",
+      "stdout": "{\"status\":\"standalone_copy_verified\",\"report\":\"C:\\\\Users\\\\Jasper\\\\Documents\\\\Codex\\\\2026-09-20\\\\gen\\\\outputs\\\\GeoModelBridge\\\\docs\\\\evidence\\\\V0.1.1\\\\native-independent-pro\\\\uv_transform.json\",\"feature_count\":1,\"independent_of_bundle\":true}",
+      "stderr": ""
+    },
+    {
+      "name": "instanced_mirror",
+      "passed": true,
+      "native_geodatabase": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\native\\filegdb\\instanced_mirror.gdb",
+      "reference_report": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\reports\\instanced_mirror.json",
+      "stdout": "{\"status\":\"standalone_copy_verified\",\"report\":\"C:\\\\Users\\\\Jasper\\\\Documents\\\\Codex\\\\2026-09-20\\\\gen\\\\outputs\\\\GeoModelBridge\\\\docs\\\\evidence\\\\V0.1.1\\\\native-independent-pro\\\\instanced_mirror.json\",\"feature_count\":2,\"independent_of_bundle\":true}",
+      "stderr": ""
+    },
+    {
+      "name": "multi_material",
+      "passed": true,
+      "native_geodatabase": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\native\\filegdb\\multi_material.gdb",
+      "reference_report": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\reports\\multi_material.json",
+      "stdout": "{\"status\":\"standalone_copy_verified\",\"report\":\"C:\\\\Users\\\\Jasper\\\\Documents\\\\Codex\\\\2026-09-20\\\\gen\\\\outputs\\\\GeoModelBridge\\\\docs\\\\evidence\\\\V0.1.1\\\\native-independent-pro\\\\multi_material.json\",\"feature_count\":1,\"independent_of_bundle\":true}",
+      "stderr": ""
+    },
+    {
+      "name": "no_material",
+      "passed": true,
+      "native_geodatabase": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\native\\filegdb\\no_material.gdb",
+      "reference_report": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\reports\\no_material.json",
+      "stdout": "{\"status\":\"standalone_copy_verified\",\"report\":\"C:\\\\Users\\\\Jasper\\\\Documents\\\\Codex\\\\2026-09-20\\\\gen\\\\outputs\\\\GeoModelBridge\\\\docs\\\\evidence\\\\V0.1.1\\\\native-independent-pro\\\\no_material.json\",\"feature_count\":1,\"independent_of_bundle\":true}",
+      "stderr": ""
+    },
+    {
+      "name": "sloped_normals",
+      "passed": true,
+      "native_geodatabase": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\native\\filegdb\\sloped_normals.gdb",
+      "reference_report": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\reports\\sloped_normals.json",
+      "stdout": "{\"status\":\"standalone_copy_verified\",\"report\":\"C:\\\\Users\\\\Jasper\\\\Documents\\\\Codex\\\\2026-09-20\\\\gen\\\\outputs\\\\GeoModelBridge\\\\docs\\\\evidence\\\\V0.1.1\\\\native-independent-pro\\\\sloped_normals.json\",\"feature_count\":1,\"independent_of_bundle\":true}",
+      "stderr": ""
+    },
+    {
+      "name": "binary_blender",
+      "passed": true,
+      "native_geodatabase": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\native\\filegdb\\binary_blender.gdb",
+      "reference_report": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\reports\\binary_blender.json",
+      "stdout": "{\"status\":\"standalone_copy_verified\",\"report\":\"C:\\\\Users\\\\Jasper\\\\Documents\\\\Codex\\\\2026-09-20\\\\gen\\\\outputs\\\\GeoModelBridge\\\\docs\\\\evidence\\\\V0.1.1\\\\native-independent-pro\\\\binary_blender.json\",\"feature_count\":1,\"independent_of_bundle\":true}",
+      "stderr": ""
+    }
+  ],
+  "graphical_acceptance": "separate_check"
+}

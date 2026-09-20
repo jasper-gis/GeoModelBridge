@@ -1,0 +1,162 @@
+{
+  "coordinates": {
+    "origin": [
+      500000.0,
+      3000000.0,
+      100.0
+    ],
+    "origin_explicit": true,
+    "space": "referenced",
+    "unit": "meter",
+    "up_axis": "Z",
+    "wkid": 32650
+  },
+  "diagnostics": [],
+  "generator": "GeoModelBridge",
+  "materials": [
+    {
+      "color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "double_sided": true,
+      "name": "UV direction",
+      "texture": 0
+    }
+  ],
+  "meshes": [
+    {
+      "name": "orientation-plane",
+      "source_node": "generated:orientation-plane",
+      "triangles": [
+        {
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "material": 0
+        },
+        {
+          "indices": [
+            0,
+            2,
+            3
+          ],
+          "material": 0
+        }
+      ],
+      "vertices": [
+        {
+          "normal": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "position": [
+            500000.0,
+            3000000.0,
+            100.0
+          ],
+          "uv": [
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "normal": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "position": [
+            500001.0,
+            3000000.0,
+            100.0
+          ],
+          "uv": [
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "normal": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "position": [
+            500001.0,
+            3000001.0,
+            100.0
+          ],
+          "uv": [
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "normal": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "position": [
+            500000.0,
+            3000001.0,
+            100.0
+          ],
+          "uv": [
+            0.0,
+            1.0
+          ]
+        }
+      ]
+    }
+  ],
+  "name": "uv-plane",
+  "nodes": [
+    {
+      "meshes": [
+        0
+      ],
+      "name": "orientation-plane",
+      "parent": -1,
+      "source_id": "generated:orientation-plane",
+      "source_world_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    }
+  ],
+  "schema_version": 1,
+  "source": "generated:jpeg-uv-direction-acceptance",
+  "textures": [
+    {
+      "byte_length": 13034,
+      "embedded": true,
+      "mime_type": "image/jpeg",
+      "name": "jpeg-uv-direction.jpg",
+      "path": "textures/aefee6ad6a7c5cc986190df94b1da12a7487604a4cec3a8a7efb7002bc2fa686.jpg",
+      "sha256": "aefee6ad6a7c5cc986190df94b1da12a7487604a4cec3a8a7efb7002bc2fa686",
+      "source": "test-source:PNG-diagnostic-converted-to-JPEG95-no-chroma-subsampling"
+    }
+  ],
+  "version": "0.1.1"
+}

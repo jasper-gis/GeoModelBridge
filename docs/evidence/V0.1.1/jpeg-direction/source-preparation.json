@@ -1,0 +1,23 @@
+{
+  "test_only_preparation": "Pillow RGB JPEG quality95 subsampling0; no product-path JPEG transcoding",
+  "source_png_sha256": "dfed41d734a841844456531f451c2c13eddb9564ed9e61f88db1f3f2ec44b342",
+  "source_jpeg_sha256": "aefee6ad6a7c5cc986190df94b1da12a7487604a4cec3a8a7efb7002bc2fa686",
+  "dimensions": [
+    128,
+    128
+  ],
+  "expected_view": "TL yellow top-left; TR blue top-right; BL pink bottom-left; BR white bottom-right; U right; V up. Colors named here are SOURCE expectations, not claims that filtered renders preserve display colors.",
+  "writers": [
+    {
+      "backend": "arcgis-pro-corehost",
+      "version": "0.1.1",
+      "status": "written_and_readback_verified"
+    },
+    {
+      "backend": "native-filegdb",
+      "version": "0.1.1",
+      "status": "written_and_readback_verified"
+    }
+  ],
+  "native_runtime": "Official FileGDB API bin64 was added only to the writer subprocess PATH after the first loader attempt reported missing runtime; user/system PATH was not changed."
+}

@@ -1,0 +1,13 @@
+/build/
+/dist/
+/releases/
+/artifacts/
+/results/
+/examples/V*/
+/.vs/
+**/bin/
+**/obj/
+*.user
+*.gdb/
+*.gmbscene/
+__pycache__/

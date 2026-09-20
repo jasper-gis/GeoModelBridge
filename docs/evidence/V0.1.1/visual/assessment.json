@@ -1,0 +1,194 @@
+{
+  "version": "V0.1.1",
+  "arcgis_pro_version": "3.6.2",
+  "status": "uv_direction_verified_color_and_alpha_visual_acceptance_pending",
+  "review_method": "Viewed unmodified source PNG/JPEG and actual ArcGIS Pro MapFrame PNG exports side by side. No evidence image flipping, recoloring or postprocessing.",
+  "verified": [
+    "PNG U arrow right and V arrow up in both writer outputs",
+    "JPEG U arrow right and V arrow up in both writer outputs",
+    "TL/TR remain above BL/BR; no vertical mirror relative to source",
+    "Independent GDB copy renders exactly as original alpha example"
+  ],
+  "not_accepted": [
+    "Exact/display color correctness",
+    "Alpha blending and transparency appearance",
+    "Full six-face color and texture-seam graphical acceptance"
+  ],
+  "display_limitation": "Red/cyan channel-separated double images, consistent with anaglyph stereo rendering, remain present. Application setting value could not be read reliably; no global settings or administrator policies were changed. Isometric view did not remove the artifact.",
+  "scene_settings": {
+    "wkid": 32650,
+    "elevation": "ABSOLUTE_HEIGHT Shape.Z metres",
+    "ground_surfaces": 0,
+    "material_symbol": "white Multiply",
+    "image_export": "ArcGIS Pro MapFrame.exportToPNG 160 dpi",
+    "projection": "Perspective"
+  },
+  "source_png_sha256": "dfed41d734a841844456531f451c2c13eddb9564ed9e61f88db1f3f2ec44b342",
+  "source_jpeg_sha256": "aefee6ad6a7c5cc986190df94b1da12a7487604a4cec3a8a7efb7002bc2fa686",
+  "source_expectation": "TL yellow top-left; TR blue top-right; BL pink bottom-left; BR white bottom-right; U right; V up. Colors named here are SOURCE expectations, not claims that filtered renders preserve display colors.",
+  "render_comparisons": {
+    "png_pro_native_identical": {
+      "files": [
+        "uv-plane-top.png",
+        "native-uv-plane-top.png"
+      ],
+      "identical": true
+    },
+    "jpeg_pro_native_identical": {
+      "files": [
+        "pro-jpeg-plane-top.png",
+        "native-jpeg-plane-top.png"
+      ],
+      "identical": true
+    },
+    "alpha_standalone_copy_identical": {
+      "files": [
+        "alpha-plane-top.png",
+        "standalone-copy-top.png"
+      ],
+      "identical": true
+    }
+  },
+  "renders": [
+    {
+      "file": "renders/alpha-plane-top.png",
+      "sha256": "193ebdb31c72f29c7de3d480a149f2f9597807a41a87d27f16b56447ba476cab",
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "file": "renders/color-cube-oblique.png",
+      "sha256": "6353277147d086c9f04ab8e11b20e63b06adb4508279a0877b3a8ad2dbe183ba",
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "file": "renders/color-cube-opposite.png",
+      "sha256": "88eb4fc9a7a2bfe20df096275781c8809497e805bb64fe7a1701452d3b975589",
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "file": "renders/color-cube-top.png",
+      "sha256": "c2d339c2838083e31105a3fc01561d2801ab564aff6495282b19e588209ec108",
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "file": "renders/mixed-materials-oblique.png",
+      "sha256": "cad5f183f4f88b72aaa186846050def6488f6fd24337656195e7bf1f79696029",
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "file": "renders/mixed-materials-top.png",
+      "sha256": "728eb5c62e9a66adc933a567276a6317deae2c45e731272b063ad11d3d222898",
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "file": "renders/native-jpeg-plane-top.png",
+      "sha256": "e9435c36903d638a6fab92cb662ec3f4227d17b08b99cccf8016e9d0cefb0856",
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "file": "renders/native-uv-plane-top.png",
+      "sha256": "839307ae04d442785d09277e8ccb23916fef8550756dfffa04c8108c0070a30f",
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "file": "renders/pro-jpeg-plane-top.png",
+      "sha256": "e9435c36903d638a6fab92cb662ec3f4227d17b08b99cccf8016e9d0cefb0856",
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "file": "renders/seam-cube-oblique.png",
+      "sha256": "dfde3fd65c7dc3ad8b469da953faeeb940a84a756bfdb700b6e72f1ba66f5156",
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "file": "renders/seam-cube-opposite.png",
+      "sha256": "083264ed75b774bfe5bf1b898e89de564644d4e8a7a40bd5a2e965101a9ff7af",
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "file": "renders/seam-cube-top.png",
+      "sha256": "76808bffdb421238eebfeec2c745ec8fabfbe99ae107cfbedc0cec03636520ae",
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "file": "renders/standalone-copy-top.png",
+      "sha256": "193ebdb31c72f29c7de3d480a149f2f9597807a41a87d27f16b56447ba476cab",
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "file": "renders/uv-plane-top.png",
+      "sha256": "839307ae04d442785d09277e8ccb23916fef8550756dfffa04c8108c0070a30f",
+      "width": 1280,
+      "height": 960
+    }
+  ],
+  "aprx": "../../../../examples/V0.1.1/visual/GeoModelBridge-visual-V0.1.1.aprx",
+  "relative_gdb_connections": [
+    {
+      "layer": "color-cube | embedded materials",
+      "workspace": "..\\filegdb\\color-cube.gdb",
+      "resolved_within_delivery": true
+    },
+    {
+      "layer": "uv-plane | embedded materials",
+      "workspace": "..\\filegdb\\uv-plane.gdb",
+      "resolved_within_delivery": true
+    },
+    {
+      "layer": "mixed-materials | embedded materials",
+      "workspace": "..\\filegdb\\mixed-materials.gdb",
+      "resolved_within_delivery": true
+    },
+    {
+      "layer": "alpha-plane | embedded materials",
+      "workspace": "..\\filegdb\\alpha-plane.gdb",
+      "resolved_within_delivery": true
+    },
+    {
+      "layer": "seam-cube | embedded materials",
+      "workspace": "..\\filegdb\\seam-cube.gdb",
+      "resolved_within_delivery": true
+    },
+    {
+      "layer": "standalone-copy | embedded materials",
+      "workspace": "..\\standalone\\alpha-plane-copy.gdb",
+      "resolved_within_delivery": true
+    },
+    {
+      "layer": "native-uv-plane | embedded materials",
+      "workspace": "..\\native\\filegdb\\uv-plane.gdb",
+      "resolved_within_delivery": true
+    },
+    {
+      "layer": "pro-jpeg-plane | embedded materials",
+      "workspace": "..\\..\\..\\docs\\evidence\\V0.1.1\\jpeg-direction\\pro-jpeg-plane.gdb",
+      "resolved_within_delivery": true
+    },
+    {
+      "layer": "native-jpeg-plane | embedded materials",
+      "workspace": "..\\..\\..\\docs\\evidence\\V0.1.1\\jpeg-direction\\native-jpeg-plane.gdb",
+      "resolved_within_delivery": true
+    }
+  ],
+  "saved_aprx_reopened_validation": {
+    "maps": 9,
+    "layouts": 14,
+    "broken_data_sources": 0,
+    "all_camera_modes_local": true,
+    "all_camera_z_finite": true,
+    "all_elevation_surface_counts_zero": true
+  }
+}

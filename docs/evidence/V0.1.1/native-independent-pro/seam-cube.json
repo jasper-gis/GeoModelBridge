@@ -1,0 +1,17 @@
+{
+  "status": "standalone_copy_verified",
+  "version": "0.1.1",
+  "backend": "arcgis-pro-corehost",
+  "geodatabase": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\native\\filegdb\\seam-cube.gdb",
+  "expected_report": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\examples\\V0.1.1\\reports\\seam-cube.json",
+  "feature_class": "Models",
+  "timestamp_utc": "2026-09-20T13:06:13.2578445+00:00",
+  "feature_count": 1,
+  "verification": {
+    "level": "standalone_geodatabase_against_original_readback_signatures",
+    "independent_of_bundle_and_source_textures": true,
+    "exact_geometry_uv_normal_hashes": true,
+    "exact_material_properties_and_texture_hashes": true,
+    "graphical_acceptance": "pending_manual_review_in_target_software"
+  }
+}

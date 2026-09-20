@@ -1,0 +1,258 @@
+Verified ufbx 0.23.0
+Verified nlohmann/json 3.12.0
+Verified FileGDB API 1.5.5.330 runtime and original license files
+Verified GeoModelBridge 0.1.2: 12 required declarations and runtime release references agree.
+-- The C compiler identification is MSVC 19.44.35226.0
+-- The CXX compiler identification is MSVC 19.44.35226.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/Users/Jasper/Documents/Codex/2026-09-20/gen/work/msvc-v011/toolchain/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Users/Jasper/Documents/Codex/2026-09-20/gen/work/msvc-v011/toolchain/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (3.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: C:/Users/Jasper/Documents/Codex/2026-09-20/gen/work/build/v0.1.2
+[1/11] Building CXX object CMakeFiles\gmb_core_tests.dir\tests\core_tests.cpp.obj
+[2/11] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\fixtures.cpp.obj
+[3/11] Building C object CMakeFiles\gmb_ufbx.dir\third_party\ufbx\ufbx.c.obj
+[4/11] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\core.cpp.obj
+[5/11] Linking C static library gmb_ufbx.lib
+[6/11] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\bundle.cpp.obj
+[7/11] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\fbx_reader.cpp.obj
+[8/11] Linking CXX static library GeoModelBridge.Core.lib
+[9/11] Building CXX object CMakeFiles\geomodelbridge.dir\src\main.cpp.obj
+C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\src\main.cpp(152): warning C4996: 'getenv': This function or variable may be unsafe. Consider using _dupenv_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+[10/11] Linking CXX executable gmb_core_tests.exe
+[11/11] Linking CXX executable geomodelbridge.exe
+Test project C:/Users/Jasper/Documents/Codex/2026-09-20/gen/work/build/v0.1.2
+    Start 1: core
+1/4 Test #1: core .............................   Passed    0.11 sec
+    Start 2: cli
+2/4 Test #2: cli ..............................   Passed    0.31 sec
+    Start 3: reader_integration
+3/4 Test #3: reader_integration ...............   Passed    0.36 sec
+    Start 4: binary_fbx
+4/4 Test #4: binary_fbx .......................   Passed    0.16 sec
+
+100% tests passed, 0 tests failed out of 4
+
+Total Test time (real) =   0.97 sec
+-- Install configuration: "Release"
+-- Installing: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/bin/geomodelbridge.exe
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/acceptance.md
+-- Installing: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/architecture.md
+-- Installing: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/bundle-format.md
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/core-tests.log
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/pro-integration.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/build.log
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/core-tests.log
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000001.gdbindexes
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000001.gdbtable
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000001.gdbtablx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000001.TablesByName.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000002.gdbtable
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000002.gdbtablx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000003.gdbindexes
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000003.gdbtable
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000003.gdbtablx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000004.CatItemsByPhysicalName.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000004.CatItemsByType.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000004.FDO_UUID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000004.gdbindexes
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000004.gdbtable
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000004.gdbtablx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000004.horizon
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000005.CatItemTypesByName.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000005.CatItemTypesByParentTypeID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000005.CatItemTypesByUUID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000005.gdbindexes
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000005.gdbtable
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000005.gdbtablx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000006.CatRelsByDestinationID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000006.CatRelsByOriginID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000006.CatRelsByType.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000006.FDO_UUID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000006.gdbindexes
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000006.gdbtable
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000006.gdbtablx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000007.CatRelTypesByBackwardLabel.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000007.CatRelTypesByDestItemTypeID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000007.CatRelTypesByForwardLabel.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000007.CatRelTypesByName.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000007.CatRelTypesByOriginItemTypeID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000007.CatRelTypesByUUID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000007.gdbindexes
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000007.gdbtable
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000007.gdbtablx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000009.gdbindexes
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000009.gdbtable
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000009.gdbtablx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000009.horizon
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/gdb
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/timestamps
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-writer-report.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/native-writer.log
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000001.gdbindexes
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000001.gdbtable
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000001.gdbtablx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000001.TablesByName.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000002.gdbtable
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000002.gdbtablx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000003.gdbindexes
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000003.gdbtable
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000003.gdbtablx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000004.CatItemsByPhysicalName.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000004.CatItemsByType.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000004.FDO_UUID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000004.freelist
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000004.gdbindexes
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000004.gdbtable
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000004.gdbtablx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000004.horizon
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000004.spx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000005.CatItemTypesByName.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000005.CatItemTypesByParentTypeID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000005.CatItemTypesByUUID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000005.gdbindexes
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000005.gdbtable
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000005.gdbtablx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000006.CatRelsByDestinationID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000006.CatRelsByOriginID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000006.CatRelsByType.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000006.FDO_UUID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000006.gdbindexes
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000006.gdbtable
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000006.gdbtablx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000007.CatRelTypesByBackwardLabel.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000007.CatRelTypesByDestItemTypeID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000007.CatRelTypesByForwardLabel.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000007.CatRelTypesByName.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000007.CatRelTypesByOriginItemTypeID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000007.CatRelTypesByUUID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000007.gdbindexes
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000007.gdbtable
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000007.gdbtablx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000009.EditingTemplatesByDatasetGUID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000009.EditingTemplatesByName.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000009.EditingTemplatesByType.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000009.FDO_GlobalID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000009.gdbindexes
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000009.gdbtable
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000009.gdbtablx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000a.EditingTemplateRelsByDestinationID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000a.EditingTemplateRelsByOriginID.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000a.EditingTemplateRelsByType.atx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000a.gdbindexes
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000a.gdbtable
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000a.gdbtablx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000b.gdbindexes
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000b.gdbtable
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000b.gdbtablx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000b.horizon
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000b.spx
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/gdb
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/timestamps
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-writer-report.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/pro-writer.log
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/source-bundle
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/source-bundle/scene.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/source-bundle/textures
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/source-bundle/textures/aefee6ad6a7c5cc986190df94b1da12a7487604a4cec3a8a7efb7002bc2fa686.jpg
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/source-direction.jpg
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/source-direction.png
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/jpeg-direction/source-preparation.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/legacy-writer-rejection.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/native-independent-pro
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/native-independent-pro/alpha-plane.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/native-independent-pro/binary_blender.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/native-independent-pro/color-cube.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/native-independent-pro/colored_quad.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/native-independent-pro/embedded_quad.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/native-independent-pro/instanced_mirror.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/native-independent-pro/mixed-materials.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/native-independent-pro/multi_material.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/native-independent-pro/no_material.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/native-independent-pro/seam-cube.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/native-independent-pro/sloped_normals.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/native-independent-pro/summary.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/native-independent-pro/textured_quad.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/native-independent-pro/uv-plane.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/native-independent-pro/uv_transform.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/native-integration.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/pro-integration.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/assessment.json
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/index.html
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/renders
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/renders/alpha-plane-top.png
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/renders/color-cube-oblique.png
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/renders/color-cube-opposite.png
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/renders/color-cube-top.png
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/renders/mixed-materials-oblique.png
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/renders/mixed-materials-top.png
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/renders/native-jpeg-plane-top.png
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/renders/native-uv-plane-top.png
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/renders/pro-jpeg-plane-top.png
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/renders/seam-cube-oblique.png
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/renders/seam-cube-opposite.png
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/renders/seam-cube-top.png
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/renders/standalone-copy-top.png
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/renders/uv-plane-top.png
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/sources
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/sources/uv-direction.jpg
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/sources/uv-direction.png
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/evidence/V0.1.1/visual/visual-project.json
+-- Installing: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/gui.md
+-- Installing: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/roadmap.md
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/validation-results.md
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/validation-v0.1.1.md
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./docs/visual-acceptance-setup.md
+-- Installing: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./README.md
+-- Installing: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./VERSION
+-- Installing: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./CHANGELOG.md
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/./THIRD_PARTY_NOTICES.md
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/licenses/ufbx/LICENSE
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/licenses/nlohmann/LICENSE.MIT
+  正在确定要还原的项目…
+  已还原 C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\backends\arcgis-pro\GeoModelBridge.ArcGISPro.csproj (用时 147 毫秒)。
+  GeoModelBridge.ArcGISPro -> C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist\bin\arcgis-pro\GeoModelBridge.ProWriter.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:01.23
+{"status":"available","backend":"arcgis-pro-corehost","version":"0.1.2","assembly_version":"13.6.0.0","license_initialized":true}
+-- The CXX compiler identification is MSVC 19.44.35226.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Users/Jasper/Documents/Codex/2026-09-20/gen/work/msvc-v011/toolchain/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (0.7s)
+-- Generating done (0.0s)
+-- Build files have been written to: C:/Users/Jasper/Documents/Codex/2026-09-20/gen/work/native-v012/build
+[1/4] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\C_\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\src\core.cpp.obj
+[2/4] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\images.cpp.obj
+[3/4] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\main.cpp.obj
+[4/4] Linking CXX executable GeoModelBridge.NativeWriter.exe
+-- Install configuration: "Release"
+-- Installing: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/bin/native-filegdb/GeoModelBridge.NativeWriter.exe
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/bin/native-filegdb/FileGDBAPI.dll
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/licenses/filegdb-api/Apache License.pdf
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/licenses/filegdb-api/userestrictions.txt
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/licenses/filegdb-api/README-windows_VS2022.txt
+-- Up-to-date: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist/licenses/filegdb-api/sdk-sources.json
+{"arcgis_pro_required":false,"backend":"native-filegdb","filegdb_api":"1.5.5","status":"available","version":"0.1.2"}
+GeoModelBridge built and tested. CLI: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\dist\bin\geomodelbridge.exe

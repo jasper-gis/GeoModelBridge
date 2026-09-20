@@ -1,0 +1,49 @@
+<Application x:Class="GeoModelBridge.Gui.App"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ StartupUri="MainWindow.xaml">
+ <Application.Resources>
+  <SolidColorBrush x:Key="Accent" Color="#087F8C"/>
+  <SolidColorBrush x:Key="Ink" Color="#18333E"/>
+  <SolidColorBrush x:Key="Muted" Color="#647B86"/>
+  <Style x:Key="Label" TargetType="TextBlock">
+   <Setter Property="FontSize" Value="13"/><Setter Property="Margin" Value="0,0,0,7"/>
+   <Setter Property="FontWeight" Value="SemiBold"/>
+  </Style>
+  <Style TargetType="TextBox">
+   <Setter Property="FontSize" Value="13"/><Setter Property="Padding" Value="10,9"/>
+   <Setter Property="BorderBrush" Value="#D5E1E6"/><Setter Property="BorderThickness" Value="1"/>
+   <Setter Property="Background" Value="White"/><Setter Property="Foreground" Value="{StaticResource Ink}"/>
+   <Setter Property="VerticalContentAlignment" Value="Center"/>
+   <Style.Triggers>
+    <Trigger Property="IsKeyboardFocusWithin" Value="True"><Setter Property="BorderBrush" Value="{StaticResource Accent}"/></Trigger>
+    <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.6"/></Trigger>
+   </Style.Triggers>
+  </Style>
+  <Style TargetType="Button">
+   <Setter Property="Padding" Value="16,9"/><Setter Property="MinHeight" Value="38"/>
+   <Setter Property="FontSize" Value="13"/><Setter Property="FontWeight" Value="SemiBold"/>
+   <Setter Property="Background" Value="White"/><Setter Property="Foreground" Value="{StaticResource Ink}"/>
+   <Setter Property="BorderBrush" Value="#D5E1E6"/><Setter Property="BorderThickness" Value="1"/>
+   <Setter Property="Cursor" Value="Hand"/>
+   <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
+    <Border x:Name="Surface" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+     <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" TextElement.Foreground="{TemplateBinding Foreground}"/>
+    </Border>
+    <ControlTemplate.Triggers>
+     <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Surface" Property="Opacity" Value="0.82"/></Trigger>
+     <Trigger Property="IsPressed" Value="True"><Setter TargetName="Surface" Property="Opacity" Value="0.65"/></Trigger>
+     <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Surface" Property="Opacity" Value="0.4"/></Trigger>
+     <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Surface" Property="BorderBrush" Value="#1CAAB7"/><Setter TargetName="Surface" Property="BorderThickness" Value="2"/></Trigger>
+    </ControlTemplate.Triggers>
+   </ControlTemplate></Setter.Value></Setter>
+  </Style>
+  <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+   <Setter Property="Background" Value="{StaticResource Accent}"/><Setter Property="BorderBrush" Value="{StaticResource Accent}"/><Setter Property="Foreground" Value="White"/>
+  </Style>
+  <Style x:Key="Card" TargetType="Border">
+   <Setter Property="Background" Value="White"/><Setter Property="BorderBrush" Value="#DFE8EC"/><Setter Property="BorderThickness" Value="1"/>
+   <Setter Property="CornerRadius" Value="10"/><Setter Property="Padding" Value="22"/>
+  </Style>
+ </Application.Resources>
+</Application>

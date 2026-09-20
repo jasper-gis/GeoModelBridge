@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "check": "V0.1.1 CLI refuses success from the actual historical V0.1.0 Pro DLL, even when the child successfully writes a GDB",
+  "legacy_report_version": "0.1.0",
+  "cli_exit_code": 6,
+  "stderr": "WARNING [UV_SETS_REDUCED] node:Quad: Only each material's selected UV coordinates are retained per corner; extra unsampled UV channels are omitted.\nERROR: Writer report does not prove a successful database readback.\n",
+  "retained_legacy_output_in_work": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\work\\legacy-writer-regression\\old-writer.gdb"
+}

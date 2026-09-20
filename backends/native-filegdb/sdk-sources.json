@@ -1,0 +1,66 @@
+{
+  "download_url": "https://raw.githubusercontent.com/Esri/file-geodatabase-api/140b50d379a3fa81a05c8107975ad5073ca0d702/FileGDB_API_1.5.5/FileGDB_API_VS2022.zip",
+  "retrieved_utc": "2026-09-20T13:01:06.9506631Z",
+  "source_commit": "140b50d379a3fa81a05c8107975ad5073ca0d702",
+  "version": "1.5.5.330",
+  "hashes": [
+    {
+      "path": "FileGDB_API_VS2022.zip",
+      "sha256": "ce70dade775eda1f6283fea5a79be985c32447c69964c36e1de012ff15ca5e2b"
+    },
+    {
+      "path": "sdk/bin64/FileGDBAPI.dll",
+      "sha256": "894d19ec53988f6378b13ad1ee02716c2853b7b1c7040efa0dfe71393be91400"
+    },
+    {
+      "path": "sdk/doc/html/extended_shape_buffer_format.pdf",
+      "sha256": "7dc12913a7c20c25b81d8d23e3232118c8a432359d07c8f402a3af9bacaeb90e"
+    },
+    {
+      "path": "sdk/license/Apache License.pdf",
+      "sha256": "331fd5ed2b766ea49a09e5e989060cee15fb90d100c43533229d1f3a05ee0891"
+    },
+    {
+      "path": "sdk/license/userestrictions.txt",
+      "sha256": "d37ba07c381e74950bf50e43041d477caf6a45d91d34348f3aa98f6ecff70959"
+    },
+    {
+      "path": "sdk/README-windows_VS2022.txt",
+      "sha256": "807abfc6cb030ed60928042eb031ced4473059a69da7489d3158d384fee75c09"
+    }
+  ],
+  "format_document": {
+    "date": "2012-06-20",
+    "within_sdk": "doc/html/extended_shape_buffer_format.pdf",
+    "title": "Extended Shape Buffer Format",
+    "pages": [
+      4,
+      10,
+      11,
+      12,
+      16
+    ]
+  },
+  "name": "Esri File Geodatabase API",
+  "license": "Apache-2.0",
+  "runtime_distribution": {
+    "optional_cmake_flag": "GMB_INSTALL_FILEGDB_RUNTIME",
+    "default": "OFF",
+    "excluded": [
+      "debug DLLs",
+      "PDBs",
+      "C# wrapper",
+      "SDK headers/libraries",
+      "MSVC toolchain",
+      "ArcGIS Pro dependencies"
+    ],
+    "included": [
+      "release bin64/FileGDBAPI.dll",
+      "license/Apache License.pdf",
+      "license/userestrictions.txt",
+      "README-windows_VS2022.txt"
+    ]
+  },
+  "repository": "https://github.com/Esri/file-geodatabase-api",
+  "schema_version": 1
+}

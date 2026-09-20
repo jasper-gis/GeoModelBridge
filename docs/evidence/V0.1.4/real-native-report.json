@@ -1,0 +1,3898 @@
+{
+  "backend": "native-filegdb",
+  "compatibility_adjustments": true,
+  "conversion_profile": "gis-static",
+  "coordinate_system": {
+    "name": "WGS_1984_Web_Mercator_Auxiliary_Sphere",
+    "projected": true,
+    "source_coordinates_assigned_without_reprojection": true,
+    "unit": "meter",
+    "wkid": 3857
+  },
+  "feature_class": "Models",
+  "filegdb_api": "1.5.5",
+  "input": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\work\\v014\\.gmb-work-3248562733\\bundle",
+  "limitations": [
+    "Requires the official FileGDB API 1.5.5 Windows x64 runtime and Microsoft C++ runtime; ArcGIS Pro is not invoked by conversion.",
+    "Material RGB quantizes to RGB8; opacity to whole-percent transparency; UV to float32; native FileGDB normals are checked against floor(float32(source)*128+0.5)/128.",
+    "PNG is decoded to straight RGBA8 by Windows WIC without ICC conversion; JPEG compressed bytes are preserved.",
+    "Coordinates already include source transform/origin and are assigned an explicit projected metre CRS; no reprojection or vertical datum conversion.",
+    "Graphical acceptance and software outside the tested SDK are separate from readback verification."
+  ],
+  "material_quantization": [
+    {
+      "double_sided": true,
+      "index": 0,
+      "name": "01 - Default",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1.0
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 1,
+      "name": "道路-白线",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1.0
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 2,
+      "name": "道路-黄线",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5058823823928833,
+        0.03921568766236305,
+        1.0
+      ],
+      "stored_rgb8": [
+        150,
+        129,
+        10
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 3,
+      "name": "CD-０１",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1.0
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 4,
+      "name": "ND-002",
+      "source_rgba": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1.0
+      ],
+      "stored_rgb8": [
+        204,
+        204,
+        204
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 5,
+      "name": "ND-004",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1.0
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 6,
+      "name": "ND-010",
+      "source_rgba": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1.0
+      ],
+      "stored_rgb8": [
+        204,
+        204,
+        204
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 7,
+      "name": "Material.002",
+      "source_rgba": [
+        0.2930224537849426,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "stored_rgb8": [
+        75,
+        0,
+        0
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 8,
+      "name": "Material",
+      "source_rgba": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1.0
+      ],
+      "stored_rgb8": [
+        204,
+        204,
+        204
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 9,
+      "name": "ND-009",
+      "source_rgba": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1.0
+      ],
+      "stored_rgb8": [
+        204,
+        204,
+        204
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 10,
+      "name": "杆件.004",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1.0
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 11,
+      "name": "杆件",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1.0
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 12,
+      "name": "红绿灯.002",
+      "source_rgba": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "stored_rgb8": [
+        255,
+        255,
+        255
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 13,
+      "name": "Material.001",
+      "source_rgba": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1.0
+      ],
+      "stored_rgb8": [
+        204,
+        204,
+        204
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 14,
+      "name": "ND-003",
+      "source_rgba": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1.0
+      ],
+      "stored_rgb8": [
+        204,
+        204,
+        204
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 15,
+      "name": "ND-004",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1.0
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 16,
+      "name": "箱体.002",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1.0
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 17,
+      "name": "ND-005",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1.0
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 18,
+      "name": "杆件.002",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1.0
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 19,
+      "name": "箱体.001",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1.0
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 20,
+      "name": "ND-006",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1.0
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 21,
+      "name": "Material.009",
+      "source_rgba": [
+        1.0,
+        0.6992594003677368,
+        0.044171057641506195,
+        1.0
+      ],
+      "stored_rgb8": [
+        255,
+        178,
+        11
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 22,
+      "name": "Material.005",
+      "source_rgba": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1.0
+      ],
+      "stored_rgb8": [
+        204,
+        204,
+        204
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 23,
+      "name": "Material.006",
+      "source_rgba": [
+        0.0010000000474974513,
+        0.0010000000474974513,
+        0.0010000000474974513,
+        1.0
+      ],
+      "stored_rgb8": [
+        0,
+        0,
+        0
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 24,
+      "name": "Material.013",
+      "source_rgba": [
+        0.024334460496902466,
+        0.024334460496902466,
+        0.024334460496902466,
+        1.0
+      ],
+      "stored_rgb8": [
+        6,
+        6,
+        6
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 25,
+      "name": "ND-008",
+      "source_rgba": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1.0
+      ],
+      "stored_rgb8": [
+        204,
+        204,
+        204
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 26,
+      "name": "Material.010",
+      "source_rgba": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "stored_rgb8": [
+        0,
+        0,
+        0
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 27,
+      "name": "Material.011",
+      "source_rgba": [
+        0.34769561886787415,
+        0.34769561886787415,
+        0.34769561886787415,
+        1.0
+      ],
+      "stored_rgb8": [
+        89,
+        89,
+        89
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 28,
+      "name": "Material.012",
+      "source_rgba": [
+        0.25813865661621094,
+        0.00035977698280476034,
+        0.00035977698280476034,
+        1.0
+      ],
+      "stored_rgb8": [
+        66,
+        0,
+        0
+      ],
+      "stored_transparency_percent": 0
+    },
+    {
+      "double_sided": true,
+      "index": 29,
+      "name": "ND-007",
+      "source_rgba": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1.0
+      ],
+      "stored_rgb8": [
+        204,
+        204,
+        204
+      ],
+      "stored_transparency_percent": 0
+    }
+  ],
+  "output": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\work\\v014\\real-native.gdb",
+  "reader_diagnostics": [
+    {
+      "code": "STATIC_POSE_USED",
+      "context": "scene",
+      "message": "GIS static profile uses the FBX saved static pose without evaluating an animation time; 144 animation curves and 48 animated properties are omitted. Deformers are not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:01 - Default",
+      "message": "GIS static profile omits ambient parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "JPEG_CONTAINER_NORMALIZED",
+      "context": "texture:贴图 #0",
+      "message": "Added an 18-byte JFIF marker to explicit Adobe YCbCr JPEG; original image scan and all original metadata bytes are retained without recompression. Source SHA-256 52f1762965d7f3c406d52ceb2c1f3ec9668dcada3a7beb1301b82e21220a49e8; stored container SHA-256 1fcfaae0131ffb6699681c4cc87b7d9baa6b4821cc874c97298a04649e5d00de.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:道路-白线",
+      "message": "GIS static profile omits ambient parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:道路-黄线",
+      "message": "GIS static profile omits ambient parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:CD-０１",
+      "message": "GIS static profile omits ambient parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:ND-002",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "JPEG_CONTAINER_NORMALIZED",
+      "context": "texture:base_color_texture",
+      "message": "Added an 18-byte JFIF marker to explicit Adobe YCbCr JPEG; original image scan and all original metadata bytes are retained without recompression. Source SHA-256 7a666d0d9275ddc9488737ab85c6c2bb470c74bbe19f146332f7bc32447dc58a; stored container SHA-256 3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:ND-010",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:Material.002",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:Material",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:ND-009",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:杆件.004",
+      "message": "GIS static profile omits reflection parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:Material.001",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:ND-003",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:箱体.002",
+      "message": "GIS static profile omits reflection parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "JPEG_CONTAINER_NORMALIZED",
+      "context": "texture:base_color_texture",
+      "message": "Added an 18-byte JFIF marker to explicit Adobe YCbCr JPEG; original image scan and all original metadata bytes are retained without recompression. Source SHA-256 6af32f0f80e383541bdb95a14e72930bf9226141e081d98370c119fd9ce012e1; stored container SHA-256 fa23cd7f25b4bc8381326ca195ab648441a3f4480c0a471fd3e41f75280ffd6e.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:Material.009",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:Material.005",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:Material.006",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:Material.013",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:ND-008",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:Material.011",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:Material.012",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    },
+    {
+      "code": "DEGENERATE_TRIANGLES_REMOVED",
+      "context": "node:路桩1",
+      "message": "GIS static profile removed 6 strictly zero-area triangles; no area tolerance was used.",
+      "severity": "warning"
+    },
+    {
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "context": "material:ND-007",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "severity": "warning"
+    }
+  ],
+  "source": "C:\\Users\\Jasper\\Documents\\Codex\\aaaaa\\ZT-01(1).FBX",
+  "status": "written_and_readback_verified",
+  "texture_coordinate_policy": "All patches with UVs: target U=source U, target V=1-source V. Source FBX UVs are bottom-origin and Esri first stored image row is t=0. Applies equally to original JPEG and top-down RGBA8 PNG.",
+  "textures": [
+    {
+      "bytes_per_pixel": 3,
+      "height": 4096,
+      "index": 0,
+      "readback_bytes_equal": true,
+      "source_sha256": "1fcfaae0131ffb6699681c4cc87b7d9baa6b4821cc874c97298a04649e5d00de",
+      "storage": "jpeg_original_bytes",
+      "stored_byte_length": 2275056,
+      "stored_sha256": "1fcfaae0131ffb6699681c4cc87b7d9baa6b4821cc874c97298a04649e5d00de",
+      "width": 4096
+    },
+    {
+      "bytes_per_pixel": 3,
+      "height": 512,
+      "index": 1,
+      "readback_bytes_equal": true,
+      "source_sha256": "079b8a07739e982ebc1a42295b883537977542c17ca61778200a70211225479c",
+      "storage": "jpeg_original_bytes",
+      "stored_byte_length": 185541,
+      "stored_sha256": "079b8a07739e982ebc1a42295b883537977542c17ca61778200a70211225479c",
+      "width": 512
+    },
+    {
+      "bytes_per_pixel": 3,
+      "height": 1170,
+      "index": 2,
+      "readback_bytes_equal": true,
+      "source_sha256": "3d40a57788c519db955b51a344b539c2cc44d33330af1f52ddba2bfeb51a79d6",
+      "storage": "jpeg_original_bytes",
+      "stored_byte_length": 405597,
+      "stored_sha256": "3d40a57788c519db955b51a344b539c2cc44d33330af1f52ddba2bfeb51a79d6",
+      "width": 2000
+    },
+    {
+      "bytes_per_pixel": 3,
+      "height": 512,
+      "index": 3,
+      "readback_bytes_equal": true,
+      "source_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+      "storage": "jpeg_original_bytes",
+      "stored_byte_length": 35675,
+      "stored_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+      "width": 512
+    },
+    {
+      "bytes_per_pixel": 4,
+      "height": 1170,
+      "index": 4,
+      "readback_bytes_equal": true,
+      "source_sha256": "0024c6266dafbfd7a9672986ae693013027b1d1c39bea6fcc36df0abff15279d",
+      "storage": "rgba8_uncompressed",
+      "stored_byte_length": 16047720,
+      "stored_sha256": "a7c2bfbab00fd1a3c3dd2dcf7f43b0f226ae1255a66948f9ee9dc453dc909c2a",
+      "width": 3429
+    },
+    {
+      "bytes_per_pixel": 4,
+      "height": 1080,
+      "index": 5,
+      "readback_bytes_equal": true,
+      "source_sha256": "7b46382b2c6560817b81b34a78f8eb5846b7bef57db5d37c894b98f054f7e10b",
+      "storage": "rgba8_uncompressed",
+      "stored_byte_length": 5568480,
+      "stored_sha256": "5e2e36f16676e4b533f583652452ccf79be59773530f65ccb8e7d744d9d2ab2a",
+      "width": 1289
+    },
+    {
+      "bytes_per_pixel": 4,
+      "height": 611,
+      "index": 6,
+      "readback_bytes_equal": true,
+      "source_sha256": "74b160d41c5bc0337bf1fec7b2a36186a9672408913166823790ea24a8826ca6",
+      "storage": "rgba8_uncompressed",
+      "stored_byte_length": 2698176,
+      "stored_sha256": "95e1fe873ba51e73f6e6ed33abc8dce78698fc48ee05faaf39f04ccbbe79c79f",
+      "width": 1104
+    },
+    {
+      "bytes_per_pixel": 4,
+      "height": 1413,
+      "index": 7,
+      "readback_bytes_equal": true,
+      "source_sha256": "697722143cd07641984e0b4b6f0bf9e01797c0e3048cb54955a592864dd15118",
+      "storage": "rgba8_uncompressed",
+      "stored_byte_length": 6104160,
+      "stored_sha256": "b7f27d9e5a1a1d2c1f0337d3dda54aa58299de0308596032dcbeeaf4a800e10d",
+      "width": 1080
+    },
+    {
+      "bytes_per_pixel": 4,
+      "height": 3000,
+      "index": 8,
+      "readback_bytes_equal": true,
+      "source_sha256": "8f6c9a5fb899bb9730dfeafa253f3403433f3da7b610d7ff928b785c81b2bfe7",
+      "storage": "rgba8_uncompressed",
+      "stored_byte_length": 36000000,
+      "stored_sha256": "c935b4c3344855818bd6bd476b3199bda190a129e24ae8cf28c82a6cf41abcac",
+      "width": 3000
+    },
+    {
+      "bytes_per_pixel": 3,
+      "height": 507,
+      "index": 9,
+      "readback_bytes_equal": true,
+      "source_sha256": "fa23cd7f25b4bc8381326ca195ab648441a3f4480c0a471fd3e41f75280ffd6e",
+      "storage": "jpeg_original_bytes",
+      "stored_byte_length": 57774,
+      "stored_sha256": "fa23cd7f25b4bc8381326ca195ab648441a3f4480c0a471fd3e41f75280ffd6e",
+      "width": 512
+    },
+    {
+      "bytes_per_pixel": 4,
+      "height": 572,
+      "index": 10,
+      "readback_bytes_equal": true,
+      "source_sha256": "c08bfcfe067fe849dc7aac5405afac6d044d8e089404f34fddec72e5fb0121d5",
+      "storage": "rgba8_uncompressed",
+      "stored_byte_length": 423280,
+      "stored_sha256": "72fc8c09d33c765dc26efc74e6896ddd126eaa1261873f6247dfb869eee4e01e",
+      "width": 185
+    },
+    {
+      "bytes_per_pixel": 4,
+      "height": 540,
+      "index": 11,
+      "readback_bytes_equal": true,
+      "source_sha256": "cbcbf05b389e3ad7cdd15e7d2a6702ae7b085d576d90874eae7a5545a3219233",
+      "storage": "rgba8_uncompressed",
+      "stored_byte_length": 2332800,
+      "stored_sha256": "a7e8df6cd5d6b86ec0fa9b8913ca8d6a8720d468c3ad5ce372bcea9735251d72",
+      "width": 1080
+    }
+  ],
+  "verification": {
+    "checks": [
+      {
+        "materials": 1,
+        "max_uv_error": 5.960464477539063e-08,
+        "mesh_index": 0,
+        "mesh_name": "路面_001",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.31043547848457137,
+          "max_component_error": 0.0039061201983713973,
+          "quantized_corner_normal_count": 3720,
+          "renormalized": false,
+          "source_corner_normal_count": 3720,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "fde71fd283d213b74b774993df6aea488cd3c60c13277323deb6ec0a94288242"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 3720,
+            "source_material_index": 0,
+            "texture_sha256": "1fcfaae0131ffb6699681c4cc87b7d9baa6b4821cc874c97298a04649e5d00de",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 3720
+          }
+        ],
+        "readback_shape_sha256": "bb7de13b57572462987183a7bcfa4ce555e686bdd046dd113faa43e725385960",
+        "source_node": "57",
+        "textured_patches": 1,
+        "written_corner_vertices": 3720
+      },
+      {
+        "materials": 1,
+        "max_uv_error": 0.0,
+        "mesh_index": 1,
+        "mesh_name": "标线3",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.2880772046386802,
+          "max_component_error": 0.003798484641551081,
+          "quantized_corner_normal_count": 924,
+          "renormalized": false,
+          "source_corner_normal_count": 936,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "765ee2fea8177674f6fd6dc82887114e5954d193bebee527836b82276225314f"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 936,
+            "source_material_index": 1,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 0
+          }
+        ],
+        "readback_shape_sha256": "68d3332adf9d3c8e558c10c246be93d0e14d90b5211c1cc5ca2c685405c7c6b4",
+        "source_node": "58",
+        "textured_patches": 0,
+        "written_corner_vertices": 936
+      },
+      {
+        "materials": 1,
+        "max_uv_error": 0.0,
+        "mesh_index": 2,
+        "mesh_name": "标线2",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.32627023830699886,
+          "max_component_error": 0.00390417970475887,
+          "quantized_corner_normal_count": 1332,
+          "renormalized": false,
+          "source_corner_normal_count": 1332,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "5a7b43d2d9549b89c7fab8c2f0d61c936e5119734e2d10055862ef9ab13b2722"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              129,
+              10
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 1332,
+            "source_material_index": 2,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 0
+          }
+        ],
+        "readback_shape_sha256": "d9a8840b545bfae80d90527b877f11705819aa6dd1ef55a3e928c6e6fc1c1920",
+        "source_node": "59",
+        "textured_patches": 0,
+        "written_corner_vertices": 1332
+      },
+      {
+        "materials": 1,
+        "max_uv_error": 0.0,
+        "mesh_index": 3,
+        "mesh_name": "标线4",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.310890188877803,
+          "max_component_error": 0.0038978206742318333,
+          "quantized_corner_normal_count": 1944,
+          "renormalized": false,
+          "source_corner_normal_count": 1944,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "67c24b5c348e4419403530de754c316566873e5cbce897e4b2bda6403f4104fb"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 1944,
+            "source_material_index": 1,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 0
+          }
+        ],
+        "readback_shape_sha256": "a207149976e18e40aeb2e744324350a7706936f5af4facf74af006bc8b699104",
+        "source_node": "60",
+        "textured_patches": 0,
+        "written_corner_vertices": 1944
+      },
+      {
+        "materials": 1,
+        "max_uv_error": 9.5367431640625e-07,
+        "mesh_index": 4,
+        "mesh_name": "草地-001",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.3162443013880838,
+          "max_component_error": 0.00389467666629692,
+          "quantized_corner_normal_count": 2184,
+          "renormalized": false,
+          "source_corner_normal_count": 2184,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "25a9bc1736e89333e331b7f9038a56e6eec2e956c4699d2ff67f1d4f5d950705"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 2184,
+            "source_material_index": 3,
+            "texture_sha256": "079b8a07739e982ebc1a42295b883537977542c17ca61778200a70211225479c",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 2184
+          }
+        ],
+        "readback_shape_sha256": "009282de28e35a41b9ff09a6adada45aee001eef8da8a9f6f3437e30675ed32c",
+        "source_node": "61",
+        "textured_patches": 1,
+        "written_corner_vertices": 2184
+      },
+      {
+        "materials": 1,
+        "max_uv_error": 0.0,
+        "mesh_index": 5,
+        "mesh_name": "标线5",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.3131728501055772,
+          "max_component_error": 0.0038986181766921257,
+          "quantized_corner_normal_count": 1272,
+          "renormalized": false,
+          "source_corner_normal_count": 1272,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "a4ecb481ad8ed96e09835f4e7954e0be2c0d022ac3506d8690c8a4e92e48bc95"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              129,
+              10
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 1272,
+            "source_material_index": 2,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 0
+          }
+        ],
+        "readback_shape_sha256": "45d094e9a6aa69b631e2567ffa95abbd3f0a13a3bbc02aa4227c53856928c52f",
+        "source_node": "62",
+        "textured_patches": 0,
+        "written_corner_vertices": 1272
+      },
+      {
+        "materials": 1,
+        "max_uv_error": 0.0,
+        "mesh_index": 6,
+        "mesh_name": "标线1",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.2911292745525937,
+          "max_component_error": 0.0037090453096184583,
+          "quantized_corner_normal_count": 474,
+          "renormalized": false,
+          "source_corner_normal_count": 480,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "fd1ca782af3715ce2ac3f5c43a9c8879a01103085d3082dfac4a5d76df610e5c"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 480,
+            "source_material_index": 1,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 0
+          }
+        ],
+        "readback_shape_sha256": "99ff8a210bacc0ec908e6371554bc29a54f689e6a887e80cee3665b93c6c4652",
+        "source_node": "63",
+        "textured_patches": 0,
+        "written_corner_vertices": 480
+      },
+      {
+        "materials": 1,
+        "max_uv_error": 5.960464477539063e-08,
+        "mesh_index": 7,
+        "mesh_name": "道牙",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.3069352595920994,
+          "max_component_error": 0.003904449614622829,
+          "quantized_corner_normal_count": 2922,
+          "renormalized": false,
+          "source_corner_normal_count": 2952,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "434d16cb707ba1e3ec11ddc4438e196577a81249122f7071ef8c0eefefb136af"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 2952,
+            "source_material_index": 0,
+            "texture_sha256": "1fcfaae0131ffb6699681c4cc87b7d9baa6b4821cc874c97298a04649e5d00de",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 2952
+          }
+        ],
+        "readback_shape_sha256": "42ff413545e5be7b8b14d3b669d47ff8a5f477b07749ba241a81f1625f76f6e1",
+        "source_node": "64",
+        "textured_patches": 1,
+        "written_corner_vertices": 2952
+      },
+      {
+        "materials": 3,
+        "max_uv_error": 2.384185791015625e-07,
+        "mesh_index": 8,
+        "mesh_name": "红绿灯1",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.31810649948408065,
+          "max_component_error": 0.0038957096121213786,
+          "quantized_corner_normal_count": 1260,
+          "renormalized": false,
+          "source_corner_normal_count": 1260,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "07c283c38f2b36dac85e115b88ad6380c2c6aca54c41dc4f1f11f19d31c71e5f"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 396,
+            "source_material_index": 4,
+            "texture_sha256": "3d40a57788c519db955b51a344b539c2cc44d33330af1f52ddba2bfeb51a79d6",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 396
+          },
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 840,
+            "source_material_index": 5,
+            "texture_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 840
+          },
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 2,
+            "patch_index": 2,
+            "point_count": 24,
+            "source_material_index": 6,
+            "texture_sha256": "a7c2bfbab00fd1a3c3dd2dcf7f43b0f226ae1255a66948f9ee9dc453dc909c2a",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 24
+          }
+        ],
+        "readback_shape_sha256": "598b06003e62bfa66124a11170641434cd3c41fc74eba021183c80e02cb33b4e",
+        "source_node": "65",
+        "textured_patches": 3,
+        "written_corner_vertices": 1260
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 9,
+        "mesh_name": "钢管警示柱3",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_component_error": 0.0038255845502334074,
+          "quantized_corner_normal_count": 858,
+          "renormalized": false,
+          "source_corner_normal_count": 858,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              75,
+              0,
+              0
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 474,
+            "source_material_index": 7,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 474
+          },
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 384,
+            "source_material_index": 8,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 384
+          }
+        ],
+        "readback_shape_sha256": "bfa578bca09db1efea65c18603dbbe15ca1c1cf4c903ce721ec919fe95095ec8",
+        "source_node": "66",
+        "textured_patches": 0,
+        "written_corner_vertices": 858
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 10,
+        "mesh_name": "钢管警示柱2",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_component_error": 0.0038255845502334074,
+          "quantized_corner_normal_count": 858,
+          "renormalized": false,
+          "source_corner_normal_count": 858,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              75,
+              0,
+              0
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 474,
+            "source_material_index": 7,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 474
+          },
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 384,
+            "source_material_index": 8,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 384
+          }
+        ],
+        "readback_shape_sha256": "4508abc6a3ef257af44d2d73632281b18ed94964408f5e0b7a6ce76ab41a16d0",
+        "source_node": "67",
+        "textured_patches": 0,
+        "written_corner_vertices": 858
+      },
+      {
+        "materials": 3,
+        "max_uv_error": 2.384185791015625e-07,
+        "mesh_index": 11,
+        "mesh_name": "路牌4",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.2613024330166335,
+          "max_component_error": 0.003770610261505797,
+          "quantized_corner_normal_count": 4334,
+          "renormalized": false,
+          "source_corner_normal_count": 4524,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "36c851586a1bf96ea4212e3238eedc9471a19a31cff88ab0d7afa63222605318"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 372,
+            "source_material_index": 9,
+            "texture_sha256": "5e2e36f16676e4b533f583652452ccf79be59773530f65ccb8e7d744d9d2ab2a",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 372
+          },
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 840,
+            "source_material_index": 5,
+            "texture_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 840
+          },
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 2,
+            "patch_index": 2,
+            "point_count": 3312,
+            "source_material_index": 10,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 3312
+          }
+        ],
+        "readback_shape_sha256": "0860183736b75690b4fec8fec5dc22a15d71bab3759cb7258dd1776593ed338d",
+        "source_node": "68",
+        "textured_patches": 2,
+        "written_corner_vertices": 4524
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 12,
+        "mesh_name": "钢管警示柱1",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_component_error": 0.0038255845502334074,
+          "quantized_corner_normal_count": 858,
+          "renormalized": false,
+          "source_corner_normal_count": 858,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              75,
+              0,
+              0
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 474,
+            "source_material_index": 7,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 474
+          },
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 384,
+            "source_material_index": 8,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 384
+          }
+        ],
+        "readback_shape_sha256": "1d3bc1878a2b3d222d3646c6d3b7928dcb312ef85fe1a24a41cea1f8476be5a6",
+        "source_node": "69",
+        "textured_patches": 0,
+        "written_corner_vertices": 858
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 13,
+        "mesh_name": "钢管警示柱4",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_component_error": 0.0038255845502334074,
+          "quantized_corner_normal_count": 858,
+          "renormalized": false,
+          "source_corner_normal_count": 858,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              75,
+              0,
+              0
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 474,
+            "source_material_index": 7,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 474
+          },
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 384,
+            "source_material_index": 8,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 384
+          }
+        ],
+        "readback_shape_sha256": "107f5b9bf39d2ae1fe6ecefe1b71e27e82bcc2b974ff42631919223d000cd1cd",
+        "source_node": "70",
+        "textured_patches": 0,
+        "written_corner_vertices": 858
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 14,
+        "mesh_name": "路灯8",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.35900954685218456,
+          "max_component_error": 0.0039049168081587426,
+          "quantized_corner_normal_count": 7608,
+          "renormalized": false,
+          "source_corner_normal_count": 7710,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "da3654a9b7280cd93a1487727823f8f395fc37da250334c6931bf0f404053f2a"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 7374,
+            "source_material_index": 11,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 7374
+          },
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 336,
+            "source_material_index": 12,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 336
+          }
+        ],
+        "readback_shape_sha256": "8c4c9fc8bb970f23a738728038de26f6644aba4680fa5d8e045a16431a4e9a0f",
+        "source_node": "71",
+        "textured_patches": 0,
+        "written_corner_vertices": 7710
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 15,
+        "mesh_name": "路牌1",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.3239867555025003,
+          "max_component_error": 0.0038501442609011893,
+          "quantized_corner_normal_count": 3048,
+          "renormalized": false,
+          "source_corner_normal_count": 3048,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "f35d753c5e55ccc0504350f829af7af5849a5aad8dc2889509d5be9d1fabd046"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 864,
+            "source_material_index": 13,
+            "texture_sha256": "95e1fe873ba51e73f6e6ed33abc8dce78698fc48ee05faaf39f04ccbbe79c79f",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 864
+          },
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 2184,
+            "source_material_index": 5,
+            "texture_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 2184
+          }
+        ],
+        "readback_shape_sha256": "c70a75a400f038ea86f5e53a946ea5b694d80dbb6839931403c1737a9fee57f1",
+        "source_node": "72",
+        "textured_patches": 2,
+        "written_corner_vertices": 3048
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 16,
+        "mesh_name": "路灯9",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.35900954685218456,
+          "max_component_error": 0.0039049168081587426,
+          "quantized_corner_normal_count": 7608,
+          "renormalized": false,
+          "source_corner_normal_count": 7710,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "da3654a9b7280cd93a1487727823f8f395fc37da250334c6931bf0f404053f2a"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 7374,
+            "source_material_index": 11,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 7374
+          },
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 336,
+            "source_material_index": 12,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 336
+          }
+        ],
+        "readback_shape_sha256": "49298fa319416678c0cbdd2624d55750027d2e03cc4d7761dc43a73a9d9e648f",
+        "source_node": "73",
+        "textured_patches": 0,
+        "written_corner_vertices": 7710
+      },
+      {
+        "materials": 1,
+        "max_uv_error": 0.0,
+        "mesh_index": 17,
+        "mesh_name": "路牌3",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.040422490722021566,
+          "max_component_error": 0.0013935728689402627,
+          "quantized_corner_normal_count": 24,
+          "renormalized": false,
+          "source_corner_normal_count": 36,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "a00700bc99e6f1acdc039c6180edddefdb15ca02f6695022f879eca8b083c6dc"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 36,
+            "source_material_index": 14,
+            "texture_sha256": "b7f27d9e5a1a1d2c1f0337d3dda54aa58299de0308596032dcbeeaf4a800e10d",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 36
+          }
+        ],
+        "readback_shape_sha256": "be0b97983629c32fe7433b9f4886581e6c365fa318084908aa4dc0739e450b75",
+        "source_node": "74",
+        "textured_patches": 1,
+        "written_corner_vertices": 36
+      },
+      {
+        "materials": 3,
+        "max_uv_error": 2.384185791015625e-07,
+        "mesh_index": 18,
+        "mesh_name": "路牌6",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.2431087899202642,
+          "max_component_error": 0.0038283064151691804,
+          "quantized_corner_normal_count": 3179,
+          "renormalized": false,
+          "source_corner_normal_count": 3276,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "96ff6aece9039ca9452ccdccd170d5fc32c7a36f35acbd863d5abcbeb8ca861f"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 2616,
+            "source_material_index": 15,
+            "texture_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 2616
+          },
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 246,
+            "source_material_index": 16,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 246
+          },
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 2,
+            "patch_index": 2,
+            "point_count": 414,
+            "source_material_index": 17,
+            "texture_sha256": "c935b4c3344855818bd6bd476b3199bda190a129e24ae8cf28c82a6cf41abcac",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 414
+          }
+        ],
+        "readback_shape_sha256": "b82b0e2ace9e56c51cf2c7c2133c37506e4d2251a72d41d27d3d4b75cdbfb038",
+        "source_node": "75",
+        "textured_patches": 2,
+        "written_corner_vertices": 3276
+      },
+      {
+        "materials": 3,
+        "max_uv_error": 2.384185791015625e-07,
+        "mesh_index": 19,
+        "mesh_name": "路牌7",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.2809411153259144,
+          "max_component_error": 0.0038805382317258497,
+          "quantized_corner_normal_count": 2937,
+          "renormalized": false,
+          "source_corner_normal_count": 3096,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "6c80f5c6343dc69442430eff57524cc4830c4eac0fd72f9b93ac006b3ea3d668"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 2544,
+            "source_material_index": 18,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 2544
+          },
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 276,
+            "source_material_index": 19,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 276
+          },
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 2,
+            "patch_index": 2,
+            "point_count": 276,
+            "source_material_index": 20,
+            "texture_sha256": "fa23cd7f25b4bc8381326ca195ab648441a3f4480c0a471fd3e41f75280ffd6e",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 276
+          }
+        ],
+        "readback_shape_sha256": "78f9a1e008e1b1749655dd6652868421c143513d8973a4442a3095c9e49e5327",
+        "source_node": "76",
+        "textured_patches": 1,
+        "written_corner_vertices": 3096
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 20,
+        "mesh_name": "路灯10",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.3481564551690742,
+          "max_component_error": 0.0039060832561765846,
+          "quantized_corner_normal_count": 8184,
+          "renormalized": false,
+          "source_corner_normal_count": 8238,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "56cfa774d772014662d13117789b389c9f00e71fd520ca76ddef1ba2f130158b"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 7902,
+            "source_material_index": 11,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 7902
+          },
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 336,
+            "source_material_index": 12,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 336
+          }
+        ],
+        "readback_shape_sha256": "4286a9c86c9f89196b97b42754d1f66b89dc77d60a1703ac2f5f17244eecc249",
+        "source_node": "77",
+        "textured_patches": 0,
+        "written_corner_vertices": 8238
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 21,
+        "mesh_name": "钢管警示柱7",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_component_error": 0.0038255845502334074,
+          "quantized_corner_normal_count": 858,
+          "renormalized": false,
+          "source_corner_normal_count": 858,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              75,
+              0,
+              0
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 474,
+            "source_material_index": 7,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 474
+          },
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 384,
+            "source_material_index": 8,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 384
+          }
+        ],
+        "readback_shape_sha256": "f59680ecb54908867b3c739e1aef6a9c7494f400298cb59c89dba4c3becf6fa8",
+        "source_node": "78",
+        "textured_patches": 0,
+        "written_corner_vertices": 858
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 22,
+        "mesh_name": "钢管警示柱8",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_component_error": 0.0038255845502334074,
+          "quantized_corner_normal_count": 858,
+          "renormalized": false,
+          "source_corner_normal_count": 858,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              75,
+              0,
+              0
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 474,
+            "source_material_index": 7,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 474
+          },
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 384,
+            "source_material_index": 8,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 384
+          }
+        ],
+        "readback_shape_sha256": "621d0f43a95687c14c9c09ba05bdf1965550a96b6cafa1a516a43aadc113556c",
+        "source_node": "79",
+        "textured_patches": 0,
+        "written_corner_vertices": 858
+      },
+      {
+        "materials": 1,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 23,
+        "mesh_name": "黄色警示柱2",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.29225938827047226,
+          "max_component_error": 0.003831585293905815,
+          "quantized_corner_normal_count": 1050,
+          "renormalized": false,
+          "source_corner_normal_count": 1050,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "462a1fd0b96922465897a2607465542c4cbfda7b4f18ac1b469cce09df29f777"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              255,
+              178,
+              11
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 1050,
+            "source_material_index": 21,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 1050
+          }
+        ],
+        "readback_shape_sha256": "0ae559ef5d4e081ef1fed1a88b6b076909b4ca1fde9b116474bfa85053128c6f",
+        "source_node": "80",
+        "textured_patches": 0,
+        "written_corner_vertices": 1050
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 24,
+        "mesh_name": "路灯11",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.3481564551690742,
+          "max_component_error": 0.0039060832561765846,
+          "quantized_corner_normal_count": 8184,
+          "renormalized": false,
+          "source_corner_normal_count": 8238,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "56cfa774d772014662d13117789b389c9f00e71fd520ca76ddef1ba2f130158b"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 7902,
+            "source_material_index": 11,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 7902
+          },
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 336,
+            "source_material_index": 12,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 336
+          }
+        ],
+        "readback_shape_sha256": "3960551023376122c3c2b5decc18fa3a17f46bdb0778a58d0a79b5e828df4403",
+        "source_node": "81",
+        "textured_patches": 0,
+        "written_corner_vertices": 8238
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 25,
+        "mesh_name": "轮廓标3",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.267598822996242,
+          "max_component_error": 0.003572434665941815,
+          "quantized_corner_normal_count": 348,
+          "renormalized": false,
+          "source_corner_normal_count": 348,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "935f48c965c41271d9beef985a89c042a2823c8d8aa5d9decf8f8fe73b4f3452"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 258,
+            "source_material_index": 22,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 258
+          },
+          {
+            "color_rgb8": [
+              0,
+              0,
+              0
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 90,
+            "source_material_index": 23,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 90
+          }
+        ],
+        "readback_shape_sha256": "a2a46270f045b34bebb69976c072399ff254380ff8e53387afdbcbc8a15430bc",
+        "source_node": "82",
+        "textured_patches": 0,
+        "written_corner_vertices": 348
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 26,
+        "mesh_name": "路灯12",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.3481564551690742,
+          "max_component_error": 0.0039060832561765846,
+          "quantized_corner_normal_count": 8184,
+          "renormalized": false,
+          "source_corner_normal_count": 8238,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "56cfa774d772014662d13117789b389c9f00e71fd520ca76ddef1ba2f130158b"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 7902,
+            "source_material_index": 11,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 7902
+          },
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 336,
+            "source_material_index": 12,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 336
+          }
+        ],
+        "readback_shape_sha256": "00bd3038953de22f5f7b044f00c8736412a9bb910ca3676a366415167c584248",
+        "source_node": "83",
+        "textured_patches": 0,
+        "written_corner_vertices": 8238
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 27,
+        "mesh_name": "钢管警示柱9",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_component_error": 0.0038255845502334074,
+          "quantized_corner_normal_count": 858,
+          "renormalized": false,
+          "source_corner_normal_count": 858,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              75,
+              0,
+              0
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 474,
+            "source_material_index": 7,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 474
+          },
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 384,
+            "source_material_index": 8,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 384
+          }
+        ],
+        "readback_shape_sha256": "d67677372e5328fc26da3113326a07f42ed9b55dc0cf77b19076a913186af426",
+        "source_node": "84",
+        "textured_patches": 0,
+        "written_corner_vertices": 858
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 28,
+        "mesh_name": "钢管警示柱10",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_component_error": 0.0038255845502334074,
+          "quantized_corner_normal_count": 858,
+          "renormalized": false,
+          "source_corner_normal_count": 858,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              75,
+              0,
+              0
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 474,
+            "source_material_index": 7,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 474
+          },
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 384,
+            "source_material_index": 8,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 384
+          }
+        ],
+        "readback_shape_sha256": "fd850dd2be134ac67938a694cd4516388bb9b49813e7673e8c78b6e59668ce08",
+        "source_node": "85",
+        "textured_patches": 0,
+        "written_corner_vertices": 858
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 29,
+        "mesh_name": "轮廓标4",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.2675940204231538,
+          "max_component_error": 0.0035724102670564584,
+          "quantized_corner_normal_count": 348,
+          "renormalized": false,
+          "source_corner_normal_count": 348,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "2001ec90a003e73d5c1369753337c336b71cd128ebc40bd9e42840fcef697f9d"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 258,
+            "source_material_index": 22,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 258
+          },
+          {
+            "color_rgb8": [
+              0,
+              0,
+              0
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 90,
+            "source_material_index": 23,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 90
+          }
+        ],
+        "readback_shape_sha256": "1c803914dff7faf975ca03db1abdc204d9a1e1f984e398a1a62c72637232af28",
+        "source_node": "86",
+        "textured_patches": 0,
+        "written_corner_vertices": 348
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 30,
+        "mesh_name": "钢管警示柱12",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_component_error": 0.0038255845502334074,
+          "quantized_corner_normal_count": 858,
+          "renormalized": false,
+          "source_corner_normal_count": 858,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              75,
+              0,
+              0
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 474,
+            "source_material_index": 7,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 474
+          },
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 384,
+            "source_material_index": 8,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 384
+          }
+        ],
+        "readback_shape_sha256": "4eb91d42750372667b270a19f125efcbf4baa29717c9acc31234dab3c5a93677",
+        "source_node": "87",
+        "textured_patches": 0,
+        "written_corner_vertices": 858
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 31,
+        "mesh_name": "钢管警示柱11",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_component_error": 0.0038255845502334074,
+          "quantized_corner_normal_count": 858,
+          "renormalized": false,
+          "source_corner_normal_count": 858,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              75,
+              0,
+              0
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 474,
+            "source_material_index": 7,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 474
+          },
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 384,
+            "source_material_index": 8,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 384
+          }
+        ],
+        "readback_shape_sha256": "c58359a89e321339992ff8506878280bbbe7727fbc638874b185a0fe72972884",
+        "source_node": "88",
+        "textured_patches": 0,
+        "written_corner_vertices": 858
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 32,
+        "mesh_name": "路灯13",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.3481564551690742,
+          "max_component_error": 0.0039060832561765846,
+          "quantized_corner_normal_count": 8184,
+          "renormalized": false,
+          "source_corner_normal_count": 8238,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "56cfa774d772014662d13117789b389c9f00e71fd520ca76ddef1ba2f130158b"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 7902,
+            "source_material_index": 11,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 7902
+          },
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 336,
+            "source_material_index": 12,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 336
+          }
+        ],
+        "readback_shape_sha256": "9cd87604c140df206e45f73e4a1b1e3696a3a2488a21ce8d0a508f13baf05388",
+        "source_node": "89",
+        "textured_patches": 0,
+        "written_corner_vertices": 8238
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 33,
+        "mesh_name": "村碑1",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.31913753290445457,
+          "max_component_error": 0.003871174462348581,
+          "quantized_corner_normal_count": 270,
+          "renormalized": false,
+          "source_corner_normal_count": 300,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "7c86c3cdcb0fc37cf8c9309bd3c805d474c70fa9ceaeb80b1905ccb530595cf0"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              6,
+              6,
+              6
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 78,
+            "source_material_index": 24,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 78
+          },
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 222,
+            "source_material_index": 25,
+            "texture_sha256": "72fc8c09d33c765dc26efc74e6896ddd126eaa1261873f6247dfb869eee4e01e",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 222
+          }
+        ],
+        "readback_shape_sha256": "4ab2b3ff41e28067bc27b641ca96732cb73a5fce62cbcfbf9a941fa223202389",
+        "source_node": "90",
+        "textured_patches": 1,
+        "written_corner_vertices": 300
+      },
+      {
+        "materials": 3,
+        "max_uv_error": 2.384185791015625e-07,
+        "mesh_index": 34,
+        "mesh_name": "路牌5",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.2613216090944753,
+          "max_component_error": 0.0037706102615058246,
+          "quantized_corner_normal_count": 4334,
+          "renormalized": false,
+          "source_corner_normal_count": 4524,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "4a5f1552760523ab9c99dec7a4b1eb5caa9f1fb9d63466762a03227ef4b0e45f"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 372,
+            "source_material_index": 9,
+            "texture_sha256": "5e2e36f16676e4b533f583652452ccf79be59773530f65ccb8e7d744d9d2ab2a",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 372
+          },
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 840,
+            "source_material_index": 5,
+            "texture_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 840
+          },
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 2,
+            "patch_index": 2,
+            "point_count": 3312,
+            "source_material_index": 10,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 3312
+          }
+        ],
+        "readback_shape_sha256": "e970c1d6737449cee24128424d8259f399ab8367b206f9a8deb55aaa3ef67d21",
+        "source_node": "91",
+        "textured_patches": 2,
+        "written_corner_vertices": 4524
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 35,
+        "mesh_name": "路灯14",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.353773926161813,
+          "max_component_error": 0.0039061159013150104,
+          "quantized_corner_normal_count": 8184,
+          "renormalized": false,
+          "source_corner_normal_count": 8238,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "0f783e297619fe40bce64b03d0bd9431113711fc94bfb94e8e4dc761ebcaf71a"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 7902,
+            "source_material_index": 11,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 7902
+          },
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 336,
+            "source_material_index": 12,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 336
+          }
+        ],
+        "readback_shape_sha256": "5763b79bce9cfa58ad237afa1e3936980e56ba4f10b16519c185d40aa3e7ae81",
+        "source_node": "92",
+        "textured_patches": 0,
+        "written_corner_vertices": 8238
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 36,
+        "mesh_name": "路灯15",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.353773926161813,
+          "max_component_error": 0.0039061159013150104,
+          "quantized_corner_normal_count": 8184,
+          "renormalized": false,
+          "source_corner_normal_count": 8238,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "0f783e297619fe40bce64b03d0bd9431113711fc94bfb94e8e4dc761ebcaf71a"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 7902,
+            "source_material_index": 11,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 7902
+          },
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 336,
+            "source_material_index": 12,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 336
+          }
+        ],
+        "readback_shape_sha256": "71c870bd98e1be44b5de84f1295dd3bf2bc0ba41e3d9e64a62d74c19c474a66b",
+        "source_node": "93",
+        "textured_patches": 0,
+        "written_corner_vertices": 8238
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 37,
+        "mesh_name": "路灯16",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.353773926161813,
+          "max_component_error": 0.0039061159013150104,
+          "quantized_corner_normal_count": 8184,
+          "renormalized": false,
+          "source_corner_normal_count": 8238,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "0f783e297619fe40bce64b03d0bd9431113711fc94bfb94e8e4dc761ebcaf71a"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 7902,
+            "source_material_index": 11,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 7902
+          },
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 336,
+            "source_material_index": 12,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 336
+          }
+        ],
+        "readback_shape_sha256": "9f863cb8746b8f29429abe659141e2563d964a0d5d7b61a734dca886bbf7a02a",
+        "source_node": "94",
+        "textured_patches": 0,
+        "written_corner_vertices": 8238
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 38,
+        "mesh_name": "路灯17",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.353773926161813,
+          "max_component_error": 0.0039061159013150104,
+          "quantized_corner_normal_count": 8184,
+          "renormalized": false,
+          "source_corner_normal_count": 8238,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "0f783e297619fe40bce64b03d0bd9431113711fc94bfb94e8e4dc761ebcaf71a"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 7902,
+            "source_material_index": 11,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 7902
+          },
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 336,
+            "source_material_index": 12,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 336
+          }
+        ],
+        "readback_shape_sha256": "47de4d5711799410f345cbb9864cbb4cb934c3f305c428b4dbcc7c78f25ce56f",
+        "source_node": "95",
+        "textured_patches": 0,
+        "written_corner_vertices": 8238
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 39,
+        "mesh_name": "路灯18",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.35191638227298144,
+          "max_component_error": 0.003906165205616041,
+          "quantized_corner_normal_count": 7608,
+          "renormalized": false,
+          "source_corner_normal_count": 7710,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "3f97f30b2e42cc8015ee88eeec43f547e6d3a240ef848bac097633bfddab2cd7"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 7374,
+            "source_material_index": 11,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 7374
+          },
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 336,
+            "source_material_index": 12,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 336
+          }
+        ],
+        "readback_shape_sha256": "bb7c89a1e02aff773d48360f4a66503bcb9726538e2963d634da452bcc7a13dc",
+        "source_node": "96",
+        "textured_patches": 0,
+        "written_corner_vertices": 7710
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 40,
+        "mesh_name": "路灯19",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.35191638227298144,
+          "max_component_error": 0.003906165205616041,
+          "quantized_corner_normal_count": 7608,
+          "renormalized": false,
+          "source_corner_normal_count": 7710,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "3f97f30b2e42cc8015ee88eeec43f547e6d3a240ef848bac097633bfddab2cd7"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 7374,
+            "source_material_index": 11,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 7374
+          },
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 336,
+            "source_material_index": 12,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 336
+          }
+        ],
+        "readback_shape_sha256": "45708c764bb764d6f521ae9de75b92fc498db61b4fa8dce2605f580eaf2103e3",
+        "source_node": "97",
+        "textured_patches": 0,
+        "written_corner_vertices": 7710
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 41,
+        "mesh_name": "路灯20",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.35064656218438295,
+          "max_component_error": 0.0039050173199112748,
+          "quantized_corner_normal_count": 7608,
+          "renormalized": false,
+          "source_corner_normal_count": 7710,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "5fe1bfec5ebdbcb09a97eeb018ebd2b2c97b32e2d95c626558eb779688de3389"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 7374,
+            "source_material_index": 11,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 7374
+          },
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 336,
+            "source_material_index": 12,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 336
+          }
+        ],
+        "readback_shape_sha256": "dfe9e612d96b25c46b2364d65e201bcc8a54bb07e4e74a40c6042c39a25fa751",
+        "source_node": "98",
+        "textured_patches": 0,
+        "written_corner_vertices": 7710
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 42,
+        "mesh_name": "轮廓标2",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.26756735081604677,
+          "max_component_error": 0.003572274775224482,
+          "quantized_corner_normal_count": 348,
+          "renormalized": false,
+          "source_corner_normal_count": 348,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "315aa1c33b4f58915ca4f6b19c96567c8a77cef02bdd1ce04af1dbfcc26aff4b"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 258,
+            "source_material_index": 22,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 258
+          },
+          {
+            "color_rgb8": [
+              0,
+              0,
+              0
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 90,
+            "source_material_index": 23,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 90
+          }
+        ],
+        "readback_shape_sha256": "dfc597730e279c82b317a395e61465f3f56051b26b3c740c090e2efe8ea32f0f",
+        "source_node": "99",
+        "textured_patches": 0,
+        "written_corner_vertices": 348
+      },
+      {
+        "materials": 3,
+        "max_uv_error": 2.7939677238464355e-08,
+        "mesh_index": 43,
+        "mesh_name": "路桩1",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.2978326343384851,
+          "max_component_error": 0.0038981358108834407,
+          "quantized_corner_normal_count": 2126,
+          "renormalized": false,
+          "source_corner_normal_count": 2220,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "150e2ae338c126bc370dcf7d7031bd0ce46c38213fc6770ab72eb852e6a59aa1"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              0,
+              0,
+              0
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 384,
+            "source_material_index": 26,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 384
+          },
+          {
+            "color_rgb8": [
+              89,
+              89,
+              89
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 1482,
+            "source_material_index": 27,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 1482
+          },
+          {
+            "color_rgb8": [
+              66,
+              0,
+              0
+            ],
+            "cull_back_face": false,
+            "material_index": 2,
+            "patch_index": 2,
+            "point_count": 354,
+            "source_material_index": 28,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 354
+          }
+        ],
+        "readback_shape_sha256": "5cb5a7e031e93c651095f6d8ed867615bc639b90e2384f1f567220d8c4c642a0",
+        "source_node": "100",
+        "textured_patches": 0,
+        "written_corner_vertices": 2220
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 44,
+        "mesh_name": "钢管警示柱5",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_component_error": 0.0038255845502334074,
+          "quantized_corner_normal_count": 858,
+          "renormalized": false,
+          "source_corner_normal_count": 858,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              75,
+              0,
+              0
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 474,
+            "source_material_index": 7,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 474
+          },
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 384,
+            "source_material_index": 8,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 384
+          }
+        ],
+        "readback_shape_sha256": "b880de2f20f77d0f293dfb0884f8c8e8d9d5f6cdfb4abf1ed243ed544a683a03",
+        "source_node": "101",
+        "textured_patches": 0,
+        "written_corner_vertices": 858
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 45,
+        "mesh_name": "钢管警示柱6",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_component_error": 0.0038255845502334074,
+          "quantized_corner_normal_count": 858,
+          "renormalized": false,
+          "source_corner_normal_count": 858,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              75,
+              0,
+              0
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 474,
+            "source_material_index": 7,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 474
+          },
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 384,
+            "source_material_index": 8,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 384
+          }
+        ],
+        "readback_shape_sha256": "ffbcd6e6aacf5d72c5c61f25e672788fe4b1f5603ce36621d3125a3f77f90e0d",
+        "source_node": "102",
+        "textured_patches": 0,
+        "written_corner_vertices": 858
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 46,
+        "mesh_name": "轮廓标1",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.26757378828311645,
+          "max_component_error": 0.0035723074800555477,
+          "quantized_corner_normal_count": 348,
+          "renormalized": false,
+          "source_corner_normal_count": 348,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "ea734bd26a6c568aab0f90886d50320da30bb0b6553d569764d91739abd7305d"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 258,
+            "source_material_index": 22,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 258
+          },
+          {
+            "color_rgb8": [
+              0,
+              0,
+              0
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 90,
+            "source_material_index": 23,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 90
+          }
+        ],
+        "readback_shape_sha256": "14ec194a0948b7e36562e812966e6b303ec7050414dc256ba4d455063cebe9b0",
+        "source_node": "103",
+        "textured_patches": 0,
+        "written_corner_vertices": 348
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 47,
+        "mesh_name": "路灯7",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.3663368644292142,
+          "max_component_error": 0.003905233883660819,
+          "quantized_corner_normal_count": 7608,
+          "renormalized": false,
+          "source_corner_normal_count": 7710,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "5fbe86a51d29cc81ad92eb4a1afe8f7b81fcbb3566ec2e787f14db1b0716527e"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 7374,
+            "source_material_index": 11,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 7374
+          },
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 336,
+            "source_material_index": 12,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 336
+          }
+        ],
+        "readback_shape_sha256": "8c706a4fe576a1d13665a842ecf231747b2f0c04582d7affddf3a2b3d13c476e",
+        "source_node": "104",
+        "textured_patches": 0,
+        "written_corner_vertices": 7710
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 48,
+        "mesh_name": "路灯6",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.34763037540833636,
+          "max_component_error": 0.0039050006012079086,
+          "quantized_corner_normal_count": 7608,
+          "renormalized": false,
+          "source_corner_normal_count": 7710,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "8d7c5a8df0ad6a7f5d1f911434ea332d45ec75994ba67b9d75d2313d4b59a83d"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 7374,
+            "source_material_index": 11,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 7374
+          },
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 336,
+            "source_material_index": 12,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 336
+          }
+        ],
+        "readback_shape_sha256": "5eeefa35c56d0c1c92e2cf9ab0b8bd1c23e921e82e0994eb101812c081c4c957",
+        "source_node": "105",
+        "textured_patches": 0,
+        "written_corner_vertices": 7710
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 49,
+        "mesh_name": "路灯4",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.35474977690537973,
+          "max_component_error": 0.0039060608897696636,
+          "quantized_corner_normal_count": 7608,
+          "renormalized": false,
+          "source_corner_normal_count": 7710,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "67c4488deae2a7951b07e344b7f03475636d057898e1eb0ec49659953ed1570a"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 7374,
+            "source_material_index": 11,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 7374
+          },
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 336,
+            "source_material_index": 12,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 336
+          }
+        ],
+        "readback_shape_sha256": "f1d106ab57c4a33583992e22f0267e83a504870456995b2a40551cd6411ae987",
+        "source_node": "106",
+        "textured_patches": 0,
+        "written_corner_vertices": 7710
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 50,
+        "mesh_name": "路灯5",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.3664679207774392,
+          "max_component_error": 0.003905695729964097,
+          "quantized_corner_normal_count": 7608,
+          "renormalized": false,
+          "source_corner_normal_count": 7710,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "a1a81deb72c58e0810b919c280ef4309b44417f338553034d374950af739f2d1"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 7374,
+            "source_material_index": 11,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 7374
+          },
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 336,
+            "source_material_index": 12,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 336
+          }
+        ],
+        "readback_shape_sha256": "f9dacea8dfa5b9bfb22908d33daa4d6d5e35a50614d6d571bcd87e2e11827886",
+        "source_node": "107",
+        "textured_patches": 0,
+        "written_corner_vertices": 7710
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 51,
+        "mesh_name": "路灯2",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.35080688327508164,
+          "max_component_error": 0.003905984933801787,
+          "quantized_corner_normal_count": 7608,
+          "renormalized": false,
+          "source_corner_normal_count": 7710,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "0f01308c1e6fd96a2b1da100961cc47d258af83a30630bba2a27cc0d8337d93d"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 7374,
+            "source_material_index": 11,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 7374
+          },
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 336,
+            "source_material_index": 12,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 336
+          }
+        ],
+        "readback_shape_sha256": "d2a4ede79f82b4ccdf7367d9554febba1587a9d3871192bc28361ccfa4ec27a7",
+        "source_node": "108",
+        "textured_patches": 0,
+        "written_corner_vertices": 7710
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 52,
+        "mesh_name": "路灯3",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.35474977690537973,
+          "max_component_error": 0.0039060608897696636,
+          "quantized_corner_normal_count": 7608,
+          "renormalized": false,
+          "source_corner_normal_count": 7710,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "67c4488deae2a7951b07e344b7f03475636d057898e1eb0ec49659953ed1570a"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 7374,
+            "source_material_index": 11,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 7374
+          },
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 336,
+            "source_material_index": 12,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 336
+          }
+        ],
+        "readback_shape_sha256": "b6cbf3d64a7e763195bade62b380499efdfcceae181518f097fec2561d4563b7",
+        "source_node": "109",
+        "textured_patches": 0,
+        "written_corner_vertices": 7710
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 53,
+        "mesh_name": "路灯1",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.3720181321915778,
+          "max_component_error": 0.0039054047761947763,
+          "quantized_corner_normal_count": 7608,
+          "renormalized": false,
+          "source_corner_normal_count": 7710,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "b606b34696ca0639b65f91b961a25e1653fd423692e7a7b4efe9d07c461e7682"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 7374,
+            "source_material_index": 11,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 7374
+          },
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 336,
+            "source_material_index": 12,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 336
+          }
+        ],
+        "readback_shape_sha256": "deb7d7f68f76fbc514c754831360ef3ce4669fc04613191431ad15828120a368",
+        "source_node": "110",
+        "textured_patches": 0,
+        "written_corner_vertices": 7710
+      },
+      {
+        "materials": 1,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 54,
+        "mesh_name": "黄色警示柱1",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.29225938827047226,
+          "max_component_error": 0.003831585293905815,
+          "quantized_corner_normal_count": 1050,
+          "renormalized": false,
+          "source_corner_normal_count": 1050,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "462a1fd0b96922465897a2607465542c4cbfda7b4f18ac1b469cce09df29f777"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              255,
+              178,
+              11
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 1050,
+            "source_material_index": 21,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 0,
+            "uv_count": 1050
+          }
+        ],
+        "readback_shape_sha256": "ac80f4159fa5d3b323c8e3fa36d24efff764f6028e221ec8325b354840922c2c",
+        "source_node": "111",
+        "textured_patches": 0,
+        "written_corner_vertices": 1050
+      },
+      {
+        "materials": 2,
+        "max_uv_error": 2.9802322387695313e-08,
+        "mesh_index": 55,
+        "mesh_name": "路牌2",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.15039060904592633,
+          "max_component_error": 0.003808622565449782,
+          "quantized_corner_normal_count": 378,
+          "renormalized": false,
+          "source_corner_normal_count": 492,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "471f76a8fbabf898bbb5a4a7ed13a500631c721ed3248430109c07af2396480b"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              150,
+              150,
+              150
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 372,
+            "source_material_index": 5,
+            "texture_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 372
+          },
+          {
+            "color_rgb8": [
+              204,
+              204,
+              204
+            ],
+            "cull_back_face": false,
+            "material_index": 1,
+            "patch_index": 1,
+            "point_count": 120,
+            "source_material_index": 29,
+            "texture_sha256": "a7e8df6cd5d6b86ec0fa9b8913ca8d6a8720d468c3ad5ce372bcea9735251d72",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 120
+          }
+        ],
+        "readback_shape_sha256": "b11e5dd85b6fb3ec8a094cecbcb8cf1401fee4268524c4b288595ee761114b83",
+        "source_node": "112",
+        "textured_patches": 2,
+        "written_corner_vertices": 492
+      }
+    ],
+    "coordinate_tolerance_xy": 2e-05,
+    "coordinate_tolerance_z": 2e-05,
+    "feature_count": 56,
+    "geometry_material_uv_texture_readback": true,
+    "graphical_acceptance": "pending_independent_target_software_review",
+    "level": "closed_reopened_file_geodatabase",
+    "uv_float_tolerance": "max(1,abs(value))*2e-6"
+  },
+  "version": "0.1.4"
+}

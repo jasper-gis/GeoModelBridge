@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "purpose": "Original notices for runtimes embedded in geomodelbridgeGUI.exe",
+  "packages": [
+    {
+      "id": "microsoft.netcore.app.runtime.win-x64",
+      "version": "8.0.26",
+      "nuget_source": "https://api.nuget.org/v3/index.json",
+      "nuget_package_url": "https://api.nuget.org/v3-flatcontainer/microsoft.netcore.app.runtime.win-x64/8.0.26/microsoft.netcore.app.runtime.win-x64.8.0.26.nupkg",
+      "package_sha512_base64": "d/KqjXJBIAdNNWTrr36qoJ5bqeGENSEG/vXPiY08LkxFYkIEt1TON7iKERWPf0N1WINvlGMvhvLsQY9nt0/O8Q==",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/dotnet/runtime",
+        "commit": "ace9703c57db8596ccc3e3efdc7e65b6975c0b2d"
+      },
+      "third_party_notice_present": true,
+      "original_files": [
+        {
+          "path": "microsoft.netcore.app.runtime.win-x64/8.0.26/LICENSE.TXT",
+          "bytes": 1139,
+          "sha256": "d7a68596ab69b06f51ca278a6545148e4269a9381c26d597c13df5d88e08cf5b"
+        },
+        {
+          "path": "microsoft.netcore.app.runtime.win-x64/8.0.26/THIRD-PARTY-NOTICES.TXT",
+          "bytes": 68910,
+          "sha256": "b60b2912da28eaa6518593c9e2efb5334ee062d3c42e80d8fdfa806b3dc52977"
+        }
+      ]
+    },
+    {
+      "id": "microsoft.windowsdesktop.app.runtime.win-x64",
+      "version": "8.0.26",
+      "nuget_source": "https://api.nuget.org/v3/index.json",
+      "nuget_package_url": "https://api.nuget.org/v3-flatcontainer/microsoft.windowsdesktop.app.runtime.win-x64/8.0.26/microsoft.windowsdesktop.app.runtime.win-x64.8.0.26.nupkg",
+      "package_sha512_base64": "J2Wi+gsnGLKrZ+XGMeHXHt+R+XyJxdkdufcj59UxVEt+YZjMMecSAUwgXTu8EOGI4YkFdGihqSLkdXXFeut1YA==",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/dotnet/windowsdesktop",
+        "commit": "7b642c75c5d28aa0f45078abe807c9bd4dac8c9c"
+      },
+      "third_party_notice_present": false,
+      "original_files": [
+        {
+          "path": "microsoft.windowsdesktop.app.runtime.win-x64/8.0.26/LICENSE",
+          "bytes": 1137,
+          "sha256": "a89886665765362eb77e0f8e26602c924520041d1711b2eedc136434fe4d01ab"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "status": "passed",
+  "negative_checks": [
+    {
+      "case": "hash",
+      "passed": true,
+      "error": "{\"status\":\"failed\",\"backend\":\"arcgis-pro-corehost\",\"error\":\"Texture SHA256 mismatch: textures/alpha.png\"}"
+    },
+    {
+      "case": "path-traversal",
+      "passed": true,
+      "error": "{\"status\":\"failed\",\"backend\":\"arcgis-pro-corehost\",\"error\":\"Bundle paths must be relative and must not traverse parents.\"}"
+    },
+    {
+      "case": "absolute-texture-path",
+      "passed": true,
+      "error": "{\"status\":\"failed\",\"backend\":\"arcgis-pro-corehost\",\"error\":\"Bundle paths must be relative and must not traverse parents.\"}"
+    },
+    {
+      "case": "mime-mismatch",
+      "passed": true,
+      "error": "{\"status\":\"failed\",\"backend\":\"arcgis-pro-corehost\",\"error\":\"Invalid JPEG signature.\"}"
+    },
+    {
+      "case": "unsupported-format",
+      "passed": true,
+      "error": "{\"status\":\"failed\",\"backend\":\"arcgis-pro-corehost\",\"error\":\"Only PNG and JPEG are supported; no implicit image transcode is performed.\"}"
+    },
+    {
+      "case": "missing-uv",
+      "passed": true,
+      "error": "{\"status\":\"failed\",\"backend\":\"arcgis-pro-corehost\",\"error\":\"Textured triangle is missing UV coordinates.\"}"
+    },
+    {
+      "case": "zero-normal",
+      "passed": true,
+      "error": "{\"status\":\"failed\",\"backend\":\"arcgis-pro-corehost\",\"error\":\"Normals must be unit length within 1e-5; zero and non-unit normals are not silently normalized.\"}"
+    },
+    {
+      "case": "nonunit-normal",
+      "passed": true,
+      "error": "{\"status\":\"failed\",\"backend\":\"arcgis-pro-corehost\",\"error\":\"Normals must be unit length within 1e-5; zero and non-unit normals are not silently normalized.\"}"
+    },
+    {
+      "case": "nonfinite-position",
+      "passed": true,
+      "error": "{\"status\":\"failed\",\"backend\":\"arcgis-pro-corehost\",\"error\":\"\\u0027I\\u0027 is an invalid start of a value. Path: $.meshes[0].vertices[0].position[0] | LineNumber: 0 | BytePositionInLine: 373.\"}"
+    },
+    {
+      "case": "bad-color",
+      "passed": true,
+      "error": "{\"status\":\"failed\",\"backend\":\"arcgis-pro-corehost\",\"error\":\"Material RGBA must be in 0..1.\"}"
+    },
+    {
+      "case": "bad-material-index",
+      "passed": true,
+      "error": "{\"status\":\"failed\",\"backend\":\"arcgis-pro-corehost\",\"error\":\"Triangle material index is invalid.\"}"
+    },
+    {
+      "case": "bad-vertex-index",
+      "passed": true,
+      "error": "{\"status\":\"failed\",\"backend\":\"arcgis-pro-corehost\",\"error\":\"Triangle vertex index is invalid.\"}"
+    },
+    {
+      "case": "geographic-crs",
+      "passed": true,
+      "error": "{\"status\":\"failed\",\"backend\":\"arcgis-pro-corehost\",\"error\":\"WKID must identify a projected coordinate system whose horizontal units are metres.\"}"
+    },
+    {
+      "case": "feet-crs",
+      "passed": true,
+      "error": "{\"status\":\"failed\",\"backend\":\"arcgis-pro-corehost\",\"error\":\"WKID must identify a projected coordinate system whose horizontal units are metres.\"}"
+    },
+    {
+      "case": "no-explicit-origin",
+      "passed": true,
+      "error": "{\"status\":\"failed\",\"backend\":\"arcgis-pro-corehost\",\"error\":\"An explicit projected metre WKID and origin are required. This adapter does not assign WGS84 or reproject coordinates.\"}"
+    },
+    {
+      "case": "unknown-crs",
+      "passed": true,
+      "error": "{\"status\":\"failed\",\"backend\":\"arcgis-pro-corehost\",\"error\":\"An explicit projected metre WKID and origin are required. This adapter does not assign WGS84 or reproject coordinates.\"}"
+    },
+    {
+      "case": "reader-error",
+      "passed": true,
+      "error": "{\"status\":\"failed\",\"backend\":\"arcgis-pro-corehost\",\"error\":\"Bundle contains reader errors; correct them before writing a geodatabase.\"}"
+    },
+    {
+      "case": "geodatabase-write-failure-cleans-only-staging",
+      "passed": true,
+      "staging_observed": true,
+      "error": "{\"status\":\"failed\",\"backend\":\"arcgis-pro-corehost\",\"error\":\"A geodatabase exception has occurred.\"}"
+    },
+    {
+      "case": "standalone-texture-hash-mismatch",
+      "passed": true
+    }
+  ],
+  "png_alpha_pixel_hash": "74e204bdbae49352f72ee1c07cf3fae8615fddf74e0c37a12416d1fdd8802e92",
+  "standalone_source_unavailable": true
+}

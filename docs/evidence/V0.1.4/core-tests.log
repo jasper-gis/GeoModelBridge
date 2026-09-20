@@ -1,0 +1,15 @@
+Test project C:/Users/Jasper/Documents/Codex/2026-09-20/gen/work/build/v0.1.4
+    Start 1: core
+1/5 Test #1: core .............................   Passed    0.07 sec
+    Start 2: cli
+2/5 Test #2: cli ..............................   Passed    0.25 sec
+    Start 3: reader_integration
+3/5 Test #3: reader_integration ...............   Passed    0.34 sec
+    Start 4: binary_fbx
+4/5 Test #4: binary_fbx .......................   Passed    0.18 sec
+    Start 5: profile_integration
+5/5 Test #5: profile_integration ..............   Passed    1.67 sec
+
+100% tests passed, 0 tests failed out of 5
+
+Total Test time (real) =   2.54 sec

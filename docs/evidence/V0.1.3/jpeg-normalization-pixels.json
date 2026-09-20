@@ -1,0 +1,74 @@
+{
+  "status": "jpeg_normalization_pixel_equivalence_verified",
+  "version": "0.1.3",
+  "normalized_texture_count": 3,
+  "jpeg_texture_count": 5,
+  "decoder": "Windows WIC via WPF Bgra32 straight alpha, IgnoreColorProfile, no orientation transform",
+  "checks": [
+    {
+      "index": 0,
+      "texture_name": "\u8D34\u56FE #0",
+      "normalized": true,
+      "source_sha256": "52f1762965d7f3c406d52ceb2c1f3ec9668dcada3a7beb1301b82e21220a49e8",
+      "normalized_sha256": "1fcfaae0131ffb6699681c4cc87b7d9baa6b4821cc874c97298a04649e5d00de",
+      "original_image_and_metadata_bytes_unchanged": true,
+      "width": 4096,
+      "height": 4096,
+      "source_bgra32_sha256": "b31cb056a9e12275a0e3d252f80d2861e868a9923567d05389f72ae7e38647eb",
+      "normalized_bgra32_sha256": "b31cb056a9e12275a0e3d252f80d2861e868a9923567d05389f72ae7e38647eb",
+      "decoded_pixels_exactly_equal": true
+    },
+    {
+      "index": 1,
+      "texture_name": "\u8D34\u56FE #1",
+      "normalized": false,
+      "source_sha256": "079b8a07739e982ebc1a42295b883537977542c17ca61778200a70211225479c",
+      "normalized_sha256": "079b8a07739e982ebc1a42295b883537977542c17ca61778200a70211225479c",
+      "original_image_and_metadata_bytes_unchanged": true,
+      "width": 512,
+      "height": 512,
+      "source_bgra32_sha256": "54b52f6f9170074c1eabbdc9bc102b39ad7c922a73460b18a5909ca91fa24869",
+      "normalized_bgra32_sha256": "54b52f6f9170074c1eabbdc9bc102b39ad7c922a73460b18a5909ca91fa24869",
+      "decoded_pixels_exactly_equal": true
+    },
+    {
+      "index": 2,
+      "texture_name": "base_color_texture",
+      "normalized": false,
+      "source_sha256": "3d40a57788c519db955b51a344b539c2cc44d33330af1f52ddba2bfeb51a79d6",
+      "normalized_sha256": "3d40a57788c519db955b51a344b539c2cc44d33330af1f52ddba2bfeb51a79d6",
+      "original_image_and_metadata_bytes_unchanged": true,
+      "width": 2000,
+      "height": 1170,
+      "source_bgra32_sha256": "ef2b2641bcdf775ee2d817796e1d922569e7e1733f039b7b96bc958fb400fa65",
+      "normalized_bgra32_sha256": "ef2b2641bcdf775ee2d817796e1d922569e7e1733f039b7b96bc958fb400fa65",
+      "decoded_pixels_exactly_equal": true
+    },
+    {
+      "index": 3,
+      "texture_name": "base_color_texture",
+      "normalized": true,
+      "source_sha256": "7a666d0d9275ddc9488737ab85c6c2bb470c74bbe19f146332f7bc32447dc58a",
+      "normalized_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+      "original_image_and_metadata_bytes_unchanged": true,
+      "width": 512,
+      "height": 512,
+      "source_bgra32_sha256": "217e220b22d39486f799f4c44b1627c2fe801e8fdda70b409f9aee1f44488b24",
+      "normalized_bgra32_sha256": "217e220b22d39486f799f4c44b1627c2fe801e8fdda70b409f9aee1f44488b24",
+      "decoded_pixels_exactly_equal": true
+    },
+    {
+      "index": 9,
+      "texture_name": "base_color_texture",
+      "normalized": true,
+      "source_sha256": "6af32f0f80e383541bdb95a14e72930bf9226141e081d98370c119fd9ce012e1",
+      "normalized_sha256": "fa23cd7f25b4bc8381326ca195ab648441a3f4480c0a471fd3e41f75280ffd6e",
+      "original_image_and_metadata_bytes_unchanged": true,
+      "width": 512,
+      "height": 507,
+      "source_bgra32_sha256": "c1aeb5c70bbcaf69cdc37f7043a487e5ae97c0024b7c13209e5a829ad6960139",
+      "normalized_bgra32_sha256": "c1aeb5c70bbcaf69cdc37f7043a487e5ae97c0024b7c13209e5a829ad6960139",
+      "decoded_pixels_exactly_equal": true
+    }
+  ]
+}

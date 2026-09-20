@@ -1,0 +1,118 @@
+{
+  "backend": "native-filegdb",
+  "compatibility_adjustments": false,
+  "conversion_profile": "gis-static",
+  "coordinate_system": {
+    "name": "WGS_1984_UTM_Zone_50N",
+    "projected": true,
+    "source_coordinates_assigned_without_reprojection": true,
+    "unit": "meter",
+    "wkid": 32650
+  },
+  "feature_class": "Models",
+  "filegdb_api": "1.5.5",
+  "input": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\work\\v014\\.gmb-work-3662809540\\bundle",
+  "limitations": [
+    "Requires the official FileGDB API 1.5.5 Windows x64 runtime and Microsoft C++ runtime; ArcGIS Pro is not invoked by conversion.",
+    "Material RGB quantizes to RGB8; opacity to whole-percent transparency; UV to float32; native FileGDB normals are checked against floor(float32(source)*128+0.5)/128.",
+    "PNG is decoded to straight RGBA8 by Windows WIC without ICC conversion; JPEG compressed bytes are preserved.",
+    "Coordinates already include source transform/origin and are assigned an explicit projected metre CRS; no reprojection or vertical datum conversion.",
+    "Graphical acceptance and software outside the tested SDK are separate from readback verification."
+  ],
+  "material_quantization": [
+    {
+      "double_sided": true,
+      "index": 0,
+      "name": "Red",
+      "source_rgba": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "stored_rgb8": [
+        255,
+        255,
+        255
+      ],
+      "stored_transparency_percent": 0
+    }
+  ],
+  "output": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\work\\v014\\gui-final-demo.gdb",
+  "reader_diagnostics": [
+    {
+      "code": "UV_SETS_REDUCED",
+      "context": "node:Quad",
+      "message": "Only each material's selected UV coordinates are retained per corner; extra unsampled UV channels are omitted.",
+      "severity": "warning"
+    }
+  ],
+  "source": "C:\\Users\\Jasper\\Documents\\codex\\2026-09-20\\gen\\outputs\\geomodelbridge\\releases\\v0.1.4\\bin\\demo\\textured_quad.fbx",
+  "status": "written_and_readback_verified",
+  "texture_coordinate_policy": "All patches with UVs: target U=source U, target V=1-source V. Source FBX UVs are bottom-origin and Esri first stored image row is t=0. Applies equally to original JPEG and top-down RGBA8 PNG.",
+  "textures": [
+    {
+      "bytes_per_pixel": 4,
+      "height": 2,
+      "index": 0,
+      "readback_bytes_equal": true,
+      "source_sha256": "7f2538a6e81af23e034f8ca2efc2cb5f1d7d709f502fa30bdccfebe774e4ecab",
+      "storage": "rgba8_uncompressed",
+      "stored_byte_length": 16,
+      "stored_sha256": "c21b35e3f28e676cedf24c13575a7346682e101a2d26aad9598d0cdbcee9ee3b",
+      "width": 2
+    }
+  ],
+  "verification": {
+    "checks": [
+      {
+        "materials": 1,
+        "max_uv_error": 0.0,
+        "mesh_index": 0,
+        "mesh_name": "Quad",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.0,
+          "max_component_error": 0.0,
+          "quantized_corner_normal_count": 0,
+          "renormalized": false,
+          "source_corner_normal_count": 6,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "ced5b88ecbb703c17089878fd45097da5be7d1049d67f7e443ee00cff08dfd01"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 6,
+            "source_material_index": 0,
+            "texture_sha256": "c21b35e3f28e676cedf24c13575a7346682e101a2d26aad9598d0cdbcee9ee3b",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 6
+          }
+        ],
+        "readback_shape_sha256": "c87d302b28b528f3ed32d02c17b0f985eaf49ded7622f7170d54b0e19826034d",
+        "source_node": "2",
+        "textured_patches": 1,
+        "written_corner_vertices": 6
+      }
+    ],
+    "coordinate_tolerance_xy": 2e-05,
+    "coordinate_tolerance_z": 2e-05,
+    "feature_count": 1,
+    "geometry_material_uv_texture_readback": true,
+    "graphical_acceptance": "pending_independent_target_software_review",
+    "level": "closed_reopened_file_geodatabase",
+    "uv_float_tolerance": "max(1,abs(value))*2e-6"
+  },
+  "version": "0.1.4"
+}

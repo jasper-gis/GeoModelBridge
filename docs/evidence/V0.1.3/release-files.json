@@ -1,0 +1,50 @@
+{
+  "version": "0.1.3",
+  "date": "2026-09-20",
+  "platform": "Windows x64",
+  "archive_created": false,
+  "files": [
+    {
+      "path": "bin/geomodelbridgeGUI.exe",
+      "bytes": 71742246,
+      "sha256": "53b2c85f1040509879e5ff79abd3be52292aeb3cd677e37158a3a4e79385a9b2",
+      "product_version": "0.1.3",
+      "matches_tested_staging": true
+    },
+    {
+      "path": "bin/geomodelbridge.exe",
+      "bytes": 733696,
+      "sha256": "9c207b70958f1e4b715ee67a54f490a33d941a648e02109b6ff7eb07b8219429",
+      "product_version": null,
+      "matches_tested_staging": true
+    },
+    {
+      "path": "bin/native-filegdb/GeoModelBridge.NativeWriter.exe",
+      "bytes": 401920,
+      "sha256": "6d819dc88ea33c7b06cdb15cf6a73314829380d6f6b139f1ec0d2c90857c0a89",
+      "product_version": null,
+      "matches_tested_staging": true
+    },
+    {
+      "path": "bin/native-filegdb/FileGDBAPI.dll",
+      "bytes": 14443416,
+      "sha256": "894d19ec53988f6378b13ad1ee02716c2853b7b1c7040efa0dfe71393be91400",
+      "product_version": "1.5.5.330",
+      "matches_tested_staging": true
+    },
+    {
+      "path": "bin/arcgis-pro/GeoModelBridge.ProWriter.exe",
+      "bytes": 151552,
+      "sha256": "09abfe22414c51e86aa2fd6b94743a87bc11cf3115f87ad78ec923511d3dc94c",
+      "product_version": "0.1.3",
+      "matches_tested_staging": true
+    },
+    {
+      "path": "bin/arcgis-pro/GeoModelBridge.ProWriter.dll",
+      "bytes": 111616,
+      "sha256": "1ba26d22c1d7e7ea0c925942a4f972aab81261d7db9e7b866855a051b7545e5a",
+      "product_version": "0.1.3",
+      "matches_tested_staging": true
+    }
+  ]
+}

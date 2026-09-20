@@ -1,0 +1,185 @@
+{
+  "version": "0.1.4",
+  "measurement": "read_fbx only; no bundle serialization or CLI startup in timings",
+  "change": "Reuse the final JPEG SHA-256 already calculated for the normalization warning when deduplicating textures.",
+  "input_bytes": 8920976,
+  "input_sha256": "c444824e3599367ea68467a521a8f42b89356b8906fb30817a578be72c19159d",
+  "order": "ABBA, each fresh process has 2 unmeasured warmup reads and 15 measured reads; input filesystem cache is warm.",
+  "baseline": "Frozen V0.1.3 library and reader",
+  "candidate": "Only fbx_reader.cpp replacement object; same frozen core/ufbx libraries and release compiler settings.",
+  "baseline_median_ms": 69.96045000000001,
+  "candidate_median_ms": 64.77615,
+  "median_reduction_percent": 7.410329693419648,
+  "avoided_sha256_passes": 3,
+  "avoided_sha256_bytes_per_read": 2368505,
+  "behavior_comparison": "Both complete Scene Bundles including every geometry value, material, texture file, provenance warning and diagnostic are byte-identical.",
+  "identical_files": {
+    "report.json": {
+      "bytes": 8803,
+      "sha256": "2beb9728561c003ba63dc5e04e36ad5d2ea623e61575d81b9a6c7f9f5b889d10"
+    },
+    "scene.json": {
+      "bytes": 40086052,
+      "sha256": "ed50ae8d7edf1d397fe7ebb905b0d6cf896c61b6aa245a2c4db3f48bb743e9d4"
+    },
+    "textures/0024c6266dafbfd7a9672986ae693013027b1d1c39bea6fcc36df0abff15279d.png": {
+      "bytes": 775042,
+      "sha256": "0024c6266dafbfd7a9672986ae693013027b1d1c39bea6fcc36df0abff15279d"
+    },
+    "textures/079b8a07739e982ebc1a42295b883537977542c17ca61778200a70211225479c.jpg": {
+      "bytes": 185541,
+      "sha256": "079b8a07739e982ebc1a42295b883537977542c17ca61778200a70211225479c"
+    },
+    "textures/1fcfaae0131ffb6699681c4cc87b7d9baa6b4821cc874c97298a04649e5d00de.jpg": {
+      "bytes": 2275056,
+      "sha256": "1fcfaae0131ffb6699681c4cc87b7d9baa6b4821cc874c97298a04649e5d00de"
+    },
+    "textures/3d40a57788c519db955b51a344b539c2cc44d33330af1f52ddba2bfeb51a79d6.jpg": {
+      "bytes": 405597,
+      "sha256": "3d40a57788c519db955b51a344b539c2cc44d33330af1f52ddba2bfeb51a79d6"
+    },
+    "textures/3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672.jpg": {
+      "bytes": 35675,
+      "sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672"
+    },
+    "textures/697722143cd07641984e0b4b6f0bf9e01797c0e3048cb54955a592864dd15118.png": {
+      "bytes": 84772,
+      "sha256": "697722143cd07641984e0b4b6f0bf9e01797c0e3048cb54955a592864dd15118"
+    },
+    "textures/74b160d41c5bc0337bf1fec7b2a36186a9672408913166823790ea24a8826ca6.png": {
+      "bytes": 54034,
+      "sha256": "74b160d41c5bc0337bf1fec7b2a36186a9672408913166823790ea24a8826ca6"
+    },
+    "textures/7b46382b2c6560817b81b34a78f8eb5846b7bef57db5d37c894b98f054f7e10b.png": {
+      "bytes": 49510,
+      "sha256": "7b46382b2c6560817b81b34a78f8eb5846b7bef57db5d37c894b98f054f7e10b"
+    },
+    "textures/8f6c9a5fb899bb9730dfeafa253f3403433f3da7b610d7ff928b785c81b2bfe7.png": {
+      "bytes": 2066890,
+      "sha256": "8f6c9a5fb899bb9730dfeafa253f3403433f3da7b610d7ff928b785c81b2bfe7"
+    },
+    "textures/c08bfcfe067fe849dc7aac5405afac6d044d8e089404f34fddec72e5fb0121d5.png": {
+      "bytes": 123839,
+      "sha256": "c08bfcfe067fe849dc7aac5405afac6d044d8e089404f34fddec72e5fb0121d5"
+    },
+    "textures/cbcbf05b389e3ad7cdd15e7d2a6702ae7b085d576d90874eae7a5545a3219233.png": {
+      "bytes": 39327,
+      "sha256": "cbcbf05b389e3ad7cdd15e7d2a6702ae7b085d576d90874eae7a5545a3219233"
+    },
+    "textures/fa23cd7f25b4bc8381326ca195ab648441a3f4480c0a471fd3e41f75280ffd6e.jpg": {
+      "bytes": 57774,
+      "sha256": "fa23cd7f25b4bc8381326ca195ab648441a3f4480c0a471fd3e41f75280ffd6e"
+    }
+  },
+  "runs": {
+    "abba-a1": {
+      "reader_ms": [
+        71.0059,
+        69.6285,
+        70.2404,
+        71.2437,
+        70.5973,
+        69.6762,
+        70.7232,
+        69.6318,
+        69.9627,
+        69.8725,
+        69.9389,
+        69.8876,
+        70.2373,
+        70.7363,
+        70.4332
+      ],
+      "median_ms": 70.2373,
+      "min_ms": 69.6285,
+      "max_ms": 71.2437,
+      "peak_working_set_bytes": 58019840,
+      "triangles": 69936,
+      "textures": 12,
+      "diagnostics": 26
+    },
+    "abba-b1": {
+      "reader_ms": [
+        63.9696,
+        65.0885,
+        64.9577,
+        63.7029,
+        65.45,
+        64.9958,
+        64.5496,
+        64.6971,
+        64.9906,
+        64.3273,
+        64.6913,
+        64.0036,
+        64.7369,
+        64.8292,
+        64.8154
+      ],
+      "median_ms": 64.7369,
+      "min_ms": 63.7029,
+      "max_ms": 65.45,
+      "peak_working_set_bytes": 58015744,
+      "triangles": 69936,
+      "textures": 12,
+      "diagnostics": 26
+    },
+    "abba-b2": {
+      "reader_ms": [
+        65.0104,
+        64.6321,
+        65.9389,
+        64.6243,
+        65.0225,
+        65.817,
+        66.6092,
+        64.9872,
+        64.9883,
+        64.643,
+        65.0226,
+        64.4894,
+        63.6219,
+        64.5265,
+        64.0918
+      ],
+      "median_ms": 64.9872,
+      "min_ms": 63.6219,
+      "max_ms": 66.6092,
+      "peak_working_set_bytes": 58126336,
+      "triangles": 69936,
+      "textures": 12,
+      "diagnostics": 26
+    },
+    "abba-a2": {
+      "reader_ms": [
+        70.441,
+        69.3106,
+        70.144,
+        69.732,
+        70.1791,
+        69.4164,
+        69.3028,
+        70.6289,
+        69.7943,
+        69.9441,
+        69.9582,
+        69.6284,
+        69.6358,
+        70.4323,
+        70.1659
+      ],
+      "median_ms": 69.9441,
+      "min_ms": 69.3028,
+      "max_ms": 70.6289,
+      "peak_working_set_bytes": 57942016,
+      "triangles": 69936,
+      "textures": 12,
+      "diagnostics": 26
+    }
+  },
+  "limitations": [
+    "This is a warm-cache reader microbenchmark on one local model, not an end-to-end conversion speedup.",
+    "Peak process working set remained about 58 MB (55 MiB); no measurable memory reduction claimed.",
+    "Wall-clock results vary with CPU frequency and other processes."
+  ]
+}

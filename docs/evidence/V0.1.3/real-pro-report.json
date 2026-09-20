@@ -1,0 +1,5210 @@
+{
+  "status": "written_and_readback_verified",
+  "version": "0.1.3",
+  "backend": "arcgis-pro-corehost",
+  "input": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\work\\v013\\.gmb-work-2904188011\\bundle",
+  "source": "C:\\Users\\Jasper\\Documents\\Codex\\aaaaa\\ZT-01(1).FBX",
+  "reader_diagnostics": [
+    {
+      "severity": "warning",
+      "code": "STATIC_POSE_USED",
+      "message": "GIS static profile uses the FBX saved static pose without evaluating an animation time; 144 animation curves and 48 animated properties are omitted. Deformers are not baked.",
+      "context": "scene"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits ambient parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:01 - Default"
+    },
+    {
+      "severity": "warning",
+      "code": "JPEG_CONTAINER_NORMALIZED",
+      "message": "Added an 18-byte JFIF marker to explicit Adobe YCbCr JPEG; original image scan and all original metadata bytes are retained without recompression. Source SHA-256 52f1762965d7f3c406d52ceb2c1f3ec9668dcada3a7beb1301b82e21220a49e8; stored container SHA-256 1fcfaae0131ffb6699681c4cc87b7d9baa6b4821cc874c97298a04649e5d00de.",
+      "context": "texture:\u8D34\u56FE #0"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits ambient parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:\u9053\u8DEF-\u767D\u7EBF"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits ambient parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:\u9053\u8DEF-\u9EC4\u7EBF"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits ambient parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:CD-\uFF10\uFF11"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:ND-002"
+    },
+    {
+      "severity": "warning",
+      "code": "JPEG_CONTAINER_NORMALIZED",
+      "message": "Added an 18-byte JFIF marker to explicit Adobe YCbCr JPEG; original image scan and all original metadata bytes are retained without recompression. Source SHA-256 7a666d0d9275ddc9488737ab85c6c2bb470c74bbe19f146332f7bc32447dc58a; stored container SHA-256 3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672.",
+      "context": "texture:base_color_texture"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:ND-010"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:Material.002"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:Material"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:ND-009"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits reflection parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:\u6746\u4EF6.004"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:Material.001"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:ND-003"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits reflection parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:\u7BB1\u4F53.002"
+    },
+    {
+      "severity": "warning",
+      "code": "JPEG_CONTAINER_NORMALIZED",
+      "message": "Added an 18-byte JFIF marker to explicit Adobe YCbCr JPEG; original image scan and all original metadata bytes are retained without recompression. Source SHA-256 6af32f0f80e383541bdb95a14e72930bf9226141e081d98370c119fd9ce012e1; stored container SHA-256 fa23cd7f25b4bc8381326ca195ab648441a3f4480c0a471fd3e41f75280ffd6e.",
+      "context": "texture:base_color_texture"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:Material.009"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:Material.005"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:Material.006"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:Material.013"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:ND-008"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:Material.011"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:Material.012"
+    },
+    {
+      "severity": "warning",
+      "code": "DEGENERATE_TRIANGLES_REMOVED",
+      "message": "GIS static profile removed 6 strictly zero-area triangles; no area tolerance was used.",
+      "context": "node:\u8DEF\u68691"
+    },
+    {
+      "severity": "warning",
+      "code": "MATERIAL_CHANNEL_OMITTED",
+      "message": "GIS static profile omits specular parameters/textures; diffuse color, scalar opacity, and base-color texture remain. Appearance is not baked.",
+      "context": "material:ND-007"
+    }
+  ],
+  "output": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\work\\v013\\real-pro-jpeg-fixed.gdb",
+  "feature_class": "Models",
+  "conversion_profile": "gis-static",
+  "compatibility_adjustments": true,
+  "timestamp_utc": "2026-09-20T14:50:37.2177149+00:00",
+  "assembly_version": "13.6.0.0",
+  "texture_coordinate_policy": {
+    "source": "FBX UV: V=0 at bottom",
+    "target": "FileGDB texture row: T=0 at top",
+    "mapping": "S=U; T=1-V",
+    "image_rows_reordered": false
+  },
+  "coordinate_system": {
+    "wkid": 3857,
+    "name": "WGS_1984_Web_Mercator_Auxiliary_Sphere",
+    "projected": true,
+    "unit": "meter",
+    "source_coordinates_assigned_without_reprojection": true,
+    "origin_already_applied_by_reader": [
+      0,
+      0,
+      0
+    ]
+  },
+  "verification": {
+    "level": "closed_reopened_file_geodatabase",
+    "graphical_acceptance": "pending_manual_review_in_target_software",
+    "feature_count": 56,
+    "geometry_material_uv_texture_readback": true,
+    "coordinate_tolerance_xy": 0.0002,
+    "coordinate_tolerance_z": 0.0002,
+    "uv_float_tolerance": "max(1,abs(value))*2e-6",
+    "normal_storage_model": "Exact component check against floor(float32(source)*128\u002B0.5)/128; empirically verified with ArcGIS Pro 3.6.2, not an Esri cross-version guarantee.",
+    "checks": [
+      {
+        "mesh_index": 0,
+        "mesh_name": "\u8DEF\u9762_001",
+        "source_node": "57",
+        "source_vertices": 3720,
+        "written_corner_vertices": 3720,
+        "patches": 1,
+        "materials": 1,
+        "texture_coordinate_count": 3720,
+        "textured_patches": 1,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 3720,
+          "quantized_corner_normal_count": 3720,
+          "source_normals_sha256": "fde71fd283d213b74b774993df6aea488cd3c60c13277323deb6ec0a94288242",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.979506130706966E-08,
+          "max_component_error": 0.0039061201983713973,
+          "max_angular_error_degrees": 0.31043547848457137,
+          "max_vector_length_error": 0.004496191854973408
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 3720,
+          "patch_count": 1,
+          "material_count": 1,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "69c614b5bd0e49bdf1ce2de96be0d54f9d165ebe084f0946c8b867a0a11b0bbf",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 3720,
+              "uv_count": 3720,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": true,
+              "texture_sha256": "1fcfaae0131ffb6699681c4cc87b7d9baa6b4821cc874c97298a04649e5d00de",
+              "texture_width": 4096,
+              "texture_height": 4096,
+              "texture_bytes_per_pixel": 3,
+              "texture_compression": "CompressionJPEG"
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 1,
+        "mesh_name": "\u6807\u7EBF3",
+        "source_node": "58",
+        "source_vertices": 936,
+        "written_corner_vertices": 936,
+        "patches": 1,
+        "materials": 1,
+        "texture_coordinate_count": 0,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 936,
+          "quantized_corner_normal_count": 924,
+          "source_normals_sha256": "765ee2fea8177674f6fd6dc82887114e5954d193bebee527836b82276225314f",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.966796108783143E-08,
+          "max_component_error": 0.003798484641551081,
+          "max_angular_error_degrees": 0.288077204637415,
+          "max_vector_length_error": 0.004496191854973408
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 936,
+          "patch_count": 1,
+          "material_count": 1,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "f911c2423f154aa97e9a6d79e2c8b90f562620162389a07d3cd04f05a6d8421f",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 936,
+              "uv_count": 0,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 2,
+        "mesh_name": "\u6807\u7EBF2",
+        "source_node": "59",
+        "source_vertices": 1332,
+        "written_corner_vertices": 1332,
+        "patches": 1,
+        "materials": 1,
+        "texture_coordinate_count": 0,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 1332,
+          "quantized_corner_normal_count": 1332,
+          "source_normals_sha256": "5a7b43d2d9549b89c7fab8c2f0d61c936e5119734e2d10055862ef9ab13b2722",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.976252666542223E-08,
+          "max_component_error": 0.00390417970475887,
+          "max_angular_error_degrees": 0.32627023830699886,
+          "max_vector_length_error": 0.00446553691622531
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 1332,
+          "patch_count": 1,
+          "material_count": 1,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "b54ef9f2f1f11b74abc25f56a82c5bcc05091a7fed3bdd3aea4c7d5bd6f07eac",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 1332,
+              "uv_count": 0,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                129,
+                10
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 3,
+        "mesh_name": "\u6807\u7EBF4",
+        "source_node": "60",
+        "source_vertices": 1944,
+        "written_corner_vertices": 1944,
+        "patches": 1,
+        "materials": 1,
+        "texture_coordinate_count": 0,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 1944,
+          "quantized_corner_normal_count": 1944,
+          "source_normals_sha256": "67c24b5c348e4419403530de754c316566873e5cbce897e4b2bda6403f4104fb",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9733928097464002E-08,
+          "max_component_error": 0.0038978206742318333,
+          "max_angular_error_degrees": 0.31089018887663067,
+          "max_vector_length_error": 0.004496191854973408
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 1944,
+          "patch_count": 1,
+          "material_count": 1,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "23bce37ca9238cf03b26334052ff1226781c69be03904b28b1560771d7f6a533",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 1944,
+              "uv_count": 0,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 4,
+        "mesh_name": "\u8349\u5730-001",
+        "source_node": "61",
+        "source_vertices": 2184,
+        "written_corner_vertices": 2184,
+        "patches": 1,
+        "materials": 1,
+        "texture_coordinate_count": 2184,
+        "textured_patches": 1,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 2184,
+          "quantized_corner_normal_count": 2184,
+          "source_normals_sha256": "25a9bc1736e89333e331b7f9038a56e6eec2e956c4699d2ff67f1d4f5d950705",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9733472461934696E-08,
+          "max_component_error": 0.00389467666629692,
+          "max_angular_error_degrees": 0.3162443013857788,
+          "max_vector_length_error": 0.004496191854973408
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 2184,
+          "patch_count": 1,
+          "material_count": 1,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "f8d83ba4a0ed78ca7df3b6104348f5f00cd56565efe7bd0f567bde841d35bab0",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 2184,
+              "uv_count": 2184,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": true,
+              "texture_sha256": "079b8a07739e982ebc1a42295b883537977542c17ca61778200a70211225479c",
+              "texture_width": 512,
+              "texture_height": 512,
+              "texture_bytes_per_pixel": 3,
+              "texture_compression": "CompressionJPEG"
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 5,
+        "mesh_name": "\u6807\u7EBF5",
+        "source_node": "62",
+        "source_vertices": 1272,
+        "written_corner_vertices": 1272,
+        "patches": 1,
+        "materials": 1,
+        "texture_coordinate_count": 0,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 1272,
+          "quantized_corner_normal_count": 1272,
+          "source_normals_sha256": "a4ecb481ad8ed96e09835f4e7954e0be2c0d022ac3506d8690c8a4e92e48bc95",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.978087620952863E-08,
+          "max_component_error": 0.0038986181766921257,
+          "max_angular_error_degrees": 0.3131728501055772,
+          "max_vector_length_error": 0.004931686888467235
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 1272,
+          "patch_count": 1,
+          "material_count": 1,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "b3d63541c78e0d0b05f29d6be5a1bef6061717390a9b117cc13419c4cb4c1173",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 1272,
+              "uv_count": 0,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                129,
+                10
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 6,
+        "mesh_name": "\u6807\u7EBF1",
+        "source_node": "63",
+        "source_vertices": 480,
+        "written_corner_vertices": 480,
+        "patches": 1,
+        "materials": 1,
+        "texture_coordinate_count": 0,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 480,
+          "quantized_corner_normal_count": 474,
+          "source_normals_sha256": "fd1ca782af3715ce2ac3f5c43a9c8879a01103085d3082dfac4a5d76df610e5c",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9749341323714873E-08,
+          "max_component_error": 0.0037090453096184583,
+          "max_angular_error_degrees": 0.29112927455134174,
+          "max_vector_length_error": 0.0025906384368699076
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 480,
+          "patch_count": 1,
+          "material_count": 1,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "0c6bd23d2da05e55eb550aae561c64fb76fd1b14ec4b5d719cd0dfd6f1c04c65",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 480,
+              "uv_count": 0,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 7,
+        "mesh_name": "\u9053\u7259",
+        "source_node": "64",
+        "source_vertices": 2952,
+        "written_corner_vertices": 2952,
+        "patches": 1,
+        "materials": 1,
+        "texture_coordinate_count": 2952,
+        "textured_patches": 1,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 2952,
+          "quantized_corner_normal_count": 2922,
+          "source_normals_sha256": "434d16cb707ba1e3ec11ddc4438e196577a81249122f7071ef8c0eefefb136af",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9777279753062658E-08,
+          "max_component_error": 0.003904449614622829,
+          "max_angular_error_degrees": 0.3069352595920994,
+          "max_vector_length_error": 0.004931686888467124
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 2952,
+          "patch_count": 1,
+          "material_count": 1,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "20d6b155f063643d768eaab48124018b7cb7e58cc8a2014629f1a97c72ac063a",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 2952,
+              "uv_count": 2952,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": true,
+              "texture_sha256": "1fcfaae0131ffb6699681c4cc87b7d9baa6b4821cc874c97298a04649e5d00de",
+              "texture_width": 4096,
+              "texture_height": 4096,
+              "texture_bytes_per_pixel": 3,
+              "texture_compression": "CompressionJPEG"
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 8,
+        "mesh_name": "\u7EA2\u7EFF\u706F1",
+        "source_node": "65",
+        "source_vertices": 1260,
+        "written_corner_vertices": 1260,
+        "patches": 3,
+        "materials": 3,
+        "texture_coordinate_count": 1260,
+        "textured_patches": 3,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 1260,
+          "quantized_corner_normal_count": 1260,
+          "source_normals_sha256": "07c283c38f2b36dac85e115b88ad6380c2c6aca54c41dc4f1f11f19d31c71e5f",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9738507878462883E-08,
+          "max_component_error": 0.0038957096121213786,
+          "max_angular_error_degrees": 0.31810649948408065,
+          "max_vector_length_error": 0.005417454499622387
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 1260,
+          "patch_count": 3,
+          "material_count": 3,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "5be80744a1942bc2ea2750bb701a6dc9084fcfdc4ed9e67d6e6c9fc06b23e916",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 396,
+              "uv_count": 396,
+              "material_index": 0,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": true,
+              "texture_sha256": "3d40a57788c519db955b51a344b539c2cc44d33330af1f52ddba2bfeb51a79d6",
+              "texture_width": 2000,
+              "texture_height": 1170,
+              "texture_bytes_per_pixel": 3,
+              "texture_compression": "CompressionJPEG"
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 840,
+              "uv_count": 840,
+              "material_index": 1,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": true,
+              "texture_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+              "texture_width": 512,
+              "texture_height": 512,
+              "texture_bytes_per_pixel": 3,
+              "texture_compression": "CompressionJPEG"
+            },
+            {
+              "patch_index": 2,
+              "patch_type": "Triangles",
+              "point_count": 24,
+              "uv_count": 24,
+              "material_index": 2,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": true,
+              "texture_sha256": "a7c2bfbab00fd1a3c3dd2dcf7f43b0f226ae1255a66948f9ee9dc453dc909c2a",
+              "texture_width": 3429,
+              "texture_height": 1170,
+              "texture_bytes_per_pixel": 4,
+              "texture_compression": "CompressionNone"
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 9,
+        "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F13",
+        "source_node": "66",
+        "source_vertices": 858,
+        "written_corner_vertices": 858,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 858,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 858,
+          "quantized_corner_normal_count": 858,
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9319401462224448E-08,
+          "max_component_error": 0.0038255845502334074,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_vector_length_error": 0.004005826055568762
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 858,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "81030825c7162cea12673469ad1ce88fda0d6908d15341658bcc211af2595593",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 474,
+              "uv_count": 474,
+              "material_index": 0,
+              "color_rgb8": [
+                75,
+                0,
+                0
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 384,
+              "uv_count": 384,
+              "material_index": 1,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 10,
+        "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F12",
+        "source_node": "67",
+        "source_vertices": 858,
+        "written_corner_vertices": 858,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 858,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 858,
+          "quantized_corner_normal_count": 858,
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9319401462224448E-08,
+          "max_component_error": 0.0038255845502334074,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_vector_length_error": 0.004005826055568762
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 858,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "f24870376967f845a1596b0e39f90246bd816e6c635443808e2b4291f40f6243",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 474,
+              "uv_count": 474,
+              "material_index": 0,
+              "color_rgb8": [
+                75,
+                0,
+                0
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 384,
+              "uv_count": 384,
+              "material_index": 1,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 11,
+        "mesh_name": "\u8DEF\u724C4",
+        "source_node": "68",
+        "source_vertices": 4524,
+        "written_corner_vertices": 4524,
+        "patches": 3,
+        "materials": 3,
+        "texture_coordinate_count": 4524,
+        "textured_patches": 2,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 4524,
+          "quantized_corner_normal_count": 4334,
+          "source_normals_sha256": "36c851586a1bf96ea4212e3238eedc9471a19a31cff88ab0d7afa63222605318",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9760433339909298E-08,
+          "max_component_error": 0.003770610261505797,
+          "max_angular_error_degrees": 0.2613024330166335,
+          "max_vector_length_error": 0.003533795208213397
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 4524,
+          "patch_count": 3,
+          "material_count": 3,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "8185865ee42c668e7e555809fc491daf9b8f946ed37b209e1b9fe4959d4f0d03",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 372,
+              "uv_count": 372,
+              "material_index": 0,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": true,
+              "texture_sha256": "5e2e36f16676e4b533f583652452ccf79be59773530f65ccb8e7d744d9d2ab2a",
+              "texture_width": 1289,
+              "texture_height": 1080,
+              "texture_bytes_per_pixel": 4,
+              "texture_compression": "CompressionNone"
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 840,
+              "uv_count": 840,
+              "material_index": 1,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": true,
+              "texture_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+              "texture_width": 512,
+              "texture_height": 512,
+              "texture_bytes_per_pixel": 3,
+              "texture_compression": "CompressionJPEG"
+            },
+            {
+              "patch_index": 2,
+              "patch_type": "Triangles",
+              "point_count": 3312,
+              "uv_count": 3312,
+              "material_index": 2,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 12,
+        "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F11",
+        "source_node": "69",
+        "source_vertices": 858,
+        "written_corner_vertices": 858,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 858,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 858,
+          "quantized_corner_normal_count": 858,
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9319401462224448E-08,
+          "max_component_error": 0.0038255845502334074,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_vector_length_error": 0.004005826055568762
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 858,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "14c96c927f53412397d35f30bac3734e423de164659eb2308aab3e8fecf10ce8",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 474,
+              "uv_count": 474,
+              "material_index": 0,
+              "color_rgb8": [
+                75,
+                0,
+                0
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 384,
+              "uv_count": 384,
+              "material_index": 1,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 13,
+        "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F14",
+        "source_node": "70",
+        "source_vertices": 858,
+        "written_corner_vertices": 858,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 858,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 858,
+          "quantized_corner_normal_count": 858,
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9319401462224448E-08,
+          "max_component_error": 0.0038255845502334074,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_vector_length_error": 0.004005826055568762
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 858,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "6ea53564ecf015fcf64d4a844171d6de633a06e3a3c03509e6952bb720836868",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 474,
+              "uv_count": 474,
+              "material_index": 0,
+              "color_rgb8": [
+                75,
+                0,
+                0
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 384,
+              "uv_count": 384,
+              "material_index": 1,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 14,
+        "mesh_name": "\u8DEF\u706F8",
+        "source_node": "71",
+        "source_vertices": 7710,
+        "written_corner_vertices": 7710,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 7710,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 7710,
+          "quantized_corner_normal_count": 7608,
+          "source_normals_sha256": "da3654a9b7280cd93a1487727823f8f395fc37da250334c6931bf0f404053f2a",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9796195955000826E-08,
+          "max_component_error": 0.0039049168081587426,
+          "max_angular_error_degrees": 0.35900954685218456,
+          "max_vector_length_error": 0.005538859735167101
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 7710,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "3234ba24492433725bbd56c55c4dd5fe1899913a6987ed01c4cb2b820c4deb7a",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 7374,
+              "uv_count": 7374,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 336,
+              "uv_count": 336,
+              "material_index": 1,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 15,
+        "mesh_name": "\u8DEF\u724C1",
+        "source_node": "72",
+        "source_vertices": 3048,
+        "written_corner_vertices": 3048,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 3048,
+        "textured_patches": 2,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 3048,
+          "quantized_corner_normal_count": 3048,
+          "source_normals_sha256": "f35d753c5e55ccc0504350f829af7af5849a5aad8dc2889509d5be9d1fabd046",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9799586354073426E-08,
+          "max_component_error": 0.0038501442609011893,
+          "max_angular_error_degrees": 0.3239867555025003,
+          "max_vector_length_error": 0.004649480710438358
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 3048,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "df993ef06f3c4d039f0512a415c1ec7e3120bccca379fa267a7e461568a5a8fd",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 864,
+              "uv_count": 864,
+              "material_index": 0,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": true,
+              "texture_sha256": "95e1fe873ba51e73f6e6ed33abc8dce78698fc48ee05faaf39f04ccbbe79c79f",
+              "texture_width": 1104,
+              "texture_height": 611,
+              "texture_bytes_per_pixel": 4,
+              "texture_compression": "CompressionNone"
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 2184,
+              "uv_count": 2184,
+              "material_index": 1,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": true,
+              "texture_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+              "texture_width": 512,
+              "texture_height": 512,
+              "texture_bytes_per_pixel": 3,
+              "texture_compression": "CompressionJPEG"
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 16,
+        "mesh_name": "\u8DEF\u706F9",
+        "source_node": "73",
+        "source_vertices": 7710,
+        "written_corner_vertices": 7710,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 7710,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 7710,
+          "quantized_corner_normal_count": 7608,
+          "source_normals_sha256": "da3654a9b7280cd93a1487727823f8f395fc37da250334c6931bf0f404053f2a",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9796195955000826E-08,
+          "max_component_error": 0.0039049168081587426,
+          "max_angular_error_degrees": 0.35900954685218456,
+          "max_vector_length_error": 0.005538859735167101
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 7710,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "fcbc9ceb87b6fca06c4ed18c9a1ec567dc79cdd35c70de5befa7f3c3029902ef",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 7374,
+              "uv_count": 7374,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 336,
+              "uv_count": 336,
+              "material_index": 1,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 17,
+        "mesh_name": "\u8DEF\u724C3",
+        "source_node": "74",
+        "source_vertices": 36,
+        "written_corner_vertices": 36,
+        "patches": 1,
+        "materials": 1,
+        "texture_coordinate_count": 36,
+        "textured_patches": 1,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 36,
+          "quantized_corner_normal_count": 24,
+          "source_normals_sha256": "a00700bc99e6f1acdc039c6180edddefdb15ca02f6695022f879eca8b083c6dc",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 1.627409162985316E-08,
+          "max_component_error": 0.0013935728689402627,
+          "max_angular_error_degrees": 0.040422490722021566,
+          "max_vector_length_error": 0.0018021610015126477
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 36,
+          "patch_count": 1,
+          "material_count": 1,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "ee8192c36d36ff3ee13881173a8ebd701034dc1f9834016b27a3d17e300160d1",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 36,
+              "uv_count": 36,
+              "material_index": 0,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": true,
+              "texture_sha256": "b7f27d9e5a1a1d2c1f0337d3dda54aa58299de0308596032dcbeeaf4a800e10d",
+              "texture_width": 1080,
+              "texture_height": 1413,
+              "texture_bytes_per_pixel": 4,
+              "texture_compression": "CompressionNone"
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 18,
+        "mesh_name": "\u8DEF\u724C6",
+        "source_node": "75",
+        "source_vertices": 3276,
+        "written_corner_vertices": 3276,
+        "patches": 3,
+        "materials": 3,
+        "texture_coordinate_count": 3276,
+        "textured_patches": 2,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 3276,
+          "quantized_corner_normal_count": 3179,
+          "source_normals_sha256": "96ff6aece9039ca9452ccdccd170d5fc32c7a36f35acbd863d5abcbeb8ca861f",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9772940224326305E-08,
+          "max_component_error": 0.0038283064151691804,
+          "max_angular_error_degrees": 0.2431087899202642,
+          "max_vector_length_error": 0.0039751862089478784
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 3276,
+          "patch_count": 3,
+          "material_count": 3,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "3ddbf18286cdb765284b45f584ce00052a00aae33af8ddd5ae6bbf5aa152606a",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 2616,
+              "uv_count": 2616,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": true,
+              "texture_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+              "texture_width": 512,
+              "texture_height": 512,
+              "texture_bytes_per_pixel": 3,
+              "texture_compression": "CompressionJPEG"
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 246,
+              "uv_count": 246,
+              "material_index": 1,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 2,
+              "patch_type": "Triangles",
+              "point_count": 414,
+              "uv_count": 414,
+              "material_index": 2,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": true,
+              "texture_sha256": "c935b4c3344855818bd6bd476b3199bda190a129e24ae8cf28c82a6cf41abcac",
+              "texture_width": 3000,
+              "texture_height": 3000,
+              "texture_bytes_per_pixel": 4,
+              "texture_compression": "CompressionNone"
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 19,
+        "mesh_name": "\u8DEF\u724C7",
+        "source_node": "76",
+        "source_vertices": 3096,
+        "written_corner_vertices": 3096,
+        "patches": 3,
+        "materials": 3,
+        "texture_coordinate_count": 3096,
+        "textured_patches": 1,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 3096,
+          "quantized_corner_normal_count": 2937,
+          "source_normals_sha256": "6c80f5c6343dc69442430eff57524cc4830c4eac0fd72f9b93ac006b3ea3d668",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.979370072875298E-08,
+          "max_component_error": 0.0038805382317258497,
+          "max_angular_error_degrees": 0.2809411153259144,
+          "max_vector_length_error": 0.00455750456455295
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 3096,
+          "patch_count": 3,
+          "material_count": 3,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "61ac23094989b148848930ef89f9137f1091625aea6e57e7e471154b62c2af72",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 2544,
+              "uv_count": 2544,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 276,
+              "uv_count": 276,
+              "material_index": 1,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 2,
+              "patch_type": "Triangles",
+              "point_count": 276,
+              "uv_count": 276,
+              "material_index": 2,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": true,
+              "texture_sha256": "fa23cd7f25b4bc8381326ca195ab648441a3f4480c0a471fd3e41f75280ffd6e",
+              "texture_width": 512,
+              "texture_height": 507,
+              "texture_bytes_per_pixel": 3,
+              "texture_compression": "CompressionJPEG"
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 20,
+        "mesh_name": "\u8DEF\u706F10",
+        "source_node": "77",
+        "source_vertices": 8238,
+        "written_corner_vertices": 8238,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 8238,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 8238,
+          "quantized_corner_normal_count": 8184,
+          "source_normals_sha256": "56cfa774d772014662d13117789b389c9f00e71fd520ca76ddef1ba2f130158b",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9773777998620687E-08,
+          "max_component_error": 0.0039060832561765846,
+          "max_angular_error_degrees": 0.3481564551690742,
+          "max_vector_length_error": 0.005477648802577062
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 8238,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "041d02f902d66a79be4121f68d570cb84517abcaea1595f412fd2564ea855af0",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 7902,
+              "uv_count": 7902,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 336,
+              "uv_count": 336,
+              "material_index": 1,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 21,
+        "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F17",
+        "source_node": "78",
+        "source_vertices": 858,
+        "written_corner_vertices": 858,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 858,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 858,
+          "quantized_corner_normal_count": 858,
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9319401462224448E-08,
+          "max_component_error": 0.0038255845502334074,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_vector_length_error": 0.004005826055568762
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 858,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "fcf312141f99d95ed485a3099b9c2309c77fc20cbcf69a62a7e0ab70c9aea958",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 474,
+              "uv_count": 474,
+              "material_index": 0,
+              "color_rgb8": [
+                75,
+                0,
+                0
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 384,
+              "uv_count": 384,
+              "material_index": 1,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 22,
+        "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F18",
+        "source_node": "79",
+        "source_vertices": 858,
+        "written_corner_vertices": 858,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 858,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 858,
+          "quantized_corner_normal_count": 858,
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9319401462224448E-08,
+          "max_component_error": 0.0038255845502334074,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_vector_length_error": 0.004005826055568762
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 858,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "b44cd50b3bb4b7bad8e0d96614bba310d426c15ecf0d69887d15e6670f80861e",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 474,
+              "uv_count": 474,
+              "material_index": 0,
+              "color_rgb8": [
+                75,
+                0,
+                0
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 384,
+              "uv_count": 384,
+              "material_index": 1,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 23,
+        "mesh_name": "\u9EC4\u8272\u8B66\u793A\u67F12",
+        "source_node": "80",
+        "source_vertices": 1050,
+        "written_corner_vertices": 1050,
+        "patches": 1,
+        "materials": 1,
+        "texture_coordinate_count": 1050,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 1050,
+          "quantized_corner_normal_count": 1050,
+          "source_normals_sha256": "462a1fd0b96922465897a2607465542c4cbfda7b4f18ac1b469cce09df29f777",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9742039386881913E-08,
+          "max_component_error": 0.003831585293905815,
+          "max_angular_error_degrees": 0.29225938827047226,
+          "max_vector_length_error": 0.005417454499622276
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 1050,
+          "patch_count": 1,
+          "material_count": 1,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "f597062da40800624f9b1fddb81d1551c61c80e9e562858616d09319adab1a0f",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 1050,
+              "uv_count": 1050,
+              "material_index": 0,
+              "color_rgb8": [
+                255,
+                178,
+                11
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 24,
+        "mesh_name": "\u8DEF\u706F11",
+        "source_node": "81",
+        "source_vertices": 8238,
+        "written_corner_vertices": 8238,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 8238,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 8238,
+          "quantized_corner_normal_count": 8184,
+          "source_normals_sha256": "56cfa774d772014662d13117789b389c9f00e71fd520ca76ddef1ba2f130158b",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9773777998620687E-08,
+          "max_component_error": 0.0039060832561765846,
+          "max_angular_error_degrees": 0.3481564551690742,
+          "max_vector_length_error": 0.005477648802577062
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 8238,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "e24a3062b7bdab8b7a9ca0e9c0526378d5015791154ad54650cb7267be4957c5",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 7902,
+              "uv_count": 7902,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 336,
+              "uv_count": 336,
+              "material_index": 1,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 25,
+        "mesh_name": "\u8F6E\u5ED3\u68073",
+        "source_node": "82",
+        "source_vertices": 348,
+        "written_corner_vertices": 348,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 348,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 348,
+          "quantized_corner_normal_count": 348,
+          "source_normals_sha256": "935f48c965c41271d9beef985a89c042a2823c8d8aa5d9decf8f8fe73b4f3452",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9705046311612193E-08,
+          "max_component_error": 0.003572434665941815,
+          "max_angular_error_degrees": 0.267598822996242,
+          "max_vector_length_error": 0.0043735777630999895
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 348,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "85479f4a181995806fc4c606bcab8dab3657e7081420d6ac1dff37344455cb0a",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 258,
+              "uv_count": 258,
+              "material_index": 0,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 90,
+              "uv_count": 90,
+              "material_index": 1,
+              "color_rgb8": [
+                0,
+                0,
+                0
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 26,
+        "mesh_name": "\u8DEF\u706F12",
+        "source_node": "83",
+        "source_vertices": 8238,
+        "written_corner_vertices": 8238,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 8238,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 8238,
+          "quantized_corner_normal_count": 8184,
+          "source_normals_sha256": "56cfa774d772014662d13117789b389c9f00e71fd520ca76ddef1ba2f130158b",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9773777998620687E-08,
+          "max_component_error": 0.0039060832561765846,
+          "max_angular_error_degrees": 0.3481564551690742,
+          "max_vector_length_error": 0.005477648802577062
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 8238,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "25015641fb256bfb3bcf75e8dd345ffeaf00ed5ec06534b3c4616a3681d23261",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 7902,
+              "uv_count": 7902,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 336,
+              "uv_count": 336,
+              "material_index": 1,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 27,
+        "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F19",
+        "source_node": "84",
+        "source_vertices": 858,
+        "written_corner_vertices": 858,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 858,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 858,
+          "quantized_corner_normal_count": 858,
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9319401462224448E-08,
+          "max_component_error": 0.0038255845502334074,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_vector_length_error": 0.004005826055568762
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 858,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "549fedbcb3cc903a15de032aa946c187108696115a8efb66e66d0b7871d773bf",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 474,
+              "uv_count": 474,
+              "material_index": 0,
+              "color_rgb8": [
+                75,
+                0,
+                0
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 384,
+              "uv_count": 384,
+              "material_index": 1,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 28,
+        "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F110",
+        "source_node": "85",
+        "source_vertices": 858,
+        "written_corner_vertices": 858,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 858,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 858,
+          "quantized_corner_normal_count": 858,
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9319401462224448E-08,
+          "max_component_error": 0.0038255845502334074,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_vector_length_error": 0.004005826055568762
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 858,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "3ff8845e027654a4690f4f0f3176d5dde7f48dd9b5c771ae1c60912d8734b9f2",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 474,
+              "uv_count": 474,
+              "material_index": 0,
+              "color_rgb8": [
+                75,
+                0,
+                0
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 384,
+              "uv_count": 384,
+              "material_index": 1,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 29,
+        "mesh_name": "\u8F6E\u5ED3\u68074",
+        "source_node": "86",
+        "source_vertices": 348,
+        "written_corner_vertices": 348,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 348,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 348,
+          "quantized_corner_normal_count": 348,
+          "source_normals_sha256": "2001ec90a003e73d5c1369753337c336b71cd128ebc40bd9e42840fcef697f9d",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9550020430590962E-08,
+          "max_component_error": 0.0035724102670564584,
+          "max_angular_error_degrees": 0.26759402042042973,
+          "max_vector_length_error": 0.0043735777630999895
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 348,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "3545e9f04e8c59a02289e26d53421fbd0ed5bbbea17eae201effd8d616ab043b",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 258,
+              "uv_count": 258,
+              "material_index": 0,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 90,
+              "uv_count": 90,
+              "material_index": 1,
+              "color_rgb8": [
+                0,
+                0,
+                0
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 30,
+        "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F112",
+        "source_node": "87",
+        "source_vertices": 858,
+        "written_corner_vertices": 858,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 858,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 858,
+          "quantized_corner_normal_count": 858,
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9319401462224448E-08,
+          "max_component_error": 0.0038255845502334074,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_vector_length_error": 0.004005826055568762
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 858,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "216b2d8a73c81ba0deb2f5ce6132f3a4bc70caca60b201d27e9f1f08cf69e32c",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 474,
+              "uv_count": 474,
+              "material_index": 0,
+              "color_rgb8": [
+                75,
+                0,
+                0
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 384,
+              "uv_count": 384,
+              "material_index": 1,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 31,
+        "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F111",
+        "source_node": "88",
+        "source_vertices": 858,
+        "written_corner_vertices": 858,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 858,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 858,
+          "quantized_corner_normal_count": 858,
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9319401462224448E-08,
+          "max_component_error": 0.0038255845502334074,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_vector_length_error": 0.004005826055568762
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 858,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "779842bb0e2d0fc13ab64f91698e47675768d03c6eb382affeef9bffae4541b2",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 474,
+              "uv_count": 474,
+              "material_index": 0,
+              "color_rgb8": [
+                75,
+                0,
+                0
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 384,
+              "uv_count": 384,
+              "material_index": 1,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 32,
+        "mesh_name": "\u8DEF\u706F13",
+        "source_node": "89",
+        "source_vertices": 8238,
+        "written_corner_vertices": 8238,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 8238,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 8238,
+          "quantized_corner_normal_count": 8184,
+          "source_normals_sha256": "56cfa774d772014662d13117789b389c9f00e71fd520ca76ddef1ba2f130158b",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9773777998620687E-08,
+          "max_component_error": 0.0039060832561765846,
+          "max_angular_error_degrees": 0.3481564551690742,
+          "max_vector_length_error": 0.005477648802577062
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 8238,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "50d7c6bac6dfe0ddfe4a90d7e33a830422a44ab942fb268d09d6965853dd8dad",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 7902,
+              "uv_count": 7902,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 336,
+              "uv_count": 336,
+              "material_index": 1,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 33,
+        "mesh_name": "\u6751\u78911",
+        "source_node": "90",
+        "source_vertices": 300,
+        "written_corner_vertices": 300,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 300,
+        "textured_patches": 1,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 300,
+          "quantized_corner_normal_count": 270,
+          "source_normals_sha256": "7c86c3cdcb0fc37cf8c9309bd3c805d474c70fa9ceaeb80b1905ccb530595cf0",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.8468493340483292E-08,
+          "max_component_error": 0.003871174462348581,
+          "max_angular_error_degrees": 0.31913753290445457,
+          "max_vector_length_error": 0.004020239151084071
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 300,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "cae1e4f3085561fe847a1ea0c8f4a3f97fa83c88f9e234ffdc992a2ca288f3c5",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 78,
+              "uv_count": 78,
+              "material_index": 0,
+              "color_rgb8": [
+                6,
+                6,
+                6
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 222,
+              "uv_count": 222,
+              "material_index": 1,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": true,
+              "texture_sha256": "72fc8c09d33c765dc26efc74e6896ddd126eaa1261873f6247dfb869eee4e01e",
+              "texture_width": 185,
+              "texture_height": 572,
+              "texture_bytes_per_pixel": 4,
+              "texture_compression": "CompressionNone"
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 34,
+        "mesh_name": "\u8DEF\u724C5",
+        "source_node": "91",
+        "source_vertices": 4524,
+        "written_corner_vertices": 4524,
+        "patches": 3,
+        "materials": 3,
+        "texture_coordinate_count": 4524,
+        "textured_patches": 2,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 4524,
+          "quantized_corner_normal_count": 4334,
+          "source_normals_sha256": "4a5f1552760523ab9c99dec7a4b1eb5caa9f1fb9d63466762a03227ef4b0e45f",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9784965605017533E-08,
+          "max_component_error": 0.0037706102615058246,
+          "max_angular_error_degrees": 0.2613216090944753,
+          "max_vector_length_error": 0.003533795208213286
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 4524,
+          "patch_count": 3,
+          "material_count": 3,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "06f53d48922d38535731b3420d00527f4582816f63d9074fb717afdaa2e69fe7",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 372,
+              "uv_count": 372,
+              "material_index": 0,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": true,
+              "texture_sha256": "5e2e36f16676e4b533f583652452ccf79be59773530f65ccb8e7d744d9d2ab2a",
+              "texture_width": 1289,
+              "texture_height": 1080,
+              "texture_bytes_per_pixel": 4,
+              "texture_compression": "CompressionNone"
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 840,
+              "uv_count": 840,
+              "material_index": 1,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": true,
+              "texture_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+              "texture_width": 512,
+              "texture_height": 512,
+              "texture_bytes_per_pixel": 3,
+              "texture_compression": "CompressionJPEG"
+            },
+            {
+              "patch_index": 2,
+              "patch_type": "Triangles",
+              "point_count": 3312,
+              "uv_count": 3312,
+              "material_index": 2,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 35,
+        "mesh_name": "\u8DEF\u706F14",
+        "source_node": "92",
+        "source_vertices": 8238,
+        "written_corner_vertices": 8238,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 8238,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 8238,
+          "quantized_corner_normal_count": 8184,
+          "source_normals_sha256": "0f783e297619fe40bce64b03d0bd9431113711fc94bfb94e8e4dc761ebcaf71a",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9794815392669705E-08,
+          "max_component_error": 0.0039061159013150104,
+          "max_angular_error_degrees": 0.353773926161813,
+          "max_vector_length_error": 0.005872648577467832
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 8238,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "1a1b527d36e4d9a749b8acf61ece1c4c49a45f044b1f71fea20ebc88ed1c56c0",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 7902,
+              "uv_count": 7902,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 336,
+              "uv_count": 336,
+              "material_index": 1,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 36,
+        "mesh_name": "\u8DEF\u706F15",
+        "source_node": "93",
+        "source_vertices": 8238,
+        "written_corner_vertices": 8238,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 8238,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 8238,
+          "quantized_corner_normal_count": 8184,
+          "source_normals_sha256": "0f783e297619fe40bce64b03d0bd9431113711fc94bfb94e8e4dc761ebcaf71a",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9794815392669705E-08,
+          "max_component_error": 0.0039061159013150104,
+          "max_angular_error_degrees": 0.353773926161813,
+          "max_vector_length_error": 0.005872648577467832
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 8238,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "4e65a37054b383efdd2cd43dc1b07bb4de1c619ed0fa4599f723d09f47bdb760",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 7902,
+              "uv_count": 7902,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 336,
+              "uv_count": 336,
+              "material_index": 1,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 37,
+        "mesh_name": "\u8DEF\u706F16",
+        "source_node": "94",
+        "source_vertices": 8238,
+        "written_corner_vertices": 8238,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 8238,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 8238,
+          "quantized_corner_normal_count": 8184,
+          "source_normals_sha256": "0f783e297619fe40bce64b03d0bd9431113711fc94bfb94e8e4dc761ebcaf71a",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9794815392669705E-08,
+          "max_component_error": 0.0039061159013150104,
+          "max_angular_error_degrees": 0.353773926161813,
+          "max_vector_length_error": 0.005872648577467832
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 8238,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "9262498cf3649e5bb519e3b55a7eb3b2b47e2ab65f0f144d5dac6b02def75ce6",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 7902,
+              "uv_count": 7902,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 336,
+              "uv_count": 336,
+              "material_index": 1,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 38,
+        "mesh_name": "\u8DEF\u706F17",
+        "source_node": "95",
+        "source_vertices": 8238,
+        "written_corner_vertices": 8238,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 8238,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 8238,
+          "quantized_corner_normal_count": 8184,
+          "source_normals_sha256": "0f783e297619fe40bce64b03d0bd9431113711fc94bfb94e8e4dc761ebcaf71a",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9794815392669705E-08,
+          "max_component_error": 0.0039061159013150104,
+          "max_angular_error_degrees": 0.353773926161813,
+          "max_vector_length_error": 0.005872648577467832
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 8238,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "cd560f09cb6324c521f49d4f7bce32dc9477c0943d4e601a879e3b4609ccd9a7",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 7902,
+              "uv_count": 7902,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 336,
+              "uv_count": 336,
+              "material_index": 1,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 39,
+        "mesh_name": "\u8DEF\u706F18",
+        "source_node": "96",
+        "source_vertices": 7710,
+        "written_corner_vertices": 7710,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 7710,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 7710,
+          "quantized_corner_normal_count": 7608,
+          "source_normals_sha256": "3f97f30b2e42cc8015ee88eeec43f547e6d3a240ef848bac097633bfddab2cd7",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9796195955000826E-08,
+          "max_component_error": 0.003906165205616041,
+          "max_angular_error_degrees": 0.35191638227298144,
+          "max_vector_length_error": 0.005872648577467832
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 7710,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "deeb8db80c689c6baadcf030028fcda33f0fb2655249dfa34c94be38c408faf0",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 7374,
+              "uv_count": 7374,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 336,
+              "uv_count": 336,
+              "material_index": 1,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 40,
+        "mesh_name": "\u8DEF\u706F19",
+        "source_node": "97",
+        "source_vertices": 7710,
+        "written_corner_vertices": 7710,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 7710,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 7710,
+          "quantized_corner_normal_count": 7608,
+          "source_normals_sha256": "3f97f30b2e42cc8015ee88eeec43f547e6d3a240ef848bac097633bfddab2cd7",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9796195955000826E-08,
+          "max_component_error": 0.003906165205616041,
+          "max_angular_error_degrees": 0.35191638227298144,
+          "max_vector_length_error": 0.005872648577467832
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 7710,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "d9b88c1477168b147df722ec6c881afefa358e0f226567b4feec42cc3a9c99de",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 7374,
+              "uv_count": 7374,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 336,
+              "uv_count": 336,
+              "material_index": 1,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 41,
+        "mesh_name": "\u8DEF\u706F20",
+        "source_node": "98",
+        "source_vertices": 7710,
+        "written_corner_vertices": 7710,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 7710,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 7710,
+          "quantized_corner_normal_count": 7608,
+          "source_normals_sha256": "5fe1bfec5ebdbcb09a97eeb018ebd2b2c97b32e2d95c626558eb779688de3389",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9796195955000826E-08,
+          "max_component_error": 0.0039050173199112748,
+          "max_angular_error_degrees": 0.35064656218438295,
+          "max_vector_length_error": 0.005723164414834558
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 7710,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "3651525fe12247af799c88599f1ff071b2b344264b6779938e079119a5a038f6",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 7374,
+              "uv_count": 7374,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 336,
+              "uv_count": 336,
+              "material_index": 1,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 42,
+        "mesh_name": "\u8F6E\u5ED3\u68072",
+        "source_node": "99",
+        "source_vertices": 348,
+        "written_corner_vertices": 348,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 348,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 348,
+          "quantized_corner_normal_count": 348,
+          "source_normals_sha256": "315aa1c33b4f58915ca4f6b19c96567c8a77cef02bdd1ce04af1dbfcc26aff4b",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9345059493479653E-08,
+          "max_component_error": 0.003572274775224482,
+          "max_angular_error_degrees": 0.2675673508133225,
+          "max_vector_length_error": 0.0043735777630999895
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 348,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "112a9a8f831e280a6f46965e84c63b27ffa7195b9273d270f890d9c4bf01e4b8",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 258,
+              "uv_count": 258,
+              "material_index": 0,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 90,
+              "uv_count": 90,
+              "material_index": 1,
+              "color_rgb8": [
+                0,
+                0,
+                0
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 43,
+        "mesh_name": "\u8DEF\u68691",
+        "source_node": "100",
+        "source_vertices": 2220,
+        "written_corner_vertices": 2220,
+        "patches": 3,
+        "materials": 3,
+        "texture_coordinate_count": 2220,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 2220,
+          "quantized_corner_normal_count": 2126,
+          "source_normals_sha256": "150e2ae338c126bc370dcf7d7031bd0ce46c38213fc6770ab72eb852e6a59aa1",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9614053653759242E-08,
+          "max_component_error": 0.0038981358108834407,
+          "max_angular_error_degrees": 0.2978326343384851,
+          "max_vector_length_error": 0.004128394868972096
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 2220,
+          "patch_count": 3,
+          "material_count": 3,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "d8c466b388c3d48ddf8ebb25456549273d76a3834f8b883137701bcca24b3b8c",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 384,
+              "uv_count": 384,
+              "material_index": 0,
+              "color_rgb8": [
+                0,
+                0,
+                0
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 1482,
+              "uv_count": 1482,
+              "material_index": 1,
+              "color_rgb8": [
+                89,
+                89,
+                89
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 2,
+              "patch_type": "Triangles",
+              "point_count": 354,
+              "uv_count": 354,
+              "material_index": 2,
+              "color_rgb8": [
+                66,
+                0,
+                0
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 44,
+        "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F15",
+        "source_node": "101",
+        "source_vertices": 858,
+        "written_corner_vertices": 858,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 858,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 858,
+          "quantized_corner_normal_count": 858,
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9319401462224448E-08,
+          "max_component_error": 0.0038255845502334074,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_vector_length_error": 0.004005826055568762
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 858,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "ef681c9de4ad49a9bfa584845ed60d3eb639c92945ef69ac1cffab6cd7be8699",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 474,
+              "uv_count": 474,
+              "material_index": 0,
+              "color_rgb8": [
+                75,
+                0,
+                0
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 384,
+              "uv_count": 384,
+              "material_index": 1,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 45,
+        "mesh_name": "\u94A2\u7BA1\u8B66\u793A\u67F16",
+        "source_node": "102",
+        "source_vertices": 858,
+        "written_corner_vertices": 858,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 858,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 858,
+          "quantized_corner_normal_count": 858,
+          "source_normals_sha256": "cc5634cad85582b9ef9691a64a79c40c384f8876f75824e47cb0c492d08991d5",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9319401462224448E-08,
+          "max_component_error": 0.0038255845502334074,
+          "max_angular_error_degrees": 0.21986703177736497,
+          "max_vector_length_error": 0.004005826055568762
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 858,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "4d49db49d407cc28e714301d67c80144b4c2936d2dc4fc6f7cce197118af2223",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 474,
+              "uv_count": 474,
+              "material_index": 0,
+              "color_rgb8": [
+                75,
+                0,
+                0
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 384,
+              "uv_count": 384,
+              "material_index": 1,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 46,
+        "mesh_name": "\u8F6E\u5ED3\u68071",
+        "source_node": "103",
+        "source_vertices": 348,
+        "written_corner_vertices": 348,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 348,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 348,
+          "quantized_corner_normal_count": 348,
+          "source_normals_sha256": "ea734bd26a6c568aab0f90886d50320da30bb0b6553d569764d91739abd7305d",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9515788368961182E-08,
+          "max_component_error": 0.0035723074800555477,
+          "max_angular_error_degrees": 0.26757378828311645,
+          "max_vector_length_error": 0.0043735777630999895
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 348,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "fe9b8ec1e872ad54b9c1ac8f544cf87ab3bcfd5be857e276d32e9b9e1003bd97",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 258,
+              "uv_count": 258,
+              "material_index": 0,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 90,
+              "uv_count": 90,
+              "material_index": 1,
+              "color_rgb8": [
+                0,
+                0,
+                0
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 47,
+        "mesh_name": "\u8DEF\u706F7",
+        "source_node": "104",
+        "source_vertices": 7710,
+        "written_corner_vertices": 7710,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 7710,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 7710,
+          "quantized_corner_normal_count": 7608,
+          "source_normals_sha256": "5fbe86a51d29cc81ad92eb4a1afe8f7b81fcbb3566ec2e787f14db1b0716527e",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9796195955000826E-08,
+          "max_component_error": 0.003905233883660819,
+          "max_angular_error_degrees": 0.3663368644292142,
+          "max_vector_length_error": 0.005539022023111184
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 7710,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "b53c40baddf13a139be2ac847e121f0d563c8a1be452d1df131dbec269ed64eb",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 7374,
+              "uv_count": 7374,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 336,
+              "uv_count": 336,
+              "material_index": 1,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 48,
+        "mesh_name": "\u8DEF\u706F6",
+        "source_node": "105",
+        "source_vertices": 7710,
+        "written_corner_vertices": 7710,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 7710,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 7710,
+          "quantized_corner_normal_count": 7608,
+          "source_normals_sha256": "8d7c5a8df0ad6a7f5d1f911434ea332d45ec75994ba67b9d75d2313d4b59a83d",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9800654499645418E-08,
+          "max_component_error": 0.0039050006012079086,
+          "max_angular_error_degrees": 0.34763037540833636,
+          "max_vector_length_error": 0.005477648802577173
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 7710,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "b7c649a44bb31710e0e5b285b091cf8ed8f3e17af01fb6674abf5db3a58a7e22",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 7374,
+              "uv_count": 7374,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 336,
+              "uv_count": 336,
+              "material_index": 1,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 49,
+        "mesh_name": "\u8DEF\u706F4",
+        "source_node": "106",
+        "source_vertices": 7710,
+        "written_corner_vertices": 7710,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 7710,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 7710,
+          "quantized_corner_normal_count": 7608,
+          "source_normals_sha256": "67c4488deae2a7951b07e344b7f03475636d057898e1eb0ec49659953ed1570a",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9796195955000826E-08,
+          "max_component_error": 0.0039060608897696636,
+          "max_angular_error_degrees": 0.35474977690537973,
+          "max_vector_length_error": 0.005993998879342266
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 7710,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "a46dae8863ae04e33e71e9a418ff5337c4bd6b2489ad82f8edaa7260166392ec",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 7374,
+              "uv_count": 7374,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 336,
+              "uv_count": 336,
+              "material_index": 1,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 50,
+        "mesh_name": "\u8DEF\u706F5",
+        "source_node": "107",
+        "source_vertices": 7710,
+        "written_corner_vertices": 7710,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 7710,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 7710,
+          "quantized_corner_normal_count": 7608,
+          "source_normals_sha256": "a1a81deb72c58e0810b919c280ef4309b44417f338553034d374950af739f2d1",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9796195955000826E-08,
+          "max_component_error": 0.003905695729964097,
+          "max_angular_error_degrees": 0.3664679207774392,
+          "max_vector_length_error": 0.005938040317657101
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 7710,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "ff75c46e21fa93e83a8c8c69ff04f9370e97b21ed3aedfd0d9eaf2a41c407d70",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 7374,
+              "uv_count": 7374,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 336,
+              "uv_count": 336,
+              "material_index": 1,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 51,
+        "mesh_name": "\u8DEF\u706F2",
+        "source_node": "108",
+        "source_vertices": 7710,
+        "written_corner_vertices": 7710,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 7710,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 7710,
+          "quantized_corner_normal_count": 7608,
+          "source_normals_sha256": "0f01308c1e6fd96a2b1da100961cc47d258af83a30630bba2a27cc0d8337d93d",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9796195955000826E-08,
+          "max_component_error": 0.003905984933801787,
+          "max_angular_error_degrees": 0.35080688327300374,
+          "max_vector_length_error": 0.005938040317657101
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 7710,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "428f5b7092818391c972ae5435d2b1f065e83b9e63235c1d9750b5f188b6795d",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 7374,
+              "uv_count": 7374,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 336,
+              "uv_count": 336,
+              "material_index": 1,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 52,
+        "mesh_name": "\u8DEF\u706F3",
+        "source_node": "109",
+        "source_vertices": 7710,
+        "written_corner_vertices": 7710,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 7710,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 7710,
+          "quantized_corner_normal_count": 7608,
+          "source_normals_sha256": "67c4488deae2a7951b07e344b7f03475636d057898e1eb0ec49659953ed1570a",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9796195955000826E-08,
+          "max_component_error": 0.0039060608897696636,
+          "max_angular_error_degrees": 0.35474977690537973,
+          "max_vector_length_error": 0.005993998879342266
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 7710,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "77329abb90efb7fa8b189a7345e74e0a0667ce530ebfc9d71d36f6b1327db62e",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 7374,
+              "uv_count": 7374,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 336,
+              "uv_count": 336,
+              "material_index": 1,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 53,
+        "mesh_name": "\u8DEF\u706F1",
+        "source_node": "110",
+        "source_vertices": 7710,
+        "written_corner_vertices": 7710,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 7710,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 7710,
+          "quantized_corner_normal_count": 7608,
+          "source_normals_sha256": "b606b34696ca0639b65f91b961a25e1653fd423692e7a7b4efe9d07c461e7682",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9796195843978523E-08,
+          "max_component_error": 0.0039054047761947763,
+          "max_angular_error_degrees": 0.3720181321915778,
+          "max_vector_length_error": 0.0059687406669495235
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 7710,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "d37bf542ac33ae4d8ea0c11e8618ff260102c57bb0ef66f5b4c7bb07e18b7d09",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 7374,
+              "uv_count": 7374,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 336,
+              "uv_count": 336,
+              "material_index": 1,
+              "color_rgb8": [
+                255,
+                255,
+                255
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 54,
+        "mesh_name": "\u9EC4\u8272\u8B66\u793A\u67F11",
+        "source_node": "111",
+        "source_vertices": 1050,
+        "written_corner_vertices": 1050,
+        "patches": 1,
+        "materials": 1,
+        "texture_coordinate_count": 1050,
+        "textured_patches": 0,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 1050,
+          "quantized_corner_normal_count": 1050,
+          "source_normals_sha256": "462a1fd0b96922465897a2607465542c4cbfda7b4f18ac1b469cce09df29f777",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9742039386881913E-08,
+          "max_component_error": 0.003831585293905815,
+          "max_angular_error_degrees": 0.29225938827047226,
+          "max_vector_length_error": 0.005417454499622276
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 1050,
+          "patch_count": 1,
+          "material_count": 1,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "582ed346345b23232594eb46ab771b13af1fcb8cb8add640c8dc9e72d1ca7c36",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 1050,
+              "uv_count": 1050,
+              "material_index": 0,
+              "color_rgb8": [
+                255,
+                178,
+                11
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": false,
+              "texture_sha256": null,
+              "texture_width": 0,
+              "texture_height": 0,
+              "texture_bytes_per_pixel": 0,
+              "texture_compression": null
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "mesh_index": 55,
+        "mesh_name": "\u8DEF\u724C2",
+        "source_node": "112",
+        "source_vertices": 492,
+        "written_corner_vertices": 492,
+        "patches": 2,
+        "materials": 2,
+        "texture_coordinate_count": 492,
+        "textured_patches": 2,
+        "normals_present": true,
+        "normal_storage": {
+          "source_corner_normal_count": 492,
+          "quantized_corner_normal_count": 378,
+          "source_normals_sha256": "471f76a8fbabf898bbb5a4a7ed13a500631c721ed3248430109c07af2396480b",
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "component_grid_step": 0.0078125,
+          "half_step": 0.00390625,
+          "midpoint_rounding": "toward_positive_infinity",
+          "renormalized": false,
+          "exact_codec_prediction_verified": true,
+          "max_builder_float32_component_error": 2.9751811569944664E-08,
+          "max_component_error": 0.003808622565449782,
+          "max_angular_error_degrees": 0.15039060904592633,
+          "max_vector_length_error": 0.003503384632433826
+        },
+        "signature": {
+          "version": 1,
+          "point_count": 492,
+          "patch_count": 2,
+          "material_count": 2,
+          "wkid": 3857,
+          "has_normals": true,
+          "coordinates_normals_uv_sha256": "7d9be8de8ca33f80487b7e3915639ee02bf3508652a015bf7cc17bfe29cd7b22",
+          "patches": [
+            {
+              "patch_index": 0,
+              "patch_type": "Triangles",
+              "point_count": 372,
+              "uv_count": 372,
+              "material_index": 0,
+              "color_rgb8": [
+                150,
+                150,
+                150
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": true,
+              "texture_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+              "texture_width": 512,
+              "texture_height": 512,
+              "texture_bytes_per_pixel": 3,
+              "texture_compression": "CompressionJPEG"
+            },
+            {
+              "patch_index": 1,
+              "patch_type": "Triangles",
+              "point_count": 120,
+              "uv_count": 120,
+              "material_index": 1,
+              "color_rgb8": [
+                204,
+                204,
+                204
+              ],
+              "transparency_percent": 0,
+              "cull_back_face": false,
+              "textured": true,
+              "texture_sha256": "a7e8df6cd5d6b86ec0fa9b8913ca8d6a8720d468c3ad5ce372bcea9735251d72",
+              "texture_width": 1080,
+              "texture_height": 540,
+              "texture_bytes_per_pixel": 4,
+              "texture_compression": "CompressionNone"
+            }
+          ]
+        },
+        "passed": true
+      }
+    ]
+  },
+  "material_quantization": [
+    {
+      "index": 0,
+      "name": "01 - Default",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 1,
+      "name": "\u9053\u8DEF-\u767D\u7EBF",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 2,
+      "name": "\u9053\u8DEF-\u9EC4\u7EBF",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5058823823928833,
+        0.03921568766236305,
+        1
+      ],
+      "stored_rgb8": [
+        150,
+        129,
+        10
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 3,
+      "name": "CD-\uFF10\uFF11",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 4,
+      "name": "ND-002",
+      "source_rgba": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "stored_rgb8": [
+        204,
+        204,
+        204
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 5,
+      "name": "ND-004",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 6,
+      "name": "ND-010",
+      "source_rgba": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "stored_rgb8": [
+        204,
+        204,
+        204
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 7,
+      "name": "Material.002",
+      "source_rgba": [
+        0.2930224537849426,
+        0,
+        0,
+        1
+      ],
+      "stored_rgb8": [
+        75,
+        0,
+        0
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 8,
+      "name": "Material",
+      "source_rgba": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "stored_rgb8": [
+        204,
+        204,
+        204
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 9,
+      "name": "ND-009",
+      "source_rgba": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "stored_rgb8": [
+        204,
+        204,
+        204
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 10,
+      "name": "\u6746\u4EF6.004",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 11,
+      "name": "\u6746\u4EF6",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 12,
+      "name": "\u7EA2\u7EFF\u706F.002",
+      "source_rgba": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "stored_rgb8": [
+        255,
+        255,
+        255
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 13,
+      "name": "Material.001",
+      "source_rgba": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "stored_rgb8": [
+        204,
+        204,
+        204
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 14,
+      "name": "ND-003",
+      "source_rgba": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "stored_rgb8": [
+        204,
+        204,
+        204
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 15,
+      "name": "ND-004",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 16,
+      "name": "\u7BB1\u4F53.002",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 17,
+      "name": "ND-005",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 18,
+      "name": "\u6746\u4EF6.002",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 19,
+      "name": "\u7BB1\u4F53.001",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 20,
+      "name": "ND-006",
+      "source_rgba": [
+        0.5882353186607361,
+        0.5882353186607361,
+        0.5882353186607361,
+        1
+      ],
+      "stored_rgb8": [
+        150,
+        150,
+        150
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 21,
+      "name": "Material.009",
+      "source_rgba": [
+        1,
+        0.6992594003677368,
+        0.044171057641506195,
+        1
+      ],
+      "stored_rgb8": [
+        255,
+        178,
+        11
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 22,
+      "name": "Material.005",
+      "source_rgba": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "stored_rgb8": [
+        204,
+        204,
+        204
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 23,
+      "name": "Material.006",
+      "source_rgba": [
+        0.0010000000474974513,
+        0.0010000000474974513,
+        0.0010000000474974513,
+        1
+      ],
+      "stored_rgb8": [
+        0,
+        0,
+        0
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 24,
+      "name": "Material.013",
+      "source_rgba": [
+        0.024334460496902466,
+        0.024334460496902466,
+        0.024334460496902466,
+        1
+      ],
+      "stored_rgb8": [
+        6,
+        6,
+        6
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 25,
+      "name": "ND-008",
+      "source_rgba": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "stored_rgb8": [
+        204,
+        204,
+        204
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 26,
+      "name": "Material.010",
+      "source_rgba": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "stored_rgb8": [
+        0,
+        0,
+        0
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 27,
+      "name": "Material.011",
+      "source_rgba": [
+        0.34769561886787415,
+        0.34769561886787415,
+        0.34769561886787415,
+        1
+      ],
+      "stored_rgb8": [
+        89,
+        89,
+        89
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 28,
+      "name": "Material.012",
+      "source_rgba": [
+        0.25813865661621094,
+        0.00035977698280476034,
+        0.00035977698280476034,
+        1
+      ],
+      "stored_rgb8": [
+        66,
+        0,
+        0
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    },
+    {
+      "index": 29,
+      "name": "ND-007",
+      "source_rgba": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "stored_rgb8": [
+        204,
+        204,
+        204
+      ],
+      "stored_transparency_percent": 0,
+      "stored_opacity": 1,
+      "double_sided": true
+    }
+  ],
+  "textures": [
+    {
+      "index": 0,
+      "source_sha256": "1fcfaae0131ffb6699681c4cc87b7d9baa6b4821cc874c97298a04649e5d00de",
+      "storage": "jpeg_original_bytes",
+      "width": 4096,
+      "height": 4096,
+      "bytes_per_pixel": 3,
+      "stored_byte_length": 2275056,
+      "stored_sha256": "1fcfaae0131ffb6699681c4cc87b7d9baa6b4821cc874c97298a04649e5d00de",
+      "readback_bytes_equal": true
+    },
+    {
+      "index": 1,
+      "source_sha256": "079b8a07739e982ebc1a42295b883537977542c17ca61778200a70211225479c",
+      "storage": "jpeg_original_bytes",
+      "width": 512,
+      "height": 512,
+      "bytes_per_pixel": 3,
+      "stored_byte_length": 185541,
+      "stored_sha256": "079b8a07739e982ebc1a42295b883537977542c17ca61778200a70211225479c",
+      "readback_bytes_equal": true
+    },
+    {
+      "index": 2,
+      "source_sha256": "3d40a57788c519db955b51a344b539c2cc44d33330af1f52ddba2bfeb51a79d6",
+      "storage": "jpeg_original_bytes",
+      "width": 2000,
+      "height": 1170,
+      "bytes_per_pixel": 3,
+      "stored_byte_length": 405597,
+      "stored_sha256": "3d40a57788c519db955b51a344b539c2cc44d33330af1f52ddba2bfeb51a79d6",
+      "readback_bytes_equal": true
+    },
+    {
+      "index": 3,
+      "source_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+      "storage": "jpeg_original_bytes",
+      "width": 512,
+      "height": 512,
+      "bytes_per_pixel": 3,
+      "stored_byte_length": 35675,
+      "stored_sha256": "3d939f280cec9068ad06c7329c5fe19ce2657a427fa16e58b09cf62de1861672",
+      "readback_bytes_equal": true
+    },
+    {
+      "index": 4,
+      "source_sha256": "0024c6266dafbfd7a9672986ae693013027b1d1c39bea6fcc36df0abff15279d",
+      "storage": "rgba8_uncompressed",
+      "width": 3429,
+      "height": 1170,
+      "bytes_per_pixel": 4,
+      "stored_byte_length": 16047720,
+      "stored_sha256": "a7c2bfbab00fd1a3c3dd2dcf7f43b0f226ae1255a66948f9ee9dc453dc909c2a",
+      "readback_bytes_equal": true
+    },
+    {
+      "index": 5,
+      "source_sha256": "7b46382b2c6560817b81b34a78f8eb5846b7bef57db5d37c894b98f054f7e10b",
+      "storage": "rgba8_uncompressed",
+      "width": 1289,
+      "height": 1080,
+      "bytes_per_pixel": 4,
+      "stored_byte_length": 5568480,
+      "stored_sha256": "5e2e36f16676e4b533f583652452ccf79be59773530f65ccb8e7d744d9d2ab2a",
+      "readback_bytes_equal": true
+    },
+    {
+      "index": 6,
+      "source_sha256": "74b160d41c5bc0337bf1fec7b2a36186a9672408913166823790ea24a8826ca6",
+      "storage": "rgba8_uncompressed",
+      "width": 1104,
+      "height": 611,
+      "bytes_per_pixel": 4,
+      "stored_byte_length": 2698176,
+      "stored_sha256": "95e1fe873ba51e73f6e6ed33abc8dce78698fc48ee05faaf39f04ccbbe79c79f",
+      "readback_bytes_equal": true
+    },
+    {
+      "index": 7,
+      "source_sha256": "697722143cd07641984e0b4b6f0bf9e01797c0e3048cb54955a592864dd15118",
+      "storage": "rgba8_uncompressed",
+      "width": 1080,
+      "height": 1413,
+      "bytes_per_pixel": 4,
+      "stored_byte_length": 6104160,
+      "stored_sha256": "b7f27d9e5a1a1d2c1f0337d3dda54aa58299de0308596032dcbeeaf4a800e10d",
+      "readback_bytes_equal": true
+    },
+    {
+      "index": 8,
+      "source_sha256": "8f6c9a5fb899bb9730dfeafa253f3403433f3da7b610d7ff928b785c81b2bfe7",
+      "storage": "rgba8_uncompressed",
+      "width": 3000,
+      "height": 3000,
+      "bytes_per_pixel": 4,
+      "stored_byte_length": 36000000,
+      "stored_sha256": "c935b4c3344855818bd6bd476b3199bda190a129e24ae8cf28c82a6cf41abcac",
+      "readback_bytes_equal": true
+    },
+    {
+      "index": 9,
+      "source_sha256": "fa23cd7f25b4bc8381326ca195ab648441a3f4480c0a471fd3e41f75280ffd6e",
+      "storage": "jpeg_original_bytes",
+      "width": 512,
+      "height": 507,
+      "bytes_per_pixel": 3,
+      "stored_byte_length": 57774,
+      "stored_sha256": "fa23cd7f25b4bc8381326ca195ab648441a3f4480c0a471fd3e41f75280ffd6e",
+      "readback_bytes_equal": true
+    },
+    {
+      "index": 10,
+      "source_sha256": "c08bfcfe067fe849dc7aac5405afac6d044d8e089404f34fddec72e5fb0121d5",
+      "storage": "rgba8_uncompressed",
+      "width": 185,
+      "height": 572,
+      "bytes_per_pixel": 4,
+      "stored_byte_length": 423280,
+      "stored_sha256": "72fc8c09d33c765dc26efc74e6896ddd126eaa1261873f6247dfb869eee4e01e",
+      "readback_bytes_equal": true
+    },
+    {
+      "index": 11,
+      "source_sha256": "cbcbf05b389e3ad7cdd15e7d2a6702ae7b085d576d90874eae7a5545a3219233",
+      "storage": "rgba8_uncompressed",
+      "width": 1080,
+      "height": 540,
+      "bytes_per_pixel": 4,
+      "stored_byte_length": 2332800,
+      "stored_sha256": "a7e8df6cd5d6b86ec0fa9b8913ca8d6a8720d468c3ad5ce372bcea9735251d72",
+      "readback_bytes_equal": true
+    }
+  ],
+  "limitations": [
+    "Requires a licensed, installed ArcGIS Pro; this is not the native FileGDB API backend.",
+    "RGB quantizes to 8-bit; material opacity quantizes to whole-percent transparency.",
+    "FileGDB normal components quantize to a 1/128 grid in tested Pro 3.6.2; source normal hashes and actual component/angular errors are reported. Normals are not lossless or renormalized.",
+    "PNG is stored as top-left row-major unpremultiplied RGBA8; original PNG container metadata is retained only in the source bundle.",
+    "JPEG compressed bytes are preserved without re-encoding; ICC appearance and UV orientation require visual acceptance.",
+    "No reprojection, datum conversion, vertical-datum conversion, or texture baking is performed.",
+    "The writer validates SDK readback, not how ArcGIS Pro or GeoScene renders the result."
+  ]
+}

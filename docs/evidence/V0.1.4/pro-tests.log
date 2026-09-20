@@ -1,0 +1,4 @@
+PASS: true FileGDB close/reopen, coordinates, seams, normals, color quantization, PNG alpha pixels, JPEG bytes
+PASS: relocated GDB verified in a fresh process while the source bundle path was unavailable
+PASS: existing outputs protected; report cannot be nested in source bundle or GDB
+PASS: 20 invalid input / cleanup / hash mismatch checks. Evidence: C:\Users\Jasper\Documents\Codex\2026-09-20\gen\work\v014\pro-regression\arcgis-pro-integration-kxj4oe0s
