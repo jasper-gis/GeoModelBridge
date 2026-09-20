@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+from gmb_platform import sdk_manifest, installed_sdk_files
 
 root = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
@@ -19,15 +20,11 @@ for dependency in manifest["dependencies"]:
     print(f"Verified {dependency['name']} {dependency['version']}")
 
 # The optional official FileGDB runtime is copied only by an explicit native install.
-runtime = install / "bin/native-filegdb/FileGDBAPI.dll"
-if runtime.exists():
-    sdk = json.loads((root / "backends/native-filegdb/sdk-sources.json").read_text(encoding="utf-8-sig"))
-    mapping = {
-        "sdk/bin64/FileGDBAPI.dll": runtime,
-        "sdk/license/Apache License.pdf": install / "licenses/filegdb-api/Apache License.pdf",
-        "sdk/license/userestrictions.txt": install / "licenses/filegdb-api/userestrictions.txt",
-        "sdk/README-windows_VS2022.txt": install / "licenses/filegdb-api/README-windows_VS2022.txt",
-    }
+for target in ("windows-x64", "linux-x64"):
+    sdk = sdk_manifest(target)
+    mapping = {key: install / value for key, value in installed_sdk_files(sdk).items()}
+    if not any(mapping["sdk/" + name].exists() for name in sdk["runtime_files"]):
+        continue
     for item in sdk["hashes"]:
         if item["path"] not in mapping:
             continue

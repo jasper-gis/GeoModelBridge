@@ -23,7 +23,7 @@ SDK headers, import libraries, debugging DLLs/PDBs, C# wrappers, and the full SD
 
 ## Microsoft development and runtime components
 
-Building the native backend requires an x64 Microsoft C++ toolchain and Windows SDK. The backend uses Windows Imaging Component (WIC) for image decoding. Microsoft compiler packages, Windows SDK packages, and development caches are not part of the project distribution. Microsoft C++ runtime availability remains a separate runtime prerequisite; no local development environment is silently installed by the project build.
+Building the Windows native backend requires an x64 Microsoft C++ toolchain and Windows SDK. The backend uses Windows Imaging Component (WIC) for image decoding. Microsoft compiler packages, Windows SDK packages, and development caches are not part of the project distribution. Microsoft C++ runtime availability remains a separate runtime prerequisite; no local development environment is silently installed by the project build.
 
 ## Microsoft .NET and Windows Desktop runtimes in the GUI
 
@@ -38,3 +38,11 @@ V0.1.2 adds the self-contained Windows x64 `geomodelbridgeGUI.exe`. Its single-f
 ## Project and fixtures
 
 The C++/C# project and first-party fixtures were created for this project. ASCII FBX fixtures are authored test assets, and image fixtures are deterministic programmatic patterns. `tests/fixtures/upstream/` additionally includes two unmodified binary FBX regression models from the pinned ufbx repository; that directory retains the original `LICENSE`, exact source URLs, and SHA-256 digests in `manifest.json`. No user production models are included. No open-source license for the project's own code has been selected by the owner.
+
+## Linux SDK and system image libraries (V0.1.6)
+
+The Ubuntu x86_64 writer links the official Linux FileGDB API 1.5.5.330 SDK. The immutable download URL, upstream commit, archive SHA-256, shared-library hashes and every installed original notice hash are in `backends/native-filegdb/sdk-sources-linux.json`. The API is Apache-2.0; the separate **libfgdbunixrtl.so uses LGPL 2.1**, as stated by the SDK README. Its upstream source is available from [Esri FGDB Linux Runtime](https://sourceforge.net/projects/esrifgdblinuxru/files/).
+
+With `GMB_INSTALL_FILEGDB_RUNTIME=ON`, installation copies the unmodified `libFileGDBAPI.so`, `libfgdbunixrtl.so`, complete SDK `license/` directory (including LGPL text and third-party acknowledgements), README and provenance manifest. Dynamic linking is retained. The complete SDK, development files and toolchain are not committed or packaged. Do not describe the whole Linux SDK runtime as Apache-only.
+
+Ubuntu image decoding dynamically links the distribution's libpng and libjpeg-turbo; zlib is a transitive libpng dependency. These system libraries are installed through apt, not vendored in the project binary package. Their original notices are available on Ubuntu under `/usr/share/doc/libpng16-16t64/copyright`, `/usr/share/doc/libjpeg-turbo8/copyright`, and `/usr/share/doc/zlib1g/copyright`. See [libpng](http://www.libpng.org/pub/png/libpng.html) and [libjpeg-turbo](https://github.com/libjpeg-turbo/libjpeg-turbo). Their installed versions are recorded with the Ubuntu validation evidence; no source images are re-encoded through these libraries.

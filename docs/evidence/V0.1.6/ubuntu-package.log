@@ -1,0 +1,6 @@
+Verified GeoModelBridge 0.1.6: 6 required declarations and runtime release references agree.
+Verified ufbx 0.23.0
+Verified nlohmann/json 3.12.0
+Verified FileGDB API 1.5.5.330 runtime and original license files
+Packaged 961 files: /home/gmb/GeoModelBridge-V0.1.6-ubuntu24.04-x86_64-final.tar.gz
+SHA256 46f036e4a50a8b3bea3f9929c89771057ab15e9de14588ba70cd8e7859b4f4bc

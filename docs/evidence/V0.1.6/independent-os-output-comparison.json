@@ -1,0 +1,75 @@
+{
+  "status": "passed",
+  "cases": [
+    {
+      "name": "alpha-plane",
+      "shape_hashes_equal": true,
+      "texture_hashes_equal": true
+    },
+    {
+      "name": "binary_blender",
+      "shape_hashes_equal": true,
+      "texture_hashes_equal": true
+    },
+    {
+      "name": "color-cube",
+      "shape_hashes_equal": true,
+      "texture_hashes_equal": true
+    },
+    {
+      "name": "colored_quad",
+      "shape_hashes_equal": true,
+      "texture_hashes_equal": true
+    },
+    {
+      "name": "embedded_quad",
+      "shape_hashes_equal": true,
+      "texture_hashes_equal": true
+    },
+    {
+      "name": "instanced_mirror",
+      "shape_hashes_equal": true,
+      "texture_hashes_equal": true
+    },
+    {
+      "name": "mixed-materials",
+      "shape_hashes_equal": true,
+      "texture_hashes_equal": true
+    },
+    {
+      "name": "multi_material",
+      "shape_hashes_equal": true,
+      "texture_hashes_equal": true
+    },
+    {
+      "name": "no_material",
+      "shape_hashes_equal": true,
+      "texture_hashes_equal": true
+    },
+    {
+      "name": "seam-cube",
+      "shape_hashes_equal": true,
+      "texture_hashes_equal": true
+    },
+    {
+      "name": "sloped_normals",
+      "shape_hashes_equal": true,
+      "texture_hashes_equal": true
+    },
+    {
+      "name": "textured_quad",
+      "shape_hashes_equal": true,
+      "texture_hashes_equal": true
+    },
+    {
+      "name": "uv-plane",
+      "shape_hashes_equal": true,
+      "texture_hashes_equal": true
+    },
+    {
+      "name": "uv_transform",
+      "shape_hashes_equal": true,
+      "texture_hashes_equal": true
+    }
+  ]
+}

@@ -1,10 +1,18 @@
-# Native FileGDB 后端 · V0.1.5
+# Native FileGDB 后端 · V0.1.6
 
-这个 Windows x64 C++17 后端把 Scene Bundle 中的几何、RGB、透明度、UV 和 PNG/JPEG 纹理直接写入新 FileGDB Multipatch。转换时不加载 ArcGIS Pro、不调用 ArcPy、不借用 Pro 导出的 Shape Buffer。第三方 Esri FileGDB API 负责数据库文件格式，项目代码按 Esri 公开文档独立生成扩展 Multipatch Shape Buffer。
+这个 Windows x64 / Ubuntu 24.04 x86_64 C++17 后端把 Scene Bundle 中的几何、RGB、透明度、UV 和 PNG/JPEG 纹理直接写入新 FileGDB Multipatch。转换时不加载 ArcGIS Pro、不调用 ArcPy、不借用 Pro 导出的 Shape Buffer。第三方 Esri FileGDB API 负责数据库文件格式，项目代码按 Esri 公开文档独立生成扩展 Multipatch Shape Buffer。
 
-## 运行
+## Linux 构建与运行
 
-发行包已带 `dist/bin/native-filegdb/GeoModelBridge.NativeWriter.exe` 和官方 release `FileGDBAPI.dll`。还需要 Windows 11 x64 与 Microsoft Visual C++ x64 Runtime；验证机器已有该运行库。Esri SDK 原许可、README 和 SHA256 清单位于 `dist/licenses/filegdb-api`。本工程不包含 MSVC 编译器或 ArcGIS Pro 运行库。
+从项目根目录执行 `python3 scripts/fetch_filegdb_sdk.py --output build/filegdb-sdk`，随后 `python3 scripts/build.py --sdk build/filegdb-sdk --include-runtime`。需要 Ubuntu 24.04 x86_64、GCC 13、CMake、Ninja、Python ≥ 3.11、libpng-dev、libjpeg-dev；具体 apt 命令见[主 README](../../README.md)。固定 Linux SDK 来源和散列见 [sdk-sources-linux.json](sdk-sources-linux.json)。
+
+Linux 程序名为 `dist/bin/native-filegdb/GeoModelBridge.NativeWriter`，没有 `.exe`，参数与下文 Windows 命令完全相同。它通过 `$ORIGIN` 加载同目录的 `libFileGDBAPI.so` 和 `libfgdbunixrtl.so`。后者为 LGPL 2.1 的上游 Unix 运行库，完整原始许可、README 和来源清单随安装保留。PNG 使用 libpng 解码为直通 RGBA8，libjpeg 检查 JPEG 扫描流但不重新编码。无需 .NET 或显示服务。
+
+平台差异仅在 `platform_*.cpp`（路径/UTF/文件提交）及 `images_*.cpp`（解码），其余原生逻辑共用。Linux 按大小写判断路径范围，拒绝符号链接，以 `renameat2(RENAME_NOREPLACE)` 提交新文件；不回退到会覆盖目标的 rename。GUI 仅 Windows。
+
+## Windows 运行
+
+Windows 完整安装可附带 `dist/bin/native-filegdb/GeoModelBridge.NativeWriter.exe` 和官方 release `FileGDBAPI.dll`。还需要 Windows 11 x64 与 Microsoft Visual C++ x64 Runtime；验证机器已有该运行库。Esri SDK 原许可、README 和 SHA256 清单位于 `dist/licenses/filegdb-api`。本工程不包含 MSVC 编译器或 ArcGIS Pro 运行库。
 
 普通 FBX 转换使用主 CLI：
 
@@ -40,16 +48,16 @@ cmake --install build/native --prefix dist
 
 `GMB_INSTALL_FILEGDB_RUNTIME` 默认 `OFF`。设为 `ON` 时仅安装官方 release `FileGDBAPI.dll`、完整 Apache 2.0 许可、SDK 的 sample use restrictions、README 及固定来源清单，不安装 debug DLL、PDB、.NET wrapper 或 SDK 开发文件。保持 `OFF` 时，运行前把自己的 `FILEGDB_API_ROOT/bin64` 加入 `PATH`。
 
-此后端必须用 MSVC ABI 编译。主 C++ 引擎可继续用 MinGW；两者通过独立进程和 Scene Bundle 协议通信，不混用 C++ STL ABI。
+Windows 后端必须用 MSVC ABI 编译。主 C++ 引擎可继续用 MinGW；两者通过独立进程和 Scene Bundle 协议通信，不混用 C++ STL ABI。
 
-原生后端只链接 release `FileGDBAPI.lib`，支持 `Release`、`RelWithDebInfo` 和 `MinSizeRel`，固定 `/MD` 与 `_ITERATOR_DEBUG_LEVEL=0`。`Debug` 会在配置阶段拒绝，以免 `/MDd` 或调试迭代器布局跨越 SDK 的 STL ABI。主引擎的 Debug 构建不受这个限制影响。
+Windows 原生后端只链接 release `FileGDBAPI.lib`，支持 `Release`、`RelWithDebInfo` 和 `MinSizeRel`，固定 `/MD` 与 `_ITERATOR_DEBUG_LEVEL=0`。`Debug` 会在配置阶段拒绝，以免 `/MDd` 或调试迭代器布局跨越 SDK 的 STL ABI。主引擎的 Debug 构建不受这个限制影响。
 
 ## 存储规则与范围
 
 - 一个源 mesh 对应一个 feature，按首次出现的材质顺序分组为 `Triangles` patch。角点不按位置焊接；UV 与法线边界保留。
 - 源坐标必须已经统一 Z-up、米、右手系，并有显式投影米制 WKID 与 origin。只赋坐标系，不再乘节点矩阵、重复平移或重投影。坐标每个分量须落在 ±99,999,999 米内；XY/Z 分辨率为 0.00001 米，回读容差为 0.00002 米。
 - RGB 四舍五入到 8 位；opacity 换算为整数百分比 transparency。法线先 float32，再由实测 FileGDB 1.5.5 存为 `floor(float32(n)*128+0.5)/128`，逐分量核验并报告最大分量/角度误差；不宣称无损法线。
-- PNG 经 Windows WIC 解码为未预乘 RGBA8，保持透明像素的 RGB，不执行 ICC 色彩转换；JPEG 保留原压缩字节。拒绝 16-bit/动画 PNG 与 CMYK/YCCK/高位深 JPEG。图片每轴不超过 16384、解码像素不超过 256 MiB。
+- PNG 经 Windows WIC 或 Linux libpng 解码为未预乘 RGBA8，保持透明像素的 RGB，不执行 ICC 色彩转换；JPEG 保留原压缩字节。拒绝 16-bit/动画 PNG 与 CMYK/YCCK/高位深 JPEG。图片每轴不超过 16384、解码像素不超过 256 MiB。
 - V0.1.3 的上游 FBX reader 可在 GIS 策略下对明确安全的缺 JFIF Adobe YCbCr JPEG 补封装，并记录 `JPEG_CONTAINER_NORMALIZED` 及源/目标散列。此 writer 保存收到的 bundle 图片字节，不重复修复、不重新压缩；源图片不变。
 - FBX 的 V=0 对应图片底部；Esri 文档定义 t=0 对应存储图片首行。PNG 解码行和 JPEG 首行均从顶部开始，因此**所有有 UV 的 patch 都写入 U′=U、V′=1−V**，包括当前无贴图的 UV。源 Bundle 不改写，报告记录转换策略，PNG 与 JPEG 用相同规则。
 - 每个 mesh 最多 1000 万源顶点/展开角点，单 Shape Buffer 上限 512 MiB。未支持的字段、混合缺失的法线、同材质 patch 内混合缺失的 UV、非法索引、图片散列不符与路径逃逸均拒绝。

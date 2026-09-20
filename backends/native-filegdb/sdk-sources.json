@@ -62,5 +62,16 @@
     ]
   },
   "repository": "https://github.com/Esri/file-geodatabase-api",
-  "schema_version": 1
+  "schema_version": 1,
+  "platform": "windows-x64",
+  "archive_name": "FileGDB_API_VS2022.zip",
+  "archive_root": "",
+  "runtime_files": [
+    "bin64/FileGDBAPI.dll"
+  ],
+  "notice_files": [
+    "license/Apache License.pdf",
+    "license/userestrictions.txt",
+    "README-windows_VS2022.txt"
+  ]
 }

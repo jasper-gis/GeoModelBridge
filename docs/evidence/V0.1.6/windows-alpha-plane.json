@@ -1,0 +1,111 @@
+{
+  "backend": "native-filegdb",
+  "compatibility_adjustments": false,
+  "conversion_profile": "strict",
+  "coordinate_system": {
+    "name": "WGS_1984_UTM_Zone_50N",
+    "projected": true,
+    "source_coordinates_assigned_without_reprojection": true,
+    "unit": "meter",
+    "wkid": 32650
+  },
+  "feature_class": "Models",
+  "filegdb_api": "1.5.5",
+  "input": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\artifacts\\linux-port\\windows-examples\\bundles\\alpha-plane",
+  "limitations": [
+    "Requires FileGDB API 1.5.5 Windows x64 and Microsoft C++ runtimes; no ArcGIS Pro dependency.",
+    "Material RGB quantizes to RGB8; opacity to whole-percent transparency; UV to float32; native FileGDB normals are checked against floor(float32(source)*128+0.5)/128.",
+    "PNG is decoded to straight RGBA8 by Windows WIC without ICC conversion; JPEG compressed bytes are preserved.",
+    "Coordinates already include source transform/origin and are assigned an explicit projected metre CRS; no reprojection or vertical datum conversion.",
+    "Graphical acceptance and software outside the tested SDK are separate from readback verification."
+  ],
+  "material_quantization": [
+    {
+      "double_sided": true,
+      "index": 0,
+      "name": "Cutout with half-opacity border",
+      "source_rgba": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "stored_rgb8": [
+        255,
+        255,
+        255
+      ],
+      "stored_transparency_percent": 0
+    }
+  ],
+  "output": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\artifacts\\linux-port\\windows-examples\\filegdb\\alpha-plane.gdb",
+  "reader_diagnostics": [],
+  "source": "generated:alpha-plane",
+  "status": "written_and_readback_verified",
+  "texture_coordinate_policy": "All patches with UVs: target U=source U, target V=1-source V. Source FBX UVs are bottom-origin and Esri first stored image row is t=0. Applies equally to original JPEG and top-down RGBA8 PNG.",
+  "textures": [
+    {
+      "bytes_per_pixel": 4,
+      "height": 128,
+      "index": 0,
+      "readback_bytes_equal": true,
+      "source_sha256": "a871ef0eb1f81718ff2782682563f35edda7e5926e406165bf07e072712ba2e5",
+      "storage": "rgba8_uncompressed",
+      "stored_byte_length": 65536,
+      "stored_sha256": "9f554ef7b0e3babd11af25c295559798263d5dbbb6d0369721adc31497f9331f",
+      "width": 128
+    }
+  ],
+  "verification": {
+    "checks": [
+      {
+        "materials": 1,
+        "max_uv_error": 0.0,
+        "mesh_index": 0,
+        "mesh_name": "transparent-center",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.0,
+          "max_component_error": 0.0,
+          "quantized_corner_normal_count": 0,
+          "renormalized": false,
+          "source_corner_normal_count": 6,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "ced5b88ecbb703c17089878fd45097da5be7d1049d67f7e443ee00cff08dfd01"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              255,
+              255,
+              255
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 6,
+            "source_material_index": 0,
+            "texture_sha256": "9f554ef7b0e3babd11af25c295559798263d5dbbb6d0369721adc31497f9331f",
+            "textured": true,
+            "transparency_percent": 0,
+            "uv_count": 6
+          }
+        ],
+        "readback_shape_sha256": "a1a8e41945b215fd106e8581921f9cfdf43ce3f8979a1420314d489d7482e95e",
+        "source_node": "generated:transparent-center",
+        "textured_patches": 1,
+        "written_corner_vertices": 6
+      }
+    ],
+    "coordinate_tolerance_xy": 2e-05,
+    "coordinate_tolerance_z": 2e-05,
+    "feature_count": 1,
+    "geometry_material_uv_texture_readback": true,
+    "graphical_acceptance": "pending_independent_target_software_review",
+    "level": "closed_reopened_file_geodatabase",
+    "uv_float_tolerance": "max(1,abs(value))*2e-6"
+  },
+  "version": "0.1.6"
+}

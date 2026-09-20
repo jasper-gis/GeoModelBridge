@@ -1,0 +1,62 @@
+{
+  "status": "passed",
+  "gdb_count": 14,
+  "cases": [
+    {
+      "name": "alpha-plane",
+      "status": "passed"
+    },
+    {
+      "name": "binary_blender",
+      "status": "passed"
+    },
+    {
+      "name": "color-cube",
+      "status": "passed"
+    },
+    {
+      "name": "colored_quad",
+      "status": "passed"
+    },
+    {
+      "name": "embedded_quad",
+      "status": "passed"
+    },
+    {
+      "name": "instanced_mirror",
+      "status": "passed"
+    },
+    {
+      "name": "mixed-materials",
+      "status": "passed"
+    },
+    {
+      "name": "multi_material",
+      "status": "passed"
+    },
+    {
+      "name": "no_material",
+      "status": "passed"
+    },
+    {
+      "name": "seam-cube",
+      "status": "passed"
+    },
+    {
+      "name": "sloped_normals",
+      "status": "passed"
+    },
+    {
+      "name": "textured_quad",
+      "status": "passed"
+    },
+    {
+      "name": "uv-plane",
+      "status": "passed"
+    },
+    {
+      "name": "uv_transform",
+      "status": "passed"
+    }
+  ]
+}

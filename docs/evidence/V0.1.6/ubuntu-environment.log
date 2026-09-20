@@ -1,0 +1,78 @@
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+Linux gmb-ubuntu 6.8.0-139-generic #139-Ubuntu SMP PREEMPT_DYNAMIC Sat Aug  1 03:52:05 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+Copyright (C) 2023 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+cmake version 3.28.3
+
+CMake suite maintained and supported by Kitware (kitware.com/cmake).
+Python 3.12.3
+libc6:amd64	2.39-0ubuntu8.9
+libjpeg-turbo8:amd64	2.1.5-2ubuntu2
+libpng16-16t64:amd64	1.6.43-5ubuntu0.6
+libstdc++6:amd64	14.2.0-4ubuntu2~24.04.1
+
+Dynamic section at offset 0x885b0 contains 34 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libFileGDBAPI.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libpng16.so.16]
+ 0x0000000000000001 (NEEDED)             Shared library: [libjpeg.so.8]
+ 0x0000000000000001 (NEEDED)             Shared library: [libstdc++.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x000000000000000f (RPATH)              Library rpath: [$ORIGIN]
+ 0x000000000000000c (INIT)               0xe000
+ 0x000000000000000d (FINI)               0x74ba0
+ 0x0000000000000019 (INIT_ARRAY)         0x88c10
+ 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x88c18
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x3b0
+ 0x0000000000000005 (STRTAB)             0x36b8
+ 0x0000000000000006 (SYMTAB)             0xb08
+ 0x000000000000000a (STRSZ)              27888 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000015 (DEBUG)              0x0
+ 0x0000000000000003 (PLTGOT)             0x89810
+ 0x0000000000000002 (PLTRELSZ)           5736 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0xc788
+ 0x0000000000000007 (RELA)               0xa940
+ 0x0000000000000008 (RELASZ)             7752 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x0000000000000018 (BIND_NOW)           
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE
+ 0x000000006ffffffe (VERNEED)            0xa750
+ 0x000000006fffffff (VERNEEDNUM)         6
+ 0x000000006ffffff0 (VERSYM)             0xa3a8
+ 0x000000006ffffff9 (RELACOUNT)          248
+ 0x0000000000000000 (NULL)               0x0
+	linux-vdso.so.1 (0x00007ffc2bbf4000)
+	libFileGDBAPI.so => /home/gmb/GeoModelBridge/dist/bin/native-filegdb/libFileGDBAPI.so (0x00007d222bc00000)
+	libpng16.so.16 => /lib/x86_64-linux-gnu/libpng16.so.16 (0x00007d222d397000)
+	libjpeg.so.8 => /lib/x86_64-linux-gnu/libjpeg.so.8 (0x00007d222d314000)
+	libstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007d222b800000)
+	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007d222d22b000)
+	libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007d222d1fb000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007d222b400000)
+	libfgdbunixrtl.so => /home/gmb/GeoModelBridge/dist/bin/native-filegdb/libfgdbunixrtl.so (0x00007d222b000000)
+	libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007d222d1f6000)
+	libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007d222d1f1000)
+	librt.so.1 => /lib/x86_64-linux-gnu/librt.so.1 (0x00007d222d1ec000)
+	libz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007d222bbe4000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007d222d460000)

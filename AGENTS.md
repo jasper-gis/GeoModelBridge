@@ -1,6 +1,6 @@
 # GeoModelBridge contributor notes
 
-This is a C++17 model conversion engine with a Windows native FileGDB API backend and a self-contained .NET GUI. Preserve the Scene Bundle contract. ArcGIS Pro is not a build, runtime, test, or release dependency.
+This is a C++17 model conversion engine with a shared Windows/Linux native FileGDB API backend and a Windows WPF GUI. Preserve the Scene Bundle contract. ArcGIS Pro is not a build, runtime, test, or release dependency.
 
 - Commit and push directly to `master` in `https://github.com/jasper-gis/GeoModelBridge.git`. Never create other branches. Preserve existing remote history.
 
@@ -10,10 +10,11 @@ This is a C++17 model conversion engine with a Windows native FileGDB API backen
 - Geometry is already normalized to right-handed Z-up metres and has its origin translation applied in the bundle. Do not apply node matrices twice or treat a WKID assignment as reprojection.
 - Keep material/UV/normal corner boundaries. Avoid merging corners by position alone.
 - Use official FileGDB SDK documentation and headers. Do not invent FileGDB material blob encodings.
-- Run CMake/CTest core tests for C++ changes. Run native FileGDB integration and GUI service tests after writer or orchestration changes. Do not require desktop GIS software for automated checks. Visual acceptance remains a separate check.
+- Keep core, bundle validation, shape codec and native orchestration shared between platforms. Put OS file/encoding operations in platform_*.cpp and image decoding in images_*.cpp; do not maintain separate platform branches.
+- Run CMake/CTest and native FileGDB integration/deployment tests on Ubuntu 24.04 x86_64 and Windows after writer or orchestration changes. Run GUI service tests on Windows. Do not require desktop GIS software for automated checks. Visual acceptance remains a separate check.
 - Verify dependency hashes with `python scripts/verify_dependencies.py`. Update pinned sources and notices together.
-- Initial release is V0.1.0. The current small iteration is V0.1.5, removing the Pro backend and keeping only native FileGDB conversion. Update all version-bearing project files and changelog together; do not relabel historical evidence or unverified capabilities as newly verified.
+- Initial release is V0.1.0. The current small iteration is V0.1.6, adding Ubuntu native FileGDB conversion with a shared codebase. Update all version-bearing project files and changelog together; do not relabel historical evidence or unverified capabilities as newly verified.
 - Strict is the CLI default. The explicit gis-static profile may use the saved static pose, omit ambient/specular/reflection shading, and remove finite zero-area triangles only when each adjustment is reported. It must not weaken missing textures, UVs, nonfinite geometry, unsupported deformation, or unknown material checks.
 - GIS static may add a leading JFIF APP0 only for conservatively identified Adobe YCbCr baseline JPEGs with safe orientation/metadata. Preserve all original bytes after SOI, record before/after hashes, and reject ambiguous cases. Do not silently transcode textures in the native backend.
 
-Build: `scripts/build.ps1 -WithNative -WithGui -FileGDBApiRoot <SDK> -IncludeFileGDBRuntime` on Windows; `cmake --preset release`, `cmake --build --preset release`, `ctest --preset release` for core-only builds.
+Build: `python3 scripts/build.py --sdk <SDK> --include-runtime` on Ubuntu; `scripts/build.ps1 -WithNative -WithGui -FileGDBApiRoot <SDK> -IncludeFileGDBRuntime` on Windows; `cmake --preset release`, `cmake --build --preset release`, `ctest --preset release` for core-only builds.

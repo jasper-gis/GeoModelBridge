@@ -6,7 +6,7 @@ jobs:
   core:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-24.04, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -47,3 +47,23 @@ jobs:
       - run: python tests/native_deployment_test.py --install-dir dist --work artifacts/deployment
       - run: python scripts/generate_examples.py --output artifacts/examples
       - run: python scripts/package.py --examples-dir artifacts/examples --check-only
+  native-ubuntu:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sudo apt-get update && sudo apt-get install -y g++ cmake ninja-build libpng-dev libjpeg-dev
+      - run: python scripts/fetch_filegdb_sdk.py --output build/filegdb-sdk
+      - run: python scripts/build.py --sdk build/filegdb-sdk --include-runtime
+      - run: python backends/native-filegdb/tests/integration.py --writer dist/bin/native-filegdb/GeoModelBridge.NativeWriter --work artifacts/native
+      - run: python tests/native_deployment_test.py --install-dir dist --work artifacts/deployment
+      - run: python scripts/generate_examples.py --output artifacts/examples
+      - run: python scripts/package.py --examples-dir artifacts/examples --check-only
+      - name: Package Ubuntu release
+        run: python scripts/package.py --examples-dir artifacts/examples --output "$RUNNER_TEMP/GeoModelBridge-ubuntu24.04-x86_64.tar.gz"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: GeoModelBridge-ubuntu24.04-x86_64
+          path: ${{ runner.temp }}/GeoModelBridge-ubuntu24.04-x86_64.tar.gz*

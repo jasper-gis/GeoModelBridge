@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import shutil
 import subprocess
+from gmb_platform import executable_names
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--output", required=True, type=Path, help="New output directory; existing directories are rejected")
@@ -13,8 +14,9 @@ parser.add_argument("--backend", choices=("native-filegdb",), default="native-fi
 args = parser.parse_args()
 project = Path(__file__).resolve().parents[1]
 version = (project / "VERSION").read_text(encoding="utf-8").strip()
-cli = (args.cli or project / "dist/bin/geomodelbridge.exe").resolve()
-writer_name = "native-filegdb/GeoModelBridge.NativeWriter.exe"
+cli_name, native_name = executable_names()
+cli = (args.cli or project / "dist" / cli_name).resolve()
+writer_name = Path(native_name).relative_to("bin")
 writer = (args.writer or cli.parent / writer_name).resolve()
 out = args.output.resolve()
 out.mkdir(parents=True, exist_ok=False)

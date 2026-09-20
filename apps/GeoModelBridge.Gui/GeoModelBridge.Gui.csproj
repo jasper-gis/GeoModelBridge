@@ -5,7 +5,7 @@
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Version>0.1.5</Version>
+    <Version>0.1.6</Version>
     <AssemblyName>geomodelbridgeGUI</AssemblyName>
     <ApplicationIcon>Assets/AppIcon.ico</ApplicationIcon>
     <RootNamespace>GeoModelBridge.Gui</RootNamespace>

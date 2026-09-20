@@ -57,7 +57,7 @@ inline Bytes read(const fs::path &p, std::uint64_t limit) {
 }
 void reject_reparse(const fs::path &p);
 inline fs::path safe_input(const fs::path &root, const std::string &rel) {
-    require(!rel.empty() && rel.find(':') == std::string::npos,
+    require(!rel.empty() && rel.find(':') == std::string::npos && rel.find('\\') == std::string::npos,
             "Bundle resource must be a relative path.");
     auto p = fs::u8path(rel);
     require(!p.has_root_path(), "Absolute or drive-rooted bundle path forbidden.");

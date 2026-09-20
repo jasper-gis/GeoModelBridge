@@ -1,5 +1,12 @@
 # Changelog
 
+## V0.1.6 — 2026-09-21
+
+- 增加 Ubuntu 24.04 x86_64 原生 FileGDB 转换，Windows/Linux 共用 C++17 核心、Scene Bundle、材质编解码和写入/回读逻辑，继续直接维护 master。
+- 分离平台路径、UTF 编码、不覆盖提交和图片解码；Linux 使用官方 FileGDB SDK、libpng/libjpeg，PNG 保留直通 RGBA，JPEG 验证后保留原压缩字节。
+- 增加统一 Python/CMake 构建入口、固定 Linux SDK 下载与散列校验、可搬迁运行库布局、tar.gz 打包及 Ubuntu 原生 CI。WPF GUI 仍仅支持 Windows。
+- 补充跨平台图片、Unicode、Linux PATH/符号链接/大小写测试，完善 README 部署与维护说明。实际结果见 [V0.1.6 验证记录](docs/validation-v0.1.6.md)，图形验收保持独立。
+
 ## V0.1.5 — 2026-09-21
 
 - 仅保留原生 FileGDB 后端：移除 Pro 适配器、托管 DLL 启动、授权探测及相关构建/验证脚本；CLI 拒绝旧后端，GUI 固定原生转换。

@@ -6,6 +6,9 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+from gmb_platform import executable_names, sdk_manifest, platform_name
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--install-dir", required=True, type=Path)
@@ -14,26 +17,35 @@ args = parser.parse_args()
 install, work = args.install_dir.resolve(), args.work.resolve()
 work.mkdir(parents=True, exist_ok=False)
 if (install / "bin/arcgis-pro").exists(): raise AssertionError("Removed backend in current release")
-for name in ["bin/geomodelbridge.exe", "bin/native-filegdb/GeoModelBridge.NativeWriter.exe", "bin/native-filegdb/FileGDBAPI.dll", "bin/demo/textured_quad.fbx", "bin/demo/checker.png"]:
+cli_name, writer_name = executable_names()
+runtime_names = ["bin/native-filegdb/" + Path(name).name for name in sdk_manifest()["runtime_files"]]
+for name in [cli_name, writer_name, *runtime_names, "bin/demo/textured_quad.fbx", "bin/demo/checker.png"]:
     destination = work / name
     destination.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(install / name, destination)
 env = {key:value for key,value in os.environ.items() if not key.upper().startswith(("ARCGIS", "ESRI", "GMB_"))}
-env["PATH"] = os.pathsep.join([str(Path(os.environ["SystemRoot"]) / "System32"), os.environ["SystemRoot"]])
+env.pop("LD_LIBRARY_PATH", None)
+env.pop("LD_PRELOAD", None)
+env["PATH"] = os.pathsep.join([str(Path(os.environ["SystemRoot"]) / "System32"), os.environ["SystemRoot"]]) if platform_name() == "windows-x64" else "/usr/bin:/bin"
 env["ARCGIS_PRO_INSTALL_DIR"] = str(work / "absent-pro")
 env["GMB_PRO_WRITER"] = str(work / "absent-pro.exe")
-cli, writer = work / "bin/geomodelbridge.exe", work / "bin/native-filegdb/GeoModelBridge.NativeWriter.exe"
+cli, writer = work / cli_name, work / writer_name
 def run(*command):
     result = subprocess.run([str(value) for value in command], cwd=work, env=env,
                             capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=60)
     assert result.returncode == 0, (result.returncode, result.stdout, result.stderr)
     return result.stdout
 version = run(cli, "--version").strip()
+if os.name != "nt":
+    env["PATH"] = str(cli.parent) + os.pathsep + env["PATH"]
+    doctor = json.loads(run("geomodelbridge", "doctor"))
+    assert Path(doctor["native_filegdb"]["writer_path"]) == writer
+    assert doctor["native_filegdb"]["writer_present"] is True
 probe = json.loads(run(writer, "--probe"))
 assert probe["arcgis_pro_required"] is False and probe["backend"] == "native-filegdb"
 input_path = work / "bin/demo/textured_quad.fbx"
 input_hash = hashlib.sha256(input_path.read_bytes()).hexdigest()
-run(cli, "convert", input_path, "--output", work / "textured.gdb", "--wkid", 32650,
+run(cli if os.name == "nt" else "geomodelbridge", "convert", input_path, "--output", work / "textured.gdb", "--wkid", 32650,
     "--origin", 500000, 3000000, 100, "--report", work / "conversion.json")
 report = json.loads((work / "conversion.json").read_text(encoding="utf-8"))
 assert report["status"] == "written_and_readback_verified" and report["backend"] == "native-filegdb"

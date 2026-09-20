@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "name": "Esri File Geodatabase API",
+  "platform": "linux-x64",
+  "version": "1.5.5.330",
+  "repository": "https://github.com/Esri/file-geodatabase-api",
+  "source_commit": "1c1e67fbd141be3734015c69f77324ab973adf22",
+  "download_url": "https://raw.githubusercontent.com/Esri/file-geodatabase-api/1c1e67fbd141be3734015c69f77324ab973adf22/FileGDB_API_1.5.5/FileGDB_API-RHEL8-64gcc8.tar.gz",
+  "archive_name": "FileGDB_API-RHEL8-64gcc8.tar.gz",
+  "archive_root": "FileGDB_API-RHEL8-64gcc8",
+  "license": "Apache-2.0 (API); LGPL-2.1 (libfgdbunixrtl)",
+  "runtime_files": [
+    "lib/libFileGDBAPI.so",
+    "lib/libfgdbunixrtl.so"
+  ],
+  "notice_files": [
+    "license/Acknowledgements",
+    "license/Acknowledgements-FGDBUnixRTL",
+    "license/Apache License.pdf",
+    "license/AUTHORS",
+    "license/userestrictions.txt",
+    "README"
+  ],
+  "format_document": {
+    "date": "2012-06-20",
+    "within_sdk": "doc/html/extended_shape_buffer_format.pdf",
+    "title": "Extended Shape Buffer Format",
+    "pages": [
+      4,
+      10,
+      11,
+      12,
+      16
+    ]
+  },
+  "runtime_source": "https://sourceforge.net/projects/esrifgdblinuxru/files/",
+  "hashes": [
+    {
+      "path": "FileGDB_API-RHEL8-64gcc8.tar.gz",
+      "sha256": "0e48481fae8ebbc6c6982e343fd5dc286085a5403734639a830b2364bf769f50"
+    },
+    {
+      "path": "sdk/lib/libFileGDBAPI.so",
+      "sha256": "1e6cf9db33aa3d8090bc7add33d0aa60cab9eacd4a64f14992b2e874c8857069"
+    },
+    {
+      "path": "sdk/lib/libfgdbunixrtl.so",
+      "sha256": "c9d27c4dffc4b8534e1b57db93d98a7b1b295758e90dee67f4e55807aa173af9"
+    },
+    {
+      "path": "sdk/doc/html/extended_shape_buffer_format.pdf",
+      "sha256": "7dc12913a7c20c25b81d8d23e3232118c8a432359d07c8f402a3af9bacaeb90e"
+    },
+    {
+      "path": "sdk/license/Acknowledgements",
+      "sha256": "ec305c9bc9d016b9372920da62d431ff73d1e24ab919c28f3cf785a7f9fae824"
+    },
+    {
+      "path": "sdk/license/Acknowledgements-FGDBUnixRTL",
+      "sha256": "0bd5a258e2a645951808eeb3f557eb67f9e01195ff2051afe29201005506ff16"
+    },
+    {
+      "path": "sdk/license/Apache License.pdf",
+      "sha256": "331fd5ed2b766ea49a09e5e989060cee15fb90d100c43533229d1f3a05ee0891"
+    },
+    {
+      "path": "sdk/license/AUTHORS",
+      "sha256": "672940ca8b562149b11de346e6a446e482da418153ce6385deb0c19156d57e99"
+    },
+    {
+      "path": "sdk/license/userestrictions.txt",
+      "sha256": "d37ba07c381e74950bf50e43041d477caf6a45d91d34348f3aa98f6ecff70959"
+    },
+    {
+      "path": "sdk/README",
+      "sha256": "ac62d32e83d3426d96eeaf49457e8868e490d752ffbdeba545f072b4acd22135"
+    }
+  ]
+}

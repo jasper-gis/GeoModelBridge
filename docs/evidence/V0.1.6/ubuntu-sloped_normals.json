@@ -1,0 +1,106 @@
+{
+  "backend": "native-filegdb",
+  "compatibility_adjustments": false,
+  "conversion_profile": "strict",
+  "coordinate_system": {
+    "name": "WGS_1984_UTM_Zone_50N",
+    "projected": true,
+    "source_coordinates_assigned_without_reprojection": true,
+    "unit": "meter",
+    "wkid": 32650
+  },
+  "feature_class": "Models",
+  "filegdb_api": "1.5.5",
+  "input": "/home/gmb/GeoModelBridge/artifacts/examples/filegdb/.gmb-work-202680958/bundle",
+  "limitations": [
+    "Requires FileGDB API 1.5.5 Linux x86_64, libstdc++, libpng and libjpeg runtimes; no ArcGIS Pro dependency.",
+    "Material RGB quantizes to RGB8; opacity to whole-percent transparency; UV to float32; native FileGDB normals are checked against floor(float32(source)*128+0.5)/128.",
+    "PNG is decoded to straight RGBA8 by libpng without gamma/ICC conversion; libjpeg validates JPEG scans and original compressed bytes are preserved.",
+    "Coordinates already include source transform/origin and are assigned an explicit projected metre CRS; no reprojection or vertical datum conversion.",
+    "Graphical acceptance and software outside the tested SDK are separate from readback verification."
+  ],
+  "material_quantization": [
+    {
+      "double_sided": true,
+      "index": 0,
+      "name": "Red",
+      "source_rgba": [
+        0.4,
+        0.1,
+        0.05,
+        0.75
+      ],
+      "stored_rgb8": [
+        102,
+        26,
+        13
+      ],
+      "stored_transparency_percent": 25
+    }
+  ],
+  "output": "/home/gmb/GeoModelBridge/artifacts/examples/filegdb/sloped_normals.gdb",
+  "reader_diagnostics": [
+    {
+      "code": "UV_SETS_REDUCED",
+      "context": "node:Quad",
+      "message": "Only each material's selected UV coordinates are retained per corner; extra unsampled UV channels are omitted.",
+      "severity": "warning"
+    }
+  ],
+  "source": "/home/gmb/GeoModelBridge/tests/fixtures/sloped_normals.fbx",
+  "status": "written_and_readback_verified",
+  "texture_coordinate_policy": "All patches with UVs: target U=source U, target V=1-source V. Source FBX UVs are bottom-origin and Esri first stored image row is t=0. Applies equally to original JPEG and top-down RGBA8 PNG.",
+  "textures": [],
+  "verification": {
+    "checks": [
+      {
+        "materials": 1,
+        "max_uv_error": 0.0,
+        "mesh_index": 0,
+        "mesh_name": "Quad",
+        "normal_storage": {
+          "component_grid_step": 0.0078125,
+          "exact_codec_prediction_verified": true,
+          "max_angular_error_degrees": 0.17932892776215442,
+          "max_component_error": 0.0031250000000000444,
+          "quantized_corner_normal_count": 3,
+          "renormalized": false,
+          "source_corner_normal_count": 3,
+          "source_hash_encoding": "little-endian binary64 XYZ, material-grouped triangle-corner order",
+          "source_normals_sha256": "c0915a07591e9e1f996a976b8b219361b9593db0f9435849b73e0d163a8299f8"
+        },
+        "passed": true,
+        "patches": [
+          {
+            "color_rgb8": [
+              102,
+              26,
+              13
+            ],
+            "cull_back_face": false,
+            "material_index": 0,
+            "patch_index": 0,
+            "point_count": 3,
+            "source_material_index": 0,
+            "texture_sha256": null,
+            "textured": false,
+            "transparency_percent": 25,
+            "uv_count": 3
+          }
+        ],
+        "readback_shape_sha256": "e35cad4debdedf0fa7400dba1fa537f3e6db1e53fbd329ce715debc4863f71fc",
+        "source_node": "2",
+        "textured_patches": 0,
+        "written_corner_vertices": 3
+      }
+    ],
+    "coordinate_tolerance_xy": 2e-05,
+    "coordinate_tolerance_z": 2e-05,
+    "feature_count": 1,
+    "geometry_material_uv_texture_readback": true,
+    "graphical_acceptance": "pending_independent_target_software_review",
+    "level": "closed_reopened_file_geodatabase",
+    "uv_float_tolerance": "max(1,abs(value))*2e-6"
+  },
+  "version": "0.1.6"
+}

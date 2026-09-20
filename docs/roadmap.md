@@ -37,4 +37,8 @@ V0.1.3 已增加显式 GIS 静态兼容策略，修复中性默认材质误报�
 
 V0.1.4 完成中间包流式写出、重复纹理散列复用和 GUI 日志有界预览；未新增批量转换、强制中止或重投影。
 
-版本号格式 `V主版本.次版本.补丁`。项目首次交付为 V0.1.0，当前小迭代为 V0.1.5。更新版本需同步 VERSION、各 CMake project、include/gmb/scene.hpp、GUI csproj/report、当前版文档、测试断言和二进制。`scripts/check_version.py` 核对主要源码声明；历史证据和样例中的版本号不应批量替换。
+版本号格式 `V主版本.次版本.补丁`。项目首次交付为 V0.1.0，当前小迭代为 V0.1.6。更新版本需同步 VERSION、各 CMake project、include/gmb/scene.hpp、GUI csproj/report、当前版文档、测试断言和二进制。`scripts/check_version.py` 核对主要源码声明；历史证据和样例中的版本号不应批量替换。
+
+## V0.1.6 Ubuntu 支持
+
+同一 master 代码支持 Ubuntu 24.04 x86_64 与 Windows 原生写入，拆分 OS 和图像适配层，构建与发布脚本按平台选择 SDK。Linux 提供完整 CLI，WPF GUI 保持 Windows。验证边界见 [V0.1.6](validation-v0.1.6.md)。

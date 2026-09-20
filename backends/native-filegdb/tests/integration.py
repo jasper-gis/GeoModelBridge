@@ -4,7 +4,7 @@ python integration.py --writer path/to/GeoModelBridge.NativeWriter.exe --work pa
 Creates a unique test directory and retains evidence. Never deletes user data.
 """
 from pathlib import Path
-import argparse, base64, copy, hashlib, json, math, shutil, struct, subprocess, tempfile, time, zlib
+import argparse, base64, copy, hashlib, json, math, os, shutil, struct, subprocess, tempfile, time, zlib
 from concurrent.futures import ThreadPoolExecutor
 
 parser = argparse.ArgumentParser()
@@ -35,12 +35,12 @@ vertices[1]['normal'] = [1 / math.sqrt(3)] * 3
 vertices[2]['normal'] = [-1 / 256, math.sqrt(1 - (1 / 256) ** 2), 0]
 vertices[3]['normal'] = [1 / 256, math.sqrt(1 - (1 / 256) ** 2), 0]
 meshes = [dict(name='PNG alpha', source_node='test', vertices=vertices, triangles=[dict(indices=[0, 1, 2], material=0), dict(indices=[0, 2, 3], material=0)]), dict(name='JPEG and color', source_node='test', vertices=vertices, triangles=[dict(indices=[0, 1, 2], material=1), dict(indices=[0, 2, 3], material=2)])]
-scene = dict(schema_version=1, generator='GeoModelBridge', version='0.1.5', name='Writer integration', source='generated:test', coordinates=dict(unit='meter', up_axis='Z', space='referenced', wkid=32650, origin=[500000, 4000000, 10], origin_explicit=True), nodes=[], meshes=meshes, materials=[dict(name='PNG', color=[1, 1, 1, 1], texture=0, double_sided=True), dict(name='JPEG', color=[1, 1, 1, 1], texture=1, double_sided=False), dict(name='Color opacity', color=[.13, .58, .91, .427], texture=-1, double_sided=True)], textures=textures)
+scene = dict(schema_version=1, generator='GeoModelBridge', version='0.1.6', name='Writer integration', source='generated:test', coordinates=dict(unit='meter', up_axis='Z', space='referenced', wkid=32650, origin=[500000, 4000000, 10], origin_explicit=True), nodes=[], meshes=meshes, materials=[dict(name='PNG', color=[1, 1, 1, 1], texture=0, double_sided=True), dict(name='JPEG', color=[1, 1, 1, 1], texture=1, double_sided=False), dict(name='Color opacity', color=[.13, .58, .91, .427], texture=-1, double_sided=True)], textures=textures)
 scene['diagnostics'] = [dict(severity='warning', code='TEST_SOURCE_WARNING', message='Test warning retained for traceability.', context='generated:test')]
 (bundle / 'scene.json').write_text(json.dumps(scene), encoding='utf8')
 
 def run(arguments, success=True):
-    result = subprocess.run([str(exe)] + list(map(str, arguments)), capture_output=True, text=True, timeout=90)
+    result = subprocess.run([str(exe)] + list(map(str, arguments)), capture_output=True, text=True, encoding='utf-8', timeout=90)
     if (result.returncode == 0) != success:
         raise AssertionError(f'Unexpected return code {result.returncode}: {result.stdout}\n{result.stderr}')
     return result
@@ -191,5 +191,64 @@ corrupt_path.write_text(json.dumps(corrupt_expected), encoding='utf8')
 run(['--verify-gdb', copied, '--expected-report', corrupt_path, '--report', root / 'wrong-verification.json'], success=False)
 assert not (root / 'wrong-verification.json').exists()
 results.append(dict(case='standalone-texture-hash-mismatch', passed=True))
+# Exercise platform decoders against known pixels, including corner cases that
+# cannot be validated merely by writing then reading the same generated buffer.
+def png_image(depth, color, raw, extra=b'', interlace=0):
+    return (b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', struct.pack('>IIBBBBB', 2, 2, depth, color, 0, 0, interlace))
+            + extra + chunk(b'IDAT', zlib.compress(raw)) + chunk(b'IEND', b''))
+
+palette = bytes([1, 2, 3, 7, 13, 197, 255, 21, 10, 0, 255, 255])
+images = [
+    ('palette-alpha', png_image(2, 3, b'\0\x10\0\xb0', chunk(b'PLTE', palette) + chunk(b'tRNS', bytes([0, 1, 127, 255]))), pixels),
+    ('gray2', png_image(2, 0, b'\0\x10\0\xb0'), bytes([0, 0, 0, 255, 85, 85, 85, 255, 170, 170, 170, 255, 255, 255, 255, 255])),
+    ('adam7-alpha', png_image(8, 6, b'\0' + pixels[:4] + b'\0' + pixels[4:8] + b'\0' + pixels[8:], interlace=1), pixels),
+    ('gamma-no-color-transform', png_image(8, 6, b'\0' + pixels[:8] + b'\0' + pixels[8:], chunk(b'gAMA', struct.pack('>I', 45455))), pixels),
+]
+for name, data, expected_pixels in images:
+    source = root / name
+    shutil.copytree(bundle, source)
+    (source / 'textures/alpha.png').write_bytes(data)
+    image_scene = copy.deepcopy(scene)
+    image_scene['textures'][0].update(sha256=hashlib.sha256(data).hexdigest(), byte_length=len(data))
+    (source / 'scene.json').write_text(json.dumps(image_scene), encoding='utf8')
+    target = root / (name + '.gdb')
+    run(['--input', source, '--output', target])
+    check = json.loads(target.with_suffix('.writer-report.json').read_text(encoding='utf8'))
+    assert check['textures'][0]['stored_sha256'] == hashlib.sha256(expected_pixels).hexdigest(), name
+
+# Unicode must survive filesystem paths and SDK wide-string attributes on both OSes.
+unicode_source = root / '中文 模型'
+shutil.copytree(bundle, unicode_source)
+unicode_scene = copy.deepcopy(scene)
+unicode_scene['meshes'][0].update(name='屋顶材质', source_node='场景/屋顶')
+(unicode_source / 'scene.json').write_text(json.dumps(unicode_scene, ensure_ascii=False), encoding='utf8')
+unicode_output = root / '中文 成果.gdb'
+run(['--input', unicode_source, '--output', unicode_output])
+run(['--verify-gdb', unicode_output, '--expected-report', unicode_output.with_suffix('.writer-report.json'), '--report', root / '中文 核验.json'])
+
+if os.name != 'nt':
+    # POSIX containment is case-sensitive; similarly named sibling outputs are valid.
+    case_source = root / 'CaseBundle'
+    shutil.copytree(bundle, case_source)
+    run(['--input', case_source, '--output', root / 'casebundle' / 'result.gdb'])
+    link = root / 'linked-source'
+    link.symlink_to(bundle, target_is_directory=True)
+    run(['--input', link, '--output', root / 'symlink.gdb'], success=False)
+    assert not (root / 'symlink.gdb').exists()
+    dangling = root / 'dangling.gdb'
+    dangling.symlink_to(root / 'absent')
+    run(['--input', bundle, '--output', dangling], success=False)
+    assert dangling.is_symlink()
+    # libjpeg must not accept a recovered/truncated entropy stream.
+    broken_source = root / 'broken-jpeg'
+    shutil.copytree(bundle, broken_source)
+    broken = jpeg[:-12]
+    (broken_source / 'textures/photo.jpg').write_bytes(broken)
+    broken_scene = copy.deepcopy(scene)
+    broken_scene['textures'][1].update(sha256=hashlib.sha256(broken).hexdigest(), byte_length=len(broken))
+    (broken_source / 'scene.json').write_text(json.dumps(broken_scene), encoding='utf8')
+    run(['--input', broken_source, '--output', root / 'broken.gdb'], success=False)
+    assert not (root / 'broken.gdb').exists()
+print('PASS: palette/gray/Adam7/gamma PNG pixels, Unicode filesystem and SDK attributes; POSIX path checks where applicable')
 (root / 'test-results.json').write_text(json.dumps(dict(status='passed', negative_checks=results, png_alpha_pixel_hash=hashlib.sha256(pixels).hexdigest(), standalone_source_unavailable=True), indent=2), encoding='utf8')
 print(f'PASS: {len(results)} invalid input / cleanup / hash mismatch checks. Evidence: {root}')

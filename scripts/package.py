@@ -6,11 +6,13 @@ from pathlib import Path
 import subprocess
 import sys
 import zipfile
+import tarfile
+from gmb_platform import executable_names, sdk_manifest, platform_name
 
 root = Path(__file__).resolve().parents[1]
 version = (root / "VERSION").read_text(encoding="utf-8").strip()
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument("--output", type=Path, help="New ZIP outside the project; only needed when creating an archive")
+parser.add_argument("--output", type=Path, help="New .zip or .tar.gz outside the project")
 parser.add_argument("--install-dir", type=Path, default=root / "dist")
 parser.add_argument("--examples-dir", type=Path, default=root / "examples" / f"V{version}")
 parser.add_argument("--check-only", action="store_true", help="Validate without creating an archive")
@@ -24,10 +26,10 @@ if output is not None and (output.exists() or output.with_suffix(output.suffix +
     raise SystemExit("Archive and checksum must be new paths outside the project")
 if (install / "bin/arcgis-pro").exists():
     raise SystemExit("Install directory contains a removed backend; use a new native-only installation")
-cli = install / "bin/geomodelbridge.exe"
-native = install / "bin/native-filegdb/GeoModelBridge.NativeWriter.exe"
-runtime = native.with_name("FileGDBAPI.dll")
-if not all(p.is_file() for p in (cli, native, runtime)):
+cli_name, native_name = executable_names()
+cli, native = install / cli_name, install / native_name
+runtimes = [native.with_name(Path(name).name) for name in sdk_manifest()["runtime_files"]]
+if not all(p.is_file() for p in (cli, native, *runtimes)):
     raise SystemExit("Build the native release and include the official FileGDB runtime first")
 subprocess.run([sys.executable, str(root / "scripts/check_version.py")], check=True)
 subprocess.run([sys.executable, str(root / "scripts/verify_dependencies.py"), "--install-dir", str(install)], check=True)
@@ -78,7 +80,10 @@ for name in sorted(set(listing)):
         continue
     path = root / rel
     if path.is_file(): files[rel.as_posix()] = path
-for name in ["bin/geomodelbridge.exe", "bin/native-filegdb/GeoModelBridge.NativeWriter.exe", "bin/native-filegdb/FileGDBAPI.dll", "bin/geomodelbridgeGUI.exe", "bin/demo/textured_quad.fbx", "bin/demo/checker.png"]:
+binary_files = [cli_name, native_name, *[p.relative_to(install).as_posix() for p in runtimes], "bin/demo/textured_quad.fbx", "bin/demo/checker.png"]
+if platform_name() == "windows-x64":
+    binary_files.append("bin/geomodelbridgeGUI.exe")
+for name in binary_files:
     path = install / name
     if path.is_file(): files["dist/" + name] = path
 for directory, prefix in [(install / "licenses", "dist/licenses"), (examples, "examples/V" + version)]:
@@ -89,11 +94,18 @@ if args.check_only:
     print(f"Validated native-only V{version}: {len(files)} package files; no archive created")
     raise SystemExit(0)
 output.parent.mkdir(parents=True, exist_ok=True)
-with zipfile.ZipFile(output, "x", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
-    for relative, path in sorted(files.items()):
-        archive.write(path, "GeoModelBridge/" + relative)
-with zipfile.ZipFile(output) as archive:
-    if problem := archive.testzip(): raise SystemExit(f"Archive integrity check failed: {problem}")
+if output.name.endswith(".tar.gz"):
+    with output.open("xb") as stream, tarfile.open(fileobj=stream, mode="w:gz") as archive:
+        for relative, path in sorted(files.items()):
+            archive.add(path, arcname="GeoModelBridge/" + relative, recursive=False)
+elif output.suffix == ".zip":
+    with zipfile.ZipFile(output, "x", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+        for relative, path in sorted(files.items()):
+            archive.write(path, "GeoModelBridge/" + relative)
+    with zipfile.ZipFile(output) as archive:
+        if problem := archive.testzip(): raise SystemExit(f"Archive integrity check failed: {problem}")
+else:
+    raise SystemExit("Use .tar.gz (preserves Linux executable permissions) or .zip")
 with output.open("rb") as file:
     digest = hashlib.file_digest(file, "sha256").hexdigest()
 with output.with_suffix(output.suffix + ".sha256").open("x", encoding="utf-8") as file:

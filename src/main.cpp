@@ -162,8 +162,12 @@ fs::path default_writer(const std::string& argv0) {
     fs::path exe=fs::absolute(fs::u8path(argv0));
 #ifdef _WIN32
     wchar_t path[32768];auto len=GetModuleFileNameW(nullptr,path,32768);if(len>0&&len<32768)exe=fs::path(std::wstring(path,len));
-#endif
     return exe.parent_path()/"native-filegdb"/"GeoModelBridge.NativeWriter.exe";
+#else
+    // argv[0] may be only a command name found through PATH, or a symlink.
+    std::error_code ec;auto resolved=fs::read_symlink("/proc/self/exe",ec);if(!ec)exe=resolved;
+    return exe.parent_path()/"native-filegdb"/"GeoModelBridge.NativeWriter";
+#endif
 }
 int convert(const gmb::Scene& scene,Options& o,const std::string& argv0) {
     if(o.writer.empty())o.writer=default_writer(argv0);
@@ -216,7 +220,7 @@ int main_utf8(const std::vector<std::string>& args) {
     if(args.size()==2&&args[1]=="doctor") {
         std::cout<<json({{"version",gmb::version},{"fbx_reader","ufbx 0.23.0"},{"scene_bundle","available"},
             {"native_filegdb",{{"writer_path",default_writer(args[0]).u8string()},{"writer_present",fs::is_regular_file(default_writer(args[0]))},
-                {"runtime","Requires Windows x64, FileGDB API and Microsoft C++ runtimes. Run writer --probe to test."}}}}).dump(2)<<"\n";
+                {"runtime","Requires the platform FileGDB API and C++/image runtimes. Run writer --probe to test."}}}}).dump(2)<<"\n";
         return 0;
     }
     Options o;

@@ -1,8 +1,5 @@
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-#include <windows.h>
 #include "bundle.hpp"
+#include "platform.hpp"
 #include <FileGDBAPI.h>
 #include <iostream>
 #include <random>
@@ -12,26 +9,6 @@
 namespace gmb::native {
 namespace fg = FileGDBAPI;
 TextureData prepare_texture(const Texture &t);
-std::wstring wide(const std::string &s) {
-    int n = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, s.data(), static_cast<int>(s.size()),
-                                nullptr, 0);
-    require(n > 0 || s.empty(), "Invalid UTF-8.");
-    std::wstring r(n, L'\0');
-    if (n)
-        MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, s.data(), static_cast<int>(s.size()),
-                            r.data(), n);
-    return r;
-}
-std::string narrow(const std::wstring &s) {
-    int n = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, s.data(), static_cast<int>(s.size()),
-                                nullptr, 0, nullptr, nullptr);
-    require(n > 0 || s.empty(), "Invalid UTF-16.");
-    std::string r(n, '\0');
-    if (n)
-        WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, s.data(), static_cast<int>(s.size()),
-                            r.data(), n, nullptr, nullptr);
-    return r;
-}
 void check(fgdbError code, const char *what) {
     if (code == 0)
         return;
@@ -66,45 +43,36 @@ struct Options {
     std::string fc = "Models";
     bool probe = false, help = false;
 };
-bool within(const fs::path &child, const fs::path &root) {
-    auto a = child.lexically_normal().wstring(), b = root.lexically_normal().wstring();
-    std::transform(a.begin(), a.end(), a.begin(), ::towlower);
-    std::transform(b.begin(), b.end(), b.begin(), ::towlower);
-    if (a == b)
-        return true;
-    if (!b.empty() && b.back() != L'\\')
-        b += L'\\';
-    return a.rfind(b, 0) == 0;
-}
-Options options(int argc, wchar_t **argv) {
+Options options(const std::vector<std::string>& argv) {
+    const auto argc = argv.size();
     Options o;
     if (argc == 1) {
         o.help = true;
         return o;
     }
-    if (argc == 2 && std::wstring(argv[1]) == L"--help") {
+    if (argc == 2 && argv[1] == "--help") {
         o.help = true;
         return o;
     }
-    if (argc == 2 && std::wstring(argv[1]) == L"--probe") {
+    if (argc == 2 && argv[1] == "--probe") {
         o.probe = true;
         return o;
     }
-    std::map<std::wstring, std::wstring> args;
-    for (int i = 1; i < argc; i += 2) {
+    std::map<std::string, std::string> args;
+    for (std::size_t i = 1; i < argc; i += 2) {
         require(i + 1 < argc, "Missing argument value.");
-        std::wstring k = argv[i];
-        require(k == L"--input" || k == L"--output" || k == L"--report" ||
-                    k == L"--feature-class" || k == L"--verify-gdb" || k == L"--expected-report",
-                "Unknown option: " + narrow(k));
+        std::string k = argv[i];
+        require(k == "--input" || k == "--output" || k == "--report" ||
+                    k == "--feature-class" || k == "--verify-gdb" || k == "--expected-report",
+                "Unknown option: " + k);
         require(args.emplace(k, argv[i + 1]).second, "Duplicate option.");
     }
-    if (args.count(L"--expected-report")) {
-        require(args.size() == 3 && args.count(L"--verify-gdb") && args.count(L"--report"),
+    if (args.count("--expected-report")) {
+        require(args.size() == 3 && args.count("--verify-gdb") && args.count("--report"),
                 "Standalone verification needs only --verify-gdb, --expected-report and --report.");
-        o.verify = fs::absolute(args.at(L"--verify-gdb")).lexically_normal();
-        o.expected = fs::absolute(args.at(L"--expected-report")).lexically_normal();
-        o.report = fs::absolute(args.at(L"--report")).lexically_normal();
+        o.verify = fs::absolute(fs::u8path(args.at("--verify-gdb"))).lexically_normal();
+        o.expected = fs::absolute(fs::u8path(args.at("--expected-report"))).lexically_normal();
+        o.report = fs::absolute(fs::u8path(args.at("--report"))).lexically_normal();
         require(!within(o.report, o.verify) && !within(o.report, o.expected),
                 "Verification report must be new and outside GDB.");
         reject_reparse(o.verify);
@@ -112,27 +80,27 @@ Options options(int argc, wchar_t **argv) {
         reject_reparse(o.report);
         return o;
     }
-    require(args.count(L"--input") && (args.count(L"--output") != args.count(L"--verify-gdb")),
+    require(args.count("--input") && (args.count("--output") != args.count("--verify-gdb")),
             "Supply --input and exactly one of --output/--verify-gdb.");
-    o.input = fs::absolute(args.at(L"--input")).lexically_normal();
-    if (args.count(L"--feature-class"))
-        o.fc = narrow(args.at(L"--feature-class"));
+    o.input = fs::absolute(fs::u8path(args.at("--input"))).lexically_normal();
+    if (args.count("--feature-class"))
+        o.fc = args.at("--feature-class");
     require(std::regex_match(o.fc, std::regex("[A-Za-z][A-Za-z0-9_]{0,63}")),
             "Invalid feature class name.");
-    if (args.count(L"--verify-gdb"))
-        o.verify = fs::absolute(args.at(L"--verify-gdb")).lexically_normal();
+    if (args.count("--verify-gdb"))
+        o.verify = fs::absolute(fs::u8path(args.at("--verify-gdb"))).lexically_normal();
     else
-        o.output = fs::absolute(args.at(L"--output")).lexically_normal();
+        o.output = fs::absolute(fs::u8path(args.at("--output"))).lexically_normal();
     auto gdb = o.verify.empty() ? o.output : o.verify;
-    auto ext = gdb.extension().wstring();
-    std::transform(ext.begin(), ext.end(), ext.begin(), ::towlower);
-    require(ext == L".gdb", "Geodatabase path must end in .gdb.");
-    if (args.count(L"--report"))
-        o.report = fs::absolute(args.at(L"--report")).lexically_normal();
+    auto ext = gdb.extension().u8string();
+    std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    require(ext == ".gdb", "Geodatabase path must end in .gdb.");
+    if (args.count("--report"))
+        o.report = fs::absolute(fs::u8path(args.at("--report"))).lexically_normal();
     else {
         o.report = gdb;
-        o.report.replace_extension(o.verify.empty() ? L"writer-report.json"
-                                                    : L"native-verification.json");
+        o.report.replace_extension(o.verify.empty() ? "writer-report.json"
+                                                    : "native-verification.json");
     }
     require(!within(gdb, o.input) && !within(o.report, o.input) && !within(o.report, gdb),
             "GDB and report must be outside the input bundle, and report outside GDB.");
@@ -147,19 +115,7 @@ void ensure_new(const fs::path &p) {
 void new_json(const fs::path &p, const json &j) {
     auto s = j.dump(2) + "\n";
     require(s.size() <= UINT32_MAX, "Report too large.");
-    HANDLE f = CreateFileW(p.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_NEW, FILE_ATTRIBUTE_NORMAL,
-                           nullptr);
-    require(f != INVALID_HANDLE_VALUE, "Cannot create new report: " + p.u8string());
-    DWORD written = 0;
-    bool ok = WriteFile(f, s.data(), static_cast<DWORD>(s.size()), &written, nullptr) &&
-              written == s.size();
-    if (ok)
-        ok = FlushFileBuffers(f) != 0;
-    CloseHandle(f);
-    if (!ok) {
-        DeleteFileW(p.c_str());
-        throw std::runtime_error("Cannot finish report write.");
-    }
+    write_exclusive(p, s);
 }
 std::string nonce() {
     std::random_device rd;
@@ -201,7 +157,7 @@ void setup_sr(int wkid, fg::SpatialReference &sr, fg::SpatialReferenceInfo &info
 void write_gdb(const fs::path &path, const std::string &name, const Bundle &bundle,
                const std::vector<TextureData> &textures, fg::SpatialReference &sr, bool &created) {
     Db d;
-    check(fg::CreateGeodatabase(path.wstring(), d.db), "Create geodatabase");
+    check(fg::CreateGeodatabase(wide(path.u8string()), d.db), "Create geodatabase");
     d.opened = true;
     created = true;
     fg::GeometryDef geometry;
@@ -243,7 +199,7 @@ void close_number(double a, double b, double tolerance, const char *name) {
 json verify_gdb(const fs::path &path, const std::string &name, const Bundle &bundle,
                 const std::vector<TextureData> &textures) {
     Db d;
-    check(fg::OpenGeodatabase(path.wstring(), d.db), "Reopen geodatabase");
+    check(fg::OpenGeodatabase(wide(path.u8string()), d.db), "Reopen geodatabase");
     d.opened = true;
     check(d.db.OpenTable(L"\\" + wide(name), d.table), "Reopen feature class");
     d.table_open = true;
@@ -439,7 +395,7 @@ int standalone(const Options &o) {
                 expected.size() == e.at("verification").at("feature_count").get<std::size_t>(),
             "Invalid expected feature count.");
     Db d;
-    check(fg::OpenGeodatabase(o.verify.wstring(), d.db), "Open copied GDB");
+    check(fg::OpenGeodatabase(wide(o.verify.u8string()), d.db), "Open copied GDB");
     d.opened = true;
     check(d.db.OpenTable(L"\\" + wide(name), d.table), "Open copied feature class");
     d.table_open = true;
@@ -634,13 +590,11 @@ int run(const Options &o) {
             {"material_quantization", material_report},
             {"textures", texture_report},
             {"limitations",
-             {"Requires the official FileGDB API 1.5.5 Windows x64 runtime and Microsoft C++ "
-              "runtime; ArcGIS Pro is not invoked by conversion.",
+             {runtime_description(),
               "Material RGB quantizes to RGB8; opacity to whole-percent transparency; UV to "
               "float32; native FileGDB normals are checked against "
               "floor(float32(source)*128+0.5)/128.",
-              "PNG is decoded to straight RGBA8 by Windows WIC without ICC conversion; JPEG "
-              "compressed bytes are preserved.",
+              image_description(),
               "Coordinates already include source transform/origin and are assigned an explicit "
               "projected metre CRS; no reprojection or vertical datum conversion.",
               "Graphical acceptance and software outside the tested SDK are separate from readback "
@@ -649,10 +603,10 @@ int run(const Options &o) {
         report_created = true;
         ensure_new(o.output);
         ensure_new(o.report);
-        require(MoveFileExW(stage.c_str(), o.output.c_str(), MOVEFILE_WRITE_THROUGH) != 0,
+        require(move_new(stage, o.output),
                 "Cannot commit new GDB.");
         committed = true;
-        require(MoveFileExW(report_stage.c_str(), o.report.c_str(), MOVEFILE_WRITE_THROUGH) != 0,
+        require(move_new(report_stage, o.report),
                 "GDB committed but report commit failed; staged report retained: " +
                     report_stage.u8string());
         std::cout << json({{"status", "written_and_readback_verified"},
@@ -674,22 +628,14 @@ int run(const Options &o) {
         throw;
     }
 }
-} // namespace gmb::native
-
-int wmain(int argc, wchar_t **argv) {
-    const HRESULT com = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
-    try {
-        gmb::native::require(SUCCEEDED(com), "COM initialization failed.");
-        auto rc = gmb::native::run(gmb::native::options(argc, argv));
-        CoUninitialize();
-        return rc;
-    } catch (const std::exception &e) {
-        if (SUCCEEDED(com))
-            CoUninitialize();
-        std::cerr << nlohmann::json(
-                         {{"status", "failed"}, {"backend", "native-filegdb"}, {"error", e.what()}})
-                         .dump()
-                  << "\n";
-        return 1;
-    }
+int error_exit(const std::exception& e) {
+    std::cerr << json({{"status", "failed"}, {"backend", "native-filegdb"}, {"error", e.what()}}).dump() << "\n";
+    return 1;
 }
+int entry(const std::vector<std::string>& args) {
+    try {
+        PlatformRuntime runtime;
+        return run(options(args));
+    } catch (const std::exception& e) { return error_exit(e); }
+}
+} // namespace gmb::native
