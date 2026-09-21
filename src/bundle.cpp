@@ -11,6 +11,10 @@ using nlohmann::json;
 namespace fs = std::filesystem;
 namespace {
 json vec(Vec3 v) { return json::array({v.x,v.y,v.z}); }
+json coordinates_json(const Coordinates& c) {
+    return {{"unit",c.unit},{"up_axis",c.up_axis},{"space",c.space},
+        {"wkid",c.wkid},{"origin",vec(c.origin)},{"origin_explicit",c.origin_explicit}};
+}
 json diagnostic_json(const std::vector<Diagnostic>& ds) {
     auto a=json::array();
     for(const auto& d:ds) a.push_back({{"severity",d.severity==Severity::error?"error":"warning"},{"code",d.code},{"message",d.message},{"context",d.context}});
@@ -103,8 +107,7 @@ void write_bundle(const Scene& scene,const fs::path& output) {
         json j={ {"schema_version",1}, {"generator","GeoModelBridge"}, {"version",version}, {"name",scene.name}, {"source",scene.source},
             {"conversion_profile",scene.conversion_profile},
             {"missing_texture_policy",scene.missing_texture_policy},
-            {"coordinates",{{"unit",scene.coordinates.unit},{"up_axis",scene.coordinates.up_axis},{"space",scene.coordinates.space},
-                {"wkid",scene.coordinates.wkid},{"origin",vec(scene.coordinates.origin)},{"origin_explicit",scene.coordinates.origin_explicit}}},
+            {"coordinates",coordinates_json(scene.coordinates)},
             {"nodes",json::array()},{"meshes",json::array()},{"materials",json::array()},{"textures",json::array()}, {"diagnostics",diagnostic_json(diagnostics)}};
         fs::create_directory(staging/"textures");
         for(const auto& texture:scene.textures) {
@@ -136,6 +139,7 @@ void write_report(const Scene& scene,const std::vector<Diagnostic>& ds,const std
     json j={{"schema_version",1},{"version",version},{"status",status},{"backend",backend},{"source",scene.source},
         {"conversion_profile",scene.conversion_profile},
         {"missing_texture_policy",scene.missing_texture_policy},
+        {"coordinates",coordinates_json(scene.coordinates)},
         {"counts",{{"meshes",scene.meshes.size()},{"triangles",triangles},{"corner_vertices",vertices},{"materials",scene.materials.size()},
             {"textures",scene.textures.size()},{"texture_bytes",texture_bytes}}},
         {"fidelity",{{"validation_passed",!has_errors(ds)},{"strict_validation_passed",scene.conversion_profile=="strict"&&!has_errors(ds)&&!compatibility_adjustments(ds)},

@@ -74,7 +74,7 @@ def read_bundle(directory):
 def main():
     exe = Path(sys.argv[1]).resolve()
     assert exe.is_file(), f"Executable not found: {exe}"
-    assert "0.1.9" in invoke(exe, "--version").stdout
+    assert "0.1.10" in invoke(exe, "--version").stdout
     doctor = json.loads(invoke(exe, "doctor").stdout)
     assert "native_filegdb" in doctor and "arcgis_pro" not in doctor
     assert "arcgis-pro" not in invoke(exe, "--help").stdout
@@ -131,6 +131,7 @@ def main():
         shifted = read_bundle(placed)
         assert shifted["coordinates"]["origin_explicit"] is True
         assert shifted["coordinates"]["wkid"] == 32650
+        assert json.loads((placed / "report.json").read_text(encoding="utf-8"))["coordinates"] == shifted["coordinates"]
         assert shifted["meshes"][0]["vertices"][0]["position"] == [500000, 3000000, 100]
         assert shifted["meshes"][0]["vertices"][0]["uv"] == [0, 0]
         invoke(exe, "fixture", "does-not-exist", "--output", root / "unknown", expect_success=False)
@@ -142,6 +143,24 @@ def main():
         invoke(exe, "inspect", invalid, expect_success=False)
         invoke(exe, "prepare", invalid, "--output", root / "invalid", expect_success=False)
         assert not (root / "invalid").exists()
+        for source, label in ((invalid, "invalid"), (root / "missing.fbx", "missing"), (Path(sys.argv[2]) / "missing_texture.fbx", "rejected")):
+            report_path = root / (label + "-placement.json")
+            invoke(exe, "convert", source, "--output", root / (label + ".gdb"), "--report", report_path,
+                   "--wkid", 3857, "--origin", -12.25, 0, 100, "--profile", "gis-static", "--missing-textures", "error", expect_success=False)
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+            assert report["conversion_profile"] == "gis-static" and report["missing_texture_policy"] == "error"
+            assert report["coordinates"] == dict(unit="meter", up_axis="Z", space="referenced", wkid=3857,
+                                                  origin=[-12.25, 0, 100], origin_explicit=True)
+        if len(sys.argv) > 3:
+            output = root / "writer-log.gdb"
+            result = invoke(exe, "convert", Path(sys.argv[2]) / "textured_quad.fbx", "--output", output,
+                            "--wkid", 3857, "--origin", 100, 100, 100, "--writer", Path(sys.argv[3]).resolve(), expect_success=False)
+            assert result.returncode == 5 and not output.exists()
+            assert len(result.stderr.encode("utf-8")) < 68000
+            assert "Writer log truncated" in result.stderr and "FINAL_WRITER_ERROR" in result.stderr
+            failure = json.loads(Path(str(output) + ".report.json").read_text(encoding="utf-8"))
+            assert "FINAL_WRITER_ERROR" in failure["diagnostics"][0]["message"]
+            assert not list(root.glob(".gmb-work-*")), "Owned writer staging should be removed"
     print("PASS CLI, bundle integrity, original image bytes, PNG alpha, placement, and overwrite protection")
 
 

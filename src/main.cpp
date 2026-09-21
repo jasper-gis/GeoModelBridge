@@ -1,5 +1,6 @@
 #include "gmb/scene.hpp"
 #include <nlohmann/json.hpp>
+#include <algorithm>
 #include <cmath>
 #include <cstdlib>
 #include <fstream>
@@ -113,6 +114,14 @@ Options parse(const std::vector<std::string>& args) {
 void diagnostics(const std::vector<gmb::Diagnostic>& ds) {
     for(const auto& d:ds)std::cerr<<(d.severity==gmb::Severity::error?"ERROR":"WARNING")<<" ["<<d.code<<"] "<<d.context<<": "<<d.message<<"\n";
 }
+gmb::Scene failure_scene(const Options& o) {
+    gmb::Scene scene;
+    scene.source=o.input;
+    scene.conversion_profile=o.reader.gis_static?"gis-static":"strict";
+    scene.missing_texture_policy=o.reader.missing_texture_fallback?"material-color":"error";
+    gmb::apply_origin(scene,o.origin,o.wkid,o.origin_explicit);
+    return scene;
+}
 int run_process(const std::vector<std::string>& args,const fs::path& log_path) {
 #ifdef _WIN32
     auto wide=[](const std::string& s) {
@@ -202,9 +211,16 @@ int convert(const gmb::Scene& scene,Options& o,const std::string& argv0) {
     args.insert(args.end(),{"--input",(temp/"bundle").u8string(),"--output",output.u8string(),"--feature-class",o.feature_class,"--report",fs::absolute(o.report).u8string()});
     const auto code=run_process(args,temp/"writer.log");
     if(code!=0) {
-        std::ifstream log(temp/"writer.log",std::ios::binary);
-        std::string detail((std::istreambuf_iterator<char>(log)),{});
-        if(detail.size()>65536)detail.resize(65536);
+        std::ifstream log(temp/"writer.log",std::ios::binary|std::ios::ate);
+        std::string detail;
+        const auto length=log.tellg();
+        if(length>=0) {
+            const auto size=std::min<std::streamoff>(length,65536);
+            log.seekg(length-size);
+            detail.resize(static_cast<std::size_t>(size));
+            if(size>0&&!log.read(detail.data(),size))detail="Could not read writer log tail.\n";
+            if(length>65536)detail="[Writer log truncated; showing last 65536 bytes]\n"+detail;
+        } else detail="Writer log unavailable.\n";
         std::cerr<<detail;
         if(!fs::exists(o.report))gmb::write_report(scene,{{gmb::Severity::error,"WRITER_FAILED",o.backend+" writer exited with code "+std::to_string(code)+". "+detail,o.writer.u8string()}},"failed",o.report,o.backend);
         std::cerr<<"Writer failed (exit "<<code<<"). See "<<o.report.u8string()<<"\n";return 5;
@@ -218,6 +234,10 @@ int convert(const gmb::Scene& scene,Options& o,const std::string& argv0) {
        verified.value("conversion_profile","")!=scene.conversion_profile ||
        verified.value("missing_texture_policy","")!=scene.missing_texture_policy ||
        verified.value("backend","")!="native-filegdb" ||
+       verified.at("coordinate_system").value("wkid",0)!=scene.coordinates.wkid ||
+       verified.at("coordinates").value("wkid",0)!=scene.coordinates.wkid ||
+       !verified.at("coordinates").value("origin_explicit",false) ||
+       verified.at("coordinates").at("origin")!=json::array({scene.coordinates.origin.x,scene.coordinates.origin.y,scene.coordinates.origin.z}) ||
        !verified.at("verification").value("geometry_material_uv_texture_readback",false) ||
        verified.at("verification").value("level","")!="closed_reopened_file_geodatabase" ||
        fs::weakly_canonical(fs::u8path(verified.value("output","")))!=fs::weakly_canonical(output) ||
@@ -240,7 +260,7 @@ int main_utf8(const std::vector<std::string>& args) {
         o=parse(args);
         if(o.backend!="native-filegdb") {
             const auto reason="Unsupported backend '"+o.backend+"'. Only native-filegdb is supported.";
-            gmb::Scene s;s.source=o.input;s.missing_texture_policy=o.reader.missing_texture_fallback?"material-color":"error";
+            auto s=failure_scene(o);
             if(!o.report.empty())gmb::write_report(s,{{gmb::Severity::error,"BACKEND_UNAVAILABLE",reason,o.backend}},"failed",o.report,o.backend);
             std::cerr<<reason<<"\n";return 4;
         }
@@ -275,7 +295,7 @@ int main_utf8(const std::vector<std::string>& args) {
       catch(const std::exception& e) {
         std::cerr<<"ERROR: "<<e.what()<<"\n";
         if(!o.report.empty()&&!fs::exists(o.report)) {
-            try {gmb::Scene s;s.source=o.input;s.missing_texture_policy=o.reader.missing_texture_fallback?"material-color":"error";gmb::write_report(s,{{gmb::Severity::error,"OPERATION_FAILED",e.what(),o.command}},"failed",o.report);}catch(...){}
+            try {auto s=failure_scene(o);gmb::write_report(s,{{gmb::Severity::error,"OPERATION_FAILED",e.what(),o.command}},"failed",o.report);}catch(...){}
         }
         return 6;
     }

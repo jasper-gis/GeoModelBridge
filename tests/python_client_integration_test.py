@@ -18,7 +18,7 @@ install, work = args.install_dir.resolve(), args.work.resolve()
 work.mkdir(parents=True, exist_ok=False)
 sys.path.insert(0, str(install / "python"))
 import geomodelbridge
-from geomodelbridge import ConversionRequest, ConversionError, Engine, ValidationError
+from geomodelbridge import CallbackError, ConversionRequest, ConversionError, Engine, ValidationError
 assert Path(geomodelbridge.__file__).resolve().is_relative_to(install / "python")
 assert "arcpy" not in sys.modules
 engine = Engine(install / "bin" / ("geomodelbridge.exe" if os.name == "nt" else "geomodelbridge"))
@@ -41,6 +41,7 @@ def verify_copy(result):
     assert result.feature_count == 1
     assert result.feature_class_path == result.output_gdb / result.request.feature_class
     assert report["coordinate_system"]["wkid"] == 3857
+    assert report["coordinates"]["origin"] == list(result.request.origin)
     copied = work / (result.output_gdb.stem + "-copy.gdb")
     shutil.copytree(result.output_gdb, copied)
     copy_report = work / (result.output_gdb.stem + "-copy.json")
@@ -75,6 +76,7 @@ for source, name, policy, expected_code in ((missing.input_fbx, "required-textur
     except ConversionError as error:
         assert error.exit_code == 3 and error.report_path.is_file()
         assert any(d.code == expected_code for d in error.diagnostics)
+        assert json.loads(error.report_path.read_text(encoding="utf-8"))["coordinates"]["origin"] == [100, 100, 100]
         assert not rejected.output_gdb.exists()
     results.append(name)
 
@@ -83,10 +85,21 @@ result = engine.convert(repaired)
 report = verify_copy(result)
 assert any(d.code == "NORMALS_REPAIRED" for d in result.diagnostics)
 assert any(check["textured_patches"] > 0 for check in report["verification"]["checks"])
+callback_request = replace(request, output_gdb=work / "消息失败但成果有效.gdb", origin=(-12.25, 0, 123.125))
+def fail_final_message(event):
+    if event.code == "VERIFIED":
+        raise RuntimeError("simulated host message failure")
+try:
+    engine.convert(callback_request, on_message=fail_final_message)
+    raise AssertionError("Callback failure disappeared")
+except CallbackError as error:
+    assert error.exit_code == 0 and error.result is not None
+    verify_copy(error.result)
+    assert error.result.request.origin == (-12.25, 0, 123.125)
 assert all(hashlib.sha256(path.read_bytes()).hexdigest() == digest for path, digest in hashes.items())
 assert "arcpy" not in sys.modules
 assessment = dict(version=geomodelbridge.__version__, status="passed", python=sys.version,
                   cases=results, installed_client=True, arcpy_imported=False, input_unchanged=True,
-                  copied_gdb_readbacks=3, graphical_acceptance="not_performed", atbx_execution="not_performed")
+                  copied_gdb_readbacks=4, graphical_acceptance="not_performed", atbx_execution="not_performed")
 (work / "assessment.json").write_text(json.dumps(assessment, ensure_ascii=False, indent=2), encoding="utf-8")
-print(f"PASS installed Python client: {len(results)} cases, 3 GDBs independently copied and reopened")
+print(f"PASS installed Python client: {len(results)} cases, 4 GDBs independently copied and reopened")

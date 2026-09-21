@@ -1,0 +1,6 @@
+PASS: true FileGDB close/reopen, coordinates, seams, normals, color quantization, PNG alpha pixels, JPEG bytes
+PASS: relocated GDB verified in a fresh process while the source bundle path was unavailable
+PASS: existing outputs protected; report cannot be nested in source bundle or GDB
+PASS: streamed 210000-corner mesh written and read back without a geometry JSON DOM
+PASS: palette/gray/Adam7/gamma PNG pixels, Unicode filesystem and SDK attributes; POSIX path checks where applicable
+PASS: 37 invalid input / cleanup / hash mismatch checks. Evidence: <workspace>\artifacts\v0110\native\native-filegdb-integration-wwc9y5ev

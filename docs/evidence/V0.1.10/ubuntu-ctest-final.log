@@ -1,0 +1,22 @@
+Internal ctest changing into directory: <workspace>/build/linux-x64
+Test project <workspace>/build/linux-x64
+    Start 1: core
+1/8 Test #1: core .............................   Passed    0.14 sec
+    Start 2: cli
+2/8 Test #2: cli ..............................   Passed    0.99 sec
+    Start 3: reader_integration
+3/8 Test #3: reader_integration ...............   Passed    0.75 sec
+    Start 4: binary_fbx
+4/8 Test #4: binary_fbx .......................   Passed    0.44 sec
+    Start 5: profile_integration
+5/8 Test #5: profile_integration ..............   Passed    1.95 sec
+    Start 6: missing_textures
+6/8 Test #6: missing_textures .................   Passed    0.66 sec
+    Start 7: normal_repair
+7/8 Test #7: normal_repair ....................   Passed    0.65 sec
+    Start 8: python_client
+8/8 Test #8: python_client ....................   Passed    2.88 sec
+
+100% tests passed, 0 tests failed out of 8
+
+Total Test time (real) =   8.50 sec

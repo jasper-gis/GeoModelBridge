@@ -1,0 +1,21 @@
+Test project <workspace>/build/v018-core
+    Start 1: core
+1/8 Test #1: core .............................   Passed    0.05 sec
+    Start 2: cli
+2/8 Test #2: cli ..............................   Passed    0.41 sec
+    Start 3: reader_integration
+3/8 Test #3: reader_integration ...............   Passed    0.36 sec
+    Start 4: binary_fbx
+4/8 Test #4: binary_fbx .......................   Passed    0.18 sec
+    Start 5: profile_integration
+5/8 Test #5: profile_integration ..............   Passed    1.64 sec
+    Start 6: missing_textures
+6/8 Test #6: missing_textures .................   Passed    0.36 sec
+    Start 7: normal_repair
+7/8 Test #7: normal_repair ....................   Passed    0.37 sec
+    Start 8: python_client
+8/8 Test #8: python_client ....................   Passed    1.65 sec
+
+100% tests passed, 0 tests failed out of 8
+
+Total Test time (real) =   5.04 sec

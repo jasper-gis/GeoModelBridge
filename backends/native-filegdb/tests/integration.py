@@ -35,7 +35,7 @@ vertices[1]['normal'] = [1 / math.sqrt(3)] * 3
 vertices[2]['normal'] = [-1 / 256, math.sqrt(1 - (1 / 256) ** 2), 0]
 vertices[3]['normal'] = [1 / 256, math.sqrt(1 - (1 / 256) ** 2), 0]
 meshes = [dict(name='PNG alpha', source_node='test', vertices=vertices, triangles=[dict(indices=[0, 1, 2], material=0), dict(indices=[0, 2, 3], material=0)]), dict(name='JPEG and color', source_node='test', vertices=vertices, triangles=[dict(indices=[0, 1, 2], material=1), dict(indices=[0, 2, 3], material=2)])]
-scene = dict(schema_version=1, generator='GeoModelBridge', version='0.1.9', name='Writer integration', source='generated:test', coordinates=dict(unit='meter', up_axis='Z', space='referenced', wkid=32650, origin=[500000, 4000000, 10], origin_explicit=True), nodes=[], meshes=meshes, materials=[dict(name='PNG', color=[1, 1, 1, 1], texture=0, double_sided=True), dict(name='JPEG', color=[1, 1, 1, 1], texture=1, double_sided=False), dict(name='Color opacity', color=[.13, .58, .91, .427], texture=-1, double_sided=True)], textures=textures)
+scene = dict(schema_version=1, generator='GeoModelBridge', version='0.1.10', name='Writer integration', source='generated:test', coordinates=dict(unit='meter', up_axis='Z', space='referenced', wkid=32650, origin=[500000, 4000000, 10], origin_explicit=True), nodes=[], meshes=meshes, materials=[dict(name='PNG', color=[1, 1, 1, 1], texture=0, double_sided=True), dict(name='JPEG', color=[1, 1, 1, 1], texture=1, double_sided=False), dict(name='Color opacity', color=[.13, .58, .91, .427], texture=-1, double_sided=True)], textures=textures)
 scene['diagnostics'] = [dict(severity='warning', code='TEST_SOURCE_WARNING', message='Test warning retained for traceability.', context='generated:test')]
 (bundle / 'scene.json').write_text(json.dumps(scene), encoding='utf8')
 
@@ -55,6 +55,7 @@ assert report['material_quantization'][2]['stored_rgb8'] == [33, 148, 232]
 assert report['material_quantization'][2]['stored_transparency_percent'] == 57
 assert report['verification']['feature_count'] == 2
 assert report['source'] == scene['source'] and report['reader_diagnostics'] == scene['diagnostics']
+assert report['coordinates'] == scene['coordinates']
 normal_check = report['verification']['checks'][0]['normal_storage']
 assert normal_check['exact_codec_prediction_verified'] and normal_check['quantized_corner_normal_count'] == 6
 assert normal_check['max_component_error'] == 1 / 256 and not normal_check['renormalized']

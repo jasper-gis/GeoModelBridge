@@ -1,4 +1,4 @@
-# V0.1.9 架构
+# V0.1.10 架构
 
 ```mermaid
 flowchart LR
@@ -28,6 +28,8 @@ Scene Bundle 是 JSON 与资源文件组成的进程边界。CLI 默认严格渲
 Windows 部署依赖 Microsoft C++ 运行库与 FileGDB DLL；Ubuntu 24.04 x86_64 依赖 libstdc++、libpng/libjpeg 与两份 FileGDB 共享库。完整安装附带对应 SDK 运行库、原始许可和来源散列；GUI 只在 Windows 运行并自带 .NET。构建、自动测试、样例生成及打包均无 Pro 依赖。历史跨 SDK 读取证据不作为当前发布门槛；图形验收单独记录。
 
 CLI 退出码：0 成功；2 用法或已有路径冲突；3 策略验证不通过；4 不支持/不可用后端；5 写入端失败；6 解析、IO 或其他错误。`inspected`、`prepared`、`written_and_readback_verified` 表示不同阶段。
+
+V0.1.10 的报告保留 `coordinates`，三个调用入口核对目标 WKID 和已应用的 origin。Python 采用有界双路读取线程保留日志尾部，调用线程负责阶段消息；完成回调异常通过 `CallbackError.result` 保留已经核验的成果。CLI 的 writer 失败日志也只读取末尾固定大小，便于保留最终错误。
 
 依据：[ufbx 节点与坐标](https://ufbx.github.io/elements/nodes/)、[网格与实例材质](https://ufbx.github.io/elements/meshes/)、[FileGDB API 官方仓库](https://github.com/Esri/file-geodatabase-api) 及 [固定 SDK 来源](../backends/native-filegdb/sdk-sources.json)。
 

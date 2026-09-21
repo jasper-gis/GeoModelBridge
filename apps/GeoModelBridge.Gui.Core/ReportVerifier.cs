@@ -28,8 +28,23 @@ public static class ReportVerifier
             var coordinateSystem = root.GetProperty("coordinate_system");
             Require(coordinateSystem.GetProperty("wkid").GetInt32() == int.Parse(settings.Wkid.Trim(), CultureInfo.InvariantCulture), "报告中的 WKID 与本次设置不一致。");
             Require(coordinateSystem.GetProperty("projected").GetBoolean(), "报告未确认输出使用投影坐标系。");
+            Require(Text(coordinateSystem, "unit") == "meter", "报告未确认输出使用米制单位。");
+            var coordinates = root.GetProperty("coordinates");
+            Require(Text(coordinates, "unit") == "meter" && Text(coordinates, "up_axis") == "Z" && Text(coordinates, "space") == "referenced",
+                "报告中的模型坐标约定不一致。");
+            Require(coordinates.GetProperty("wkid").GetInt32() == coordinateSystem.GetProperty("wkid").GetInt32()
+                && coordinates.GetProperty("origin_explicit").GetBoolean(), "报告中的定位参数不完整或不一致。");
+            var origin = coordinates.GetProperty("origin");
+            Require(origin.ValueKind == JsonValueKind.Array && origin.GetArrayLength() == 3, "报告缺少完整原点 X、Y、Z。");
+            var expectedOrigin = new[] { settings.OriginX, settings.OriginY, settings.OriginZ };
+            for (var i = 0; i < 3; ++i)
+            {
+                var value = origin[i].GetDouble();
+                Require(double.IsFinite(value) && value == double.Parse(expectedOrigin[i], CultureInfo.InvariantCulture),
+                    "报告中的原点 X、Y、Z 与本次设置不一致。");
+            }
             var diagnostics = new List<string>();
-            if (root.TryGetProperty("reader_diagnostics", out var entries))
+            var entries = root.GetProperty("reader_diagnostics");
             {
                 Require(entries.ValueKind == JsonValueKind.Array, "报告中的模型诊断格式无效。");
                 foreach (var entry in entries.EnumerateArray())

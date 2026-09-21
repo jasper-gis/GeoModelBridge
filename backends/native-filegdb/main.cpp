@@ -569,6 +569,7 @@ int run(const Options &o) {
             {"output", o.output.u8string()},
             {"feature_class", o.fc},
             {"reader_diagnostics", b.source.value("diagnostics", json::array())},
+            {"coordinates", b.source.at("coordinates")},
             {"coordinate_system",
              {{"wkid", b.scene.coordinates.wkid},
               {"name", narrow(sri.srname)},

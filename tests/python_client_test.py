@@ -7,11 +7,12 @@ import subprocess
 import sys
 import tempfile
 import threading
+import tracemalloc
 import unittest
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "python"))
-from geomodelbridge import ConversionError, ConversionRequest, Engine, GeoModelBridgeError, ValidationError, __version__
+from geomodelbridge import CallbackError, ConversionError, ConversionRequest, Engine, GeoModelBridgeError, ValidationError, __version__
 from geomodelbridge.client import LOG_TAIL_BYTES, _ProcessResult, _run
 
 
@@ -34,7 +35,9 @@ class ClientTests(unittest.TestCase):
         return dict(status="written_and_readback_verified", version=__version__, backend="native-filegdb",
                     conversion_profile=request.profile, missing_texture_policy=request.missing_textures,
                     output=str(request.output_gdb), source=str(request.input_fbx), feature_class=request.feature_class,
-                    coordinate_system=dict(wkid=request.wkid, projected=True), reader_diagnostics=[],
+                    coordinate_system=dict(wkid=request.wkid, projected=True, unit="meter"), reader_diagnostics=[],
+                    coordinates=dict(wkid=request.wkid, unit="meter", up_axis="Z", space="referenced",
+                                     origin=list(request.origin), origin_explicit=True),
                     verification=dict(level="closed_reopened_file_geodatabase", feature_count=1,
                                       geometry_material_uv_texture_readback=True))
 
@@ -135,6 +138,14 @@ class ClientTests(unittest.TestCase):
             Engine(self.root / "missing.exe").check()
         self.assertEqual(failure.exception.code, "ENGINE_UNAVAILABLE")
 
+    def test_truncated_probe_output_cannot_masquerade_as_valid_json(self):
+        version = _ProcessResult(0, f"GeoModelBridge V{__version__}", "")
+        probe = self.fake_run()(["--probe"])
+        for responses in ([replace(version, stdout_truncated=True)], [version, replace(probe, stdout_truncated=True)]):
+            with patch("geomodelbridge.client._run", side_effect=responses), self.assertRaises(GeoModelBridgeError) as failure:
+                self.engine.check()
+            self.assertTrue(failure.exception.stdout_truncated)
+
     def test_launch_failure(self):
         with patch("geomodelbridge.client._run", side_effect=OSError("access denied")), self.assertRaises(GeoModelBridgeError) as failure:
             self.engine.check()
@@ -166,8 +177,36 @@ class ClientTests(unittest.TestCase):
         self.assertEqual(runner.call_count, 2)
 
     def test_callback_exception_before_start_propagates(self):
-        with patch("geomodelbridge.client._run") as runner, self.assertRaisesRegex(RuntimeError, "callback"):
+        with patch("geomodelbridge.client._run") as runner, self.assertRaises(CallbackError) as failure:
             self.engine.convert(self.request, on_message=lambda event: (_ for _ in ()).throw(RuntimeError("callback")))
+        runner.assert_not_called()
+        self.assertIsNone(failure.exception.result)
+        self.assertEqual(str(failure.exception.__cause__), "callback")
+
+    def test_callback_failure_after_commit_retains_verified_result(self):
+        report = self.success_report()
+        report["reader_diagnostics"] = [dict(severity="warning", code="MISSING_TEXTURE_FALLBACK", message="missing")]
+        for stage in ("MISSING_TEXTURE_FALLBACK", "VERIFIED"):
+            def callback(event):
+                if event.code == stage:
+                    raise RuntimeError("host message delivery failed")
+            with patch("geomodelbridge.client._run", side_effect=self.fake_run(report)), self.assertRaises(CallbackError) as failure:
+                self.engine.convert(self.request, on_message=callback)
+            error = failure.exception
+            self.assertEqual(error.code, "CALLBACK_FAILED")
+            self.assertEqual(error.event.code, stage)
+            self.assertEqual(error.result.feature_count, 1)
+            self.assertTrue(error.result.output_gdb.is_dir())
+            self.assertTrue(error.result.report_path.is_file())
+            self.assertEqual(error.result.diagnostics, error.diagnostics)
+            self.assertEqual(error.exit_code, 0)
+            self.assertIsInstance(error.__cause__, RuntimeError)
+            error.result.output_gdb.rmdir()
+            error.result.report_path.unlink()
+
+    def test_invalid_callback_is_rejected_before_process_start(self):
+        with patch("geomodelbridge.client._run") as runner, self.assertRaises(ValidationError):
+            self.engine.convert(self.request, on_message="not callable")
         runner.assert_not_called()
 
     def test_nonzero_exit_keeps_diagnostics_even_with_invalid_or_success_report(self):
@@ -202,6 +241,15 @@ class ClientTests(unittest.TestCase):
                      lambda r: r["verification"].update(geometry_material_uv_texture_readback=False),
                      lambda r: r["verification"].update(feature_count=True), lambda r: r["verification"].update(feature_count=0),
                      lambda r: r["coordinate_system"].update(wkid=4326), lambda r: r["coordinate_system"].update(projected=False),
+                     lambda r: r["coordinate_system"].update(unit="feet"),
+                     lambda r: r.pop("coordinates"), lambda r: r.update(coordinates=[]),
+                     lambda r: r["coordinates"].update(origin=[100, 100, 99]),
+                     lambda r: r["coordinates"].update(origin=[100, 100]),
+                     lambda r: r["coordinates"].update(origin=[100, 100, True]),
+                     lambda r: r["coordinates"].update(origin_explicit=False),
+                     lambda r: r["coordinates"].update(wkid=4326),
+                     lambda r: r["coordinates"].update(unit="feet"),
+                     lambda r: r["coordinates"].update(up_axis="Y"),
                      lambda r: r.update(verification=[]), lambda r: r.update(coordinate_system=[]),
                      lambda r: r.pop("reader_diagnostics"), lambda r: r.update(reader_diagnostics={}),
                      lambda r: r.update(reader_diagnostics=[dict(severity="error", code="BAD", message="error")]),
@@ -223,7 +271,7 @@ class ClientTests(unittest.TestCase):
             self.engine.convert(request)
 
     def test_malformed_duplicate_and_oversize_reports_reject(self):
-        for contents in (b"{", b"[]", b'{"status":"a","status":"b"}', b'{"a":NaN}', b"x" * 101):
+        for contents in (b"{", b"[]", b'{"status":"a","status":"b"}', b'{"a":NaN}', b'{"a":1e999}', b"x" * 101):
             def run(command):
                 result = self.fake_run()(command)
                 if "convert" in command:
@@ -237,13 +285,63 @@ class ClientTests(unittest.TestCase):
 
     def test_process_argument_safety_utf8_and_bounded_log_tails(self):
         value = '路径 with spaces & $(echo no); "literal"'
-        code = "import os,sys; os.write(1, b'x' * 900000); os.write(2, b'y' * 900000); os.write(1, sys.argv[1].encode('utf8')); os.write(2, '末尾'.encode('utf8'))"
-        result = _run([sys.executable, "-c", code, value])
+        code = "import os,sys; os.write(1, b'x' * 9000000); os.write(2, b'y' * 9000000); os.write(1, sys.argv[1].encode('utf8')); os.write(2, '末尾'.encode('utf8'))"
+        tracemalloc.start()
+        try:
+            result = _run([sys.executable, "-c", code, value])
+            _, peak = tracemalloc.get_traced_memory()
+        finally:
+            tracemalloc.stop()
+        self.assertLess(peak, 4 * 1024 * 1024)
         self.assertEqual(result.exit_code, 0)
         self.assertTrue(result.stdout.endswith(value))
         self.assertTrue(result.stderr.endswith("末尾"))
         self.assertLessEqual(len(result.stdout.encode("utf8")), LOG_TAIL_BYTES)
         self.assertLessEqual(len(result.stderr.encode("utf8")), LOG_TAIL_BYTES)
+        self.assertTrue(result.stdout_truncated and result.stderr_truncated)
+        self.assertFalse(any(t.name in ("gmb-stdout", "gmb-stderr") for t in threading.enumerate()))
+
+    def test_short_and_empty_process_logs_remain_exact(self):
+        result = _run([sys.executable, "-c", "import os; os.write(1, '中文'.encode('utf8'))"])
+        self.assertEqual(result.stdout, "中文")
+        self.assertEqual(result.stderr, "")
+        self.assertFalse(result.stdout_truncated or result.stderr_truncated)
+
+    def test_process_launch_failure_does_not_leave_reader_threads(self):
+        with self.assertRaises(OSError):
+            _run([self.root / "absent-engine"])
+        self.assertFalse(any(t.name in ("gmb-stdout", "gmb-stderr") for t in threading.enumerate()))
+
+    def test_reader_start_failure_never_launches_engine(self):
+        original_start = threading.Thread.start
+        calls = []
+        def start(reader):
+            calls.append(reader.name)
+            if len(calls) == 2:
+                raise RuntimeError("thread resource unavailable")
+            original_start(reader)
+        with patch("geomodelbridge.client.threading.Thread.start", start), patch("geomodelbridge.client.subprocess.Popen") as spawn:
+            with self.assertRaises(GeoModelBridgeError) as failure:
+                self.engine.check()
+        spawn.assert_not_called()
+        self.assertEqual(failure.exception.code, "LOG_READ_FAILED")
+        self.assertFalse(any(t.name in ("gmb-stdout", "gmb-stderr") for t in threading.enumerate()))
+
+    def test_log_truncation_is_visible_on_results_and_errors(self):
+        def run(command):
+            result = self.fake_run()(command)
+            return replace(result, stdout_truncated=True, stderr_truncated=True) if "convert" in command else result
+        with patch("geomodelbridge.client._run", side_effect=run):
+            result = self.engine.convert(self.request)
+        self.assertTrue(result.stdout_truncated and result.stderr_truncated)
+        result.output_gdb.rmdir()
+        result.report_path.unlink()
+        def fail(command):
+            result = run(command)
+            return replace(result, exit_code=5) if "convert" in command else result
+        with patch("geomodelbridge.client._run", side_effect=fail), self.assertRaises(ConversionError) as failure:
+            self.engine.convert(self.request)
+        self.assertTrue(failure.exception.stdout_truncated and failure.exception.stderr_truncated)
 
 
 if __name__ == "__main__":

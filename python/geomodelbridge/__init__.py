@@ -4,13 +4,13 @@ Importing this package does not import ArcPy, load the FileGDB SDK, or start a p
 """
 
 from .client import (
-    ConversionError, ConversionRequest, ConversionResult, Diagnostic, Engine,
+    CallbackError, ConversionError, ConversionRequest, ConversionResult, Diagnostic, Engine,
     GeoModelBridgeError, Message, ProbeResult, ValidationError,
 )
 from ._version import __version__
 
 __all__ = [
-    "ConversionError", "ConversionRequest", "ConversionResult", "Diagnostic",
+    "CallbackError", "ConversionError", "ConversionRequest", "ConversionResult", "Diagnostic",
     "Engine", "GeoModelBridgeError", "Message", "ProbeResult", "ValidationError",
     "__version__",
 ]

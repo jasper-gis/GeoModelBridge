@@ -6,7 +6,7 @@ using GeoModelBridge.Gui.Core;
 
 internal static class Program
 {
-    private const string Version = "0.1.9";
+    private const string Version = "0.1.10";
     private static readonly List<TestCase> Results = [];
     private static string Work = "";
     private static string Input = "";
@@ -235,7 +235,16 @@ internal static class Program
             ["missing_texture_policy"] = settings.MissingTexturePolicy,
             ["output"] = Path.GetFullPath(settings.OutputPath),
             ["feature_class"] = settings.FeatureClass,
-            ["coordinate_system"] = new JsonObject { ["wkid"] = int.Parse(settings.Wkid), ["projected"] = true },
+            ["coordinate_system"] = new JsonObject { ["wkid"] = int.Parse(settings.Wkid), ["projected"] = true, ["unit"] = "meter" },
+            ["coordinates"] = new JsonObject
+            {
+                ["wkid"] = int.Parse(settings.Wkid), ["unit"] = "meter", ["up_axis"] = "Z", ["space"] = "referenced",
+                ["origin_explicit"] = true,
+                ["origin"] = new JsonArray(double.Parse(settings.OriginX, System.Globalization.CultureInfo.InvariantCulture),
+                    double.Parse(settings.OriginY, System.Globalization.CultureInfo.InvariantCulture),
+                    double.Parse(settings.OriginZ, System.Globalization.CultureInfo.InvariantCulture))
+            },
+            ["reader_diagnostics"] = new JsonArray(),
             ["verification"] = new JsonObject
             {
                 ["level"] = "closed_reopened_file_geodatabase",
@@ -286,6 +295,14 @@ internal static class Program
         RejectedReport("reject_report_wrong_wkid", report => report["coordinate_system"]!["wkid"] = 3857);
         RejectedReport("reject_report_geographic_crs", report => report["coordinate_system"]!["projected"] = false);
         RejectedReport("reject_report_missing_crs", report => report.Remove("coordinate_system"));
+        RejectedReport("reject_report_nonmetric_crs", report => report["coordinate_system"]!["unit"] = "feet");
+        RejectedReport("reject_report_missing_placement", report => report.Remove("coordinates"));
+        RejectedReport("reject_report_wrong_origin", report => report["coordinates"]!["origin"]![2] = 99);
+        RejectedReport("reject_report_short_origin", report => report["coordinates"]!["origin"] = new JsonArray(1, 2));
+        RejectedReport("reject_report_origin_not_explicit", report => report["coordinates"]!["origin_explicit"] = false);
+        RejectedReport("reject_report_placement_wrong_wkid", report => report["coordinates"]!["wkid"] = 3857);
+        RejectedReport("reject_report_placement_wrong_axis", report => report["coordinates"]!["up_axis"] = "Y");
+        RejectedReport("reject_report_missing_diagnostics", report => report.Remove("reader_diagnostics"));
         RejectedReport("reject_success_report_with_reader_error", report => report["reader_diagnostics"] = new JsonArray
         {
             new JsonObject { ["severity"] = "error", ["code"] = "MATERIAL_UNSUPPORTED", ["message"] = "Unsupported material." }
@@ -663,10 +680,12 @@ internal static class Program
         if (mode == "no-report") Directory.CreateDirectory(After(args, "--output"));
         if (mode is "no-gdb" or "bad-report" or "failed-report-zero-exit" or "failed-report-nonzero-exit")
         {
+            var originIndex = Array.IndexOf(args, "--origin");
             var settings = new ConversionSettings
             {
                 InputPath = args[1], OutputPath = After(args, "--output"),
                 ReportPath = After(args, "--report"), Wkid = After(args, "--wkid"),
+                OriginX = args[originIndex + 1], OriginY = args[originIndex + 2], OriginZ = args[originIndex + 3],
                 FeatureClass = After(args, "--feature-class"), Backend = After(args, "--backend"), Profile = After(args, "--profile"), MissingTexturePolicy = After(args, "--missing-textures")
             };
             var report = GoodReport(settings);
@@ -679,6 +698,7 @@ internal static class Program
             {
                 report["status"] = "rejected";
                 report["backend"] = "none";
+                report.Remove("reader_diagnostics");
                 var diagnostics = new JsonArray();
                 for (var i = 0; i < 160; ++i)
                     diagnostics.Add(new JsonObject { ["severity"] = "error", ["code"] = "UNSUPPORTED_ANIMATION", ["message"] = "Animation data is present.", ["context"] = "node:example-" + i });
@@ -694,7 +714,7 @@ internal static class Program
         var service = new EngineService(engineDirectory);
         await TestAsync("native_backend_runtime_probe", async () =>
         {
-            Assert(service.IsEnginePresent, "Built V0.1.9 engine is absent: " + service.EnginePath);
+            Assert(service.IsEnginePresent, "Built V0.1.10 engine is absent: " + service.EnginePath);
             var probe = await service.ProbeBackendAsync("native-filegdb");
             Assert(probe.Success, probe.Message);
         });

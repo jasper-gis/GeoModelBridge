@@ -5,7 +5,7 @@ import sys
 
 # A full release has this example in <release>/python/examples.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from geomodelbridge import ConversionRequest, Engine, GeoModelBridgeError
+from geomodelbridge import CallbackError, ConversionRequest, Engine, GeoModelBridgeError
 
 
 def main():
@@ -26,6 +26,8 @@ def main():
         print(f"Feature class: {result.feature_class_path}\nReport: {result.report_path}")
     except GeoModelBridgeError as error:
         print(f"[{error.code}] {error}", file=sys.stderr)
+        if isinstance(error, CallbackError) and error.result is not None:
+            print(f"Conversion verified; only message delivery failed. Feature class: {error.result.feature_class_path}", file=sys.stderr)
         for diagnostic in error.diagnostics[:10]:
             print(f"[{diagnostic.code}] {diagnostic.message}", file=sys.stderr)
         if error.report_path:

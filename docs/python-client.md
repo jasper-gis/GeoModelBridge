@@ -1,4 +1,4 @@
-# Python 调用库 · V0.1.9
+# Python 调用库 · V0.1.10
 
 `geomodelbridge` 把 FBX 入库封装为普通 Python 函数调用，供以后 Windows ArcGIS `.atbx` 的脚本层复用，也可用于独立 Python 脚本或 Ubuntu。库仅使用 Python 标准库，不导入 `arcpy`，不在 Python 进程内加载 FileGDB SDK；实际转换仍由同版本 EXE 完成。
 
@@ -21,7 +21,7 @@ GeoModelBridge/
 └── docs/python-client.md
 ```
 
-Python 语言兼容目标为 3.9 及以上；实际验证解释器见[本版验证记录](validation-v0.1.9.md)。不需要 `pip install`，将完整发布目录的 `python` 加入调用脚本的 `sys.path` 即可。无需修改 ArcGIS 的 Python 环境或安装第三方包。Ubuntu 使用同一套库，程序名不带 `.exe`，运行库布局见[部署指南](build-and-release.md)。
+Python 语言兼容目标为 3.9 及以上；实际验证解释器见[本版验证记录](validation-v0.1.10.md)。不需要 `pip install`，将完整发布目录的 `python` 加入调用脚本的 `sys.path` 即可。无需修改 ArcGIS 的 Python 环境或安装第三方包。Ubuntu 使用同一套库，程序名不带 `.exe`，运行库布局见[部署指南](build-and-release.md)。
 
 ## 最小调用
 
@@ -79,7 +79,7 @@ python D:\Tools\GeoModelBridge\python\examples\convert_fbx.py --engine D:\Tools\
 
 `ConversionRequest` 必填 `input_fbx`、`output_gdb`、整数 `wkid`、三个有限数值 `origin`。可选 `feature_class`、`profile`、`missing_textures`、`texture_dirs` 和 `report_path`。不会把字符串 WKID 或布尔值默认为有效整数；工具箱脚本应显式转换类型。要素类名称使用字母开头、最长 64 位的 ASCII 字母 / 数字 / 下划线。输出后缀为小写 `.gdb`。
 
-`ConversionResult` 包含规范化 `request`、`output_gdb`、`feature_class_path`、`report_path`、`feature_count`、完整 `diagnostics`、`stdout_tail`、`stderr_tail`、`version` 和 `backend`。要素类路径供 GIS 使用；它不是 GDB 目录中的普通文件，不能用 `Path.is_file()` 判断要素类存在。
+`ConversionResult` 包含规范化 `request`、`output_gdb`、`feature_class_path`、`report_path`、`feature_count`、完整 `diagnostics`、`stdout_tail`、`stderr_tail`、`stdout_truncated`、`stderr_truncated`、`version` 和 `backend`。要素类路径供 GIS 使用；它不是 GDB 目录中的普通文件，不能用 `Path.is_file()` 判断要素类存在。
 
 库显式传入 writer，不读取 `GMB_NATIVE_WRITER`，避免外部环境改变实际使用的程序。需要其他 writer 位置时使用 `Engine(..., writer=...)`，仍要求版本匹配。库不修改当前工作目录、环境变量、`arcpy.env` 或地图状态；导入本身不会运行 EXE。
 
@@ -87,9 +87,9 @@ python D:\Tools\GeoModelBridge\python\examples\convert_fbx.py --engine D:\Tools\
 
 `on_message` 接收 `Message(level, code, text, count)`。阶段代码为 `CHECKING_ENGINE`、`CONVERTING`、`VERIFIED`；成功后的诊断按 severity / code 汇总，例如 `MISSING_TEXTURE_FALLBACK`、`NORMALS_REPAIRED`。完整逐项内容保留在结果和报告中。
 
-回调在调用线程执行，可以由未来工具箱脚本映射到 GIS 消息函数。这里提供阶段消息，转换期间不连续推送日志，也不报告完成百分比。失败通过异常的 `diagnostics` 返回。回调应保持简单且不抛异常；回调异常原样传播，完成回调发生时 GDB 可能已经提交，不应据此重试覆盖同一路径。
+回调在调用线程执行，可以由未来工具箱脚本映射到 GIS 消息函数。这里提供阶段消息，转换期间不连续推送日志，也不报告完成百分比。失败通过异常的 `diagnostics` 返回。回调应保持简单。普通回调异常会包装为 `CallbackError`，原异常保留在 `__cause__`，失败消息保留在 `event`。若发生在转换开始前，`error.result is None`；若发生在成功核验之后，`error.result` 保留完整 `ConversionResult`，`exit_code=0`。此时数据库已经成功生成，只是宿主消息发送失败，应使用已有结果，不应重新转换。
 
-所有业务失败继承 `GeoModelBridgeError`，包含 `code`、可空 `exit_code`、可空 `report_path`、`diagnostics`、两路日志尾部。参数错误为 `ValidationError`；进程失败或报告不能核验为 `ConversionError`。
+所有业务失败继承 `GeoModelBridgeError`，包含 `code`、可空 `exit_code`、可空 `report_path`、`diagnostics`、两路日志尾部及截断标志。参数错误为 `ValidationError`；进程失败或报告不能核验为 `ConversionError`。
 
 | `error.code` | 含义 |
 | --- | --- |
@@ -97,12 +97,30 @@ python D:\Tools\GeoModelBridge\python\examples\convert_fbx.py --engine D:\Tools\
 | `PATH_EXISTS` | 输出 GDB 或报告已经存在，未开始转换 |
 | `ENGINE_UNAVAILABLE` / `LAUNCH_FAILED` | 找不到或无法启动程序 |
 | `VERSION_MISMATCH` / `BACKEND_UNAVAILABLE` | 组件版本或写入端运行库检查未通过 |
+| `LOG_READ_FAILED` | 无法启动日志读取线程或无法读取子进程输出；不能据此确认成功 |
+| `CALLBACK_FAILED` | 宿主消息回调失败；通过 `error.result` 区分未开始转换与已验证成功 |
 | `PROCESS_FAILED` | CLI 非零退出，原始退出码和可用诊断随异常返回 |
 | `INVALID_REPORT` | 即使退出码为 0，报告或输出仍不能确认成功 |
 
-成功要求：新的 GDB 目录存在；报告的源 FBX、输出、版本、后端、要素类、profile、缺图策略和投影 WKID 均匹配；包含正数要素数量及关闭重开后的几何 / 材质 / UV / 纹理验证；没有错误诊断。`missing_textures="error"` 不能接受缺图回退。报告不是安全签名，这些检查用于发现失败、组件混用和结果错配。
+成功要求：新的 GDB 目录存在；报告的源 FBX、输出、版本、后端、要素类、profile、缺图策略、投影 WKID 和原点 XYZ 均匹配；包含正数要素数量及关闭重开后的几何 / 材质 / UV / 纹理验证；没有错误诊断。`missing_textures="error"` 不能接受缺图回退。报告不是安全签名，这些检查用于发现失败、组件混用和结果错配。
 
-两路子进程输出重定向到本次调用拥有的临时文件，避免管道阻塞；每路返回最后 256 KiB，临时日志随正常调用结束清理。磁盘日志仍随输出量增长，完整模型诊断以 JSON 报告为准。库最多读取 64 MiB 报告；超限会明确报错，保留生成的成果与报告供核查。库不删除转换失败后留下的 GDB 或报告。
+Python 层使用两个读取线程同时排空 stdout / stderr，每路只保留最后 256 KiB，不创建磁盘日志，不按日志行累计内存。超长单行也受同一限制；`stdout_truncated` / `stderr_truncated` 明确标记是否截断。读取线程不会调用消息回调，结束或启动失败时会回收。CLI 内部仍有其自有暂存 writer 日志，失败时只读取末尾 64 KiB；完整模型诊断以 JSON 报告为准。库最多读取 64 MiB 报告；超限会明确报错，保留生成的成果与报告供核查。库不删除转换失败后留下的 GDB 或报告。
+
+## 完成消息失败时保留成果
+
+```python
+from geomodelbridge import CallbackError
+
+try:
+    result = engine.convert(request, on_message=publish_message)
+except CallbackError as error:
+    if error.result is None:
+        raise  # 转换尚未开始
+    result = error.result  # 已完成写入与核验，继续登记这个成果
+    # 宿主可另外记录 error.__cause__，不要重新执行相同输出路径。
+```
+
+`publish_message` 是调用方自己的消息函数。V0.1.10 的成功报告包含 `coordinates`，保存米制、Z-up、WKID、`origin` 和 `origin_explicit`；CLI、GUI 和 Python 均核对定位参数。这里的 `origin` 是已应用平移的记录，不能再对输出要素加一次。CLI 的模型拒绝和读取异常报告也保留已解析的定位参数与 profile；参数解析前的用法错误或原生写入端自身早期失败不保证这些字段完整。
 
 ## 后续 ATBX 的接入约定
 
@@ -119,7 +137,7 @@ python D:\Tools\GeoModelBridge\python\examples\convert_fbx.py --engine D:\Tools\
 
 ```powershell
 python tests/python_client_test.py
-python tests/python_client_integration_test.py --install-dir releases/V0.1.9 --work artifacts/new-python-client-check
+python tests/python_client_integration_test.py --install-dir releases/V0.1.10 --work artifacts/new-python-client-check
 ```
 
-第一项在 CTest 中自动运行；第二项使用安装后的库和真实写入端，测试中文 / 空格路径、贴图、缺图策略、法线兼容、已有成果保护，并对三份 GDB 分别复制后独立回读。测试目录必须是新路径。Windows / Ubuntu CI 都已配置此入口；托管运行结果以 GitHub Actions 实际状态为准。
+第一项在 CTest 中自动运行；第二项使用安装后的库和真实写入端，测试中文 / 空格路径、贴图、缺图策略、法线兼容、已有成果保护，以及成功回调异常恢复，并对四份 GDB 分别复制后独立回读。测试目录必须是新路径。Windows / Ubuntu CI 都已配置此入口；托管运行结果以 GitHub Actions 实际状态为准。
