@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(GeoModelBridgeNative VERSION 0.1.8 LANGUAGES CXX)
+project(GeoModelBridgeNative VERSION 0.1.9 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(FILEGDB_API_ROOT "" CACHE PATH "Extracted official FileGDB API 1.5.5 SDK for this platform")

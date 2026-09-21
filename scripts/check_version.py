@@ -19,6 +19,7 @@ DECLARATIONS = (
     ("CMakeLists.txt", rf"project\(GeoModelBridge\s+VERSION\s+({SEMVER})\b", 1),
     ("backends/native-filegdb/CMakeLists.txt", rf"project\(GeoModelBridgeNative\s+VERSION\s+({SEMVER})\b", 1),
     ("include/gmb/scene.hpp", rf'\bversion\s*=\s*"({SEMVER})"', 1),
+    ("python/geomodelbridge/_version.py", rf'__version__\s*=\s*"({SEMVER})"', 1),
     ("apps/GeoModelBridge.Gui/GeoModelBridge.Gui.csproj", rf"<Version>({SEMVER})</Version>", 1),
     ("tests/cli_test.py", rf'assert "({SEMVER})" in invoke\(exe, "--version"\)', 1),
     ("backends/native-filegdb/tests/integration.py", rf"\bversion='({SEMVER})'", 1),

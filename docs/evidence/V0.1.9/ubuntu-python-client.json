@@ -1,0 +1,19 @@
+{
+  "version": "0.1.9",
+  "status": "passed",
+  "python": "3.12.3 (main, Jul 15 2026, 23:46:41) [GCC 13.3.0]",
+  "cases": [
+    "贴图 输出",
+    "existing-output-preserved",
+    "缺图",
+    "required-texture",
+    "strict-normal",
+    "法线修复"
+  ],
+  "installed_client": true,
+  "arcpy_imported": false,
+  "input_unchanged": true,
+  "copied_gdb_readbacks": 3,
+  "graphical_acceptance": "not_performed",
+  "atbx_execution": "not_performed"
+}

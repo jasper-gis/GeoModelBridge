@@ -19,7 +19,8 @@ work.mkdir(parents=True, exist_ok=False)
 if (install / "bin/arcgis-pro").exists(): raise AssertionError("Removed backend in current release")
 cli_name, writer_name = executable_names()
 runtime_names = ["bin/native-filegdb/" + Path(name).name for name in sdk_manifest()["runtime_files"]]
-for name in [cli_name, writer_name, *runtime_names, "bin/demo/textured_quad.fbx", "bin/demo/checker.png"]:
+python_files = ["python/geomodelbridge/" + name for name in ("__init__.py", "_version.py", "client.py")]
+for name in [cli_name, writer_name, *runtime_names, "bin/demo/textured_quad.fbx", "bin/demo/checker.png", *python_files]:
     destination = work / name
     destination.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(install / name, destination)
@@ -56,10 +57,24 @@ shutil.copytree(work / "textured.gdb", work / "copy.gdb")
 run(writer, "--verify-gdb", work / "copy.gdb", "--expected-report", work / "conversion.json", "--report", work / "copy-check.json")
 copy = json.loads((work / "copy-check.json").read_text(encoding="utf-8"))
 assert copy["status"] == "standalone_copy_verified"
+# Import only the relocated client with site-packages disabled. Its child engine
+# inherits the same minimal environment, including the intentionally absent Pro.
+python_check = """
+import sys
+from pathlib import Path
+sys.path.insert(0, sys.argv[1])
+from geomodelbridge import ConversionRequest, Engine
+result = Engine(sys.argv[2]).convert(ConversionRequest(sys.argv[3], sys.argv[4], 3857, (100,100,100)))
+assert result.feature_count == 1 and result.report_path.is_file()
+assert result.feature_class_path == Path(sys.argv[4]) / 'Models'
+assert 'arcpy' not in sys.modules
+print('PASS relocated Python client without site-packages')
+"""
+run(sys.executable, "-S", "-c", python_check, work / "python", cli, input_path, work / "python-client.gdb")
 assert hashlib.sha256(input_path.read_bytes()).hexdigest() == input_hash
 summary = {"status":"passed", "version":version, "probe":probe, "feature_count":1,
            "default_native_conversion":True, "textured_readback":True, "standalone_copy":True,
-           "input_unchanged":True, "child_path":env["PATH"], "pro_backend_in_package":False,
+           "input_unchanged":True, "child_path":env["PATH"], "pro_backend_in_package":False, "relocated_python_client":True,
            "limitation":"Minimal-package test; does not by itself prove that the host has never had desktop GIS installed. Graphical acceptance is separate."}
 (work / "assessment.json").write_text(json.dumps(summary,indent=2),encoding="utf-8")
 print("PASS minimal native deployment, default backend, textured readback and copied GDB")

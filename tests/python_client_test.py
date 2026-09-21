@@ -1,0 +1,250 @@
+"""Python API contract tests; subprocess boundary is mocked except log/argv checks."""
+from dataclasses import replace
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
+import threading
+import unittest
+from unittest.mock import patch
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "python"))
+from geomodelbridge import ConversionError, ConversionRequest, Engine, GeoModelBridgeError, ValidationError, __version__
+from geomodelbridge.client import LOG_TAIL_BYTES, _ProcessResult, _run
+
+
+class ClientTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(prefix="gmb-client-中文 空格-")
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        self.source = self.root / "模型 & 数据.fbx"
+        self.source.write_bytes(b"source must remain unchanged")
+        self.exe = self.root / ("geomodelbridge.exe" if os.name == "nt" else "geomodelbridge")
+        self.exe.touch()
+        self.engine = Engine(self.exe)
+        self.engine.writer.parent.mkdir()
+        self.engine.writer.touch()
+        self.request = ConversionRequest(self.source, self.root / "结果.gdb", 3857, (100, 100, 100))
+
+    def success_report(self, request=None):
+        request = request or self.request
+        return dict(status="written_and_readback_verified", version=__version__, backend="native-filegdb",
+                    conversion_profile=request.profile, missing_texture_policy=request.missing_textures,
+                    output=str(request.output_gdb), source=str(request.input_fbx), feature_class=request.feature_class,
+                    coordinate_system=dict(wkid=request.wkid, projected=True), reader_diagnostics=[],
+                    verification=dict(level="closed_reopened_file_geodatabase", feature_count=1,
+                                      geometry_material_uv_texture_readback=True))
+
+    def fake_run(self, report=None, code=0, create_gdb=True, write_report=True):
+        def run(command):
+            if command[-1] == "--version":
+                return _ProcessResult(0, f"GeoModelBridge V{__version__}\n", "")
+            if command[-1] == "--probe":
+                return _ProcessResult(0, json.dumps(dict(status="available", version=__version__,
+                        backend="native-filegdb", arcgis_pro_required=False)), "")
+            values = list(map(str, command))
+            output = Path(values[values.index("--output") + 1])
+            report_path = Path(values[values.index("--report") + 1])
+            if create_gdb:
+                output.mkdir()
+            if write_report:
+                report_path.write_text(json.dumps(report if report is not None else self.success_report()), encoding="utf-8")
+            return _ProcessResult(code, "done", "warning details")
+        return run
+
+    def test_import_has_no_arcpy_dependency(self):
+        code = "import sys; import geomodelbridge; assert 'arcpy' not in sys.modules"
+        env = dict(os.environ, PYTHONPATH=str(Path(__file__).resolve().parents[1] / "python"))
+        subprocess.run([sys.executable, "-S", "-c", code], check=True, env=env)
+
+    def test_default_and_explicit_policies_and_argument_boundaries(self):
+        args = self.engine.command(self.request)
+        self.assertIn(str(self.source), args)
+        self.assertEqual(args[args.index("--profile") + 1], "strict")
+        self.assertEqual(args[args.index("--missing-textures") + 1], "material-color")
+        self.assertEqual(args[args.index("--origin") + 1:args.index("--origin") + 4], ("100.0",) * 3)
+        request = replace(self.request, profile="gis-static", missing_textures="error", texture_dirs=(self.root, self.root / "native-filegdb"))
+        args = self.engine.command(request)
+        self.assertEqual(args.count("--texture-dir"), 2)
+        self.assertIn("gis-static", args)
+        self.assertIn("error", args)
+        self.assertIsNone(self.request.report_path)
+
+    def test_invalid_requests(self):
+        changes = [dict(wkid=True), dict(wkid="3857"), dict(wkid=0), dict(wkid=2**31),
+                   dict(origin=(1, 2)), dict(origin=(1, 2, float("nan"))), dict(origin=(1, 2, float("inf"))),
+                   dict(origin=(1, 2, True)), dict(origin=(1, 2, 10**400)), dict(feature_class="--evil"),
+                   dict(feature_class="A"*65), dict(profile="loose"), dict(missing_textures="ignore"),
+                   dict(texture_dirs=str(self.root)), dict(texture_dirs=(self.root / "absent",)),
+                   dict(output_gdb=self.root / "UPPER.GDB"), dict(output_gdb=self.root / "absent/new.gdb"),
+                   dict(report_path=self.root / "absent/new.json"), dict(report_path=self.root / "结果.gdb/r.json"),
+                   dict(input_fbx=""), dict(input_fbx="\0"), dict(input_fbx=self.root),
+                   dict(input_fbx=self.root / "absent.fbx"), dict(report_path=self.root / "another.gdb")]
+        for change in changes:
+            with self.subTest(change=change), self.assertRaises(ValidationError), patch("geomodelbridge.client._run") as runner:
+                self.engine.convert(replace(self.request, **change))
+            runner.assert_not_called()
+
+    def test_existing_outputs_and_reports_are_preserved(self):
+        for path in (self.request.output_gdb, Path(str(self.request.output_gdb) + ".report.json")):
+            with self.subTest(path=path):
+                path.write_bytes(b"keep me")
+                with self.assertRaises(ValidationError) as failure:
+                    self.engine.convert(self.request)
+                self.assertEqual(failure.exception.code, "PATH_EXISTS")
+                self.assertEqual(path.read_bytes(), b"keep me")
+                path.unlink()  # Created by this test in its private TemporaryDirectory.
+
+    def test_symlink_rejected(self):
+        alias = self.root / "alias.fbx"
+        try:
+            alias.symlink_to(self.source)
+        except OSError:
+            self.skipTest("Host does not allow unprivileged symlinks")
+        with self.assertRaises(ValidationError):
+            self.engine.validate(replace(self.request, input_fbx=alias))
+
+    def test_explicit_writer_and_environment_are_deterministic(self):
+        with patch.dict(os.environ, {"GMB_NATIVE_WRITER": "untrusted-other-writer"}):
+            self.assertEqual(Engine(self.exe).writer, self.engine.writer)
+        self.assertEqual(Engine(self.exe, writer=self.exe).writer, self.exe)
+
+    def test_probe_success(self):
+        with patch("geomodelbridge.client._run", side_effect=self.fake_run()):
+            result = self.engine.check()
+        self.assertEqual(result.version, __version__)
+        self.assertFalse(result.arcgis_pro_required)
+
+    def test_version_and_backend_failures(self):
+        invalid = [_ProcessResult(1, "", "bad version"), _ProcessResult(0, "GeoModelBridge V999.0.0", "")]
+        for result in invalid:
+            with self.subTest(result=result), patch("geomodelbridge.client._run", return_value=result), self.assertRaises(GeoModelBridgeError) as failure:
+                self.engine.check()
+            self.assertEqual(failure.exception.code, "VERSION_MISMATCH")
+        for probe in ("not json", "{}", '{"status":"available","status":"available"}',
+                      json.dumps(dict(version=__version__, status="available", backend="native-filegdb", arcgis_pro_required=True))):
+            with patch("geomodelbridge.client._run", side_effect=[_ProcessResult(0, f"GeoModelBridge V{__version__}", ""), _ProcessResult(0, probe, "")]), self.assertRaises(GeoModelBridgeError) as failure:
+                self.engine.check()
+            self.assertEqual(failure.exception.code, "BACKEND_UNAVAILABLE")
+
+    def test_missing_executable(self):
+        with self.assertRaises(GeoModelBridgeError) as failure:
+            Engine(self.root / "missing.exe").check()
+        self.assertEqual(failure.exception.code, "ENGINE_UNAVAILABLE")
+
+    def test_launch_failure(self):
+        with patch("geomodelbridge.client._run", side_effect=OSError("access denied")), self.assertRaises(GeoModelBridgeError) as failure:
+            self.engine.check()
+        self.assertEqual(failure.exception.code, "LAUNCH_FAILED")
+
+    def test_verified_result_and_main_thread_grouped_callbacks(self):
+        report = self.success_report()
+        report["reader_diagnostics"] = [dict(severity="warning", code="MISSING_TEXTURE_FALLBACK", message="missing", context="material:a")] * 100
+        events, thread = [], threading.get_ident()
+        def callback(event):
+            self.assertEqual(threading.get_ident(), thread)
+            events.append(event)
+        with patch("geomodelbridge.client._run", side_effect=self.fake_run(report)):
+            result = self.engine.convert(self.request, on_message=callback)
+        self.assertEqual(result.feature_class_path, self.request.output_gdb / "Models")
+        self.assertEqual(result.request.origin, (100., 100., 100.))
+        self.assertEqual(result.feature_count, 1)
+        self.assertEqual(len(result.diagnostics), 100)
+        self.assertEqual([e.code for e in events], ["CHECKING_ENGINE", "CONVERTING", "MISSING_TEXTURE_FALLBACK", "VERIFIED"])
+        self.assertEqual(events[2].count, 100)
+        self.assertEqual(self.source.read_bytes(), b"source must remain unchanged")
+
+    def test_callback_conflict_is_revalidated(self):
+        def callback(event):
+            if event.code == "CONVERTING":
+                self.request.output_gdb.mkdir()
+        with patch("geomodelbridge.client._run", side_effect=self.fake_run()) as runner, self.assertRaises(ValidationError):
+            self.engine.convert(self.request, on_message=callback)
+        self.assertEqual(runner.call_count, 2)
+
+    def test_callback_exception_before_start_propagates(self):
+        with patch("geomodelbridge.client._run") as runner, self.assertRaisesRegex(RuntimeError, "callback"):
+            self.engine.convert(self.request, on_message=lambda event: (_ for _ in ()).throw(RuntimeError("callback")))
+        runner.assert_not_called()
+
+    def test_nonzero_exit_keeps_diagnostics_even_with_invalid_or_success_report(self):
+        for code in (2, 3, 4, 5, 6, 123):
+            report = dict(status="rejected", diagnostics=[dict(severity="error", code="INVALID_NORMAL", message="invalid", context="mesh")])
+            with patch("geomodelbridge.client._run", side_effect=self.fake_run(report, code, create_gdb=False)), self.assertRaises(ConversionError) as failure:
+                self.engine.convert(self.request)
+            self.assertEqual(failure.exception.exit_code, code)
+            self.assertEqual(failure.exception.diagnostics[0].code, "INVALID_NORMAL")
+            self.assertEqual(failure.exception.stderr_tail, "warning details")
+            failure.exception.report_path.unlink()
+        with patch("geomodelbridge.client._run", side_effect=self.fake_run(code=5)), self.assertRaises(ConversionError):
+            self.engine.convert(self.request)
+
+    def test_exit_zero_without_report_or_gdb_is_failure(self):
+        for create, write in ((False, True), (True, False)):
+            with patch("geomodelbridge.client._run", side_effect=self.fake_run(create_gdb=create, write_report=write)), self.assertRaises(ConversionError) as failure:
+                self.engine.convert(self.request)
+            self.assertEqual(failure.exception.code, "INVALID_REPORT")
+            if create:
+                self.request.output_gdb.rmdir()
+            if write:
+                failure.exception.report_path.unlink()
+
+    def test_report_must_match_complete_contract(self):
+        mutations = [lambda r: r.update(status="prepared"), lambda r: r.update(version="0.0.0"),
+                     lambda r: r.update(backend="arcgis-pro"), lambda r: r.update(conversion_profile="gis-static"),
+                     lambda r: r.update(missing_texture_policy="error"), lambda r: r.update(feature_class="Other"),
+                     lambda r: r.update(output="relative.gdb"), lambda r: r.update(output=str(self.root / "other.gdb")),
+                     lambda r: r.update(source=str(self.root / "other.fbx")),
+                     lambda r: r["verification"].update(level="not_reopened"),
+                     lambda r: r["verification"].update(geometry_material_uv_texture_readback=False),
+                     lambda r: r["verification"].update(feature_count=True), lambda r: r["verification"].update(feature_count=0),
+                     lambda r: r["coordinate_system"].update(wkid=4326), lambda r: r["coordinate_system"].update(projected=False),
+                     lambda r: r.update(verification=[]), lambda r: r.update(coordinate_system=[]),
+                     lambda r: r.pop("reader_diagnostics"), lambda r: r.update(reader_diagnostics={}),
+                     lambda r: r.update(reader_diagnostics=[dict(severity="error", code="BAD", message="error")]),
+                     lambda r: r.update(reader_diagnostics=[dict(severity="unknown", code="BAD", message="bad")])]
+        for mutation in mutations:
+            report = self.success_report()
+            mutation(report)
+            with self.subTest(report=report), patch("geomodelbridge.client._run", side_effect=self.fake_run(report)), self.assertRaises(ConversionError) as failure:
+                self.engine.convert(self.request)
+            self.assertEqual(failure.exception.code, "INVALID_REPORT")
+            self.request.output_gdb.rmdir()
+            failure.exception.report_path.unlink()
+
+    def test_error_policy_rejects_fallback_in_success_report(self):
+        request = replace(self.request, missing_textures="error")
+        report = self.success_report(request)
+        report["reader_diagnostics"] = [dict(severity="warning", code="MISSING_TEXTURE_FALLBACK", message="missing")]
+        with patch("geomodelbridge.client._run", side_effect=self.fake_run(report)), self.assertRaises(ConversionError):
+            self.engine.convert(request)
+
+    def test_malformed_duplicate_and_oversize_reports_reject(self):
+        for contents in (b"{", b"[]", b'{"status":"a","status":"b"}', b'{"a":NaN}', b"x" * 101):
+            def run(command):
+                result = self.fake_run()(command)
+                if "convert" in command:
+                    Path(str(self.request.output_gdb) + ".report.json").write_bytes(contents)
+                return result
+            with patch("geomodelbridge.client.REPORT_LIMIT_BYTES", 100), patch("geomodelbridge.client._run", side_effect=run), self.assertRaises(ConversionError) as failure:
+                self.engine.convert(self.request)
+            self.assertEqual(failure.exception.code, "INVALID_REPORT")
+            self.request.output_gdb.rmdir()
+            failure.exception.report_path.unlink()
+
+    def test_process_argument_safety_utf8_and_bounded_log_tails(self):
+        value = '路径 with spaces & $(echo no); "literal"'
+        code = "import os,sys; os.write(1, b'x' * 900000); os.write(2, b'y' * 900000); os.write(1, sys.argv[1].encode('utf8')); os.write(2, '末尾'.encode('utf8'))"
+        result = _run([sys.executable, "-c", code, value])
+        self.assertEqual(result.exit_code, 0)
+        self.assertTrue(result.stdout.endswith(value))
+        self.assertTrue(result.stderr.endswith("末尾"))
+        self.assertLessEqual(len(result.stdout.encode("utf8")), LOG_TAIL_BYTES)
+        self.assertLessEqual(len(result.stderr.encode("utf8")), LOG_TAIL_BYTES)
+
+
+if __name__ == "__main__":
+    unittest.main()

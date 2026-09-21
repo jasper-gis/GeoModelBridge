@@ -1,0 +1,295 @@
+Verified GeoModelBridge 0.1.9: 7 required declarations and runtime release references agree.
+Verified ufbx 0.23.0
+Verified nlohmann/json 3.12.0
+-- Configuring done (1.7s)
+-- Generating done (0.2s)
+-- Build files have been written to: <workspace>/build/linux-x64
+[1/15] Building CXX object CMakeFiles/GeoModelBridge.Core.dir/src/core.cpp.o
+[2/15] Building CXX object CMakeFiles/GeoModelBridge.Core.dir/src/bundle.cpp.o
+[3/15] Building CXX object CMakeFiles/GeoModelBridge.Core.dir/src/fbx_reader.cpp.o
+[4/15] Building CXX object CMakeFiles/GeoModelBridge.Core.dir/src/fixtures.cpp.o
+[5/15] Linking CXX static library libGeoModelBridge.Core.a
+[6/15] Building CXX object CMakeFiles/gmb_core_tests.dir/tests/core_tests.cpp.o
+[7/15] Linking CXX executable gmb_core_tests
+[8/15] Building CXX object CMakeFiles/geomodelbridge.dir/src/main.cpp.o
+[9/15] Linking CXX executable geomodelbridge
+[10/15] Building CXX object backends/native-filegdb/CMakeFiles/GeoModelBridge.NativeWriter.dir/images.cpp.o
+[11/15] Building CXX object backends/native-filegdb/CMakeFiles/GeoModelBridge.NativeWriter.dir/__/__/src/core.cpp.o
+[12/15] Building CXX object backends/native-filegdb/CMakeFiles/GeoModelBridge.NativeWriter.dir/platform_linux.cpp.o
+[13/15] Building CXX object backends/native-filegdb/CMakeFiles/GeoModelBridge.NativeWriter.dir/images_linux.cpp.o
+[14/15] Building CXX object backends/native-filegdb/CMakeFiles/GeoModelBridge.NativeWriter.dir/main.cpp.o
+[15/15] Linking CXX executable backends/native-filegdb/GeoModelBridge.NativeWriter
+Internal ctest changing into directory: <workspace>/build/linux-x64
+Test project <workspace>/build/linux-x64
+    Start 1: core
+1/8 Test #1: core .............................   Passed    0.18 sec
+    Start 2: cli
+2/8 Test #2: cli ..............................   Passed    0.80 sec
+    Start 3: reader_integration
+3/8 Test #3: reader_integration ...............   Passed    0.80 sec
+    Start 4: binary_fbx
+4/8 Test #4: binary_fbx .......................   Passed    0.53 sec
+    Start 5: profile_integration
+5/8 Test #5: profile_integration ..............   Passed    2.08 sec
+    Start 6: missing_textures
+6/8 Test #6: missing_textures .................   Passed    0.71 sec
+    Start 7: normal_repair
+7/8 Test #7: normal_repair ....................   Passed    0.70 sec
+    Start 8: python_client
+8/8 Test #8: python_client ....................   Passed    2.60 sec
+
+100% tests passed, 0 tests failed out of 8
+
+Total Test time (real) =   8.50 sec
+-- Install configuration: "Release"
+-- Installing: <ubuntu-user>/releases/V0.1.9/bin/geomodelbridge
+-- Installing: <ubuntu-user>/releases/V0.1.9/bin/demo/textured_quad.fbx
+-- Installing: <ubuntu-user>/releases/V0.1.9/bin/demo/checker.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/python/geomodelbridge
+-- Installing: <ubuntu-user>/releases/V0.1.9/python/geomodelbridge/client.py
+-- Installing: <ubuntu-user>/releases/V0.1.9/python/geomodelbridge/__init__.py
+-- Installing: <ubuntu-user>/releases/V0.1.9/python/geomodelbridge/_version.py
+-- Installing: <ubuntu-user>/releases/V0.1.9/python/geomodelbridge/__pycache__
+-- Installing: <ubuntu-user>/releases/V0.1.9/python/examples/convert_fbx.py
+-- Installing: <ubuntu-user>/releases/V0.1.9/bin/native-filegdb/GeoModelBridge.NativeWriter
+-- Set non-toolchain portion of runtime path of "<ubuntu-user>/releases/V0.1.9/bin/native-filegdb/GeoModelBridge.NativeWriter" to "$ORIGIN"
+-- Installing: <ubuntu-user>/releases/V0.1.9/bin/native-filegdb/libFileGDBAPI.so
+-- Installing: <ubuntu-user>/releases/V0.1.9/bin/native-filegdb/libfgdbunixrtl.so
+-- Installing: <ubuntu-user>/releases/V0.1.9/licenses/filegdb-api
+-- Installing: <ubuntu-user>/releases/V0.1.9/licenses/filegdb-api/Acknowledgements
+-- Installing: <ubuntu-user>/releases/V0.1.9/licenses/filegdb-api/userestrictions.txt
+-- Installing: <ubuntu-user>/releases/V0.1.9/licenses/filegdb-api/Apache License.pdf
+-- Installing: <ubuntu-user>/releases/V0.1.9/licenses/filegdb-api/AUTHORS
+-- Installing: <ubuntu-user>/releases/V0.1.9/licenses/filegdb-api/Acknowledgements-FGDBUnixRTL
+-- Installing: <ubuntu-user>/releases/V0.1.9/licenses/filegdb-api/README
+-- Installing: <ubuntu-user>/releases/V0.1.9/licenses/filegdb-api/sdk-sources-linux.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/gui.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/validation-results.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/validation-v0.1.8.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/validation-v0.1.4.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/validation-v0.1.6.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/acceptance.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/validation-v0.1.2.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/visual-acceptance-setup.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/architecture.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/compatibility.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/validation-v0.1.7.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/bundle-format.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/validation-v0.1.3.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/build-and-release.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/roadmap.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/validation-v0.1.5.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/pro-integration.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/windows-examples.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/windows-gui.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/ubuntu-to-windows.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/windows-build.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/ubuntu-native.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/ubuntu-examples.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/windows-sloped_normals.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/windows-alpha-plane.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/ubuntu-examples.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/ubuntu-archive-deployment.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/ubuntu-build.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/ubuntu-environment.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/ubuntu-deployment.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/windows-to-ubuntu.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/windows-unified-build.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/independent-os-output-comparison.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/ubuntu-textured_quad.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/windows-deployment.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/windows-textured_quad.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/ubuntu-package.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/windows-native.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/ubuntu-sloped_normals.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/windows-native.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/cross_readback.py
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/ubuntu-alpha-plane.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/ubuntu-deployment.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.6/ubuntu-native.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/gui-result-independent-pro.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/gui-no-overwrite-hashes.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/native-tests.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/gui-readable-report.txt
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/gui-tests.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/real-pro-report.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/gui-no-overwrite.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/dotnet-runtime-licenses.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/native-pro-coordinate-differences.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/gui-readable-report.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/core-tests.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/gui-real-success.txt
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/original-files-unchanged.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/profile-tests.txt
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/gui-retry-new-name.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/gui-no-overwrite.txt
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/gui-native-report.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/final-strict-inspection.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/native-tests-final.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/gui-strict-failure.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/native-read-by-pro.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/gui-real-success.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/core-build.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/independent-pro-tool
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/independent-pro-tool/README.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/baseline-v012.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/gui-build-final.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/jpeg-normalization-pixels.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/input-inspection.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/pro-tests.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/native-read-by-pro-final.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/gui-raw-report.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/gui-result-independent-pro.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/release-files.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.3/pro-tests-jpeg-final.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/core-tests.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.2
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.2/gui-native-success.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.2/native-tests.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.2/gui-tests.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.2/dotnet-runtime-licenses.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.2/gui-pro-probe.txt
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.2/core-tests.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.2/gui-demo-reset.txt
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.2/gui-native-success.txt
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.2/gui-native-report.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.2/build.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.2/pro-tests.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.2/gui-ui-checks.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.7
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.7/windows-examples.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.7/windows-gui.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.7/windows-build.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.7/ubuntu-examples.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.7/ubuntu-package-check.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.7/ubuntu-examples.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.7/ubuntu-missing-textures.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.7/ubuntu-build.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.7/ubuntu-deployment.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.7/windows-package-check.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.7/windows-deployment.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.7/real-model-assessment.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.7/windows-missing-textures.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.7/windows-native.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.7/ubuntu-deployment.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.7/ubuntu-native.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.5
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.5/native-tests.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.5/gui-tests.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.5/release-checks.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.5/release-dependencies.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.5/build.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.5/native-deployment.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.5/examples.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/README.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.8
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.8/windows-examples.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.8/windows-gui.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.8/windows-build.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.8/ubuntu-examples.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.8/ubuntu-package-check.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.8/ubuntu-examples.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.8/ubuntu-build.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.8/ubuntu-deployment.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.8/windows-package-check.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.8/windows-deployment.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.8/real-model-assessment.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.8/ubuntu-normal.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.8/windows-normal.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.8/windows-native.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.8/ubuntu-final-ctest.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.8/ubuntu-final-native-build.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.8/ubuntu-deployment.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.8/ubuntu-native.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/pro-integration.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/visual-project.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/sources
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/sources/uv-direction.jpg
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/sources/uv-direction.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/assessment.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/index.html
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/renders
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/renders/pro-jpeg-plane-top.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/renders/mixed-materials-top.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/renders/native-uv-plane-top.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/renders/mixed-materials-oblique.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/renders/color-cube-opposite.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/renders/seam-cube-opposite.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/renders/standalone-copy-top.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/renders/color-cube-top.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/renders/seam-cube-oblique.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/renders/alpha-plane-top.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/renders/color-cube-oblique.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/renders/uv-plane-top.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/renders/native-jpeg-plane-top.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/visual/renders/seam-cube-top.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/legacy-writer-rejection.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/core-tests.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/jpeg-direction
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/jpeg-direction/source-preparation.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/jpeg-direction/native-writer.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/jpeg-direction/native-writer-report.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/jpeg-direction/pro-writer-report.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/jpeg-direction/source-direction.jpg
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/jpeg-direction/source-bundle
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/jpeg-direction/source-bundle/scene.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/jpeg-direction/source-bundle/textures
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/jpeg-direction/source-bundle/textures/aefee6ad6a7c5cc986190df94b1da12a7487604a4cec3a8a7efb7002bc2fa686.jpg
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/jpeg-direction/pro-writer.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/jpeg-direction/source-direction.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/build.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/native-integration.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/native-independent-pro
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/native-independent-pro/textured_quad.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/native-independent-pro/mixed-materials.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/native-independent-pro/uv_transform.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/native-independent-pro/seam-cube.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/native-independent-pro/embedded_quad.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/native-independent-pro/instanced_mirror.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/native-independent-pro/sloped_normals.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/native-independent-pro/color-cube.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/native-independent-pro/colored_quad.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/native-independent-pro/binary_blender.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/native-independent-pro/alpha-plane.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/native-independent-pro/no_material.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/native-independent-pro/uv-plane.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/native-independent-pro/summary.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.1/native-independent-pro/multi_material.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.4
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.4/reader-benchmark.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.4/streaming-prepare.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.4/native-tests.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.4/gui-tests.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.4/real-native-report.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.4/pro-tests.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.4/baseline-prepare.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.4/native-tests.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.4/core-tests.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.4/original-files-unchanged.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.4/real-native-v013-equivalence.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.4/benchmark_prepare.py
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.4/core-build.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.4/pro-tests.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.4/gui-release-success.txt
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.4/gui-release-success.png
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.4/gui-build.log
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.4/gui-release-report.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/evidence/V0.1.4/release-files.json
+-- Installing: <ubuntu-user>/releases/V0.1.9/./docs/validation-v0.1.1.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./README.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./VERSION
+-- Installing: <ubuntu-user>/releases/V0.1.9/./CHANGELOG.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/./THIRD_PARTY_NOTICES.md
+-- Installing: <ubuntu-user>/releases/V0.1.9/licenses/ufbx/LICENSE
+-- Installing: <ubuntu-user>/releases/V0.1.9/licenses/nlohmann/LICENSE.MIT
+Verified ufbx 0.23.0
+Verified nlohmann/json 3.12.0
+Verified FileGDB API 1.5.5.330 runtime and original license files
+{"arcgis_pro_required":false,"backend":"native-filegdb","filegdb_api":"1.5.5","status":"available","version":"0.1.9"}
+Installed native CLI: <ubuntu-user>/releases/V0.1.9/bin/geomodelbridge

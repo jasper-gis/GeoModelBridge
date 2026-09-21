@@ -5,7 +5,7 @@
 <p>FBX → 带颜色与贴图的 FileGDB Multipatch</p>
 
 <p>
-  <a href="CHANGELOG.md"><code>V0.1.8</code></a> &nbsp;
+  <a href="CHANGELOG.md"><code>V0.1.9</code></a> &nbsp;
   <a href="docs/architecture.md"><code>C++17</code></a> &nbsp;
   <a href="#platforms"><code>Windows · Ubuntu</code></a>
 </p>
@@ -136,6 +136,25 @@ Ubuntu 在仓库根目录执行；Windows 将程序路径替换为 `.\dist\bin\g
 
 `--backend native-filegdb` 可以省略。含空格的路径需加引号，支持中文文件名。已有 Bundle 写入、复制 GDB 的独立回读命令见[原生后端说明](backends/native-filegdb/README.md)；退出码与常见问题见[排错指南](docs/build-and-release.md#环境检查与排错)。
 
+### Python 调用与后续工具箱接入
+
+V0.1.9 提供标准库实现的 `geomodelbridge` Python 调用库，构建时安装到发布目录的 `python/`。后续 ArcGIS ATBX 脚本可导入它，复用参数检查、EXE 调用、诊断和 GDB 回读结果核验；库本身无需 ArcPy。
+
+```python
+import sys
+sys.path.insert(0, r"D:\Tools\GeoModelBridge\python")
+
+from geomodelbridge import ConversionRequest, Engine
+
+result = Engine(r"D:\Tools\GeoModelBridge\bin\geomodelbridge.exe").convert(
+    ConversionRequest(r"D:\Models\model.fbx", r"D:\Results\new-model.gdb",
+                      wkid=3857, origin=(100, 100, 100), profile="gis-static")
+)
+print(result.feature_class_path)
+```
+
+替换示例中的完整发布目录、模型 / 输出路径和定位参数。当前接口同步创建**新的 GDB**，不追加到已有库；本次不含 ATBX 文件或取消接口。完整接入方式见 [Python 函数库文档](docs/python-client.md)，可运行示例位于 [python/examples/convert_fbx.py](python/examples/convert_fbx.py)。
+
 ### 转换策略与边界
 
 | 策略 | 行为 |
@@ -153,7 +172,9 @@ Ubuntu 在仓库根目录执行；Windows 将程序路径替换为 `.\dist\bin\g
 
 ## 已有验证
 
-以下为 **V0.1.8 实际 Windows / Ubuntu 执行结果**，来源与原始证据见[验证记录](docs/validation-v0.1.8.md)。
+**V0.1.9 Python 调用库**：Windows / Ubuntu 各通过 6 项真实调用场景及 3 份 GDB 的独立复制回读；两平台 CTest 各 8/8、原生后端回归与独立部署通过，Windows GUI 153/153。Python 契约测试在 Windows 为 18 通过 / 1 跳过，Ubuntu 为 19/19。详情见[本版验证记录](docs/validation-v0.1.9.md)。未进行 ATBX 内运行或取消行为验收。
+
+以下保留 **V0.1.8 实际 Windows / Ubuntu 执行结果**，大模型与法线专项的来源见[历史验证记录](docs/validation-v0.1.8.md)。
 
 | 检查 | 结果 |
 | --- | --- |
@@ -174,6 +195,7 @@ Windows ↔ Ubuntu 双向互读及归档解压验证见 [V0.1.6 历史记录](do
 | --- | --- |
 | 客户机部署、离线构建、排错、测试与打包 | [构建与发布指南](docs/build-and-release.md) |
 | Windows 图形界面操作 | [GUI 使用说明](docs/gui.md) |
+| Python 函数调用、后续 ATBX 接入与错误处理 | [Python 调用库](docs/python-client.md) |
 | 支持的模型、材质与兼容行为 | [兼容策略](docs/compatibility.md) |
 | 原生写入、存储精度与独立回读 | [FileGDB 后端](backends/native-filegdb/README.md) |
 | 共享核心、平台适配与数据契约 | [架构](docs/architecture.md) · [Scene Bundle](docs/bundle-format.md) |

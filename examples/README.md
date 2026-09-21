@@ -3,7 +3,7 @@
 先构建完整原生发布目录，再运行：
 
 ```powershell
-python scripts/generate_examples.py --cli releases/V0.1.8/bin/geomodelbridge.exe --output examples/V0.1.8
+python scripts/generate_examples.py --cli releases/V0.1.9/bin/geomodelbridge.exe --output examples/V0.1.9
 ```
 
 脚本只使用原生 FileGDB 后端，从 CLI 同目录发现原生写入端，生成五组合成网格及九个 FBX 的 GDB，验证独立复制、输入拒绝及写入失败报告。输出目录必须不存在，生成的 GDB 不进入源码 Git。

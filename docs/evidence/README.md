@@ -4,4 +4,4 @@ V0.1.0–V0.1.4 报告、日志和截图保留原始版本、工具来源与实�
 
 Pro 适配器及相关可执行验证工具已从当前工程移除；历史源码保存在 [初始化提交 9343edd](https://github.com/jasper-gis/GeoModelBridge/tree/9343edd)。V0.1.3 独立只读工具的原源码在该提交的 `docs/evidence/V0.1.3/independent-pro-tool`。
 
-当前验证见 [V0.1.8](../validation-v0.1.8.md)，缺图回退见 [V0.1.7](../validation-v0.1.7.md)，平台迁移与双向互读见 [V0.1.6](../validation-v0.1.6.md)，移除 Pro 依赖见 [V0.1.5](../validation-v0.1.5.md)。历史图形显示未通过项不会因版本更新而改写为通过。
+当前 Python 调用库验证见 [V0.1.9](../validation-v0.1.9.md)，法线与大模型见 [V0.1.8](../validation-v0.1.8.md)，缺图回退见 [V0.1.7](../validation-v0.1.7.md)，平台迁移与双向互读见 [V0.1.6](../validation-v0.1.6.md)，移除 Pro 依赖见 [V0.1.5](../validation-v0.1.5.md)。历史图形显示未通过项不会因版本更新而改写为通过。

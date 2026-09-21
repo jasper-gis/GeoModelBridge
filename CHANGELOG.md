@@ -1,5 +1,11 @@
 # Changelog
 
+## V0.1.9 — 2026-09-21
+
+- 新增标准库实现的 Python `geomodelbridge` 调用库，为后续 Windows ATBX 脚本调用 EXE 准备 `Engine`、请求 / 结果类型、参数校验、环境检查、阶段回调和结构化异常；不导入 ArcPy，不制作工具箱文件。
+- 同步封装现有 CLI；默认严格模式，静态兼容需显式选择。核对 Python / EXE / writer 版本和完整成功报告，返回要素类路径、要素数、诊断与报告路径，保持仅创建新 GDB、不覆盖已有成果的边界。
+- CMake 安装和发布清单包含 Python 库及可运行示例，增加 Windows / Ubuntu 契约与安装后真实 GDB 回归，完善 README 和 [Python 接入文档](docs/python-client.md)。实际验证见 [V0.1.9 记录](docs/validation-v0.1.9.md)，历史大模型证据保持原版本。
+
 ## V0.1.8 — 2026-09-21
 
 - GIS 静态兼容可从有效三角形重建零值或非有限角点法线，只替换无效法线，保留有效法线、UV、材质边界和镜像后的正确绕序；修复数量逐网格报告。严格模式继续拒绝，写入端不隐式修复 Bundle。

@@ -1,8 +1,9 @@
-# V0.1.8 架构
+# V0.1.9 架构
 
 ```mermaid
 flowchart LR
   UI[Windows WPF GUI] --> C[CLI 参数 / 进程 / 报告]
+  PY[Python 调用库 / 后续 ATBX 脚本] --> C
   C --> R
   FBX[静态 FBX 与图片] --> R[ufbx Reader / C++17]
   R --> S[统一 Scene 与严格验证]
@@ -32,6 +33,7 @@ CLI 退出码：0 成功；2 用法或已有路径冲突；3 策略验证不通�
 
 ## 跨平台维护边界
 
+- `python/geomodelbridge` 封装参数、进程和报告契约，不包含 ArcPy、转换算法或数据库追加逻辑；Python / CLI / writer 必须版本匹配。CMake 安装与发布清单包含函数库，双平台测试使用安装后的库写入并复制回读 GDB。接口见 [Python 调用库](python-client.md)。
 - `src/`、`include/`、`bundle.hpp`、`codec.hpp`、writer `main.cpp` 为共享业务逻辑，不复制 Linux 分支。
 - `platform_windows.cpp` / `platform_linux.cpp` 负责 UTF-8 与 SDK wstring 转换、路径范围、链接检查、独占报告创建和禁止覆盖的成果提交。Linux 使用 wchar32，不依赖系统 locale 的 filesystem wstring 转换。
 - `images.cpp` 共享容器检查；`images_windows.cpp` / `images_linux.cpp` 实现同一解码契约。PNG 为直通 RGBA8，不做 Gamma/ICC 或预乘；JPEG 检查后保留原字节。

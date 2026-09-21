@@ -68,7 +68,7 @@ with tempfile.TemporaryDirectory(prefix="gmb-package-check-") as work:
                     "--expected-report", str(examples / "reports/alpha-plane.json"),
                     "--report", str(Path(work) / "standalone.json")], check=True, stdout=subprocess.DEVNULL)
 # Enumerate source through Git, never by recursively sweeping local results or older releases.
-source_roots = {"src", "include", "backends", "apps", "tests", "scripts", "third_party", "docs", ".github"}
+source_roots = {"src", "include", "backends", "apps", "tests", "scripts", "third_party", "docs", ".github", "python"}
 source_files = {"AGENTS.md", "README.md", "VERSION", "CHANGELOG.md", "THIRD_PARTY_NOTICES.md", "CMakeLists.txt", "CMakePresets.json", ".gitignore", ".gitattributes", "examples/README.md"}
 files = {}
 listing = subprocess.check_output(["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=root).decode("utf-8").split("\0")
@@ -81,6 +81,14 @@ for name in sorted(set(listing)):
     path = root / rel
     if path.is_file(): files[rel.as_posix()] = path
 binary_files = [cli_name, native_name, *[p.relative_to(install).as_posix() for p in runtimes], "bin/demo/textured_quad.fbx", "bin/demo/checker.png"]
+# Explicit SDK files: fail on missing/stale installed libraries instead of shipping
+# a release whose Python client silently targets a different executable version.
+for relative in ("geomodelbridge/__init__.py", "geomodelbridge/_version.py", "geomodelbridge/client.py", "examples/convert_fbx.py"):
+    name = "python/" + relative
+    path = install / name
+    if not path.is_file() or path.read_bytes() != (root / name).read_bytes():
+        raise SystemExit("Installed Python client is missing or stale: " + name)
+    binary_files.append(name)
 if platform_name() == "windows-x64":
     binary_files.append("bin/geomodelbridgeGUI.exe")
 for name in binary_files:

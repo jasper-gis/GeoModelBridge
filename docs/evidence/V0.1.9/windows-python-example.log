@@ -1,0 +1,6 @@
+Checking GeoModelBridge and native FileGDB runtime...
+Reading FBX, writing GDB and verifying readback...
+[UV_SETS_REDUCED] 1 diagnostic(s); see the conversion report.
+Verified 1 feature(s): <workspace>\artifacts\v019\python-example.gdb\Models
+Feature class: <workspace>\artifacts\v019\python-example.gdb\Models
+Report: <workspace>\artifacts\v019\python-example.gdb.report.json
