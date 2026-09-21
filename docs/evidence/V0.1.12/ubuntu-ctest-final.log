@@ -1,0 +1,23 @@
+Test project <workspace>/build/linux-x64
+    Start 1: core
+1/9 Test #1: core .............................   Passed    0.24 sec
+    Start 2: output_safety
+2/9 Test #2: output_safety ....................   Passed    0.23 sec
+    Start 3: cli
+3/9 Test #3: cli ..............................   Passed    1.15 sec
+    Start 4: reader_integration
+4/9 Test #4: reader_integration ...............   Passed    0.92 sec
+    Start 5: binary_fbx
+5/9 Test #5: binary_fbx .......................   Passed    0.56 sec
+    Start 6: profile_integration
+6/9 Test #6: profile_integration ..............   Passed    2.95 sec
+    Start 7: missing_textures
+7/9 Test #7: missing_textures .................   Passed    1.35 sec
+    Start 8: normal_repair
+8/9 Test #8: normal_repair ....................   Passed    0.78 sec
+    Start 9: python_client
+9/9 Test #9: python_client ....................   Passed    3.07 sec
+
+100% tests passed, 0 tests failed out of 9
+
+Total Test time (real) =  11.30 sec

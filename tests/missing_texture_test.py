@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import shutil
@@ -16,6 +17,7 @@ parser.add_argument('--writer', type=Path)
 args = parser.parse_args()
 exe, fixtures = args.cli.resolve(), args.fixtures.resolve()
 cases = []
+skipped = []
 
 with tempfile.TemporaryDirectory(prefix='gmb-missing-texture-') as scratch:
     root = Path(scratch)
@@ -83,6 +85,62 @@ with tempfile.TemporaryDirectory(prefix='gmb-missing-texture-') as scratch:
     _, rejected, _ = prepare('corrupt-existing-image', missing.replace('does-not-exist.png', 'broken.png'), accepted=False)
     assert any(d['code'] == 'UNSUPPORTED_TEXTURE_FORMAT' for d in rejected['diagnostics'])
 
+    # A path occupied by a directory or blocked by a file is not a missing image.
+    # Both profiles/policies must retain an actionable read error, with no fallback.
+    (root / 'image-directory.png').mkdir()
+    (root / 'blocked-parent').write_bytes(b'preserve this user file')
+    def read_error(name, relative, *options):
+        _, rejected, _ = prepare(name, textured.replace('checker.png', relative), *options, accepted=False)
+        assert any(d['code'] == 'TEXTURE_READ_ERROR' and d['severity'] == 'error' for d in rejected['diagnostics'])
+        assert not any(d['code'] in ('MISSING_TEXTURE_FALLBACK', 'MISSING_TEXTURE') for d in rejected['diagnostics'])
+        assert any(relative in d['message'].replace('\\', '/') for d in rejected['diagnostics'] if d['code'] == 'TEXTURE_READ_ERROR')
+
+    for profile in ('strict', 'gis-static'):
+        for policy in ('material-color', 'error'):
+            for suffix, relative in [('directory', 'image-directory.png'), ('parent-file', 'blocked-parent/image.png')]:
+                read_error(f'{suffix}-{profile}-{policy}', relative, '--profile', profile, '--missing-textures', policy)
+    assert (root / 'image-directory.png').is_dir() and not list((root / 'image-directory.png').iterdir())
+    assert (root / 'blocked-parent').read_bytes() == b'preserve this user file'
+
+    # Existing but invalid first matches cannot be concealed by a later basename.
+    alternative = root / 'alternate'; alternative.mkdir()
+    shutil.copy2(fixtures / 'checker.png', alternative / 'image-directory.png')
+    read_error('invalid-primary-not-hidden-by-secondary', 'image-directory.png', '--texture-dir', alternative)
+    # Genuinely missing and stale external paths can still find an added directory.
+    relocated = textured.replace('checker.png', 'relocated.png')
+    shutil.copy2(fixtures / 'checker.png', alternative / 'relocated.png')
+    scene, report, _ = prepare('relocated-image-found', relocated, '--texture-dir', alternative)
+    assert len(scene['textures']) == 1 and not any(d['code'] == 'MISSING_TEXTURE_FALLBACK' for d in report['diagnostics'])
+    assert scene['textures'][0]['sha256'] == hashlib.sha256((fixtures / 'checker.png').read_bytes()).hexdigest()
+
+    if os.name == 'posix':
+        # A FIFO must be rejected before opening, and a loop must not become a missing-image warning.
+        os.mkfifo(root / 'fifo.png')
+        read_error('fifo-is-not-image', 'fifo.png')
+        (root / 'loop.png').symlink_to('loop.png')
+        read_error('symlink-loop-is-not-missing', 'loop.png')
+        (root / 'nested' / 'deep').mkdir(parents=True)
+        (root / 'alias').symlink_to(root / 'nested' / 'deep', target_is_directory=True)
+        # alias/../checker.png resolves to nested/checker.png, which is absent;
+        # the distinct root/checker.png basename must still be tried.
+        scene, report, _ = prepare('symlink-parent-preserves-basename-search', textured.replace('checker.png', 'alias/../checker.png'))
+        assert len(scene['textures']) == 1 and not any(d['code'] == 'MISSING_TEXTURE_FALLBACK' for d in report['diagnostics'])
+        protected = root / 'no-search'; protected.mkdir()
+        shutil.copy2(fixtures / 'checker.png', protected / 'checker.png')
+        protected.chmod(0)
+        try:
+            if os.access(protected, os.X_OK):
+                skipped.append('permission denial: privileged account can search chmod(0) directory')
+            else:
+                # A valid basename exists beside the FBX: access denial on the
+                # selected path must still fail rather than substitute that image.
+                for policy in ('material-color', 'error'):
+                    read_error('permission-denied-' + policy, 'no-search/checker.png', '--missing-textures', policy)
+        finally:
+            protected.chmod(0o700)
+    else:
+        skipped.append('POSIX FIFO, symlink loop and directory permission cases')
+
     # One material loses its missing image; the other retains exact original image bytes.
     texture_object = textured[textured.index(' Texture: 400,'):textured.index('\n}\nConnections:')]
     missing_object = texture_object.replace('400', '401').replace('500', '501').replace('Checker', 'Missing').replace('checker.png', 'does-not-exist.png')
@@ -113,3 +171,5 @@ with tempfile.TemporaryDirectory(prefix='gmb-missing-texture-') as scratch:
             cases.append('native-' + name)
 
 print(f'PASS {len(cases)} missing-texture cases: color/opacity fallback, aliases, UVs, remaining textures, explicit rejection and source preservation')
+for reason in skipped:
+    print('SKIP ' + reason)

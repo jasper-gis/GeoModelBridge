@@ -6,7 +6,7 @@ using GeoModelBridge.Gui.Core;
 
 internal static class Program
 {
-    private const string Version = "0.1.11";
+    private const string Version = "0.1.12";
     private static readonly List<TestCase> Results = [];
     private static string Work = "";
     private static string Input = "";
@@ -379,6 +379,15 @@ internal static class Program
             Assert(summary.SummaryText.Contains("动画") && summary.SummaryText.Contains("反射率"), "Known causes are not presented in Chinese.");
             Assert(ReportSummaryFormatter.FormatFailure(json) == summary.SummaryText, "Failure presentation differs from grouped summary.");
         });
+        Test("texture_read_error_explains_path_and_access_failures", () =>
+        {
+            var report = GoodReport();
+            report["reader_diagnostics"] = new JsonArray(new JsonObject { ["severity"] = "error", ["code"] = "TEXTURE_READ_ERROR", ["message"] = "Texture path exists but is not a regular image file.", ["context"] = "texture:example" });
+            var summary = ReportSummaryFormatter.Parse(report.ToJsonString());
+            Assert(!summary.IsSuccess && summary.ErrorCount == 1, "Unreadable texture became success.");
+            Assert(summary.Groups.Single().Title == "贴图路径或读取失败", "Read failure was confused with a missing file.");
+            Assert(summary.SummaryText.Contains("父目录是否可访问") && summary.SummaryText.Contains("不能跳过"), "Read error recovery guidance is incomplete.");
+        });
         Test("unknown_error_is_visible_and_never_success", () =>
         {
             var report = GoodReport();
@@ -714,7 +723,7 @@ internal static class Program
         var service = new EngineService(engineDirectory);
         await TestAsync("native_backend_runtime_probe", async () =>
         {
-            Assert(service.IsEnginePresent, "Built V0.1.11 engine is absent: " + service.EnginePath);
+            Assert(service.IsEnginePresent, "Built V0.1.12 engine is absent: " + service.EnginePath);
             var probe = await service.ProbeBackendAsync("native-filegdb");
             Assert(probe.Success, probe.Message);
         });
@@ -770,6 +779,20 @@ internal static class Program
             Assert(report["textures"]!.AsArray().Count == 0, "Missing image was replaced by an invented texture.");
             var summary = ReportSummaryFormatter.Parse(json);
             Assert(summary.IsSuccess && summary.HasCompatibilityAdjustments && summary.SummaryText.Contains("材质颜色"), "Fallback is not visible in the GUI success summary.");
+        });
+        await TestAsync("real_texture_directory_is_rejected_with_read_guidance", async () =>
+        {
+            var input = Path.Combine(caseDirectory, "贴图路径错误.fbx");
+            var directory = Path.Combine(caseDirectory, "目录不是贴图.png");
+            Directory.CreateDirectory(directory);
+            File.WriteAllText(input, File.ReadAllText(Path.Combine(fixtureDirectory, "textured_quad.fbx")).Replace("checker.png", "目录不是贴图.png", StringComparison.Ordinal));
+            var invalidRequest = request with { InputPath=input, OutputPath=Path.Combine(caseDirectory,"贴图路径错误.gdb"), ReportPath=Path.Combine(caseDirectory,"贴图路径错误.json") };
+            var result = await service.ConvertAsync(invalidRequest);
+            Assert(!result.Success && result.ExitCode == 3, "Invalid texture path must reject the scene before GDB writing.");
+            var summary = ReportSummaryFormatter.Parse(File.ReadAllText(invalidRequest.ReportPath));
+            Assert(summary.Groups.Any(g => g.Code == "TEXTURE_READ_ERROR") && summary.SummaryText.Contains("父目录是否可访问"), "GUI read error guidance is missing.");
+            Assert(!summary.Groups.Any(g => g.Code == "MISSING_TEXTURE_FALLBACK"), "Unreadable path was mistaken for a missing image.");
+            Assert(!Directory.Exists(invalidRequest.OutputPath) && Directory.Exists(directory) && !Directory.EnumerateFileSystemEntries(directory).Any(), "Input directory changed or GDB was created.");
         });
         await TestAsync("real_normal_repair_conversion_from_gui_service", async () =>
         {

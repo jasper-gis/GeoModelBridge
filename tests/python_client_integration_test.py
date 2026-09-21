@@ -96,6 +96,23 @@ except CallbackError as error:
     assert error.exit_code == 0 and error.result is not None
     verify_copy(error.result)
     assert error.result.request.origin == (-12.25, 0, 123.125)
+invalid_image = source_dir / '目录不是贴图.png'
+invalid_image.mkdir()
+invalid_source = source_dir / '贴图路径错误.fbx'
+invalid_source.write_text(base.replace('checker.png', invalid_image.name), encoding='utf-8')
+hashes[invalid_source] = hashlib.sha256(invalid_source.read_bytes()).hexdigest()
+for profile in ('strict', 'gis-static'):
+    invalid_request = replace(request, input_fbx=invalid_source, output_gdb=work / ('invalid-image-' + profile + '.gdb'), profile=profile)
+    try:
+        engine.convert(invalid_request)
+        raise AssertionError('A directory texture path was treated as missing')
+    except ConversionError as error:
+        assert error.code == 'PROCESS_FAILED' and error.exit_code == 3
+        assert any(d.code == 'TEXTURE_READ_ERROR' for d in error.diagnostics)
+        assert not any(d.code == 'MISSING_TEXTURE_FALLBACK' for d in error.diagnostics)
+        assert not invalid_request.output_gdb.exists() and error.report_path.is_file()
+        assert invalid_image.is_dir() and not list(invalid_image.iterdir())
+    results.append('invalid-image-' + profile)
 assert all(hashlib.sha256(path.read_bytes()).hexdigest() == digest for path, digest in hashes.items())
 assert "arcpy" not in sys.modules
 assessment = dict(version=geomodelbridge.__version__, status="passed", python=sys.version,

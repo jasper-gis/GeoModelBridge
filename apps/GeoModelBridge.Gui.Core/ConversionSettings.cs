@@ -28,5 +28,5 @@ public sealed record ConversionReport(string Backend, string Version, string Out
 
 public static class ProductInfo
 {
-    public const string Version = "0.1.11";
+    public const string Version = "0.1.12";
 }

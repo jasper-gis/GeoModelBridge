@@ -1,6 +1,6 @@
-# Windows 图形界面 · V0.1.11
+# Windows 图形界面 · V0.1.12
 
-入口为本机 `releases/V0.1.11/bin/geomodelbridgeGUI.exe`，默认源码安装位置为 `dist/bin`。GUI 自带 .NET，原生 FileGDB 写入端与官方运行库位于旁边的 `native-filegdb` 子目录；保留完整发布目录。客户机需 Windows x64 和 Visual C++ x64 运行库，无需安装 ArcGIS Pro。
+入口为本机 `releases/V0.1.12/bin/geomodelbridgeGUI.exe`，默认源码安装位置为 `dist/bin`。GUI 自带 .NET，原生 FileGDB 写入端与官方运行库位于旁边的 `native-filegdb` 子目录；保留完整发布目录。客户机需 Windows x64 和 Visual C++ x64 运行库，无需安装 ArcGIS Pro。
 
 1. 点击“检查运行环境”，核对 CLI 版本、原生写入端和 FileGDB 坐标系目录。
 2. 选择源 FBX 和尚不存在的新 GDB 路径，需要时添加额外贴图目录。

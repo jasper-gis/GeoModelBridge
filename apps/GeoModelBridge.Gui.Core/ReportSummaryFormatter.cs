@@ -230,7 +230,8 @@ public static class ReportSummaryFormatter
         }
         if (code == "DEGENERATE_TRIANGLE") return new(code, "存在退化三角形", "GIS 静态兼容可删除有限坐标的零面积面；非有限坐标等损坏几何仍需修复。");
         if (code == "MISSING_TEXTURE_FALLBACK") return new(code, "缺失贴图已回退为材质颜色", "对应图片确实不可用；保留材质颜色和标量透明度并继续转换，未生成替代图片。找回贴图后可添加目录重新转换。");
-        if (code is "MISSING_TEXTURE" or "TEXTURE_NOT_FOUND" or "TEXTURE_READ_ERROR") return new(code, "无法读取贴图", "将贴图放在模型目录中，或添加正确的贴图目录。文件确实缺失时可选择材质颜色回退；损坏或不可读取的图片仍需修复。");
+        if (code == "TEXTURE_READ_ERROR") return new(code, "贴图路径或读取失败", "检查报告中的路径是否为图片文件、父目录是否可访问，并修复权限或损坏的图片。缺图回退仅用于找不到文件的情况，不能跳过已有路径的读取错误。");
+        if (code is "MISSING_TEXTURE" or "TEXTURE_NOT_FOUND") return new(code, "无法读取贴图", "将贴图放在模型目录中，或添加正确的贴图目录。文件确实缺失时可选择材质颜色回退；损坏或不可读取的图片仍需修复。");
         if (code == "INVALID_NORMAL") return new(code, "模型法线无效", "可选择 GIS 静态兼容，根据有效三角形修复无效法线；如果仍失败，需先在建模软件中修复几何。");
         if (code == "NORMALS_REPAIRED") return new(code, "已重建无效角点法线", "使用变换后三角形的面法线，仅替换无效角点；保留有效法线、UV 和材质边界。局部光照可能变硬，修复数量见详细记录。");
         if (code == "DEGENERATE_NORMALS_DISCARDED") return new(code, "已随零面积面移除无效法线", "仅涉及已报告删除的零面积三角形，不额外删除有效几何。");

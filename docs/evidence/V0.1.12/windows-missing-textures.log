@@ -1,0 +1,2 @@
+PASS 24 missing-texture cases: color/opacity fallback, aliases, UVs, remaining textures, explicit rejection and source preservation
+SKIP POSIX FIFO, symlink loop and directory permission cases

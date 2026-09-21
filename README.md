@@ -5,7 +5,7 @@
 <p>FBX → 带颜色与贴图的 FileGDB Multipatch</p>
 
 <p>
-  <a href="CHANGELOG.md"><code>V0.1.11</code></a> &nbsp;
+  <a href="CHANGELOG.md"><code>V0.1.12</code></a> &nbsp;
   <a href="docs/architecture.md"><code>C++17</code></a> &nbsp;
   <a href="#platforms"><code>Windows · Ubuntu</code></a>
 </p>
@@ -168,13 +168,15 @@ V0.1.11 加强中间包与报告的并发输出保护：同名目标已被其他
 
 **法线修复需选择 `gis-static`。** 仅用所在三角形的面法线替换无效角点，保留原有有效法线、UV 和材质边界；报告记录 `NORMALS_REPAIRED` 及数量。局部光照可能变硬，严格模式继续拒绝无效法线。
 
+V0.1.12 会明确区分“文件缺失”和“路径 / 读取错误”：路径是目录、父路径错误或访问被拒绝时，报告 `TEXTURE_READ_ERROR`，需要修正路径或权限后重试。
+
 有效贴图缺少 UV、非有限位置、无法形成有效三角形的几何、损坏或无法读取的现有图片、未知材质以及不支持的 PBR、自发光、骨骼或形变仍会拒绝。PNG 保存为未预乘 RGBA8，JPEG 保留压缩数据，不静默转码；颜色、透明度、UV 与法线的存储量化会记录在报告中。详细格式范围、JPEG 封装兼容处理及精度说明见[兼容策略](docs/compatibility.md)和[原生存储规则](backends/native-filegdb/README.md#存储规则与范围)。
 
 <a id="verification"></a>
 
 ## 已有验证
 
-**V0.1.11**：Windows / Ubuntu 各通过 7 项真实 Python 调用场景及 4 份 GDB 的独立复制回读；CTest 各 9/9，原生后端、独立部署与 14 个样例均通过。Python 契约测试为 Windows 25 通过 / 1 跳过、Ubuntu 26/26；Windows GUI 为 161/161。新增输出保护测试在 Windows 为 7 组通过 / 1 组链接检查跳过，Ubuntu 为 8/8。详情见[本版验证记录](docs/validation-v0.1.11.md)，Python 调用库首版见 [V0.1.9](docs/validation-v0.1.9.md)。未进行 ATBX 内运行或取消行为验收。
+**V0.1.12**：Windows / Ubuntu 的 CTest 均为 **9/9**；贴图专项分别通过 **24 / 29** 个场景，Ubuntu 额外覆盖权限、FIFO 和链接路径。两平台各完成 9 项真实 Python 调用、4 份 GDB 独立复制回读及 14 个完整样例；Windows GUI 为 **163/163**。Python 契约测试为 Windows 25 通过 / 1 跳过、Ubuntu 26/26。详情见[本版验证记录](docs/validation-v0.1.12.md)，此前的输出保护见 [V0.1.11](docs/validation-v0.1.11.md)。未进行 ATBX 内运行或取消行为验收。
 
 以下保留 **V0.1.8 实际 Windows / Ubuntu 执行结果**，大模型与法线专项的来源见[历史验证记录](docs/validation-v0.1.8.md)。
 

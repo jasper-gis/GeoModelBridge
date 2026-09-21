@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(GeoModelBridge VERSION 0.1.11 LANGUAGES C CXX)
+project(GeoModelBridge VERSION 0.1.12 LANGUAGES C CXX)
 
 option(GMB_BUILD_TESTS "Build correctness tests" ON)
 option(GMB_BUILD_NATIVE "Build the native FileGDB writer (requires the platform SDK)" OFF)

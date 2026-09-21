@@ -1,0 +1,42 @@
+{
+  "scenario": "Texture path is an existing directory, material-color policy",
+  "before": {
+    "version": "0.1.11",
+    "status": "prepared",
+    "diagnostics": [
+      {
+        "code": "UV_SETS_REDUCED",
+        "context": "node:Quad",
+        "message": "Only each material's selected UV coordinates are retained per corner; extra unsampled UV channels are omitted.",
+        "severity": "warning"
+      },
+      {
+        "code": "MISSING_TEXTURE_FALLBACK",
+        "context": "material:Red",
+        "message": "Missing texture file; omitted its texture contribution and retained material diffuse color and scalar opacity. No replacement image was generated. Texture: Checker; paths: image-directory.png / image-directory.png",
+        "severity": "warning"
+      }
+    ]
+  },
+  "after": {
+    "version": "0.1.12",
+    "status": "rejected",
+    "exit_code": 3,
+    "diagnostics": [
+      {
+        "code": "UV_SETS_REDUCED",
+        "context": "node:Quad",
+        "message": "Only each material's selected UV coordinates are retained per corner; extra unsampled UV channels are omitted.",
+        "severity": "warning"
+      },
+      {
+        "code": "TEXTURE_READ_ERROR",
+        "context": "material:Red",
+        "message": "Texture path exists but is not a regular image file: <workspace>\\artifacts\\v0112\\initial-repro\\image-directory.png",
+        "severity": "error"
+      }
+    ]
+  },
+  "input_unchanged": true,
+  "invalid_texture_directory_preserved": true
+}

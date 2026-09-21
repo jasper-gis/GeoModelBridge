@@ -7,7 +7,7 @@
 #include <vector>
 
 namespace gmb {
-inline constexpr const char* version = "0.1.11";
+inline constexpr const char* version = "0.1.12";
 struct Vec2 { double x = 0, y = 0; };
 struct Vec3 { double x = 0, y = 0, z = 0; };
 struct Color { double r = 1, g = 1, b = 1, a = 1; };

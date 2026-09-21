@@ -1,4 +1,4 @@
-# V0.1.11 架构
+# V0.1.12 架构
 
 ```mermaid
 flowchart LR
@@ -16,6 +16,8 @@ flowchart LR
 ```
 
 Reader 与数据库 SDK 无直接依赖。C++ 内核使用 `gmb::Scene` 表达 Nodes、Meshes、Materials、Textures、坐标元数据与诊断。节点实例展开为独立网格；顶点保留完整角点，不能只按位置合并 UV/法线接缝。节点变换、轴向、单位和 origin 在中间包前完成，写入端不得重复变换。
+
+V0.1.12 的 Reader 把贴图查询结果区分为“找到路径 / 确认缺失 / 查询失败”，按 ufbx texture 对象在本次读取内缓存；材质检查只对确认缺失的图片应用回退。查询失败与非普通文件产生明确的读取错误，路径成功解析不代替后续图片字节校验。Windows 将部分错误父路径报告为不存在，因此另行检查最近的已有父目录，保持两平台判定一致。
 
 GUI 是自包含 WPF 程序，通过无 shell 的参数数组调用 CLI。CLI 只发现 `native-filegdb/GeoModelBridge.NativeWriter`（Windows 加 `.exe`） 或显式配置的原生可执行程序；不调用托管 DLL、Pro 授权初始化或 ArcPy。移除后端的请求、错误后端的报告均被拒绝。
 

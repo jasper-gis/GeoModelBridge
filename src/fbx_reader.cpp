@@ -259,7 +259,12 @@ struct Reader {
     std::vector<std::filesystem::path> roots;
     std::unordered_map<const ufbx_material*, int> materials;
     std::unordered_map<const ufbx_texture*, int> textures;
-    std::unordered_map<const ufbx_texture*, bool> missing_files;
+    struct TextureFile {
+        std::filesystem::path path;
+        std::string error;
+        bool missing() const { return path.empty() && error.empty(); }
+    };
+    std::unordered_map<const ufbx_texture*, TextureFile> texture_files;
     std::unordered_map<std::string, int> texture_hashes;
     std::vector<const ufbx_texture*> material_textures;
     std::set<std::string> emitted;
@@ -291,7 +296,30 @@ struct Reader {
             roots.push_back(std::filesystem::weakly_canonical(std::filesystem::absolute(directory)));
     }
 
-    std::filesystem::path resolve_texture(const ufbx_texture& texture) {
+    const TextureFile& resolve_texture(const ufbx_texture& texture) {
+        const auto cached = texture_files.find(&texture);
+        if (cached != texture_files.end()) return cached->second;
+        auto& resolved = texture_files[&texture];
+        const auto parent_error = [](const std::filesystem::path& candidate) -> std::string {
+            // Windows may report a child below a regular file as "not found"
+            // instead of ENOTDIR. Check the nearest existing parent before
+            // calling a resource missing; never open special files to test it.
+            for (auto parent = candidate.parent_path(); !parent.empty();) {
+                std::error_code ec;
+                const auto status = std::filesystem::status(parent, ec);
+                if (ec && ec != std::errc::no_such_file_or_directory)
+                    return "Cannot inspect texture parent for " + candidate.u8string() + ": " + parent.u8string() + " (" + ec.message() + ")";
+                if (std::filesystem::exists(status)) {
+                    if (!std::filesystem::is_directory(status))
+                        return "Texture parent is not a directory for " + candidate.u8string() + ": " + parent.u8string();
+                    break;
+                }
+                const auto next = parent.parent_path();
+                if (next == parent) break;
+                parent = next;
+            }
+            return {};
+        };
         std::vector<std::filesystem::path> candidates;
         for (auto value : {texture.relative_filename, texture.filename, texture.absolute_filename}) {
             auto text = str(value);
@@ -305,26 +333,57 @@ struct Reader {
                 candidates.push_back(root / path.filename());
             }
         }
+        std::set<std::filesystem::path> inspected;
         for (const auto& candidate : candidates) {
+            const auto lexical = candidate.lexically_normal();
+            // Keep symlink/.. semantics: lexical normalization can make two
+            // different filesystem candidates appear identical.
+            if (!inspected.insert(candidate).second) continue;
             std::error_code ec;
             const auto canonical = std::filesystem::weakly_canonical(candidate, ec);
-            if (ec) continue;
+            if (ec) {
+                // A stale external absolute path is not a selected resource.
+                // Preserve basename relocation; only errors inside configured
+                // roots are allowed to reject a texture as unreadable.
+                const bool in_root = std::any_of(roots.begin(), roots.end(), [&](const auto& root) { return contained_path(root, lexical); });
+                if (!in_root) continue;
+                if (ec == std::errc::no_such_file_or_directory) {
+                    resolved.error = parent_error(candidate);
+                    if (!resolved.error.empty()) return resolved;
+                    continue;
+                }
+                resolved.error = "Cannot inspect texture path: " + candidate.u8string() + " (" + ec.message() + ")";
+                return resolved;
+            }
             bool allowed = false;
             for (const auto& root : roots) allowed = allowed || contained_path(root, canonical);
-            if (allowed && std::filesystem::is_regular_file(canonical, ec) && !ec) return canonical;
+            if (!allowed) continue;
+            const auto status = std::filesystem::status(canonical, ec);
+            if (ec && ec != std::errc::no_such_file_or_directory) {
+                resolved.error = "Cannot inspect texture file: " + candidate.u8string() + " (" + ec.message() + ")";
+                return resolved;
+            }
+            if (std::filesystem::is_regular_file(status)) {
+                resolved.path = canonical;
+                return resolved;
+            }
+            if (std::filesystem::exists(status)) {
+                resolved.error = "Texture path exists but is not a regular image file: " + candidate.u8string();
+                return resolved;
+            }
+            resolved.error = parent_error(canonical);
+            if (!resolved.error.empty()) return resolved;
         }
-        return {};
+        return resolved;
     }
 
     bool missing_file(const ufbx_texture* texture) {
         if (!options.missing_texture_fallback || !texture || texture->type != UFBX_TEXTURE_FILE ||
             texture->layers.count || texture->shader) return false;
-        const auto found = missing_files.find(texture);
-        if (found != missing_files.end()) return found->second;
         auto content = texture->content;
         if (!content.size && texture->has_file && texture->file_index < source->texture_files.count)
             content = source->texture_files.data[texture->file_index].content;
-        return missing_files[texture] = !content.size && resolve_texture(*texture).empty();
+        return !content.size && resolve_texture(*texture).missing();
     }
 
     bool effective_texture(const ufbx_material_map& map) {
@@ -411,17 +470,17 @@ struct Reader {
                 target.embedded = true;
                 target.source = "embedded:" + str(texture->name);
             } else {
-                const auto path = resolve_texture(*texture);
-                if (path.empty()) {
+                const auto& file = resolve_texture(*texture);
+                if (!file.error.empty()) throw std::runtime_error(file.error);
+                if (file.missing()) {
                     if (options.missing_texture_fallback) {
-                        missing_files[texture] = true;
                         missing_warning(texture, context);
                     } else error("MISSING_TEXTURE", "Texture not found inside the input directory or configured texture directories: " +
                           str(texture->relative_filename) + " / " + str(texture->absolute_filename), context);
                     return -1;
                 }
-                target.bytes = read_bytes(path, options.max_texture_bytes);
-                target.source = path.u8string();
+                target.bytes = read_bytes(file.path, options.max_texture_bytes);
+                target.source = file.path.u8string();
             }
             target.mime_type = mime_type(target.bytes);
             if (target.mime_type != "image/png" && target.mime_type != "image/jpeg")

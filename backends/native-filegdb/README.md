@@ -1,4 +1,4 @@
-# Native FileGDB 后端 · V0.1.11
+# Native FileGDB 后端 · V0.1.12
 
 这个 Windows x64 / Ubuntu 24.04 x86_64 C++17 后端把 Scene Bundle 中的几何、RGB、透明度、UV 和 PNG/JPEG 纹理直接写入新 FileGDB Multipatch。转换时不加载 ArcGIS Pro、不调用 ArcPy、不借用 Pro 导出的 Shape Buffer。第三方 Esri FileGDB API 负责数据库文件格式，项目代码按 Esri 公开文档独立生成扩展 Multipatch Shape Buffer。
 

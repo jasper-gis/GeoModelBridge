@@ -1,0 +1,58 @@
+Verified ufbx 0.23.0
+Verified nlohmann/json 3.12.0
+Verified GeoModelBridge 0.1.12: 7 required declarations and runtime release references agree.
+-- Configuring done (1.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: <workspace>/build/v018-core
+[1/11] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\fixtures.cpp.obj
+[2/11] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\core.cpp.obj
+[3/11] Building CXX object CMakeFiles\gmb_core_tests.dir\tests\core_tests.cpp.obj
+[4/11] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\bundle.cpp.obj
+[5/11] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\fbx_reader.cpp.obj
+[6/11] Building CXX object CMakeFiles\gmb_output_tests.dir\tests\output_tests.cpp.obj
+[7/11] Linking CXX static library GeoModelBridge.Core.lib
+[8/11] Linking CXX executable gmb_core_tests.exe
+[9/11] Linking CXX executable gmb_output_tests.exe
+[10/11] Building CXX object CMakeFiles\geomodelbridge.dir\src\main.cpp.obj
+<workspace>\src\main.cpp(181): warning C4996: 'getenv': This function or variable may be unsafe. Consider using _dupenv_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+[11/11] Linking CXX executable geomodelbridge.exe
+Test project <workspace>/build/v018-core
+    Start 1: core
+1/9 Test #1: core .............................   Passed    0.13 sec
+    Start 2: output_safety
+2/9 Test #2: output_safety ....................   Passed    0.14 sec
+    Start 3: cli
+3/9 Test #3: cli ..............................   Passed    0.59 sec
+    Start 4: reader_integration
+4/9 Test #4: reader_integration ...............   Passed    0.51 sec
+    Start 5: binary_fbx
+5/9 Test #5: binary_fbx .......................   Passed    0.22 sec
+    Start 6: profile_integration
+6/9 Test #6: profile_integration ..............   Passed    1.94 sec
+    Start 7: missing_textures
+7/9 Test #7: missing_textures .................***Failed    0.43 sec
+Traceback (most recent call last):
+  File "<workspace>\tests\missing_texture_test.py", line 101, in <module>
+    read_error(f'{suffix}-{profile}-{policy}', relative, '--profile', profile, '--missing-textures', policy)
+  File "<workspace>\tests\missing_texture_test.py", line 93, in read_error
+    _, rejected, _ = prepare(name, textured.replace('checker.png', relative), *options, accepted=False)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<workspace>\tests\missing_texture_test.py", line 35, in prepare
+    result = invoke(exe, 'prepare', file, '--output', output, '--report', report, *options, expect_success=accepted)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<workspace>\tests\cli_test.py", line 18, in invoke
+    raise AssertionError(f"Command unexpectedly succeeded: {args}")
+AssertionError: Command unexpectedly succeeded: ('prepare', WindowsPath('<user>/AppData/Local/Temp/gmb-missing-texture-xccujg4z/parent-file-strict-material-color.fbx'), '--output', WindowsPath('<user>/AppData/Local/Temp/gmb-missing-texture-xccujg4z/parent-file-strict-material-color-bundle'), '--report', WindowsPath('<user>/AppData/Local/Temp/gmb-missing-texture-xccujg4z/parent-file-strict-material-color.json'), '--profile', 'strict', '--missing-textures', 'material-color')
+
+    Start 8: normal_repair
+8/9 Test #8: normal_repair ....................   Passed    0.42 sec
+    Start 9: python_client
+9/9 Test #9: python_client ....................   Passed    1.77 sec
+
+89% tests passed, 1 tests failed out of 9
+
+Total Test time (real) =   6.21 sec
+
+The following tests FAILED:
+	  7 - missing_textures (Failed)
+Errors while running CTest
