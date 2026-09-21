@@ -1,5 +1,6 @@
 #pragma once
 #include "codec.hpp"
+#include "gmb/output.hpp"
 #include <fstream>
 #include <nlohmann/json.hpp>
 #include <set>
@@ -55,7 +56,7 @@ inline Bytes read(const fs::path &p, std::uint64_t limit) {
             "Cannot read input: " + p.u8string());
     return b;
 }
-void reject_reparse(const fs::path &p);
+using gmb::io::reject_reparse;
 inline fs::path safe_input(const fs::path &root, const std::string &rel) {
     require(!rel.empty() && rel.find(':') == std::string::npos && rel.find('\\') == std::string::npos,
             "Bundle resource must be a relative path.");

@@ -1,4 +1,5 @@
 #include "gmb/scene.hpp"
+#include "gmb/output.hpp"
 #include <nlohmann/json.hpp>
 #include <chrono>
 #include <algorithm>
@@ -85,20 +86,27 @@ void write_scene_json(const json& metadata, const Scene& scene, const fs::path& 
     if (!stream) throw std::runtime_error("Cannot finish writing: "+path.u8string());
 }
 void write_json_new(const json& j,const fs::path& output) {
+    io::reject_reparse(output);
     if(fs::exists(output)) throw std::runtime_error("Refusing to overwrite: "+output.u8string());
     if(!output.parent_path().empty()) fs::create_directories(output.parent_path());
     const auto staging=unique_sibling(output);
+    bool created=false;
     try {
         const auto s=j.dump(2)+"\n";
-        checked_write(staging,s.data(),s.size());
-        if(fs::exists(output)) throw std::runtime_error("Output appeared during write: "+output.u8string());
-        fs::rename(staging,output);
-    } catch(...) { std::error_code ec;fs::remove(staging,ec);throw; }
+        io::write_exclusive(staging,s);
+        created=true;
+        io::reject_reparse(output);
+        if(!io::move_new(staging,output)) throw std::runtime_error("Cannot commit report without replacing output: "+output.u8string());
+    } catch(...) {
+        if(created) { std::error_code ec;fs::remove(staging,ec); }
+        throw;
+    }
 }
 }
 void write_bundle(const Scene& scene,const fs::path& output) {
     auto diagnostics=validate(scene);
     if(has_errors(diagnostics)) throw std::runtime_error("Scene failed validation; no bundle was written.");
+    io::reject_reparse(output);
     if(fs::exists(output)) throw std::runtime_error("Refusing to overwrite: "+output.u8string());
     if(!output.parent_path().empty()) fs::create_directories(output.parent_path());
     const auto staging=unique_sibling(output);
@@ -125,8 +133,8 @@ void write_bundle(const Scene& scene,const fs::path& output) {
             {"source_world_transform",n.source_world_transform},{"meshes",n.meshes}});
         write_scene_json(j,scene,staging/"scene.json");
         write_report(scene,diagnostics,"prepared",staging/"report.json","scene-bundle");
-        if(fs::exists(output)) throw std::runtime_error("Output appeared during write: "+output.u8string());
-        fs::rename(staging,output);
+        io::reject_reparse(output);
+        if(!io::move_new(staging,output)) throw std::runtime_error("Cannot commit bundle without replacing output: "+output.u8string());
     } catch(...) {
         // Only remove the exact staging directory created by this invocation.
         std::error_code ec;fs::remove_all(staging,ec);throw;

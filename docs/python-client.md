@@ -1,4 +1,4 @@
-# Python 调用库 · V0.1.10
+# Python 调用库 · V0.1.11
 
 `geomodelbridge` 把 FBX 入库封装为普通 Python 函数调用，供以后 Windows ArcGIS `.atbx` 的脚本层复用，也可用于独立 Python 脚本或 Ubuntu。库仅使用 Python 标准库，不导入 `arcpy`，不在 Python 进程内加载 FileGDB SDK；实际转换仍由同版本 EXE 完成。
 
@@ -21,7 +21,7 @@ GeoModelBridge/
 └── docs/python-client.md
 ```
 
-Python 语言兼容目标为 3.9 及以上；实际验证解释器见[本版验证记录](validation-v0.1.10.md)。不需要 `pip install`，将完整发布目录的 `python` 加入调用脚本的 `sys.path` 即可。无需修改 ArcGIS 的 Python 环境或安装第三方包。Ubuntu 使用同一套库，程序名不带 `.exe`，运行库布局见[部署指南](build-and-release.md)。
+Python 语言兼容目标为 3.9 及以上；实际验证解释器见[本版验证记录](validation-v0.1.11.md)。不需要 `pip install`，将完整发布目录的 `python` 加入调用脚本的 `sys.path` 即可。无需修改 ArcGIS 的 Python 环境或安装第三方包。Ubuntu 使用同一套库，程序名不带 `.exe`，运行库布局见[部署指南](build-and-release.md)。
 
 ## 最小调用
 
@@ -137,7 +137,7 @@ except CallbackError as error:
 
 ```powershell
 python tests/python_client_test.py
-python tests/python_client_integration_test.py --install-dir releases/V0.1.10 --work artifacts/new-python-client-check
+python tests/python_client_integration_test.py --install-dir releases/V0.1.11 --work artifacts/new-python-client-check
 ```
 
 第一项在 CTest 中自动运行；第二项使用安装后的库和真实写入端，测试中文 / 空格路径、贴图、缺图策略、法线兼容、已有成果保护，以及成功回调异常恢复，并对四份 GDB 分别复制后独立回读。测试目录必须是新路径。Windows / Ubuntu CI 都已配置此入口；托管运行结果以 GitHub Actions 实际状态为准。

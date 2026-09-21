@@ -1,0 +1,5 @@
+Verified GeoModelBridge 0.1.11: 7 required declarations and runtime release references agree.
+Verified ufbx 0.23.0
+Verified nlohmann/json 3.12.0
+Verified FileGDB API 1.5.5.330 runtime and original license files
+Validated native-only V0.1.11: 1061 package files; no archive created

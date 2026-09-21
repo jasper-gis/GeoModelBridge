@@ -1,0 +1,9 @@
+PASS exclusive report creation preserves existing bytes
+PASS late file conflict preserves source and destination
+PASS late empty directory conflict preserves both directories
+PASS concurrent file commits have exactly one winner
+PASS concurrent report writers leave one complete report and no staging
+PASS concurrent bundle writers preserve winner and clean their staging
+PASS existing empty bundle and invalid report serialization stay untouched
+SKIP dangling links and linked parents are preserved and rejected: Windows privilege not held
+7 groups passed, 0 failed, 1 skipped

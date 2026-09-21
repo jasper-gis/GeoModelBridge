@@ -1,0 +1,43 @@
+Verified GeoModelBridge 0.1.11: 7 required declarations and runtime release references agree.
+Verified ufbx 0.23.0
+Verified nlohmann/json 3.12.0
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Configuring done (3.2s)
+-- Generating done (0.2s)
+-- Build files have been written to: <workspace>/build/linux-x64
+[1/19] Building CXX object CMakeFiles/GeoModelBridge.Core.dir/src/core.cpp.o
+[2/19] Building CXX object CMakeFiles/GeoModelBridge.Core.dir/src/bundle.cpp.o
+[3/19] Building CXX object CMakeFiles/GeoModelBridge.Core.dir/src/fbx_reader.cpp.o
+[4/19] Building CXX object CMakeFiles/GeoModelBridge.Core.dir/src/platform_files_linux.cpp.o
+[5/19] Building CXX object CMakeFiles/GeoModelBridge.Core.dir/src/fixtures.cpp.o
+[6/19] Linking CXX static library libGeoModelBridge.Core.a
+[7/19] Building CXX object CMakeFiles/gmb_core_tests.dir/tests/core_tests.cpp.o
+[8/19] Linking CXX executable gmb_core_tests
+[9/19] Building CXX object CMakeFiles/geomodelbridge.dir/src/main.cpp.o
+[10/19] Linking CXX executable geomodelbridge
+[11/19] Building CXX object CMakeFiles/gmb_output_tests.dir/tests/output_tests.cpp.o
+FAILED: CMakeFiles/gmb_output_tests.dir/tests/output_tests.cpp.o
+/usr/bin/c++  -I<workspace>/third_party -I<workspace>/include -O3 -DNDEBUG -std=c++17 -MD -MT CMakeFiles/gmb_output_tests.dir/tests/output_tests.cpp.o -MF CMakeFiles/gmb_output_tests.dir/tests/output_tests.cpp.o.d -o CMakeFiles/gmb_output_tests.dir/tests/output_tests.cpp.o -c <workspace>/tests/output_tests.cpp
+<workspace>/tests/output_tests.cpp: In lambda function:
+<workspace>/tests/output_tests.cpp:123:85: warning: expected ‘template’ keyword before dependent template name [-Wmissing-template-keyword]
+  123 |     });
+      |                                                                                     ^
+      |                                                                                     template
+<workspace>/tests/output_tests.cpp:123:100: error: expected primary-expression before ‘>’ token
+  123 |     });
+      |                                                                                                    ^
+<workspace>/tests/output_tests.cpp:123:102: error: expected primary-expression before ‘)’ token
+  123 |     });
+      |                                                                                                      ^
+[12/19] Building CXX object backends/native-filegdb/CMakeFiles/GeoModelBridge.NativeWriter.dir/main.cpp.o
+ninja: build stopped: subcommand failed.
+Traceback (most recent call last):
+  File "<workspace>/scripts/build.py", line 34, in <module>
+    run("cmake", "--build", build, "--parallel", args.jobs)
+  File "<workspace>/scripts/build.py", line 27, in run
+    subprocess.run(list(map(str, command)), check=True, cwd=ROOT)
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['cmake', '--build', '<workspace>/build/linux-x64', '--parallel', '2']' returned non-zero exit status 1.

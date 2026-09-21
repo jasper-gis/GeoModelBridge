@@ -1,4 +1,4 @@
-# V0.1.10 架构
+# V0.1.11 架构
 
 ```mermaid
 flowchart LR
@@ -37,10 +37,21 @@ V0.1.10 的报告保留 `coordinates`，三个调用入口核对目标 WKID 和�
 
 - `python/geomodelbridge` 封装参数、进程和报告契约，不包含 ArcPy、转换算法或数据库追加逻辑；Python / CLI / writer 必须版本匹配。CMake 安装与发布清单包含函数库，双平台测试使用安装后的库写入并复制回读 GDB。接口见 [Python 调用库](python-client.md)。
 - `src/`、`include/`、`bundle.hpp`、`codec.hpp`、writer `main.cpp` 为共享业务逻辑，不复制 Linux 分支。
-- `platform_windows.cpp` / `platform_linux.cpp` 负责 UTF-8 与 SDK wstring 转换、路径范围、链接检查、独占报告创建和禁止覆盖的成果提交。Linux 使用 wchar32，不依赖系统 locale 的 filesystem wstring 转换。
+- 后端 `platform_windows.cpp` / `platform_linux.cpp` 负责 UTF-8 与 SDK wstring 转换、路径范围及平台运行时。Linux 使用 wchar32，不依赖系统 locale 的 filesystem wstring 转换。
+- `include/gmb/output.hpp` 与 `src/platform_files_windows.cpp` / `src/platform_files_linux.cpp` 供核心和原生后端共用，负责链接检查、独占文件创建和禁止覆盖的提交；不依赖 FileGDB SDK。两种 CMake 构建入口都编译同一份实现。
 - `images.cpp` 共享容器检查；`images_windows.cpp` / `images_linux.cpp` 实现同一解码契约。PNG 为直通 RGBA8，不做 Gamma/ICC 或预乘；JPEG 检查后保留原字节。
 - 根 CMake 的 `GMB_BUILD_NATIVE` 可构建完整链路；单独 native CMake 入口仍保留。Python 构建、下载、验证、样例和打包共用 `scripts/gmb_platform.py` 的平台布局。
 - Linux install RPATH 只保留 `$ORIGIN`，两份 SDK 共享库可随目录移动；未附带 SDK 运行库时显式配置 `LD_LIBRARY_PATH`。从 PATH 启动的 CLI 通过 `/proc/self/exe` 找到相邻 writer。
 - Windows 与 Ubuntu CI 都运行 CTest、真实 GDB 集成、独立目录部署和 14 个完整样例；WPF 服务测试由 Windows 执行。维护 master 共享代码，平台适配修改必须回归两侧。
 
 V0.1.8 将原生 Scene JSON 读取改为缓冲输入与逐角点/三角形解码，避免整份 JSON 字节和 DOM 同时驻留。解析后仍保留类型化 Scene 与原生准备数据进行完整校验和回读；内存仍随模型规模增长，并非常量内存。GIS 静态法线修复只在 FBX Reader 进行，writer 保持严格验证。
+
+## 输出保护约定
+
+V0.1.11 的报告暂存文件通过独占创建获得所有权，写出并刷新完成后才提交；创建失败不删除碰撞到的文件。中间包仍先在本次独占创建的同级目录中写好 JSON、贴图和报告。并发任务之间只有一个能提交相同目标，失败任务清理自己的暂存路径，已有目标保持原样。
+
+Windows 使用不带替换标志的 [MoveFileExW](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw)，Linux 使用 [renameat2(RENAME_NOREPLACE)](https://man7.org/linux/man-pages/man2/rename.2.html)。不使用“先检查不存在，再普通 rename”的回退；文件系统不支持禁止覆盖提交时返回失败。报告独占创建分别使用 CREATE_NEW 与 O_CREAT | O_EXCL。
+
+核心报告、中间包和原生后端拒绝已有符号链接 / Windows 重解析点及其父目录。这是正常并发下的成果保护，不是抵御另一个进程在操作中恶意替换父目录的文件系统沙箱。GDB 与外部报告是两个分别提交的成果，不宣称跨文件事务：GDB 已提交而报告提交失败时，原生端保留 GDB 和暂存报告，并给出恢复路径。目标软件对 GDB 的占用仍可能导致失败。
+
+`output_safety` CTest 覆盖文件、空目录、悬空链接、链接父目录、8 个并发报告 / 中间包写入者及异常后的清理。链接构造受 Windows 账户权限限制时明确记录跳过；Ubuntu 应实际执行。

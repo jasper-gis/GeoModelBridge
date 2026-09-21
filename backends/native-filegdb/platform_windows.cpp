@@ -24,32 +24,6 @@ bool within(const fs::path& child, const fs::path& root) {
     if (!b.empty() && b.back() != L'\\') b += L'\\';
     return a.rfind(b, 0) == 0;
 }
-void reject_reparse(const fs::path& p) {
-    for (auto path = fs::absolute(p); !path.empty();) {
-        const auto attr = GetFileAttributesW(path.c_str());
-        if (attr != INVALID_FILE_ATTRIBUTES)
-            require((attr & FILE_ATTRIBUTE_REPARSE_POINT) == 0, "Reparse points are forbidden in input/output paths.");
-        auto parent = path.parent_path();
-        if (parent == path) break;
-        path = parent;
-    }
-}
-void write_exclusive(const fs::path& path, const std::string& data) {
-    require(data.size() <= UINT32_MAX, "Report too large.");
-    HANDLE file = CreateFileW(path.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, nullptr);
-    require(file != INVALID_HANDLE_VALUE, "Cannot create new report: " + path.u8string());
-    DWORD written = 0;
-    bool ok = WriteFile(file, data.data(), static_cast<DWORD>(data.size()), &written, nullptr) && written == data.size();
-    if (ok) ok = FlushFileBuffers(file) != 0;
-    CloseHandle(file);
-    if (!ok) {
-        DeleteFileW(path.c_str());
-        throw std::runtime_error("Cannot finish report write.");
-    }
-}
-bool move_new(const fs::path& source, const fs::path& target) {
-    return MoveFileExW(source.c_str(), target.c_str(), MOVEFILE_WRITE_THROUGH) != 0;
-}
 PlatformRuntime::PlatformRuntime() {
     require(SUCCEEDED(CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)), "COM initialization failed.");
 }

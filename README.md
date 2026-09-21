@@ -5,7 +5,7 @@
 <p>FBX → 带颜色与贴图的 FileGDB Multipatch</p>
 
 <p>
-  <a href="CHANGELOG.md"><code>V0.1.10</code></a> &nbsp;
+  <a href="CHANGELOG.md"><code>V0.1.11</code></a> &nbsp;
   <a href="docs/architecture.md"><code>C++17</code></a> &nbsp;
   <a href="#platforms"><code>Windows · Ubuntu</code></a>
 </p>
@@ -153,7 +153,9 @@ result = Engine(r"D:\Tools\GeoModelBridge\bin\geomodelbridge.exe").convert(
 print(result.feature_class_path)
 ```
 
-替换示例中的完整发布目录、模型 / 输出路径和定位参数。当前接口同步创建**新的 GDB**，不追加到已有库；本次不含 ATBX 文件或取消接口。V0.1.10 会核对报告中的 WKID / XYZ、限制进程日志占用，并在完成回调异常时通过 `CallbackError.result` 保留已验证成果。完整接入方式见 [Python 函数库文档](docs/python-client.md)，可运行示例位于 [python/examples/convert_fbx.py](python/examples/convert_fbx.py)。
+替换示例中的完整发布目录、模型 / 输出路径和定位参数。当前接口同步创建**新的 GDB**，不追加到已有库；本次不含 ATBX 文件或取消接口。调用库核对报告中的 WKID / XYZ、限制进程日志占用，并在完成回调异常时通过 `CallbackError.result` 保留已验证成果。完整接入方式见 [Python 函数库文档](docs/python-client.md)，可运行示例位于 [python/examples/convert_fbx.py](python/examples/convert_fbx.py)。
+
+V0.1.11 加强中间包与报告的并发输出保护：同名目标已被其他任务创建时提交失败，保留已有内容。输出及父目录不得经过符号链接 / Windows 重解析点；改用实际目录并为每个任务指定独立名称。详见[输出保护约定](docs/architecture.md#输出保护约定)。
 
 ### 转换策略与边界
 
@@ -172,7 +174,7 @@ print(result.feature_class_path)
 
 ## 已有验证
 
-**V0.1.10**：Windows / Ubuntu 各通过 7 项真实 Python 调用场景及 4 份 GDB 的独立复制回读；CTest 各 8/8，原生后端、独立部署与 14 个样例均通过。Python 契约测试为 Windows 25 通过 / 1 跳过、Ubuntu 26/26；Windows GUI 为 161/161。详情见[本版验证记录](docs/validation-v0.1.10.md)，Python 调用库首版见 [V0.1.9](docs/validation-v0.1.9.md)。未进行 ATBX 内运行或取消行为验收。
+**V0.1.11**：Windows / Ubuntu 各通过 7 项真实 Python 调用场景及 4 份 GDB 的独立复制回读；CTest 各 9/9，原生后端、独立部署与 14 个样例均通过。Python 契约测试为 Windows 25 通过 / 1 跳过、Ubuntu 26/26；Windows GUI 为 161/161。新增输出保护测试在 Windows 为 7 组通过 / 1 组链接检查跳过，Ubuntu 为 8/8。详情见[本版验证记录](docs/validation-v0.1.11.md)，Python 调用库首版见 [V0.1.9](docs/validation-v0.1.9.md)。未进行 ATBX 内运行或取消行为验收。
 
 以下保留 **V0.1.8 实际 Windows / Ubuntu 执行结果**，大模型与法线专项的来源见[历史验证记录](docs/validation-v0.1.8.md)。
 

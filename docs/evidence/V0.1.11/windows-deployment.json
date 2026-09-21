@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "version": "GeoModelBridge V0.1.11",
+  "probe": {
+    "arcgis_pro_required": false,
+    "backend": "native-filegdb",
+    "filegdb_api": "1.5.5",
+    "status": "available",
+    "version": "0.1.11"
+  },
+  "feature_count": 1,
+  "default_native_conversion": true,
+  "textured_readback": true,
+  "standalone_copy": true,
+  "input_unchanged": true,
+  "child_path": "C:\\WINDOWS\\System32;C:\\WINDOWS",
+  "pro_backend_in_package": false,
+  "relocated_python_client": true,
+  "limitation": "Minimal-package test; does not by itself prove that the host has never had desktop GIS installed. Graphical acceptance is separate."
+}
