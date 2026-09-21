@@ -1,4 +1,4 @@
-# V0.1.7 架构
+# V0.1.8 架构
 
 ```mermaid
 flowchart LR
@@ -38,3 +38,5 @@ CLI 退出码：0 成功；2 用法或已有路径冲突；3 策略验证不通�
 - 根 CMake 的 `GMB_BUILD_NATIVE` 可构建完整链路；单独 native CMake 入口仍保留。Python 构建、下载、验证、样例和打包共用 `scripts/gmb_platform.py` 的平台布局。
 - Linux install RPATH 只保留 `$ORIGIN`，两份 SDK 共享库可随目录移动；未附带 SDK 运行库时显式配置 `LD_LIBRARY_PATH`。从 PATH 启动的 CLI 通过 `/proc/self/exe` 找到相邻 writer。
 - Windows 与 Ubuntu CI 都运行 CTest、真实 GDB 集成、独立目录部署和 14 个完整样例；WPF 服务测试由 Windows 执行。维护 master 共享代码，平台适配修改必须回归两侧。
+
+V0.1.8 将原生 Scene JSON 读取改为缓冲输入与逐角点/三角形解码，避免整份 JSON 字节和 DOM 同时驻留。解析后仍保留类型化 Scene 与原生准备数据进行完整校验和回读；内存仍随模型规模增长，并非常量内存。GIS 静态法线修复只在 FBX Reader 进行，writer 保持严格验证。

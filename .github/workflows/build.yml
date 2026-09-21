@@ -43,6 +43,7 @@ jobs:
           Enter-VsDevShell -VsInstallPath $vs -SkipAutomaticLocation -DevCmdArguments '-arch=x64 -host_arch=x64'
           ./scripts/build.ps1 -WithNative -WithGui -FileGDBApiRoot (Join-Path $PWD 'build/filegdb-sdk') -IncludeFileGDBRuntime
       - run: python backends/native-filegdb/tests/integration.py --writer dist/bin/native-filegdb/GeoModelBridge.NativeWriter.exe --work artifacts/native
+      - run: python tests/normal_repair_test.py dist/bin/geomodelbridge.exe tests/fixtures --writer dist/bin/native-filegdb/GeoModelBridge.NativeWriter.exe
       - run: python tests/missing_texture_test.py dist/bin/geomodelbridge.exe tests/fixtures --writer dist/bin/native-filegdb/GeoModelBridge.NativeWriter.exe
       - run: dotnet run --project apps/GeoModelBridge.Gui.Tests -c Release -- --work artifacts/gui --engine-dir dist/bin --fixtures tests/fixtures
       - run: python tests/native_deployment_test.py --install-dir dist --work artifacts/deployment
@@ -59,6 +60,7 @@ jobs:
       - run: python scripts/fetch_filegdb_sdk.py --output build/filegdb-sdk
       - run: python scripts/build.py --sdk build/filegdb-sdk --include-runtime
       - run: python backends/native-filegdb/tests/integration.py --writer dist/bin/native-filegdb/GeoModelBridge.NativeWriter --work artifacts/native
+      - run: python tests/normal_repair_test.py dist/bin/geomodelbridge tests/fixtures --writer dist/bin/native-filegdb/GeoModelBridge.NativeWriter
       - run: python tests/missing_texture_test.py dist/bin/geomodelbridge tests/fixtures --writer dist/bin/native-filegdb/GeoModelBridge.NativeWriter
       - run: python tests/native_deployment_test.py --install-dir dist --work artifacts/deployment
       - run: python scripts/generate_examples.py --output artifacts/examples

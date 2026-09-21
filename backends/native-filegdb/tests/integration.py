@@ -35,7 +35,7 @@ vertices[1]['normal'] = [1 / math.sqrt(3)] * 3
 vertices[2]['normal'] = [-1 / 256, math.sqrt(1 - (1 / 256) ** 2), 0]
 vertices[3]['normal'] = [1 / 256, math.sqrt(1 - (1 / 256) ** 2), 0]
 meshes = [dict(name='PNG alpha', source_node='test', vertices=vertices, triangles=[dict(indices=[0, 1, 2], material=0), dict(indices=[0, 2, 3], material=0)]), dict(name='JPEG and color', source_node='test', vertices=vertices, triangles=[dict(indices=[0, 1, 2], material=1), dict(indices=[0, 2, 3], material=2)])]
-scene = dict(schema_version=1, generator='GeoModelBridge', version='0.1.7', name='Writer integration', source='generated:test', coordinates=dict(unit='meter', up_axis='Z', space='referenced', wkid=32650, origin=[500000, 4000000, 10], origin_explicit=True), nodes=[], meshes=meshes, materials=[dict(name='PNG', color=[1, 1, 1, 1], texture=0, double_sided=True), dict(name='JPEG', color=[1, 1, 1, 1], texture=1, double_sided=False), dict(name='Color opacity', color=[.13, .58, .91, .427], texture=-1, double_sided=True)], textures=textures)
+scene = dict(schema_version=1, generator='GeoModelBridge', version='0.1.8', name='Writer integration', source='generated:test', coordinates=dict(unit='meter', up_axis='Z', space='referenced', wkid=32650, origin=[500000, 4000000, 10], origin_explicit=True), nodes=[], meshes=meshes, materials=[dict(name='PNG', color=[1, 1, 1, 1], texture=0, double_sided=True), dict(name='JPEG', color=[1, 1, 1, 1], texture=1, double_sided=False), dict(name='Color opacity', color=[.13, .58, .91, .427], texture=-1, double_sided=True)], textures=textures)
 scene['diagnostics'] = [dict(severity='warning', code='TEST_SOURCE_WARNING', message='Test warning retained for traceability.', context='generated:test')]
 (bundle / 'scene.json').write_text(json.dumps(scene), encoding='utf8')
 
@@ -88,6 +88,9 @@ assert not (bundle / 'writer.json').exists()
 print('PASS: existing outputs protected; report cannot be nested in source bundle or GDB')
 
 cases = {
+    'non-object-streamed-mesh': lambda s: s.update(meshes=[7]),
+    'nested-array-streamed-mesh': lambda s: s.update(meshes=[[]]),
+    'unknown-streamed-mesh-field': lambda s: s['meshes'][1].update(unsupported=True),
     'unknown-conversion-profile': lambda s: s.update(conversion_profile='ignore-everything'),
     'unknown-missing-texture-policy': lambda s: s.update(missing_texture_policy='ignore-everything'),
     'fallback-forbidden-by-policy': lambda s: s.update(missing_texture_policy='error', diagnostics=[dict(severity='warning', code='MISSING_TEXTURE_FALLBACK', message='Unavailable image omitted.', context='material')]),
@@ -136,6 +139,39 @@ def negative_case(item):
 
 with ThreadPoolExecutor(max_workers=2) as executor:
     results = list(executor.map(negative_case, cases.items()))
+
+# Streaming must not depend on metadata preceding meshes; a duplicate root key
+# must not conceal geometry that the parser already visited.
+order_source = root / 'meshes-before-metadata'
+shutil.copytree(bundle, order_source)
+reordered = {'meshes': scene['meshes'], **{k:v for k,v in scene.items() if k!='meshes'}}
+(order_source/'scene.json').write_text(json.dumps(reordered), encoding='utf8')
+order_out = root/'reordered.gdb'
+run(['--input',order_source,'--output',order_out])
+order_report = json.loads(order_out.with_suffix('.writer-report.json').read_text())
+assert order_report['verification']['checks'] == report['verification']['checks']
+(order_source/'scene.json').write_text(json.dumps(reordered)[:-1]+',"meshes": []}', encoding='utf8')
+duplicate = run(['--input',order_source,'--output',root/'duplicate.gdb'],success=False)
+assert 'Duplicate root bundle field' in duplicate.stderr and not (root/'duplicate.gdb').exists()
+results.append(dict(case='duplicate-root-mesh-array',passed=True,error=duplicate.stderr.strip()))
+
+# A substantial corner array catches accidental scene-DOM retention and the
+# callback parser's quadratic discarded-object scan. The existing 90s command
+# timeout also applies here; the fixture contains no user geometry.
+large_source = root/'large-corner-array'
+shutil.copytree(bundle,large_source)
+large_scene = copy.deepcopy(scene)
+large_count = 70000
+large_scene['meshes'] = [dict(name='Large corner array',source_node='generated:test',
+    vertices=vertices[:3]*large_count,
+    triangles=[dict(indices=[3*i,3*i+1,3*i+2],material=0) for i in range(large_count)])]
+(large_source/'scene.json').write_text(json.dumps(large_scene,separators=(',',':')),encoding='utf8')
+large_out = root/'large.gdb'
+run(['--input',large_source,'--output',large_out])
+large_report=json.loads(large_out.with_suffix('.writer-report.json').read_text())
+assert large_report['verification']['feature_count']==1
+assert large_report['verification']['checks'][0]['written_corner_vertices']==large_count*3
+print('PASS: streamed 210000-corner mesh written and read back without a geometry JSON DOM')
 
 # Finite but out-of-domain coordinates are rejected before creating any geodatabase.
 overflow = root / 'overflow-bundle'

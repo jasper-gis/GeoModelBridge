@@ -18,7 +18,7 @@ json diagnostic_json(const std::vector<Diagnostic>& ds) {
 }
 bool compatibility_adjustments(const std::vector<Diagnostic>& ds) {
     return std::any_of(ds.begin(), ds.end(), [](const auto& d) {
-        return d.code == "STATIC_POSE_USED" || d.code == "MATERIAL_CHANNEL_OMITTED" || d.code == "DEGENERATE_TRIANGLES_REMOVED" || d.code == "JPEG_CONTAINER_NORMALIZED" || d.code == "MISSING_TEXTURE_FALLBACK";
+        return d.code == "STATIC_POSE_USED" || d.code == "MATERIAL_CHANNEL_OMITTED" || d.code == "DEGENERATE_TRIANGLES_REMOVED" || d.code == "JPEG_CONTAINER_NORMALIZED" || d.code == "MISSING_TEXTURE_FALLBACK" || d.code == "NORMALS_REPAIRED" || d.code == "DEGENERATE_NORMALS_DISCARDED";
     });
 }
 fs::path unique_sibling(const fs::path& destination) {

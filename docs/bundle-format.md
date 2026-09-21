@@ -1,7 +1,7 @@
 # Scene Bundle v1
 
 目录由 `scene.json` 和 `textures/<sha256>.<ext>` 组成；图片通常保持原始字节。显式 `gis-static` 策略允许对安全识别的缺少 JFIF 标识的 Adobe YCbCr JPEG 插入 18 字节 APP0；原压缩图像数据及其余字节保持不变，处理前后 SHA-256 写入 `JPEG_CONTAINER_NORMALIZED` 诊断。目录名、`sha256` 和 `byte_length` 对应实际进入中间包的字节。
-根字段：`schema_version:1`, `generator:"GeoModelBridge"`, `version:"0.1.7"`, `name`, `source`, `coordinates`, `nodes`, `meshes`, `materials`, `textures`。`version` 记录生成器版本；历史包保持其原始值，格式版本仍为 1。V0.1.4 改为流式写出网格数组，格式与数值编码保持不变。
+根字段：`schema_version:1`, `generator:"GeoModelBridge"`, `version:"0.1.8"`, `name`, `source`, `coordinates`, `nodes`, `meshes`, `materials`, `textures`。`version` 记录生成器版本；历史包保持其原始值，格式版本仍为 1。V0.1.4 改为流式写出网格数组，格式与数值编码保持不变。
 V0.1.3 增加可选 `conversion_profile:"strict"|"gis-static"`，缺省解释为 `strict`。新生成器总是写入此字段，后端将其带入最终报告，CLI/GUI 核对与请求一致。兼容策略及各诊断的具体含义见 [compatibility.md](compatibility.md)。新 Scene JSON 使用紧凑排版，值与几何精度不变。
 可选 `diagnostics[]`：`{ "severity":"warning"|"error", "code":"...", "message":"...", "context":"..." }`；后端必须将其带入最终报告，有 error 时拒绝写入。C++ 生成器总是写入此字段。
 
@@ -22,3 +22,5 @@ triangle: `{ "indices":[0,1,2], "material":0 }`。索引为当前 mesh 的顶点
 Writer 必须验证 schema、索引、有限数字、图片散列、相对路径；拒绝未支持的图像格式，不能静默转码。
 首版所有 triangle 按材质分组为 Multipatch triangle patches；同一 mesh 输出一个要素。
 只有关闭数据库、重新打开验证通过后才允许报告写入成功。显示兼容性仍须目标软件人工验收。
+
+V0.1.8 的 `NORMALS_REPAIRED` 与 `DEGENERATE_NORMALS_DISCARDED` 诊断记录上游显式法线兼容处理。Bundle 中保留的是处理后的有效法线，writer 不会再次修复。Scene JSON 以 64 KiB 缓冲流式读取，最大 16 GiB；角点和三角形解码后即释放对应 JSON 对象，完整结构及几何仍在创建数据库前校验。

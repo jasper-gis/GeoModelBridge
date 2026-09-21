@@ -1,0 +1,33 @@
+{
+  "status": "written_and_readback_verified",
+  "version": "0.1.8",
+  "source_file": "G238国道.fbx",
+  "source_sha256": "bac9a4dfd13d5a2a9a0a8cc31e400078713d0f87626394fbfd43933c6e9bc17c",
+  "source_and_previous_reports_unchanged": true,
+  "wkid": 3857,
+  "origin": [
+    100,
+    100,
+    100
+  ],
+  "conversion_profile": "gis-static",
+  "missing_texture_policy": "material-color",
+  "counts": {
+    "corner_vertices": 32496933,
+    "materials": 171,
+    "meshes": 4349,
+    "texture_bytes": 0,
+    "textures": 0,
+    "triangles": 10832311
+  },
+  "feature_count": 4349,
+  "written_corner_vertices": 32496933,
+  "repaired_meshes": 15,
+  "repaired_corners": 954,
+  "repaired_triangles": 331,
+  "scene_json_bytes": 5602887143,
+  "gdb_bytes": 387220498,
+  "writer_report_sha256": "8cf2f8b0188ea7afd5c249661bd2d3ccc07575741b07febf7fdf5fd737aa7ee9",
+  "standalone_copy_verified": true,
+  "visual_acceptance": "pending_target_software_review"
+}

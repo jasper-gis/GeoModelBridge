@@ -6,7 +6,7 @@ using GeoModelBridge.Gui.Core;
 
 internal static class Program
 {
-    private const string Version = "0.1.7";
+    private const string Version = "0.1.8";
     private static readonly List<TestCase> Results = [];
     private static string Work = "";
     private static string Input = "";
@@ -300,6 +300,22 @@ internal static class Program
 
     private static void SummaryTests()
     {
+        Test("normal_repair_summary_counts_corners", () =>
+        {
+            var report = GoodReport();
+            report["reader_diagnostics"] = new JsonArray(
+                new JsonObject { ["severity"]="warning", ["code"]="NORMALS_REPAIRED", ["message"]="GIS static profile rebuilt 6 invalid corner normals across 2 triangles from transformed triangle edges." },
+                new JsonObject { ["severity"]="warning", ["code"]="NORMALS_REPAIRED", ["message"]="GIS static profile rebuilt 3 invalid corner normals across 1 triangles from transformed triangle edges." });
+            var summary = ReportSummaryFormatter.Parse(report.ToJsonString());
+            Assert(summary.IsSuccess && summary.HasCompatibilityAdjustments && summary.SummaryText.Contains("共修复 9 个角点法线（2 条记录）"), "Normal repairs must count corners separately from diagnostic records.");
+        });
+        Test("normal_repair_invalid_quantity_is_not_invented", () =>
+        {
+            var report = GoodReport();
+            report["reader_diagnostics"] = new JsonArray(new JsonObject { ["severity"]="warning", ["code"]="NORMALS_REPAIRED", ["message"]="GIS static profile rebuilt 999999999999999999999 invalid corner normals across 1 triangles." });
+            var summary = ReportSummaryFormatter.Parse(report.ToJsonString());
+            Assert(summary.Groups.Single().RepairedNormalCount is null && summary.WarningCount == 1, "Malformed quantity must retain the warning without a guessed count.");
+        });
         Test("success_word_alone_is_not_a_verified_database_report", () =>
         {
             var summary = ReportSummaryFormatter.Parse("{\"status\":\"written_and_readback_verified\"}");
@@ -362,7 +378,7 @@ internal static class Program
             var summary = ReportSummaryFormatter.Parse(report.ToJsonString());
             Assert(summary.ErrorCount == 1 && summary.WarningCount == 1 && !summary.IsSuccess, "One diagnostic array was dropped.");
         });
-        foreach (var code in new[] { "STATIC_POSE_USED", "MATERIAL_CHANNEL_OMITTED", "DEGENERATE_TRIANGLES_REMOVED", "JPEG_CONTAINER_NORMALIZED", "MISSING_TEXTURE_FALLBACK" })
+        foreach (var code in new[] { "STATIC_POSE_USED", "MATERIAL_CHANNEL_OMITTED", "DEGENERATE_TRIANGLES_REMOVED", "JPEG_CONTAINER_NORMALIZED", "MISSING_TEXTURE_FALLBACK", "NORMALS_REPAIRED", "DEGENERATE_NORMALS_DISCARDED" })
             Test("compatibility_adjustment_is_explicit_" + code, () =>
             {
                 var report = GoodReport();
@@ -678,7 +694,7 @@ internal static class Program
         var service = new EngineService(engineDirectory);
         await TestAsync("native_backend_runtime_probe", async () =>
         {
-            Assert(service.IsEnginePresent, "Built V0.1.7 engine is absent: " + service.EnginePath);
+            Assert(service.IsEnginePresent, "Built V0.1.8 engine is absent: " + service.EnginePath);
             var probe = await service.ProbeBackendAsync("native-filegdb");
             Assert(probe.Success, probe.Message);
         });
@@ -734,6 +750,20 @@ internal static class Program
             Assert(report["textures"]!.AsArray().Count == 0, "Missing image was replaced by an invented texture.");
             var summary = ReportSummaryFormatter.Parse(json);
             Assert(summary.IsSuccess && summary.HasCompatibilityAdjustments && summary.SummaryText.Contains("材质颜色"), "Fallback is not visible in the GUI success summary.");
+        });
+        await TestAsync("real_normal_repair_conversion_from_gui_service", async () =>
+        {
+            var input = Path.Combine(caseDirectory, "无效法线.fbx");
+            var source = File.ReadAllText(Path.Combine(fixtureDirectory, "textured_quad.fbx"));
+            source = System.Text.RegularExpressions.Regex.Replace(source, @"Normals: \*\d+ \{ a: [^}]+", "Normals: *12 { a: 0,0,0,0,0,0,0,0,0,0,0,0 ");
+            File.WriteAllText(input, source);
+            var repairRequest = request with { InputPath=input, OutputPath=Path.Combine(caseDirectory,"法线修复.gdb"), ReportPath=Path.Combine(caseDirectory,"法线修复.json") };
+            var result = await service.ConvertAsync(repairRequest);
+            Assert(result.Success && result.ExitCode == 0, result.Message);
+            var json = File.ReadAllText(repairRequest.ReportPath);
+            ReportVerifier.Verify(json, repairRequest);
+            var summary = ReportSummaryFormatter.Parse(json);
+            Assert(summary.IsSuccess && summary.SummaryText.Contains("共修复 6 个角点法线"), "GUI must report the actual repair and GDB readback.");
         });
     }
 

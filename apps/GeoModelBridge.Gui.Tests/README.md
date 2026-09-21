@@ -8,7 +8,7 @@ From the project directory:
 dotnet run --project apps/GeoModelBridge.Gui.Tests -c Release -- --work C:\temp\gmb-gui-test-new
 ```
 
-To also exercise real V0.1.7 native conversions through the GUI service, provide the installed engine directory and source fixtures:
+To also exercise real V0.1.8 native conversions through the GUI service, provide the installed engine directory and source fixtures:
 
 ```powershell
 dotnet run --project apps/GeoModelBridge.Gui.Tests -c Release -- --work C:\temp\gmb-gui-integration-new --engine-dir dist/bin --fixtures tests/fixtures
@@ -21,3 +21,5 @@ V0.1.3 also checks strict/static-GIS profile selection, profile mismatches in re
 V0.1.6 rejects the removed backend in settings, environment probes and reports; the GUI exposes only native FileGDB conversion. The current suite runs without desktop GIS software.
 
 V0.1.7 checks the independent missing-file policy, safe arguments, report-policy matching, Chinese fallback warnings, and a real missing-texture FBX conversion with no replacement images.
+
+V0.1.8 checks explicit normal-repair warnings, valid corner-count aggregation, malformed count handling, and a real textured FBX with repaired normals through the GUI service.

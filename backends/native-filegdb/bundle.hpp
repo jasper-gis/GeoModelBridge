@@ -72,10 +72,134 @@ struct Bundle {
     json source;
     std::vector<Prepared> meshes;
 };
+// Read scene data in blocks so JSON parser character lookahead stays in memory.
+class SceneInputBuffer : public std::streambuf {
+    std::ifstream file_;
+    std::array<char, 64 * 1024> buffer_{};
+protected:
+    int_type underflow() override {
+        if (gptr() != egptr()) return traits_type::to_int_type(*gptr());
+        file_.read(buffer_.data(), static_cast<std::streamsize>(buffer_.size()));
+        require(!file_.bad(), "Cannot read scene JSON.");
+        const auto size = file_.gcount();
+        if (size == 0) return traits_type::eof();
+        setg(buffer_.data(), buffer_.data(), buffer_.data() + size);
+        return traits_type::to_int_type(*gptr());
+    }
+public:
+    explicit SceneInputBuffer(const fs::path &path) : file_(path, std::ios::binary) {
+        require(bool(file_), "Cannot open scene JSON.");
+    }
+};
+inline Vertex load_vertex(const json &v) {
+    keys(v, {"position", "normal", "uv"});
+    Vertex a;
+    a.position = vec3(v.at("position"));
+    for (auto component : {a.position.x, a.position.y, a.position.z})
+        require(
+            component >= -99999999 && component <= 99999999,
+            "Coordinates exceed the explicit native storage domain +/-99,999,999 metres.");
+    if (!v.at("normal").is_null()) {
+        a.normal = vec3(v.at("normal"));
+        a.has_normal = true;
+    }
+    if (!v.at("uv").is_null()) {
+        auto uv = vector(v.at("uv"), 2);
+        a.uv = {uv[0], uv[1]};
+        a.has_uv = true;
+    }
+    return a;
+}
+inline Triangle load_triangle(const json &t) {
+    keys(t, {"indices", "material"});
+    require(t.at("indices").is_array() && t.at("indices").size() == 3, "Invalid triangle.");
+    Triangle tri;
+    for (int i = 0; i < 3; ++i) {
+        auto n = integer(t.at("indices").at(i));
+        require(n >= 0, "Invalid triangle index.");
+        tri.indices[i] = static_cast<std::uint32_t>(n);
+    }
+    tri.material = integer(t.at("material"));
+    return tri;
+}
+inline Mesh load_mesh(const json &m) {
+    keys(m, {"name", "source_node", "vertices", "triangles"});
+    Mesh x;
+    x.name = m.at("name");
+    x.source_node = m.at("source_node");
+    require(x.name.size() <= 512 && x.source_node.size() <= 2048,
+            "Feature attributes exceed supported capacity.");
+    require(m.at("vertices").is_array() && m.at("triangles").is_array(),
+            "Vertices/triangles must be arrays.");
+    require(m.at("vertices").size() <= 10000000 && m.at("triangles").size() <= 10000000 / 3,
+            "Mesh exceeds the 10 million source/expanded corner limit.");
+    x.vertices.reserve(m.at("vertices").size());
+    x.triangles.reserve(m.at("triangles").size());
+    for (const auto &v : m.at("vertices")) x.vertices.push_back(load_vertex(v));
+    for (const auto &t : m.at("triangles")) x.triangles.push_back(load_triangle(t));
+    return x;
+}
 inline Bundle load_bundle(const fs::path &root) {
-    auto data = read(safe_input(root, "scene.json"), 512ull * 1024 * 1024);
+    const auto path = safe_input(root, "scene.json");
+    const auto bytes = fs::file_size(path);
+    require(bytes > 0 && bytes <= 16ull * 1024 * 1024 * 1024, "Scene JSON is empty or exceeds 16 GiB.");
+    SceneInputBuffer input(path);
+    std::istream stream(&input);
     Bundle b;
-    b.source = json::parse(data);
+    bool in_meshes = false;
+    std::string root_key;
+    std::set<std::string> root_keys, mesh_keys;
+    Mesh streamed_mesh;
+    std::string mesh_key, geometry_array;
+    // The public parser callback discards each corner, triangle and mesh DOM.
+    // Read directly from the file: no full-file byte buffer or scene-sized DOM.
+    b.source = json::parse(stream, [&](int depth, json::parse_event_t event, json &value) {
+        if (depth == 1 && event == json::parse_event_t::key) {
+            root_key = value.get<std::string>();
+            require(root_keys.insert(root_key).second, "Duplicate root bundle field: " + root_key);
+        }
+        if (depth == 1 && event == json::parse_event_t::array_start && root_key == "meshes") in_meshes = true;
+        if (in_meshes && depth == 3 && event == json::parse_event_t::key) {
+            mesh_key = value.get<std::string>();
+            require(mesh_keys.insert(mesh_key).second, "Duplicate mesh field: " + mesh_key);
+        }
+        if (in_meshes && depth == 3 && event == json::parse_event_t::array_start &&
+            (mesh_key == "vertices" || mesh_key == "triangles")) geometry_array = mesh_key;
+        if (in_meshes && depth == 4 && !geometry_array.empty()) {
+            require(event != json::parse_event_t::value && event != json::parse_event_t::array_start,
+                    "Vertex/triangle must be an object.");
+            if (event == json::parse_event_t::object_end) {
+                if (geometry_array == "vertices") {
+                    require(streamed_mesh.vertices.size() < 10000000, "Mesh exceeds 10 million source corners.");
+                    streamed_mesh.vertices.push_back(load_vertex(value));
+                } else {
+                    require(streamed_mesh.triangles.size() < 10000000 / 3, "Mesh exceeds 10 million expanded corners.");
+                    streamed_mesh.triangles.push_back(load_triangle(value));
+                }
+                // Prune every corner/triangle: the callback parser scans the
+                // parent array for discarded objects, so retaining a large
+                // vertex array until mesh end would make parsing quadratic.
+                return false;
+            }
+        }
+        if (in_meshes && depth == 3 && event == json::parse_event_t::array_end) geometry_array.clear();
+        if (in_meshes && depth == 2) {
+            if (event == json::parse_event_t::object_start) { streamed_mesh = Mesh{}; mesh_keys.clear(); }
+
+            require(event != json::parse_event_t::value && event != json::parse_event_t::array_start,
+                    "Each mesh must be an object.");
+            if (event == json::parse_event_t::object_end) {
+                auto mesh = load_mesh(value);
+                mesh.vertices = std::move(streamed_mesh.vertices);
+                mesh.triangles = std::move(streamed_mesh.triangles);
+                b.scene.meshes.push_back(std::move(mesh));
+                return false;
+            }
+        }
+        if (depth == 1 && event == json::parse_event_t::array_end) in_meshes = false;
+        return true;
+    });
+    require(!stream.bad(), "Cannot finish reading scene JSON.");
     const auto &j = b.source;
     keys(j,
          {"schema_version", "generator", "version", "name", "source", "coordinates", "nodes",
@@ -129,50 +253,6 @@ inline Bundle load_bundle(const fs::path &root) {
                                      {c4[0], c4[1], c4[2], c4[3]},
                                      integer(m.at("texture")),
                                      m.at("double_sided")});
-    }
-    for (const auto &m : j.at("meshes")) {
-        keys(m, {"name", "source_node", "vertices", "triangles"});
-        Mesh x;
-        x.name = m.at("name");
-        x.source_node = m.at("source_node");
-        require(x.name.size() <= 512 && x.source_node.size() <= 2048,
-                "Feature attributes exceed supported capacity.");
-        require(m.at("vertices").is_array() && m.at("triangles").is_array(),
-                "Vertices/triangles must be arrays.");
-        require(m.at("vertices").size() <= 10000000 && m.at("triangles").size() <= 10000000 / 3,
-                "Mesh exceeds the 10 million source/expanded corner limit.");
-        for (const auto &v : m.at("vertices")) {
-            keys(v, {"position", "normal", "uv"});
-            Vertex a;
-            a.position = vec3(v.at("position"));
-            for (auto component : {a.position.x, a.position.y, a.position.z})
-                require(
-                    component >= -99999999 && component <= 99999999,
-                    "Coordinates exceed the explicit native storage domain +/-99,999,999 metres.");
-            if (!v.at("normal").is_null()) {
-                a.normal = vec3(v.at("normal"));
-                a.has_normal = true;
-            }
-            if (!v.at("uv").is_null()) {
-                auto uv = vector(v.at("uv"), 2);
-                a.uv = {uv[0], uv[1]};
-                a.has_uv = true;
-            }
-            x.vertices.push_back(a);
-        }
-        for (const auto &t : m.at("triangles")) {
-            keys(t, {"indices", "material"});
-            require(t.at("indices").is_array() && t.at("indices").size() == 3, "Invalid triangle.");
-            Triangle tri;
-            for (int i = 0; i < 3; ++i) {
-                auto n = integer(t.at("indices").at(i));
-                require(n >= 0, "Invalid triangle index.");
-                tri.indices[i] = static_cast<std::uint32_t>(n);
-            }
-            tri.material = integer(t.at("material"));
-            x.triangles.push_back(tri);
-        }
-        b.scene.meshes.push_back(std::move(x));
     }
     for (const auto &n : j.at("nodes")) {
         keys(n, {"name", "source_id", "parent", "source_world_transform", "meshes"});

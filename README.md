@@ -5,7 +5,7 @@
 <p>FBX → 带颜色与贴图的 FileGDB Multipatch</p>
 
 <p>
-  <a href="CHANGELOG.md"><code>V0.1.7</code></a> &nbsp;
+  <a href="CHANGELOG.md"><code>V0.1.8</code></a> &nbsp;
   <a href="docs/architecture.md"><code>C++17</code></a> &nbsp;
   <a href="#platforms"><code>Windows · Ubuntu</code></a>
 </p>
@@ -141,24 +141,27 @@ Ubuntu 在仓库根目录执行；Windows 将程序路径替换为 `.\dist\bin\g
 | 策略 | 行为 |
 | --- | --- |
 | **strict** · CLI 默认 | 严格校验，不自动省略不支持的渲染语义 |
-| **gis-static** · GUI 默认明确展示 | 使用文件保存姿态；允许省略环境光 / 高光 / 反射、移除有限零面积三角形，并逐项记录 |
+| **gis-static** · GUI 默认明确展示 | 使用文件保存姿态；允许省略环境光 / 高光 / 反射、移除有限零面积三角形，并从有效三角形重建无效角点法线；逐项记录 |
 
 **缺图策略独立于上表的渲染策略。** 两种 profile 默认均允许缺图回退；GUI 中“缺少贴图时使用材质颜色继续转换”默认勾选。报告以 `MISSING_TEXTURE_FALLBACK` 列出受影响材质与图片路径，回退不能恢复图片的原有外观。若要求完整贴图，取消勾选或加 `--missing-textures error`。
 
-有效贴图缺少 UV、无效法线、非有限几何、损坏或无法读取的现有图片、未知材质以及不支持的 PBR、自发光、骨骼或形变仍会拒绝。PNG 保存为未预乘 RGBA8，JPEG 保留压缩数据，不静默转码；颜色、透明度、UV 与法线的存储量化会记录在报告中。详细格式范围、JPEG 封装兼容处理及精度说明见[兼容策略](docs/compatibility.md)和[原生存储规则](backends/native-filegdb/README.md#存储规则与范围)。
+**法线修复需选择 `gis-static`。** 仅用所在三角形的面法线替换无效角点，保留原有有效法线、UV 和材质边界；报告记录 `NORMALS_REPAIRED` 及数量。局部光照可能变硬，严格模式继续拒绝无效法线。
+
+有效贴图缺少 UV、非有限位置、无法形成有效三角形的几何、损坏或无法读取的现有图片、未知材质以及不支持的 PBR、自发光、骨骼或形变仍会拒绝。PNG 保存为未预乘 RGBA8，JPEG 保留压缩数据，不静默转码；颜色、透明度、UV 与法线的存储量化会记录在报告中。详细格式范围、JPEG 封装兼容处理及精度说明见[兼容策略](docs/compatibility.md)和[原生存储规则](backends/native-filegdb/README.md#存储规则与范围)。
 
 <a id="verification"></a>
 
 ## 已有验证
 
-以下为 **V0.1.7 实际 Windows / Ubuntu 执行结果**，来源与原始证据见[验证记录](docs/validation-v0.1.7.md)。
+以下为 **V0.1.8 实际 Windows / Ubuntu 执行结果**，来源与原始证据见[验证记录](docs/validation-v0.1.8.md)。
 
 | 检查 | 结果 |
 | --- | --- |
-| 核心与 CLI 回归 | 两平台各 **6/6** |
+| 核心与 CLI 回归 | 两平台各 **7/7** |
 | 完整 GDB 样例 | 两平台各 **14/14**，几何与纹理回读散列一致 |
-| 缺图专项 | 两平台各 **14/14**，包含缺图、无 UV、混合材质 GDB 的复制回读 |
-| Windows GUI 服务回归 | **148/148**，包含真实缺图转换 |
+| 法线专项 | 两平台各 **14/14**，包含修复后 GDB 的复制回读 |
+| 大模型 | Windows 实际转换 **4,349 个要素、1,083 万三角形**，完成独立复制回读 |
+| Windows GUI 服务回归 | **153/153**，包含真实缺图与法线修复转换 |
 | 独立目录部署 | 两平台通过 |
 
 Windows ↔ Ubuntu 双向互读及归档解压验证见 [V0.1.6 历史记录](docs/validation-v0.1.6.md)。数据库回读与目标软件三维外观验收分别进行；图形验收边界见[验收说明](docs/acceptance.md)。[GitHub Actions](https://github.com/jasper-gis/GeoModelBridge/actions/workflows/build.yml) 展示托管 CI 的实际状态，以上数字来自已保存的本地验证记录。

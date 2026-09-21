@@ -1,7 +1,7 @@
 <Window x:Class="GeoModelBridge.Gui.MainWindow"
  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
- Title="GeoModelBridge · V0.1.7" Icon="Assets/AppIcon.ico" Width="1280" Height="850" MinWidth="1080" MinHeight="720"
+ Title="GeoModelBridge · V0.1.8" Icon="Assets/AppIcon.ico" Width="1280" Height="850" MinWidth="1080" MinHeight="720"
  WindowStartupLocation="CenterScreen" Background="#F3F6F9" Foreground="{StaticResource Ink}" FontFamily="Microsoft YaHei UI, Segoe UI"
  Loaded="Window_Loaded" Closing="Window_Closing">
  <Grid>
@@ -26,7 +26,7 @@
     </Border>
     <StackPanel Grid.Row="3">
      <TextBlock Text="FBX → MULTIPATCH" Foreground="#86A6B1" FontSize="10"/>
-     <TextBlock Text="V0.1.7  ·  Windows x64" Foreground="#C3D5DC" FontSize="11" Margin="0,9,0,0"/>
+     <TextBlock Text="V0.1.8  ·  Windows x64" Foreground="#C3D5DC" FontSize="11" Margin="0,9,0,0"/>
      <Button Content="使用说明 ↗" Click="Help_Click" Margin="0,19,0,0" Background="#1C4653" BorderBrush="#34616D" Foreground="White"/>
     </StackPanel>
    </Grid>
@@ -62,7 +62,7 @@
          <ComboBoxItem Content="GIS 静态兼容（默认）" Tag="gis-static"/>
          <ComboBoxItem Content="严格检查" Tag="strict"/>
         </ComboBox>
-        <TextBlock x:Name="ProfileHint" Text="按 FBX 保存的姿态转换；保留几何、常规颜色、漫反射贴图和 UV；省略环境光、高光及反射，删除零面积面；修复符合条件的 JPEG 封装，不重新压缩图像。处理均写入报告。" Foreground="#795415" FontSize="11" TextWrapping="Wrap" LineHeight="18" Margin="0,9,0,0"/>
+        <TextBlock x:Name="ProfileHint" Text="按 FBX 保存的姿态转换；保留几何、常规颜色、漫反射贴图和 UV；省略环境光、高光及反射，删除零面积面，重建无效角点法线；修复符合条件的 JPEG 封装，不重新压缩图像。处理均写入报告。" Foreground="#795415" FontSize="11" TextWrapping="Wrap" LineHeight="18" Margin="0,9,0,0"/>
        </StackPanel>
       </Border>
       <Border Style="{StaticResource Card}" Margin="0,0,0,16">

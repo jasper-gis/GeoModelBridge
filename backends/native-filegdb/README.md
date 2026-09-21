@@ -1,4 +1,4 @@
-# Native FileGDB 后端 · V0.1.7
+# Native FileGDB 后端 · V0.1.8
 
 这个 Windows x64 / Ubuntu 24.04 x86_64 C++17 后端把 Scene Bundle 中的几何、RGB、透明度、UV 和 PNG/JPEG 纹理直接写入新 FileGDB Multipatch。转换时不加载 ArcGIS Pro、不调用 ArcPy、不借用 Pro 导出的 Shape Buffer。第三方 Esri FileGDB API 负责数据库文件格式，项目代码按 Esri 公开文档独立生成扩展 Multipatch Shape Buffer。
 
@@ -82,3 +82,5 @@ python backends/native-filegdb/tests/integration.py --writer dist/bin/native-fil
 该测试覆盖低 alpha/透明 RGB、JPEG 原字节、非轴法线和正负半格舍入、颜色/透明度量化、UV 接缝、多材质、无 UV/无法线的白色或纯色几何、源文件不可用时的复制验证，以及坏输入、整数溢出、路径、不覆盖、SDK 失败清理和假散列检查。V0.1.3 新增未知转换策略拒绝检查。它使用 Python 标准库构造输入，数据库写入和回读均由本 C++ 后端完成；通过数量以对应版本验证记录为准。
 
 V0.1.1 历史交付样例在 `examples/V0.1.1/native`，保留原生成版本与报告。ArcGIS Pro 独立核验与目标软件显示验收由主工程验证记录另行列出；原生回读成功本身不替代图形显示验收。
+
+V0.1.8 支持最大 16 GiB Scene JSON 的流式读取，逐个释放角点、三角形和网格 JSON。单网格 1000 万角点、单 Shape Buffer 512 MiB 的边界保持不变。完整元数据、几何、资源和坐标域校验通过后才创建 GDB；根字段和网格字段重复会明确拒绝。法线兼容修复属于上游 GIS 静态策略，writer 只接受有效单位法线。

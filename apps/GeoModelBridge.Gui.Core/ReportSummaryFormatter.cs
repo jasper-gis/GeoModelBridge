@@ -8,6 +8,7 @@ public sealed record DiagnosticGroup(string Code, string Severity, string Title,
     IReadOnlyList<string> Examples, string Advice)
 {
     public long? AffectedTriangleCount { get; init; }
+    public long? RepairedNormalCount { get; init; }
 }
 
 public sealed record ReportSummary(string Status, bool IsSuccess, bool HasCompatibilityAdjustments,
@@ -47,7 +48,7 @@ public static class ReportSummaryFormatter
                 .OrderBy(g => g.Key.Severity == "error" ? 0 : g.Key.Severity == "warning" ? 1 : 2)
                 .Select(g => new DiagnosticGroup(g.Key.Code, g.Key.Severity, Describe(g.First()).Title, g.Count(),
                     g.Select(e => CleanContext(e.Context)).Where(s => s.Length > 0).Distinct(StringComparer.Ordinal).Take(4).ToArray(),
-                    Describe(g.First()).Advice) { AffectedTriangleCount = RemovedTriangleCount(g) }).ToArray();
+                    Describe(g.First()).Advice) { AffectedTriangleCount = RemovedTriangleCount(g), RepairedNormalCount = RepairedNormals(g) }).ToArray();
             var errorCount = entries.Count(e => e.Severity == "error");
             var warningCount = entries.Count(e => e.Severity == "warning");
             var verificationIssues = status == "written_and_readback_verified" ? CheckReportedVerification(root) : [];
@@ -68,6 +69,7 @@ public static class ReportSummaryFormatter
             foreach (var group in groups.Take(8))
                 summary.Append("\n• ").Append(group.Title).Append("：")
                     .Append(group.AffectedTriangleCount is { } removed ? $"共删除 {removed} 个面（{group.Count} 条记录）" :
+                        group.RepairedNormalCount is { } repaired ? $"共修复 {repaired} 个角点法线（{group.Count} 条记录）" :
                         group.Code == "JPEG_CONTAINER_NORMALIZED" ? $"{group.Count} 条贴图记录" : $"{group.Count} 条")
                     .Append(group.Examples.Count > 0 ? "（如 " + string.Join("、", group.Examples.Take(2)) + "）" : "").Append('。');
             if (groups.Length > 8) summary.Append($"\n其余 {groups.Length - 8} 类信息可在完整报告中查看。");
@@ -121,7 +123,7 @@ public static class ReportSummaryFormatter
         { throw new InvalidDataException("无法解析转换报告：" + ex.Message, ex); }
     }
 
-    private static bool IsCompatibilityCode(string code) => code is "STATIC_POSE_USED" or "MATERIAL_CHANNEL_OMITTED" or "DEGENERATE_TRIANGLES_REMOVED" or "JPEG_CONTAINER_NORMALIZED" or "MISSING_TEXTURE_FALLBACK";
+    private static bool IsCompatibilityCode(string code) => code is "STATIC_POSE_USED" or "MATERIAL_CHANNEL_OMITTED" or "DEGENERATE_TRIANGLES_REMOVED" or "JPEG_CONTAINER_NORMALIZED" or "MISSING_TEXTURE_FALLBACK" or "NORMALS_REPAIRED" or "DEGENERATE_NORMALS_DISCARDED";
 
     private static IReadOnlyList<string> CheckReportedVerification(JsonElement root)
     {
@@ -171,6 +173,24 @@ public static class ReportSummaryFormatter
         return total;
     }
 
+    private static long? RepairedNormals(IEnumerable<Entry> entries)
+    {
+        const string prefix = "GIS static profile rebuilt ";
+        const string separator = " invalid corner normals across ";
+        long total = 0;
+        foreach (var entry in entries)
+        {
+            var end = entry.Message.IndexOf(separator, StringComparison.Ordinal);
+            if (entry.Code != "NORMALS_REPAIRED" || !entry.Message.StartsWith(prefix, StringComparison.Ordinal) || end <= prefix.Length) return null;
+            var number = entry.Message.Substring(prefix.Length, end - prefix.Length);
+            if (number.Length > 19 || number.Any(c => c < '0' || c > '9') || (number.Length > 1 && number[0] == '0') ||
+                !long.TryParse(number, NumberStyles.None, CultureInfo.InvariantCulture, out var count)) return null;
+            try { total = checked(total + count); }
+            catch (OverflowException) { return null; }
+        }
+        return total;
+    }
+
     private static Description Describe(Entry entry)
     {
         var code = entry.Code;
@@ -211,7 +231,9 @@ public static class ReportSummaryFormatter
         if (code == "DEGENERATE_TRIANGLE") return new(code, "存在退化三角形", "GIS 静态兼容可删除有限坐标的零面积面；非有限坐标等损坏几何仍需修复。");
         if (code == "MISSING_TEXTURE_FALLBACK") return new(code, "缺失贴图已回退为材质颜色", "对应图片确实不可用；保留材质颜色和标量透明度并继续转换，未生成替代图片。找回贴图后可添加目录重新转换。");
         if (code is "MISSING_TEXTURE" or "TEXTURE_NOT_FOUND" or "TEXTURE_READ_ERROR") return new(code, "无法读取贴图", "将贴图放在模型目录中，或添加正确的贴图目录。文件确实缺失时可选择材质颜色回退；损坏或不可读取的图片仍需修复。");
-        if (code == "INVALID_NORMAL") return new(code, "模型法线无效", "部分法线为零或非有限值，请在建模软件中重算法线。此问题独立于缺失贴图。");
+        if (code == "INVALID_NORMAL") return new(code, "模型法线无效", "可选择 GIS 静态兼容，根据有效三角形修复无效法线；如果仍失败，需先在建模软件中修复几何。");
+        if (code == "NORMALS_REPAIRED") return new(code, "已重建无效角点法线", "使用变换后三角形的面法线，仅替换无效角点；保留有效法线、UV 和材质边界。局部光照可能变硬，修复数量见详细记录。");
+        if (code == "DEGENERATE_NORMALS_DISCARDED") return new(code, "已随零面积面移除无效法线", "仅涉及已报告删除的零面积三角形，不额外删除有效几何。");
         if (code is "MISSING_UV" or "MISSING_UV_SET") return new(code, "有贴图的面缺少有效 UV", "仍在使用的图片需要有效 UV 才能定位；请补齐模型 UV。已回退为材质颜色的面不再要求缺失图片的 UV。");
         if (IsCompatibilityCode(code)) return CompatibilityDescription(entry);
         var message = Clip(entry.Message, 130);

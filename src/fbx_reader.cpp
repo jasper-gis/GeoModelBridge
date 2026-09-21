@@ -63,6 +63,23 @@ const char* lighting_property(const std::string& name) {
     return nullptr;
 }
 
+// Used only for explicit GIS-static repair. Final positions already include
+// axis/unit conversion, node transforms and corrected mirrored winding.
+bool triangle_normal(const std::array<ufbx_vec3, 3>& p, Vec3& normal) {
+    for (const auto& v : p) if (!finite(v.x) || !finite(v.y) || !finite(v.z)) return false;
+    Vec3 a{p[1].x-p[0].x,p[1].y-p[0].y,p[1].z-p[0].z};
+    Vec3 b{p[2].x-p[0].x,p[2].y-p[0].y,p[2].z-p[0].z};
+    const double sa=(std::max)({std::abs(a.x),std::abs(a.y),std::abs(a.z)});
+    const double sb=(std::max)({std::abs(b.x),std::abs(b.y),std::abs(b.z)});
+    if (!finite(sa) || !finite(sb) || sa<=0 || sb<=0) return false;
+    a={a.x/sa,a.y/sa,a.z/sa}; b={b.x/sb,b.y/sb,b.z/sb};
+    normal={a.y*b.z-a.z*b.y,a.z*b.x-a.x*b.z,a.x*b.y-a.y*b.x};
+    const double length=std::hypot(normal.x,normal.y,normal.z);
+    if (!finite(length) || length<=0) return false;
+    normal={normal.x/length,normal.y/length,normal.z/length};
+    return true;
+}
+
 bool lighting_map(std::size_t index) {
     return index == UFBX_MATERIAL_FBX_AMBIENT_COLOR || index == UFBX_MATERIAL_FBX_AMBIENT_FACTOR ||
         index == UFBX_MATERIAL_FBX_SPECULAR_COLOR || index == UFBX_MATERIAL_FBX_SPECULAR_FACTOR ||
@@ -661,6 +678,7 @@ struct Reader {
         const auto& local_materials = node.materials.count ? node.materials : mesh.materials;
         std::unordered_map<int, const ufbx_vertex_vec2*> material_uvs;
         std::size_t removed_triangles = 0;
+        std::size_t repaired_normals = 0, repaired_triangles = 0, discarded_normals = 0;
         for (std::size_t fi = 0; fi < mesh.faces.count; ++fi) {
             const auto face = mesh.faces.data[fi];
             if (face.num_indices < 3) {
@@ -698,6 +716,7 @@ struct Reader {
                         error("INVALID_POSITION", "A transformed position is non-finite.", context);
                 }
                 const bool remove_triangle = options.gis_static && zero_area(positions);
+                bool repaired_triangle = false;
                 const auto first_corner = target.vertices.size();
                 for (std::size_t ci = 0; ci < 3; ++ci) {
                     const auto corner = indices[ti * 3 + (mirrored && ci ? 3 - ci : ci)];
@@ -710,8 +729,15 @@ struct Reader {
                         if (finite(length) && length > 0.0) {
                             vertex.normal = {n.x / length, n.y / length, n.z / length};
                             vertex.has_normal = true;
-                        } else if (!remove_triangle || !finite(length))
-                            error("INVALID_NORMAL", "A normal is zero or non-finite after transformation.", context);
+                        } else if (remove_triangle) {
+                            ++discarded_normals;
+                        } else if (options.gis_static && triangle_normal(positions, vertex.normal)) {
+                            vertex.has_normal = true;
+                            ++repaired_normals;
+                            repaired_triangle = true;
+                        } else {
+                            error("INVALID_NORMAL", "A normal is zero or non-finite after transformation; strict mode forbids repair, or the triangle cannot supply a finite normal.", context);
+                        }
                     }
                     if (uv && uv->exists) {
                         const auto coordinate = ufbx_get_vertex_vec2(uv, corner);
@@ -730,11 +756,19 @@ struct Reader {
                     continue;
                 }
                 target.triangles.push_back(triangle);
+                if (repaired_triangle) ++repaired_triangles;
             }
         }
         if (removed_triangles)
             warning("DEGENERATE_TRIANGLES_REMOVED", "GIS static profile removed " + std::to_string(removed_triangles) +
                 " strictly zero-area triangles; no area tolerance was used.", context);
+        if (repaired_normals)
+            warning("NORMALS_REPAIRED", "GIS static profile rebuilt " + std::to_string(repaired_normals) +
+                " invalid corner normals across " + std::to_string(repaired_triangles) +
+                " triangles from transformed triangle edges. Flat face normals replace only invalid corners; valid normals, positions, UVs and material boundaries remain unchanged.", context);
+        if (discarded_normals)
+            warning("DEGENERATE_NORMALS_DISCARDED", "GIS static profile discarded " + std::to_string(discarded_normals) +
+                " invalid corner normals only on the separately reported removed zero-area triangles.", context);
         if (target.triangles.empty()) error("EMPTY_MESH", "No triangles remain after mesh processing.", context);
         result.nodes[node_index].meshes.push_back(static_cast<std::uint32_t>(result.meshes.size()));
         result.meshes.push_back(std::move(target));

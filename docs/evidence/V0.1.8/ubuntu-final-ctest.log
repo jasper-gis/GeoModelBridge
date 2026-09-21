@@ -1,0 +1,20 @@
+Internal ctest changing into directory: /home/gmb/GeoModelBridge/build/linux-x64
+Test project /home/gmb/GeoModelBridge/build/linux-x64
+    Start 1: core
+1/7 Test #1: core .............................   Passed    0.12 sec
+    Start 2: cli
+2/7 Test #2: cli ..............................   Passed    0.77 sec
+    Start 3: reader_integration
+3/7 Test #3: reader_integration ...............   Passed    0.74 sec
+    Start 4: binary_fbx
+4/7 Test #4: binary_fbx .......................   Passed    0.47 sec
+    Start 5: profile_integration
+5/7 Test #5: profile_integration ..............   Passed    2.06 sec
+    Start 6: missing_textures
+6/7 Test #6: missing_textures .................   Passed    0.69 sec
+    Start 7: normal_repair
+7/7 Test #7: normal_repair ....................   Passed    0.69 sec
+
+100% tests passed, 0 tests failed out of 7
+
+Total Test time (real) =   5.58 sec

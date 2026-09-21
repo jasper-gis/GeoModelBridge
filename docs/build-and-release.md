@@ -1,6 +1,6 @@
 # 构建、部署与发布指南
 
-[← 返回项目首页](../README.md) · [原生后端](../backends/native-filegdb/README.md) · [验证记录](validation-v0.1.7.md)
+[← 返回项目首页](../README.md) · [原生后端](../backends/native-filegdb/README.md) · [验证记录](validation-v0.1.8.md)
 
 本文补充 README 的快速开始流程，面向需要自定义构建、迁移客户机或维护发布的使用者。所有命令在仓库根目录执行；默认安装目录为 `dist`。
 
@@ -88,7 +88,7 @@ dist/
 | 输出或报告已存在 | 使用新的名称；程序拒绝覆盖已有用户成果 |
 | 坐标系被拒绝 | 检查 WKID 是否属于 SDK 支持的米制投影坐标系，并显式设置 origin |
 | 缺少贴图文件 | 默认以材质颜色继续并告警；可用重复的 `--texture-dir DIR` 补充目录。要求完整贴图时使用 `--missing-textures error` |
-| 无效法线 / UV 或材质语义不支持 | 查看中文分类与完整诊断，在建模软件中修正后重试；缺图回退不会修复这些独立问题 |
+| 无效法线 / UV 或材质语义不支持 | 无效法线可选 GIS 静态兼容修复；缺少有效 UV 或损坏几何仍需在建模软件中修正 |
 
 Linux 提交成果使用禁止覆盖的原子重命名，不支持该操作的文件系统会明确失败；避免多个进程同时修改同一 GDB。Bundle 资源路径使用 `/`，禁止绝对路径、`..` 和符号链接。
 
@@ -114,13 +114,15 @@ python3 backends/native-filegdb/tests/integration.py \
   --writer dist/bin/native-filegdb/GeoModelBridge.NativeWriter --work artifacts/native-tests
 python3 tests/missing_texture_test.py dist/bin/geomodelbridge tests/fixtures \
   --writer dist/bin/native-filegdb/GeoModelBridge.NativeWriter
+python3 tests/normal_repair_test.py dist/bin/geomodelbridge tests/fixtures \
+  --writer dist/bin/native-filegdb/GeoModelBridge.NativeWriter
 python3 tests/native_deployment_test.py --install-dir dist --work artifacts/deployment
-python3 scripts/generate_examples.py --output examples/V0.1.7
+python3 scripts/generate_examples.py --output examples/V0.1.8
 python3 scripts/package.py --check-only
 # 包含源码、dist 和已验证样例，必须指定仓库外的新归档路径。
-python3 scripts/package.py --output ../GeoModelBridge-V0.1.7-ubuntu24.04-x86_64.tar.gz
+python3 scripts/package.py --output ../GeoModelBridge-V0.1.8-ubuntu24.04-x86_64.tar.gz
 ```
 
 生成样例和部署测试目录必须为新路径。Windows 运行同样的 Python 脚本，writer 文件名增加 `.exe`，发布归档用 `.zip`；还需运行 `dotnet run --project apps/GeoModelBridge.Gui.Tests -c Release -- --work artifacts/gui-tests --engine-dir dist/bin --fixtures tests/fixtures`。打包会检查运行版本、依赖散列、14 个真实 GDB 与复制成果回读；生成 `.sha256` 文件，Linux tar.gz 保留执行权限。
 
-验证记录明确区分核心测试、原生数据库回读、可搬迁部署与目标软件显示验收。自动回读通过不等于完成三维外观验收。[V0.1.7 记录](validation-v0.1.7.md) · [平台迁移记录](validation-v0.1.6.md) · [验收边界](acceptance.md)
+验证记录明确区分核心测试、原生数据库回读、可搬迁部署与目标软件显示验收。自动回读通过不等于完成三维外观验收。[V0.1.8 记录](validation-v0.1.8.md) · [平台迁移记录](validation-v0.1.6.md) · [验收边界](acceptance.md)
