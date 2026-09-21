@@ -44,6 +44,7 @@ public partial class MainWindow : Window
         FeatureClass = FeatureClassBox.Text.Trim(),
         Backend = Backend,
         Profile = Profile,
+        MissingTexturePolicy = MissingTextureFallbackBox.IsChecked == true ? "material-color" : "error",
         TextureDirectories = TextureDirectoriesBox.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
     };
 
@@ -252,6 +253,7 @@ public partial class MainWindow : Window
         OriginZBox.Text = "100";
         FeatureClassBox.Text = "Models";
         ProfileBox.SelectedIndex = 0;
+        MissingTextureFallbackBox.IsChecked = true;
         TextureDirectoriesBox.Clear();
         DemoNotice.Visibility = Visibility.Visible;
         SetStatus("演示已准备", "已选择带贴图的测试模型。点击“开始转换”即可验证；演示坐标不代表真实位置。");
@@ -317,7 +319,7 @@ public partial class MainWindow : Window
 
     private void Help_Click(object sender, RoutedEventArgs e) => ShowText("使用说明",
         "GeoModelBridge V" + ProductInfo.Version + "\n\n" +
-        "1. 选择一个静态 FBX。外置 PNG/JPEG 通常放在模型目录中；其他位置可在转换选项中添加贴图目录。\n\n" +
+        "1. 选择一个静态 FBX。外置 PNG/JPEG 通常放在模型目录中；其他位置可在转换选项中添加贴图目录。缺图时默认保留材质颜色和标量透明度并继续，报告列出缺图项；取消“缺少贴图时使用材质颜色继续转换”勾选可要求图片完整。\n\n" +
         "2. 指定尚不存在的 .gdb 输出路径。默认要素类名为 Models，已有数据库不会被覆盖。\n\n" +
         "3. 填写米制投影坐标系 WKID 和 XYZ 原点。模型先统一 Z-up、米制，再进行平移。这里不会重投影、旋转配准或推断真实位置；已经使用目标坐标的模型也应明确填写所需偏移。\n\n" +
         "4. 使用原生 FileGDB 后端，无需安装 ArcGIS Pro；可先点击“检查运行环境”。\n\n" +

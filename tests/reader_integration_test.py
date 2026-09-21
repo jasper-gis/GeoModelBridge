@@ -146,7 +146,7 @@ def main():
         for name, expected_code in [("missing_texture", "MISSING_TEXTURE"), ("unsupported_emission", "UNSUPPORTED_MATERIAL_CHANNEL")]:
             destination = root / (name + "-rejected")
             report = root / (name + ".json")
-            result = invoke(exe, "prepare", fixtures / f"{name}.fbx", "--output", destination, "--report", report, expect_success=False)
+            result = invoke(exe, "prepare", fixtures / f"{name}.fbx", "--output", destination, "--report", report, "--missing-textures", "error", expect_success=False)
             assert result.returncode == 3, (result.returncode, result.stderr)
             assert not destination.exists(), "Rejected FBX left a partial bundle"
             rejected = read_json(report)

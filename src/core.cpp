@@ -33,6 +33,14 @@ std::vector<Diagnostic> validate(const Scene& scene) {
         ds.push_back({Severity::error, std::move(code), std::move(message), std::move(ctx)});
     };
     if (scene.meshes.empty()) error("EMPTY_SCENE", "No mesh geometry was found.", scene.name);
+    if (scene.missing_texture_policy != "material-color" && scene.missing_texture_policy != "error")
+        error("INVALID_TEXTURE_POLICY", "Unknown missing texture policy.", scene.name);
+    if (scene.missing_texture_policy == "error")
+        for (const auto& d : scene.diagnostics)
+            if (d.code == "MISSING_TEXTURE_FALLBACK") {
+                error("TEXTURE_POLICY_MISMATCH", "Missing texture fallback is forbidden by the selected error policy.", d.context);
+                break;
+            }
     if (scene.coordinates.unit != "meter" || scene.coordinates.up_axis != "Z")
         error("COORDINATE_CONVENTION", "Core geometry must use meters and Z-up.", scene.name);
     if (!finite(scene.coordinates.origin) || scene.coordinates.wkid < 0)

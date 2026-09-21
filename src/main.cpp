@@ -31,6 +31,7 @@ struct Options {
     gmb::Vec3 origin;
     int wkid=0;
     bool origin_explicit=false, profile_explicit=false;
+    bool missing_textures_explicit=false;
 };
 void help() {
     std::cout<<"GeoModelBridge V"<<gmb::version<<" - static FBX to textured Multipatch pipeline\n\n"
@@ -43,11 +44,14 @@ void help() {
         "      --wkid PROJECTED_METRIC_WKID --origin X Y Z [--writer WRITER_PATH] [OPTIONS]\n\n"
         "Options: --report NEW.json, --texture-dir DIR (repeatable), --wkid N,\n"
         "         --origin X Y Z, --feature-class NAME (convert only),\n"
-        "         --profile strict|gis-static (default: strict).\n"
+        "         --profile strict|gis-static (default: strict),\n"
+        "         --missing-textures material-color|error (default: material-color).\n"
         "Fixtures: color-cube, uv-plane, mixed-materials, alpha-plane, seam-cube.\n"
         "No overwrites. Strict mode rejects unsupported rendering.\n"
         "gis-static uses the saved static pose, omits ambient/specular/reflection,\n"
         "and removes zero-area triangles; every adjustment is reported. No baking.\n"
+        "Missing image files use material color/opacity and are reported; use\n"
+        "--missing-textures error to require every referenced image.\n"
         "WKID assignment and origin translation do not perform CRS reprojection.\n"
         "The chosen writer must be built and its runtime dependencies available.\n";
 }
@@ -72,6 +76,12 @@ Options parse(const std::vector<std::string>& args) {
         else if(flag=="--backend") o.backend=value();
         else if(flag=="--texture-dir") o.reader.texture_directories.push_back(fs::u8path(value()));
         else if(flag=="--feature-class") o.feature_class=value();
+        else if(flag=="--missing-textures") {
+            if(o.missing_textures_explicit)throw UsageError("Duplicate missing-textures policy.");
+            const auto policy=value();
+            if(policy!="material-color"&&policy!="error")throw UsageError("Missing-textures policy must be material-color or error.");
+            o.missing_textures_explicit=true;o.reader.missing_texture_fallback=policy=="material-color";
+        }
         else if(flag=="--profile") {
             if(o.profile_explicit)throw UsageError("Duplicate profile.");
             const auto profile=value();
@@ -205,6 +215,7 @@ int convert(const gmb::Scene& scene,Options& o,const std::string& argv0) {
        verified.value("version","")!=gmb::version ||
        verified.value("feature_class","")!=o.feature_class ||
        verified.value("conversion_profile","")!=scene.conversion_profile ||
+       verified.value("missing_texture_policy","")!=scene.missing_texture_policy ||
        verified.value("backend","")!="native-filegdb" ||
        !verified.at("verification").value("geometry_material_uv_texture_readback",false) ||
        verified.at("verification").value("level","")!="closed_reopened_file_geodatabase" ||
@@ -228,18 +239,19 @@ int main_utf8(const std::vector<std::string>& args) {
         o=parse(args);
         if(o.backend!="native-filegdb") {
             const auto reason="Unsupported backend '"+o.backend+"'. Only native-filegdb is supported.";
-            gmb::Scene s;s.source=o.input;
+            gmb::Scene s;s.source=o.input;s.missing_texture_policy=o.reader.missing_texture_fallback?"material-color":"error";
             if(!o.report.empty())gmb::write_report(s,{{gmb::Severity::error,"BACKEND_UNAVAILABLE",reason,o.backend}},"failed",o.report,o.backend);
             std::cerr<<reason<<"\n";return 4;
         }
         if(o.command=="fixture"&&o.input=="all") {
             // Build the suite in a new directory. Each bundle carries its own validation report.
             if(!fs::create_directories(o.output))throw std::runtime_error("Could not create fixture suite.");
-            try {for(const auto& name:gmb::fixture_names()) {auto s=gmb::make_fixture(name);gmb::apply_origin(s,o.origin,o.wkid,o.origin_explicit);gmb::write_bundle(s,o.output/fs::u8path(name));}}
+            try {for(const auto& name:gmb::fixture_names()) {auto s=gmb::make_fixture(name);s.missing_texture_policy=o.reader.missing_texture_fallback?"material-color":"error";gmb::apply_origin(s,o.origin,o.wkid,o.origin_explicit);gmb::write_bundle(s,o.output/fs::u8path(name));}}
             catch(...) {std::error_code ec;fs::remove_all(o.output,ec);throw;}
             std::cout<<"Fixture suite prepared: "<<o.output.u8string()<<"\n";return 0;
         }
         gmb::Scene scene=o.command=="fixture"?gmb::make_fixture(o.input):gmb::read_fbx(fs::u8path(o.input),o.reader);
+        scene.missing_texture_policy=o.reader.missing_texture_fallback?"material-color":"error";
         gmb::apply_origin(scene,o.origin,o.wkid,o.origin_explicit);
         auto ds=gmb::validate(scene);diagnostics(ds);
         const bool failed=gmb::has_errors(ds);
@@ -262,7 +274,7 @@ int main_utf8(const std::vector<std::string>& args) {
       catch(const std::exception& e) {
         std::cerr<<"ERROR: "<<e.what()<<"\n";
         if(!o.report.empty()&&!fs::exists(o.report)) {
-            try {gmb::Scene s;s.source=o.input;gmb::write_report(s,{{gmb::Severity::error,"OPERATION_FAILED",e.what(),o.command}},"failed",o.report);}catch(...){}
+            try {gmb::Scene s;s.source=o.input;s.missing_texture_policy=o.reader.missing_texture_fallback?"material-color":"error";gmb::write_report(s,{{gmb::Severity::error,"OPERATION_FAILED",e.what(),o.command}},"failed",o.report);}catch(...){}
         }
         return 6;
     }

@@ -18,7 +18,7 @@ json diagnostic_json(const std::vector<Diagnostic>& ds) {
 }
 bool compatibility_adjustments(const std::vector<Diagnostic>& ds) {
     return std::any_of(ds.begin(), ds.end(), [](const auto& d) {
-        return d.code == "STATIC_POSE_USED" || d.code == "MATERIAL_CHANNEL_OMITTED" || d.code == "DEGENERATE_TRIANGLES_REMOVED" || d.code == "JPEG_CONTAINER_NORMALIZED";
+        return d.code == "STATIC_POSE_USED" || d.code == "MATERIAL_CHANNEL_OMITTED" || d.code == "DEGENERATE_TRIANGLES_REMOVED" || d.code == "JPEG_CONTAINER_NORMALIZED" || d.code == "MISSING_TEXTURE_FALLBACK";
     });
 }
 fs::path unique_sibling(const fs::path& destination) {
@@ -102,6 +102,7 @@ void write_bundle(const Scene& scene,const fs::path& output) {
     try {
         json j={ {"schema_version",1}, {"generator","GeoModelBridge"}, {"version",version}, {"name",scene.name}, {"source",scene.source},
             {"conversion_profile",scene.conversion_profile},
+            {"missing_texture_policy",scene.missing_texture_policy},
             {"coordinates",{{"unit",scene.coordinates.unit},{"up_axis",scene.coordinates.up_axis},{"space",scene.coordinates.space},
                 {"wkid",scene.coordinates.wkid},{"origin",vec(scene.coordinates.origin)},{"origin_explicit",scene.coordinates.origin_explicit}}},
             {"nodes",json::array()},{"meshes",json::array()},{"materials",json::array()},{"textures",json::array()}, {"diagnostics",diagnostic_json(diagnostics)}};
@@ -134,9 +135,10 @@ void write_report(const Scene& scene,const std::vector<Diagnostic>& ds,const std
     for(const auto& t:scene.textures) texture_bytes+=t.bytes.size();
     json j={{"schema_version",1},{"version",version},{"status",status},{"backend",backend},{"source",scene.source},
         {"conversion_profile",scene.conversion_profile},
+        {"missing_texture_policy",scene.missing_texture_policy},
         {"counts",{{"meshes",scene.meshes.size()},{"triangles",triangles},{"corner_vertices",vertices},{"materials",scene.materials.size()},
             {"textures",scene.textures.size()},{"texture_bytes",texture_bytes}}},
-        {"fidelity",{{"validation_passed",!has_errors(ds)},{"strict_validation_passed",scene.conversion_profile=="strict"&&!has_errors(ds)},
+        {"fidelity",{{"validation_passed",!has_errors(ds)},{"strict_validation_passed",scene.conversion_profile=="strict"&&!has_errors(ds)&&!compatibility_adjustments(ds)},
             {"compatibility_adjustments",compatibility_adjustments(ds)},{"gdb_written",false},{"gdb_readback_verified",false},{"visual_acceptance","pending"},
             {"note","Prepared/inspected geometry is not evidence of successful FileGDB conversion. Writer reports contain database verification results."}}},
         {"coordinate_operation","FBX units/axes and static node transforms baked; optional origin translation. No CRS reprojection."},

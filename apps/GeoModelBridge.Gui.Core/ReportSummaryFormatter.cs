@@ -83,6 +83,8 @@ public static class ReportSummaryFormatter
             var profile = Text(root, "profile");
             if (profile.Length == 0) profile = Text(root, "conversion_profile");
             AppendField(detail, "转换策略", profile == "gis-static" ? "GIS 静态兼容" : profile == "strict" ? "严格检查" : profile);
+            var missingPolicy = Text(root, "missing_texture_policy");
+            AppendField(detail, "缺失贴图", missingPolicy == "material-color" ? "使用材质颜色继续；保留标量透明度" : missingPolicy == "error" ? "停止转换" : missingPolicy);
             if (root.TryGetProperty("counts", out var counts) && counts.ValueKind == JsonValueKind.Object)
                 foreach (var (key, label) in new[] { ("meshes", "网格数"), ("materials", "材质数"), ("textures", "贴图数"), ("triangles", "三角形数") })
                     if (counts.TryGetProperty(key, out var count) && count.ValueKind == JsonValueKind.Number && count.TryGetInt64(out var amount) && amount >= 0)
@@ -119,7 +121,7 @@ public static class ReportSummaryFormatter
         { throw new InvalidDataException("无法解析转换报告：" + ex.Message, ex); }
     }
 
-    private static bool IsCompatibilityCode(string code) => code is "STATIC_POSE_USED" or "MATERIAL_CHANNEL_OMITTED" or "DEGENERATE_TRIANGLES_REMOVED" or "JPEG_CONTAINER_NORMALIZED";
+    private static bool IsCompatibilityCode(string code) => code is "STATIC_POSE_USED" or "MATERIAL_CHANNEL_OMITTED" or "DEGENERATE_TRIANGLES_REMOVED" or "JPEG_CONTAINER_NORMALIZED" or "MISSING_TEXTURE_FALLBACK";
 
     private static IReadOnlyList<string> CheckReportedVerification(JsonElement root)
     {
@@ -207,7 +209,10 @@ public static class ReportSummaryFormatter
             return new(code + channel, "材质使用" + channel, channel == "其他渲染通道" ? "请在建模软件中烘焙到漫反射颜色或贴图，未支持的通道不会自动忽略。" : "GIS 静态兼容会省略环境光、高光及反射通道，并在报告中记录；如需保留其外观，请先烘焙到漫反射贴图。");
         }
         if (code == "DEGENERATE_TRIANGLE") return new(code, "存在退化三角形", "GIS 静态兼容可删除有限坐标的零面积面；非有限坐标等损坏几何仍需修复。");
-        if (code is "MISSING_TEXTURE" or "TEXTURE_NOT_FOUND" or "TEXTURE_READ_ERROR") return new(code, "无法读取贴图", "将贴图放在模型目录中，或在转换选项中添加正确的贴图目录。");
+        if (code == "MISSING_TEXTURE_FALLBACK") return new(code, "缺失贴图已回退为材质颜色", "对应图片确实不可用；保留材质颜色和标量透明度并继续转换，未生成替代图片。找回贴图后可添加目录重新转换。");
+        if (code is "MISSING_TEXTURE" or "TEXTURE_NOT_FOUND" or "TEXTURE_READ_ERROR") return new(code, "无法读取贴图", "将贴图放在模型目录中，或添加正确的贴图目录。文件确实缺失时可选择材质颜色回退；损坏或不可读取的图片仍需修复。");
+        if (code == "INVALID_NORMAL") return new(code, "模型法线无效", "部分法线为零或非有限值，请在建模软件中重算法线。此问题独立于缺失贴图。");
+        if (code is "MISSING_UV" or "MISSING_UV_SET") return new(code, "有贴图的面缺少有效 UV", "仍在使用的图片需要有效 UV 才能定位；请补齐模型 UV。已回退为材质颜色的面不再要求缺失图片的 UV。");
         if (IsCompatibilityCode(code)) return CompatibilityDescription(entry);
         var message = Clip(entry.Message, 130);
         return new(code, "其他诊断（" + Clip(code, 60) + "）" + (message.Length > 0 ? "：" + message : ""),

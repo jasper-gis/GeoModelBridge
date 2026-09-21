@@ -73,7 +73,7 @@ assert json.loads((out / "reports/standalone-copy.json").read_text())["status"] 
 for name in ["missing_texture", "unsupported_emission"]:
     destination = out / "rejected" / (name + ".gdb")
     report = out / "reports" / (name + "-rejected.json")
-    run([cli, "convert", fixtures / (name + ".fbx"), "--output", destination, "--backend", args.backend, "--writer", writer, "--report", report, *placement], 3)
+    run([cli, "convert", fixtures / (name + ".fbx"), "--output", destination, "--backend", args.backend, "--writer", writer, "--report", report, "--missing-textures", "error", *placement], 3)
     assert not destination.exists()
     assert json.loads(report.read_text())["status"] == "rejected"
 

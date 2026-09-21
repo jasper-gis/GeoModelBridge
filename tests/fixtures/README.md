@@ -11,7 +11,10 @@ blue, white. All pixels are opaque.
   Two UV sets: first is constant zero; texture selects second `UV_Main`, [0,1]^2.
 * `embedded_quad.fbx`: same appearance, PNG stored in Video Content as base64;
   the external filename deliberately does not exist.
-* `missing_texture.fbx`: requests `does-not-exist.png`, must report MISSING_TEXTURE.
+* `missing_texture.fbx`: requests `does-not-exist.png`; defaults to material-color
+  fallback with MISSING_TEXTURE_FALLBACK. With `--missing-textures error`, it must
+  reject with MISSING_TEXTURE. `../missing_texture_test.py` covers both profiles,
+  transparency aliases, missing UVs, mixed valid/missing textures and native GDB IO.
 * `project_rgb.jpg`: the same project-generated 3×2 solid RGB JPEG already used
   by both writer integration suites. Reader regressions derive JFIF/Adobe/EXIF
   container variants from these bytes in a temporary directory. No private or

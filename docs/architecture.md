@@ -1,4 +1,4 @@
-# V0.1.6 架构
+# V0.1.7 架构
 
 ```mermaid
 flowchart LR
@@ -18,7 +18,7 @@ Reader 与数据库 SDK 无直接依赖。C++ 内核使用 `gmb::Scene` 表达 N
 
 GUI 是自包含 WPF 程序，通过无 shell 的参数数组调用 CLI。CLI 只发现 `native-filegdb/GeoModelBridge.NativeWriter`（Windows 加 `.exe`） 或显式配置的原生可执行程序；不调用托管 DLL、Pro 授权初始化或 ArcPy。移除后端的请求、错误后端的报告均被拒绝。
 
-Scene Bundle 是 JSON 与资源文件组成的进程边界。CLI 默认严格模式，GUI 默认显式 GIS 静态兼容；`conversion_profile` 随 bundle 和报告传递并核对。兼容处理发生在 Reader，写入端仍执行完整几何、UV、材质和纹理检查。V0.1.4 引入的流式 JSON 写出与有界日志保留。[协议](bundle-format.md) · [转换策略](compatibility.md)
+Scene Bundle 是 JSON 与资源文件组成的进程边界。CLI 默认严格渲染模式，GUI 默认显式 GIS 静态兼容；`conversion_profile` 随 bundle 和报告传递并核对。独立的 `missing_texture_policy` 默认 `material-color`：Reader 对找不到的图片保留材质颜色与标量透明度、清除图片绑定并告警；`error` 则拒绝。写入端仍执行完整几何、UV、材质和资源检查，不对损坏 Bundle 回退。V0.1.4 引入的流式 JSON 写出与有界日志保留。[协议](bundle-format.md) · [转换策略](compatibility.md)
 
 原生端共用 C++17 源码，Windows 以 MSVC x64 编译并用 WIC 解码，Ubuntu 以 GCC 13 编译并用 libpng/libjpeg 解码，各自链接官方 FileGDB API 1.5.5 平台 SDK。按官方扩展 Shape Buffer 文档构造 Multipatch，每网格一个要素，三角形按材质分 patch。PNG 解码为未预乘 RGBA8，JPEG 保留支持的容器字节，所有有 UV 的 patch 写入 `S=U,T=1-V`。不翻转图片行序、不静默丢弃未知材质通道。
 

@@ -207,7 +207,6 @@ def main():
             "colored-transparency": material_value(base, "TransparentColor", "1,0,0"),
             "normal-map": textured.replace(' C: "OP",400,300,"DiffuseColor"', ' C: "OP",400,300,"NormalMap"'),
             "opacity-map": textured.replace(' C: "OP",400,300,"DiffuseColor"', ' C: "OP",400,300,"TransparentColor"'),
-            "missing-diffuse-texture": (fixtures / "missing_texture.fbx").read_text(encoding="utf-8"),
         }
         for name, source in hazardous.items():
             for profile in ("strict", "gis-static"):

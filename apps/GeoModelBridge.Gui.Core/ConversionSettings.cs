@@ -11,6 +11,7 @@ public sealed record ConversionSettings
     public string FeatureClass { get; init; } = "Models";
     public string Backend { get; init; } = "native-filegdb";
     public string Profile { get; init; } = "gis-static";
+    public string MissingTexturePolicy { get; init; } = "material-color";
     public string ReportPath { get; init; } = "";
     public IReadOnlyList<string> TextureDirectories { get; init; } = Array.Empty<string>();
 }
@@ -27,5 +28,5 @@ public sealed record ConversionReport(string Backend, string Version, string Out
 
 public static class ProductInfo
 {
-    public const string Version = "0.1.6";
+    public const string Version = "0.1.7";
 }

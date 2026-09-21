@@ -1,4 +1,4 @@
-# Native FileGDB 后端 · V0.1.6
+# Native FileGDB 后端 · V0.1.7
 
 这个 Windows x64 / Ubuntu 24.04 x86_64 C++17 后端把 Scene Bundle 中的几何、RGB、透明度、UV 和 PNG/JPEG 纹理直接写入新 FileGDB Multipatch。转换时不加载 ArcGIS Pro、不调用 ArcPy、不借用 Pro 导出的 Shape Buffer。第三方 Esri FileGDB API 负责数据库文件格式，项目代码按 Esri 公开文档独立生成扩展 Multipatch Shape Buffer。
 
@@ -61,6 +61,7 @@ Windows 原生后端只链接 release `FileGDBAPI.lib`，支持 `Release`、`Rel
 - V0.1.3 的上游 FBX reader 可在 GIS 策略下对明确安全的缺 JFIF Adobe YCbCr JPEG 补封装，并记录 `JPEG_CONTAINER_NORMALIZED` 及源/目标散列。此 writer 保存收到的 bundle 图片字节，不重复修复、不重新压缩；源图片不变。
 - FBX 的 V=0 对应图片底部；Esri 文档定义 t=0 对应存储图片首行。PNG 解码行和 JPEG 首行均从顶部开始，因此**所有有 UV 的 patch 都写入 U′=U、V′=1−V**，包括当前无贴图的 UV。源 Bundle 不改写，报告记录转换策略，PNG 与 JPEG 用相同规则。
 - 每个 mesh 最多 1000 万源顶点/展开角点，单 Shape Buffer 上限 512 MiB。未支持的字段、混合缺失的法线、同材质 patch 内混合缺失的 UV、非法索引、图片散列不符与路径逃逸均拒绝。
+- V0.1.7 的 `missing_texture_policy` 随 Bundle 带入报告。缺图回退在 FBX Reader 完成：无图片材质保留颜色和标量透明度，writer 按普通无贴图 patch 写入并回读。已声明的 Bundle 资源若丢失仍拒绝；该策略不会绕过图片散列或几何检查。
 
 ## 技术依据与验证
 

@@ -1,0 +1,38 @@
+{
+  "source_file": "G238国道.fbx",
+  "source_bytes": 286703164,
+  "source_sha256": "bac9a4dfd13d5a2a9a0a8cc31e400078713d0f87626394fbfd43933c6e9bc17c",
+  "original_report_sha256": "1f1b749f3cdc5a2124d88dbd8952081248961504a5bb0f000edf69f974c27d7b",
+  "source_and_original_report_unchanged": true,
+  "profile": "gis-static",
+  "missing_texture_policy": "material-color",
+  "old_version": "0.1.3",
+  "new_version": "0.1.7",
+  "old_diagnostics": {
+    "error:INVALID_NORMAL": 15,
+    "error:MISSING_TEXTURE": 170,
+    "error:MISSING_UV": 11,
+    "error:UNSUPPORTED_TEXTURE_CHANNEL": 2,
+    "error:UNSUPPORTED_TEXTURE_CONNECTION": 1,
+    "warning:DEGENERATE_TRIANGLES_REMOVED": 21,
+    "warning:MATERIAL_CHANNEL_OMITTED": 1
+  },
+  "new_diagnostics": {
+    "error:INVALID_NORMAL": 15,
+    "warning:DEGENERATE_TRIANGLES_REMOVED": 21,
+    "warning:MATERIAL_CHANNEL_OMITTED": 1,
+    "warning:MISSING_TEXTURE_FALLBACK": 171
+  },
+  "counts": {
+    "corner_vertices": 32496933,
+    "materials": 171,
+    "meshes": 4349,
+    "texture_bytes": 0,
+    "textures": 0,
+    "triangles": 10832311
+  },
+  "status": "rejected",
+  "exit_code": 3,
+  "gdb_created": false,
+  "limitation": "Input inspection only; 15 INVALID_NORMAL errors remain independent of missing textures. Private model and detailed source paths are not included."
+}

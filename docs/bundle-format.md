@@ -1,9 +1,11 @@
 # Scene Bundle v1
 
 目录由 `scene.json` 和 `textures/<sha256>.<ext>` 组成；图片通常保持原始字节。显式 `gis-static` 策略允许对安全识别的缺少 JFIF 标识的 Adobe YCbCr JPEG 插入 18 字节 APP0；原压缩图像数据及其余字节保持不变，处理前后 SHA-256 写入 `JPEG_CONTAINER_NORMALIZED` 诊断。目录名、`sha256` 和 `byte_length` 对应实际进入中间包的字节。
-根字段：`schema_version:1`, `generator:"GeoModelBridge"`, `version:"0.1.5"`, `name`, `source`, `coordinates`, `nodes`, `meshes`, `materials`, `textures`。`version` 记录生成器版本；历史包保持其原始值，格式版本仍为 1。V0.1.4 改为流式写出网格数组，格式与数值编码保持不变。
+根字段：`schema_version:1`, `generator:"GeoModelBridge"`, `version:"0.1.7"`, `name`, `source`, `coordinates`, `nodes`, `meshes`, `materials`, `textures`。`version` 记录生成器版本；历史包保持其原始值，格式版本仍为 1。V0.1.4 改为流式写出网格数组，格式与数值编码保持不变。
 V0.1.3 增加可选 `conversion_profile:"strict"|"gis-static"`，缺省解释为 `strict`。新生成器总是写入此字段，后端将其带入最终报告，CLI/GUI 核对与请求一致。兼容策略及各诊断的具体含义见 [compatibility.md](compatibility.md)。新 Scene JSON 使用紧凑排版，值与几何精度不变。
 可选 `diagnostics[]`：`{ "severity":"warning"|"error", "code":"...", "message":"...", "context":"..." }`；后端必须将其带入最终报告，有 error 时拒绝写入。C++ 生成器总是写入此字段。
+
+V0.1.7 增加可选 `missing_texture_policy:"material-color"|"error"`；新生成器默认 `material-color` 并总是写入，历史包缺省解释为 `error`。回退发生在 FBX 读取阶段：缺失图片不进入 `textures[]`，受影响材质的 `texture` 为 -1，保留颜色与标量 opacity，逐材质记录 `MISSING_TEXTURE_FALLBACK`。writer 不会跳过 Bundle 中已经声明却缺失的资源；`error` 策略下含回退诊断的矛盾包必须拒绝。CLI/GUI 核对最终报告与请求的策略一致。
 
 `coordinates`: `{ "unit":"meter", "up_axis":"Z", "space":"local"|"referenced", "wkid":0, "origin":[0,0,0], "origin_explicit":false }`。
 所有 position 已烘焙节点世界变换、统一为右手 Z-up 米，再加 origin。WKID 只是显式空间参考赋值，不重投影。

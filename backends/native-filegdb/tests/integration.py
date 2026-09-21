@@ -35,7 +35,7 @@ vertices[1]['normal'] = [1 / math.sqrt(3)] * 3
 vertices[2]['normal'] = [-1 / 256, math.sqrt(1 - (1 / 256) ** 2), 0]
 vertices[3]['normal'] = [1 / 256, math.sqrt(1 - (1 / 256) ** 2), 0]
 meshes = [dict(name='PNG alpha', source_node='test', vertices=vertices, triangles=[dict(indices=[0, 1, 2], material=0), dict(indices=[0, 2, 3], material=0)]), dict(name='JPEG and color', source_node='test', vertices=vertices, triangles=[dict(indices=[0, 1, 2], material=1), dict(indices=[0, 2, 3], material=2)])]
-scene = dict(schema_version=1, generator='GeoModelBridge', version='0.1.6', name='Writer integration', source='generated:test', coordinates=dict(unit='meter', up_axis='Z', space='referenced', wkid=32650, origin=[500000, 4000000, 10], origin_explicit=True), nodes=[], meshes=meshes, materials=[dict(name='PNG', color=[1, 1, 1, 1], texture=0, double_sided=True), dict(name='JPEG', color=[1, 1, 1, 1], texture=1, double_sided=False), dict(name='Color opacity', color=[.13, .58, .91, .427], texture=-1, double_sided=True)], textures=textures)
+scene = dict(schema_version=1, generator='GeoModelBridge', version='0.1.7', name='Writer integration', source='generated:test', coordinates=dict(unit='meter', up_axis='Z', space='referenced', wkid=32650, origin=[500000, 4000000, 10], origin_explicit=True), nodes=[], meshes=meshes, materials=[dict(name='PNG', color=[1, 1, 1, 1], texture=0, double_sided=True), dict(name='JPEG', color=[1, 1, 1, 1], texture=1, double_sided=False), dict(name='Color opacity', color=[.13, .58, .91, .427], texture=-1, double_sided=True)], textures=textures)
 scene['diagnostics'] = [dict(severity='warning', code='TEST_SOURCE_WARNING', message='Test warning retained for traceability.', context='generated:test')]
 (bundle / 'scene.json').write_text(json.dumps(scene), encoding='utf8')
 
@@ -89,6 +89,9 @@ print('PASS: existing outputs protected; report cannot be nested in source bundl
 
 cases = {
     'unknown-conversion-profile': lambda s: s.update(conversion_profile='ignore-everything'),
+    'unknown-missing-texture-policy': lambda s: s.update(missing_texture_policy='ignore-everything'),
+    'fallback-forbidden-by-policy': lambda s: s.update(missing_texture_policy='error', diagnostics=[dict(severity='warning', code='MISSING_TEXTURE_FALLBACK', message='Unavailable image omitted.', context='material')]),
+    'missing-bundle-resource-never-falls-back': lambda s: (s.update(missing_texture_policy='material-color'), s['textures'][0].update(path='textures/absent.png')),
     'hash': lambda s: s['textures'][0].update(sha256='0' * 64),
     'path-traversal': lambda s: s['textures'][0].update(path='../outside.png'),
     'absolute-texture-path': lambda s: s['textures'][0].update(path=str(bundle / 'textures' / 'alpha.png')),

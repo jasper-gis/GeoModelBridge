@@ -14,6 +14,7 @@ public static class ReportVerifier
             Require(Text(root, "status") == "written_and_readback_verified", "报告未确认写入与回读成功。");
             Require(Text(root, "version") == ProductInfo.Version, "报告版本与 GUI 版本不一致。");
             Require(Text(root, "conversion_profile") == settings.Profile, "报告中的转换策略与本次选择不一致。");
+            Require(Text(root, "missing_texture_policy") == settings.MissingTexturePolicy, "报告中的缺失贴图策略与本次选择不一致。");
             var backend = Text(root, "backend");
             Require(backend == ExpectedBackend(settings.Backend), "报告中的转换方式与本次选择不一致。");
             var output = Text(root, "output");
@@ -35,6 +36,7 @@ public static class ReportVerifier
                 {
                     var severity = OptionalText(entry, "severity");
                     Require(severity != "error", "成功报告仍包含模型错误，不能确认转换成功。");
+                    Require(settings.MissingTexturePolicy != "error" || OptionalText(entry, "code") != "MISSING_TEXTURE_FALLBACK", "要求完整贴图时不能接受缺图回退报告。");
                     diagnostics.Add($"[{OptionalText(entry, "code")}] {OptionalText(entry, "message")}");
                 }
             }

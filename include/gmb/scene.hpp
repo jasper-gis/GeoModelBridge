@@ -7,7 +7,7 @@
 #include <vector>
 
 namespace gmb {
-inline constexpr const char* version = "0.1.6";
+inline constexpr const char* version = "0.1.7";
 struct Vec2 { double x = 0, y = 0; };
 struct Vec3 { double x = 0, y = 0, z = 0; };
 struct Color { double r = 1, g = 1, b = 1, a = 1; };
@@ -54,6 +54,7 @@ struct Coordinates {
 struct Scene {
     std::string name, source;
     std::string conversion_profile = "strict";
+    std::string missing_texture_policy = "material-color";
     std::vector<Node> nodes;
     std::vector<Mesh> meshes; // Static geometry baked to right handed Z-up, meters.
     std::vector<Material> materials;
@@ -63,6 +64,7 @@ struct Scene {
 };
 struct ReaderOptions {
     bool gis_static = false; // Explicit saved-pose/diffuse-only policy; adjustments are reported.
+    bool missing_texture_fallback = true; // Missing files use material color/opacity, with diagnostics.
     std::vector<std::filesystem::path> texture_directories;
     std::uint64_t max_file_bytes = 512ull * 1024 * 1024;
     std::uint64_t max_texture_bytes = 256ull * 1024 * 1024;

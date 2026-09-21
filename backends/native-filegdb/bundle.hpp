@@ -79,8 +79,8 @@ inline Bundle load_bundle(const fs::path &root) {
     const auto &j = b.source;
     keys(j,
          {"schema_version", "generator", "version", "name", "source", "coordinates", "nodes",
-          "meshes", "materials", "textures", "diagnostics", "conversion_profile"},
-         {"diagnostics", "conversion_profile"});
+          "meshes", "materials", "textures", "diagnostics", "conversion_profile", "missing_texture_policy"},
+         {"diagnostics", "conversion_profile", "missing_texture_policy"});
     require(integer(j.at("schema_version")) == 1 && j.at("generator") == "GeoModelBridge",
             "Unsupported bundle schema/generator.");
     j.at("version").get<std::string>();
@@ -88,6 +88,8 @@ inline Bundle load_bundle(const fs::path &root) {
     b.scene.source = j.at("source").get<std::string>();
     b.scene.conversion_profile = j.value("conversion_profile", std::string("strict"));
     require(b.scene.conversion_profile == "strict" || b.scene.conversion_profile == "gis-static", "Invalid conversion profile.");
+    b.scene.missing_texture_policy = j.value("missing_texture_policy", std::string("error"));
+    require(b.scene.missing_texture_policy == "error" || b.scene.missing_texture_policy == "material-color", "Invalid missing texture policy.");
     if (j.contains("diagnostics"))
         for (const auto &d : j.at("diagnostics")) {
             keys(d, {"severity", "code", "message", "context"});

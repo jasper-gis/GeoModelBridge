@@ -242,6 +242,7 @@ struct Reader {
     std::vector<std::filesystem::path> roots;
     std::unordered_map<const ufbx_material*, int> materials;
     std::unordered_map<const ufbx_texture*, int> textures;
+    std::unordered_map<const ufbx_texture*, bool> missing_files;
     std::unordered_map<std::string, int> texture_hashes;
     std::vector<const ufbx_texture*> material_textures;
     std::set<std::string> emitted;
@@ -267,6 +268,7 @@ struct Reader {
         result.name = path.stem().u8string();
         result.source = path.u8string();
         result.conversion_profile = options.gis_static ? "gis-static" : "strict";
+        result.missing_texture_policy = options.missing_texture_fallback ? "material-color" : "error";
         roots.push_back(std::filesystem::weakly_canonical(path.parent_path()));
         for (const auto& directory : options.texture_directories)
             roots.push_back(std::filesystem::weakly_canonical(std::filesystem::absolute(directory)));
@@ -297,6 +299,28 @@ struct Reader {
         return {};
     }
 
+    bool missing_file(const ufbx_texture* texture) {
+        if (!options.missing_texture_fallback || !texture || texture->type != UFBX_TEXTURE_FILE ||
+            texture->layers.count || texture->shader) return false;
+        const auto found = missing_files.find(texture);
+        if (found != missing_files.end()) return found->second;
+        auto content = texture->content;
+        if (!content.size && texture->has_file && texture->file_index < source->texture_files.count)
+            content = source->texture_files.data[texture->file_index].content;
+        return missing_files[texture] = !content.size && resolve_texture(*texture).empty();
+    }
+
+    bool effective_texture(const ufbx_material_map& map) {
+        return has_texture(map) && !missing_file(map.texture);
+    }
+
+    void missing_warning(const ufbx_texture* texture, const std::string& context) {
+        warning("MISSING_TEXTURE_FALLBACK",
+            "Missing texture file; omitted its texture contribution and retained material diffuse color and scalar opacity. "
+            "No replacement image was generated. Texture: " + str(texture->name) + "; paths: " +
+            str(texture->relative_filename) + " / " + str(texture->absolute_filename), context);
+    }
+
     // Return the final hash when normalization already calculated it for the
     // provenance warning, so deduplication does not hash the same image again.
     std::string normalize_jpeg(Texture& texture) {
@@ -324,6 +348,7 @@ struct Reader {
 
     int add_texture(const ufbx_texture* texture, const std::string& context) {
         if (!texture) return -1;
+        if (missing_file(texture)) { missing_warning(texture, context); return -1; }
         const auto found = textures.find(texture);
         if (found != textures.end()) return found->second;
         textures[texture] = -1;
@@ -371,7 +396,10 @@ struct Reader {
             } else {
                 const auto path = resolve_texture(*texture);
                 if (path.empty()) {
-                    error("MISSING_TEXTURE", "Texture not found inside the input directory or configured texture directories: " +
+                    if (options.missing_texture_fallback) {
+                        missing_files[texture] = true;
+                        missing_warning(texture, context);
+                    } else error("MISSING_TEXTURE", "Texture not found inside the input directory or configured texture directories: " +
                           str(texture->relative_filename) + " / " + str(texture->absolute_filename), context);
                     return -1;
                 }
@@ -404,7 +432,7 @@ struct Reader {
         const double f = factor.has_value ? factor.value_real : (color.has_value ? 1.0 : 0.0);
         const auto c = color.value_vec3;
         const bool active = color.has_value ? (nonzero(c.x * f) || nonzero(c.y * f) || nonzero(c.z * f)) : nonzero(f);
-        if (has_texture(factor) || has_texture(color) || active) {
+        if (effective_texture(factor) || effective_texture(color) || active) {
             if (can_omit && options.gis_static) omitted_channel(name, context);
             else error("UNSUPPORTED_MATERIAL_CHANNEL", std::string("Active ") + name + " is not represented; bake its appearance explicitly.", context);
         }
@@ -438,6 +466,10 @@ struct Reader {
         Material out;
         out.name = str(m.name);
         const std::string context = "material:" + out.name;
+        // Account for every unavailable file connection, including transparency
+        // aliases. Existing but unsupported/corrupt textures still fail validation.
+        for (const auto& entry : m.textures)
+            if (missing_file(entry.texture)) missing_warning(entry.texture, context);
         const bool classic = m.shader_type == UFBX_SHADER_FBX_LAMBERT || m.shader_type == UFBX_SHADER_FBX_PHONG;
         if (dom_differs(m.element.dom_node, "MultiLayer", 0))
             error("UNSUPPORTED_MULTILAYER_MATERIAL", "A multilayer material requires explicit baking to one diffuse layer.", context);
@@ -502,18 +534,18 @@ struct Reader {
         for (std::size_t i = 0; i < UFBX_MATERIAL_FBX_MAP_COUNT; ++i) {
             if (!finite_map(m.fbx.maps[i])) error("INVALID_MATERIAL_VALUE", "A conventional material channel contains a non-finite value.", context);
             if (classic && options.gis_static && lighting_map(i)) continue;
-            if (i != UFBX_MATERIAL_FBX_DIFFUSE_COLOR && has_texture(m.fbx.maps[i]))
+            if (i != UFBX_MATERIAL_FBX_DIFFUSE_COLOR && effective_texture(m.fbx.maps[i]))
                 error("UNSUPPORTED_TEXTURE_CHANNEL", "Only the diffuse/base-color texture channel is supported (FBX channel " + std::to_string(i) + ").", context);
         }
         for (std::size_t i = 0; i < UFBX_MATERIAL_PBR_MAP_COUNT; ++i) {
             bool omitted_lighting_texture = false;
-            if (classic && options.gis_static && has_texture(m.pbr.maps[i])) {
+            if (classic && options.gis_static && effective_texture(m.pbr.maps[i])) {
                 for (const auto& connection : m.textures)
                     if (connection.texture == m.pbr.maps[i].texture && lighting_property(str(connection.material_prop)))
                         omitted_lighting_texture = true;
             }
             if (omitted_lighting_texture) continue;
-            if (i != UFBX_MATERIAL_PBR_BASE_COLOR && has_texture(m.pbr.maps[i]))
+            if (i != UFBX_MATERIAL_PBR_BASE_COLOR && effective_texture(m.pbr.maps[i]))
                 error("UNSUPPORTED_TEXTURE_CHANNEL", "Only the diffuse/base-color texture channel is supported (PBR channel " + std::to_string(i) + ").", context);
         }
         for (const auto* map : {&m.fbx.normal_map, &m.fbx.bump}) {
@@ -521,15 +553,16 @@ struct Reader {
                 (nonzero(map->value_vec3.y) || nonzero(map->value_vec3.z)))))
                 error("UNSUPPORTED_MATERIAL_CHANNEL", "Normal, bump, or displacement values require explicit baking.", context);
         }
-        if (m.fbx.displacement.has_value || has_texture(m.fbx.displacement) || has_texture(m.fbx.displacement_factor))
+        if (m.fbx.displacement.has_value || effective_texture(m.fbx.displacement) || effective_texture(m.fbx.displacement_factor))
             check_channel(m.fbx.displacement_factor, m.fbx.displacement, "displacement", context);
-        if (m.fbx.vector_displacement.has_value || has_texture(m.fbx.vector_displacement) || has_texture(m.fbx.vector_displacement_factor))
+        if (m.fbx.vector_displacement.has_value || effective_texture(m.fbx.vector_displacement) || effective_texture(m.fbx.vector_displacement_factor))
             check_channel(m.fbx.vector_displacement_factor, m.fbx.vector_displacement, "vector displacement", context);
         const ufbx_texture* selected = has_texture(color) ? color.texture : nullptr;
         // Explicitly account for unmapped/custom connections too.
         for (std::size_t i = 0; i < m.textures.count; ++i) {
             const auto& entry = m.textures.data[i];
             const auto prop = str(entry.material_prop);
+            if (missing_file(entry.texture)) continue;
             if (classic && options.gis_static) {
                 if (const auto* lighting = lighting_property(prop)) {
                     omitted_channel(lighting, context);
@@ -544,7 +577,9 @@ struct Reader {
         out.texture = add_texture(selected, context);
         const int index = static_cast<int>(result.materials.size());
         result.materials.push_back(out);
-        material_textures.push_back(selected);
+        // A material-color fallback no longer needs the missing image's UV set.
+        // Mesh UVs/normals, when present, remain part of the ordinary corner data.
+        material_textures.push_back(missing_file(selected) ? nullptr : selected);
         materials[source_material] = index;
         return index;
     }

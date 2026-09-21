@@ -562,8 +562,9 @@ int run(const Options &o) {
             {"input", o.input.u8string()},
             {"source", b.scene.source},
             {"conversion_profile", b.scene.conversion_profile},
+            {"missing_texture_policy", b.scene.missing_texture_policy},
             {"compatibility_adjustments", std::any_of(b.scene.diagnostics.begin(), b.scene.diagnostics.end(), [](const auto& d) {
-                return d.code == "STATIC_POSE_USED" || d.code == "MATERIAL_CHANNEL_OMITTED" || d.code == "DEGENERATE_TRIANGLES_REMOVED" || d.code == "JPEG_CONTAINER_NORMALIZED";
+                return d.code == "STATIC_POSE_USED" || d.code == "MATERIAL_CHANNEL_OMITTED" || d.code == "DEGENERATE_TRIANGLES_REMOVED" || d.code == "JPEG_CONTAINER_NORMALIZED" || d.code == "MISSING_TEXTURE_FALLBACK";
             })},
             {"output", o.output.u8string()},
             {"feature_class", o.fc},

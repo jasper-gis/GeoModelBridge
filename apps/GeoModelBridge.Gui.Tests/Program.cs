@@ -6,7 +6,7 @@ using GeoModelBridge.Gui.Core;
 
 internal static class Program
 {
-    private const string Version = "0.1.6";
+    private const string Version = "0.1.7";
     private static readonly List<TestCase> Results = [];
     private static string Work = "";
     private static string Input = "";
@@ -153,6 +153,10 @@ internal static class Program
         Test("reject_unknown_backend", () => Invalid(Settings with { Backend = "shell" }));
         Test("reject_removed_pro_backend", () => Invalid(Settings with { Backend = "arcgis-pro" }));
         Test("default_profile_is_gis_static", () => Assert(new ConversionSettings().Profile == "gis-static", "GUI default policy is not static GIS."));
+        Test("default_missing_texture_policy_is_material_color", () => Assert(new ConversionSettings().MissingTexturePolicy == "material-color", "GUI must allow missing-file fallback by default."));
+        foreach (var policy in new[] { "material-color", "error" })
+            Test("accept_missing_texture_policy_" + policy, () => Valid(Settings with { MissingTexturePolicy = policy }));
+        Test("reject_unknown_missing_texture_policy", () => Invalid(Settings with { MissingTexturePolicy = "ignore-all" }));
         foreach (var profile in new[] { "strict", "gis-static" })
             Test("accept_profile_" + profile, () => Valid(Settings with { Profile = profile }));
         foreach (var profile in new[] { "", "Strict", "auto", "gis-static --ignore-errors" })
@@ -169,6 +173,12 @@ internal static class Program
 
     private static void ArgumentTests()
     {
+        foreach (var policy in new[] { "material-color", "error" })
+            Test("arguments_preserve_missing_texture_policy_" + policy, () =>
+            {
+                var args = ConversionCommand.BuildArguments(Settings with { MissingTexturePolicy = policy }).ToArray();
+                Assert(After(args, "--missing-textures") == policy && args.Count(a => a == "--missing-textures") == 1, "Missing texture policy was omitted, duplicated, or changed.");
+            });
         var textureDirectory = Path.Combine(Work, "贴图 & texture directory");
         Directory.CreateDirectory(textureDirectory);
         var settings = Settings with { TextureDirectories = [textureDirectory], ReportPath = Path.Combine(Work, "报告 & conversion.json") };
@@ -222,6 +232,7 @@ internal static class Program
             ["status"] = "written_and_readback_verified",
             ["backend"] = "native-filegdb",
             ["conversion_profile"] = settings.Profile,
+            ["missing_texture_policy"] = settings.MissingTexturePolicy,
             ["output"] = Path.GetFullPath(settings.OutputPath),
             ["feature_class"] = settings.FeatureClass,
             ["coordinate_system"] = new JsonObject { ["wkid"] = int.Parse(settings.Wkid), ["projected"] = true },
@@ -258,6 +269,8 @@ internal static class Program
         RejectedReport("reject_old_report_version", report => report["version"] = "0.1.1");
         RejectedReport("reject_missing_report_version", report => report.Remove("version"));
         RejectedReport("reject_missing_conversion_profile", report => report.Remove("conversion_profile"));
+        RejectedReport("reject_missing_texture_policy", report => report.Remove("missing_texture_policy"));
+        RejectedReport("reject_mismatched_texture_policy", report => report["missing_texture_policy"] = "error");
         RejectedReport("reject_mismatched_conversion_profile", report => report["conversion_profile"] = "strict");
         RejectedReport("reject_failed_report_status", report => report["status"] = "failed");
         RejectedReport("reject_report_wrong_backend", report => report["backend"] = "arcgis-pro-corehost");
@@ -349,7 +362,7 @@ internal static class Program
             var summary = ReportSummaryFormatter.Parse(report.ToJsonString());
             Assert(summary.ErrorCount == 1 && summary.WarningCount == 1 && !summary.IsSuccess, "One diagnostic array was dropped.");
         });
-        foreach (var code in new[] { "STATIC_POSE_USED", "MATERIAL_CHANNEL_OMITTED", "DEGENERATE_TRIANGLES_REMOVED", "JPEG_CONTAINER_NORMALIZED" })
+        foreach (var code in new[] { "STATIC_POSE_USED", "MATERIAL_CHANNEL_OMITTED", "DEGENERATE_TRIANGLES_REMOVED", "JPEG_CONTAINER_NORMALIZED", "MISSING_TEXTURE_FALLBACK" })
             Test("compatibility_adjustment_is_explicit_" + code, () =>
             {
                 var report = GoodReport();
@@ -638,7 +651,7 @@ internal static class Program
             {
                 InputPath = args[1], OutputPath = After(args, "--output"),
                 ReportPath = After(args, "--report"), Wkid = After(args, "--wkid"),
-                FeatureClass = After(args, "--feature-class"), Backend = After(args, "--backend"), Profile = After(args, "--profile")
+                FeatureClass = After(args, "--feature-class"), Backend = After(args, "--backend"), Profile = After(args, "--profile"), MissingTexturePolicy = After(args, "--missing-textures")
             };
             var report = GoodReport(settings);
             if (mode == "bad-report")
@@ -665,7 +678,7 @@ internal static class Program
         var service = new EngineService(engineDirectory);
         await TestAsync("native_backend_runtime_probe", async () =>
         {
-            Assert(service.IsEnginePresent, "Built V0.1.6 engine is absent: " + service.EnginePath);
+            Assert(service.IsEnginePresent, "Built V0.1.7 engine is absent: " + service.EnginePath);
             var probe = await service.ProbeBackendAsync("native-filegdb");
             Assert(probe.Success, probe.Message);
         });
@@ -707,6 +720,20 @@ internal static class Program
             Assert(!result.Success, "Repeated conversion overwrote an existing output.");
             Assert(beforeReport.SequenceEqual(SHA256.HashData(File.ReadAllBytes(request.ReportPath))), "Existing report changed.");
             Assert(beforeGdb == HashDirectory(request.OutputPath), "Existing FileGDB files changed.");
+        });
+        await TestAsync("real_missing_texture_conversion_from_gui_service", async () =>
+        {
+            var input = Path.Combine(caseDirectory, "缺图模型.fbx");
+            File.Copy(Path.Combine(fixtureDirectory, "missing_texture.fbx"), input);
+            var fallbackRequest = request with { InputPath = input, OutputPath = Path.Combine(caseDirectory, "缺图回退.gdb"), ReportPath = Path.Combine(caseDirectory, "缺图回退.json") };
+            var result = await service.ConvertAsync(fallbackRequest);
+            Assert(result.Success && result.ExitCode == 0, result.Message);
+            var json = File.ReadAllText(fallbackRequest.ReportPath);
+            ReportVerifier.Verify(json, fallbackRequest);
+            var report = JsonNode.Parse(json)!;
+            Assert(report["textures"]!.AsArray().Count == 0, "Missing image was replaced by an invented texture.");
+            var summary = ReportSummaryFormatter.Parse(json);
+            Assert(summary.IsSuccess && summary.HasCompatibilityAdjustments && summary.SummaryText.Contains("材质颜色"), "Fallback is not visible in the GUI success summary.");
         });
     }
 

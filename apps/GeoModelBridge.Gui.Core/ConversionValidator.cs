@@ -37,6 +37,8 @@ public static partial class ConversionValidator
             issues.Add("仅支持原生 FileGDB 转换方式。");
         if (settings.Profile is not ("gis-static" or "strict"))
             issues.Add("请选择 GIS 静态兼容或严格检查转换策略。");
+        if (settings.MissingTexturePolicy is not ("material-color" or "error"))
+            issues.Add("缺失贴图策略必须为材质颜色回退或停止转换。");
         if (output is not null)
         {
             var report = FullPath(string.IsNullOrWhiteSpace(settings.ReportPath) ? output + ".report.json" : settings.ReportPath,

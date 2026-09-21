@@ -1,5 +1,12 @@
 # Changelog
 
+## V0.1.7 — 2026-09-21
+
+- 缺少外部贴图文件默认不再阻断 FBX 转换：保留材质漫反射颜色与标量透明度，解除失效贴图绑定，并逐项记录 `MISSING_TEXTURE_FALLBACK` 警告及原路径。已有有效贴图照常写入，不生成替代图片。
+- 增加独立的 `--missing-textures material-color|error` 策略；GUI 默认勾选缺图回退，可取消勾选要求贴图完整。两种渲染 profile 共用此策略，Bundle 和最终报告记录并核对实际选择。
+- 缺图的透明度别名及仅由失效贴图引起的 UV 要求不再误阻断；有效贴图仍检查 UV，损坏图片、无效法线和其他不支持的材质仍报错。中文摘要区分缺图回退与剩余数据问题。
+- 增加 Windows / Ubuntu 缺图与混合材质 GDB 写入、独立复制回读以及 GUI 服务回归；实际结果见 [V0.1.7 验证记录](docs/validation-v0.1.7.md)。
+
 ## V0.1.6 — 2026-09-21
 
 - 增加 Ubuntu 24.04 x86_64 原生 FileGDB 转换，Windows/Linux 共用 C++17 核心、Scene Bundle、材质编解码和写入/回读逻辑，继续直接维护 master。

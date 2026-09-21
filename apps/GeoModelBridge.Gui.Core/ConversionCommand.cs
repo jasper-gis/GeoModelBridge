@@ -19,6 +19,7 @@ public static class ConversionCommand
             "--output", PathRules.Normalize(settings.OutputPath),
             "--backend", settings.Backend,
             "--profile", settings.Profile,
+            "--missing-textures", settings.MissingTexturePolicy,
             "--wkid", int.Parse(settings.Wkid.Trim(), NumberStyles.None, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
             "--origin", Number(settings.OriginX), Number(settings.OriginY), Number(settings.OriginZ),
             "--feature-class", settings.FeatureClass,
