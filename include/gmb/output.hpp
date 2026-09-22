@@ -1,5 +1,6 @@
 #pragma once
 #include <filesystem>
+#include <functional>
 #include <string>
 
 namespace gmb::io {
@@ -11,6 +12,13 @@ void reject_reparse(const std::filesystem::path& path);
 // Creates exclusively and flushes the complete contents. A failed create never
 // removes the existing entry. A failed write cleans up only the file it created.
 void write_exclusive(const std::filesystem::path& path, const std::string& data);
+
+// Streams arbitrarily large contents through the same exclusive-create handle.
+// The producer must call the sink synchronously and must not retain it. Producer
+// or write failures remove only the file created by this invocation.
+using WriteChunk = std::function<void(const char*, std::size_t)>;
+void write_exclusive(const std::filesystem::path& path,
+                     const std::function<void(const WriteChunk&)>& produce);
 
 // Commit a staged file/directory on the same filesystem. An existing target,
 // including an empty directory or dangling link, must never be replaced. Fail

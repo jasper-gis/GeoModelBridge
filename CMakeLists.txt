@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(GeoModelBridge VERSION 0.1.14 LANGUAGES C CXX)
+project(GeoModelBridge VERSION 0.2.0 LANGUAGES C CXX)
 
 option(GMB_BUILD_TESTS "Build correctness tests" ON)
 option(GMB_BUILD_NATIVE "Build the complete CLI with native FileGDB writer (requires the platform SDK)" ON)
@@ -101,10 +101,14 @@ if(BUILD_TESTING AND GMB_BUILD_TESTS)
   find_package(Python3 COMPONENTS Interpreter QUIET)
   if(Python3_Interpreter_FOUND AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_test.py")
     add_executable(gmb_failing_writer tests/failing_writer.cpp)
+    add_executable(gmb_report_writer tests/report_writer.cpp)
+    target_link_libraries(gmb_report_writer PRIVATE gmb::core)
+    target_include_directories(gmb_report_writer PRIVATE third_party)
     if(MINGW AND GMB_STATIC_RUNTIME)
       target_link_options(gmb_failing_writer PRIVATE -static -static-libgcc -static-libstdc++)
+      target_link_options(gmb_report_writer PRIVATE -static -static-libgcc -static-libstdc++)
     endif()
-    add_test(NAME cli COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_test.py" "$<TARGET_FILE:geomodelbridge>" "${CMAKE_CURRENT_SOURCE_DIR}/tests/fixtures" "$<TARGET_FILE:gmb_failing_writer>")
+    add_test(NAME cli COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_test.py" "$<TARGET_FILE:geomodelbridge>" "${CMAKE_CURRENT_SOURCE_DIR}/tests/fixtures" "$<TARGET_FILE:gmb_failing_writer>" "$<TARGET_FILE:gmb_report_writer>")
     add_test(NAME reader_integration COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tests/reader_integration_test.py" "$<TARGET_FILE:geomodelbridge>" "${CMAKE_CURRENT_SOURCE_DIR}/tests/fixtures")
     add_test(NAME binary_fbx COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tests/binary_fbx_test.py" "$<TARGET_FILE:geomodelbridge>" "${CMAKE_CURRENT_SOURCE_DIR}/tests/fixtures")
     add_test(NAME profile_integration COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tests/profile_integration_test.py" "$<TARGET_FILE:geomodelbridge>" "${CMAKE_CURRENT_SOURCE_DIR}/tests/fixtures")
@@ -118,19 +122,96 @@ install(FILES tests/fixtures/textured_quad.fbx tests/fixtures/checker.png DESTIN
 install(DIRECTORY python/geomodelbridge DESTINATION python FILES_MATCHING PATTERN "*.py" PATTERN "__pycache__" EXCLUDE)
 install(FILES python/examples/convert_fbx.py DESTINATION python/examples)
 if(GMB_BUILD_NATIVE)
-  add_executable(GeoModelBridge.NativeWriter backends/native-filegdb/main.cpp backends/native-filegdb/images.cpp "${CMAKE_CURRENT_SOURCE_DIR}/src/core.cpp")
+  add_executable(GeoModelBridge.NativeWriter backends/native-filegdb/main.cpp backends/native-filegdb/images.cpp backends/native-filegdb/images_jpeg.cpp backends/native-filegdb/images_png.cpp "${CMAKE_CURRENT_SOURCE_DIR}/src/core.cpp")
   target_include_directories(GeoModelBridge.NativeWriter PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/third_party")
   target_include_directories(GeoModelBridge.NativeWriter SYSTEM PRIVATE "${FILEGDB_API_ROOT}/include")
   if(WIN32)
-    target_sources(GeoModelBridge.NativeWriter PRIVATE backends/native-filegdb/platform_windows.cpp backends/native-filegdb/images_windows.cpp "${CMAKE_CURRENT_SOURCE_DIR}/src/platform_files_windows.cpp")
+    # Only the decoder is built, from unchanged, hash-pinned upstream sources.
+    # Keep its configuration scoped and all project targets in this root build.
+    function(gmb_add_windows_jpeg)
+      set(GMB_JPEG_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/third_party/libjpeg-turbo")
+      set(GMB_JPEG_BINARY "${CMAKE_CURRENT_BINARY_DIR}/jpeg-config")
+      set(JPEG_LIB_VERSION 62)
+      set(VERSION 3.1.4.1)
+      set(LIBJPEG_TURBO_VERSION_NUMBER 3001004)
+      set(BUILD "GeoModelBridge")
+      set(CMAKE_PROJECT_NAME "libjpeg-turbo")
+      set(COPYRIGHT_YEAR 2026)
+      set(SIZE_T 8)
+      set(INLINE "__inline")
+      set(THREAD_LOCAL "__declspec(thread)")
+      set(HIDDEN "")
+      set(HAVE_INTRIN_H 1)
+      set(D_ARITH_CODING_SUPPORTED 1)
+      set(C_ARITH_CODING_SUPPORTED 0)
+      set(WITH_SIMD 0)
+      foreach(header jconfig.h jconfigint.h jversion.h)
+        configure_file("${GMB_JPEG_SOURCE}/src/${header}.in" "${GMB_JPEG_BINARY}/${header}" @ONLY)
+      endforeach()
+      set(GMB_JPEG_DECODER_SOURCES
+        src/jcomapi.c src/jdapimin.c src/wrapper/jdapistd-8.c
+        src/wrapper/jdapistd-12.c src/wrapper/jdapistd-16.c src/jdatasrc.c
+        src/wrapper/jdcoefct-8.c src/wrapper/jdcoefct-12.c src/wrapper/jdcolor-8.c
+        src/wrapper/jdcolor-12.c src/wrapper/jdcolor-16.c src/wrapper/jddctmgr-8.c
+        src/wrapper/jddctmgr-12.c src/wrapper/jddiffct-8.c src/wrapper/jddiffct-12.c
+        src/wrapper/jddiffct-16.c src/jdhuff.c src/jdicc.c
+        src/jdinput.c src/jdlhuff.c src/wrapper/jdlossls-8.c
+        src/wrapper/jdlossls-12.c src/wrapper/jdlossls-16.c src/wrapper/jdmainct-8.c
+        src/wrapper/jdmainct-12.c src/wrapper/jdmainct-16.c src/jdmarker.c
+        src/jdmaster.c src/wrapper/jdmerge-8.c src/wrapper/jdmerge-12.c
+        src/jdphuff.c src/wrapper/jdpostct-8.c src/wrapper/jdpostct-12.c
+        src/wrapper/jdpostct-16.c src/wrapper/jdsample-8.c src/wrapper/jdsample-12.c
+        src/wrapper/jdsample-16.c src/jdtrans.c src/jerror.c
+        src/wrapper/jidctflt-8.c src/wrapper/jidctflt-12.c src/wrapper/jidctfst-8.c
+        src/wrapper/jidctfst-12.c src/wrapper/jidctint-8.c src/wrapper/jidctint-12.c
+        src/wrapper/jidctred-8.c src/wrapper/jidctred-12.c src/jmemmgr.c
+        src/jmemnobs.c src/wrapper/jquant1-8.c src/wrapper/jquant1-12.c
+        src/wrapper/jquant2-8.c src/wrapper/jquant2-12.c src/wrapper/jutils-8.c
+        src/wrapper/jutils-12.c src/wrapper/jutils-16.c src/jaricom.c
+        src/jdarith.c src/jpeg_nbits.c
+      )
+      list(TRANSFORM GMB_JPEG_DECODER_SOURCES PREPEND "${GMB_JPEG_SOURCE}/")
+      add_library(gmb_jpeg_decoder STATIC ${GMB_JPEG_DECODER_SOURCES})
+      target_include_directories(gmb_jpeg_decoder SYSTEM PUBLIC "${GMB_JPEG_SOURCE}/src" "${GMB_JPEG_BINARY}")
+      target_compile_definitions(gmb_jpeg_decoder PRIVATE _CRT_SECURE_NO_WARNINGS)
+      set_property(TARGET gmb_jpeg_decoder PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+    endfunction()
+    gmb_add_windows_jpeg()
+    set(GMB_ZLIB_SOURCES adler32.c crc32.c inflate.c inffast.c inftrees.c zutil.c)
+    list(TRANSFORM GMB_ZLIB_SOURCES PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/third_party/zlib/")
+    add_library(gmb_zlib_decoder STATIC ${GMB_ZLIB_SOURCES})
+    target_include_directories(gmb_zlib_decoder SYSTEM PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/third_party/zlib")
+    target_compile_definitions(gmb_zlib_decoder PRIVATE _CRT_SECURE_NO_WARNINGS)
+    set_property(TARGET gmb_zlib_decoder PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+    # Generate a read-only libpng configuration from its unchanged upstream header.
+    file(READ "${CMAKE_CURRENT_SOURCE_DIR}/third_party/libpng/scripts/pnglibconf.h.prebuilt" GMB_PNG_CONFIG)
+    string(REGEX REPLACE "#define PNG_(WRITE|SIMPLIFIED_WRITE|SAVE_INT_32)[^\n]*\n" "" GMB_PNG_CONFIG "${GMB_PNG_CONFIG}")
+    file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/png-config")
+    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/png-config/pnglibconf.h" "/* GeoModelBridge generated decoder-only configuration. */\n${GMB_PNG_CONFIG}")
+    set(GMB_PNG_SOURCES png.c pngerror.c pngget.c pngmem.c pngpread.c pngread.c
+      pngrio.c pngrtran.c pngrutil.c pngset.c pngtrans.c)
+    list(TRANSFORM GMB_PNG_SOURCES PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/third_party/libpng/")
+    add_library(gmb_png_decoder STATIC ${GMB_PNG_SOURCES})
+    target_include_directories(gmb_png_decoder SYSTEM PUBLIC
+      "${CMAKE_CURRENT_SOURCE_DIR}/third_party/libpng" "${CMAKE_CURRENT_BINARY_DIR}/png-config")
+    target_compile_definitions(gmb_png_decoder PRIVATE _CRT_SECURE_NO_WARNINGS PNG_INTEL_SSE_OPT=0)
+    target_link_libraries(gmb_png_decoder PRIVATE gmb_zlib_decoder)
+    set_property(TARGET gmb_png_decoder PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+    target_link_libraries(GeoModelBridge.NativeWriter PRIVATE gmb_png_decoder)
+    install(FILES third_party/libpng/LICENSE DESTINATION licenses/libpng)
+    install(FILES third_party/zlib/LICENSE DESTINATION licenses/zlib)
+    target_link_libraries(GeoModelBridge.NativeWriter PRIVATE gmb_jpeg_decoder)
+    install(FILES third_party/libjpeg-turbo/LICENSE.md third_party/libjpeg-turbo/README.ijg
+      DESTINATION licenses/libjpeg-turbo)
+    target_sources(GeoModelBridge.NativeWriter PRIVATE backends/native-filegdb/platform_windows.cpp "${CMAKE_CURRENT_SOURCE_DIR}/src/platform_files_windows.cpp")
     set_property(TARGET GeoModelBridge.NativeWriter PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
     target_compile_definitions(GeoModelBridge.NativeWriter PRIVATE NOMINMAX UNICODE _UNICODE _ITERATOR_DEBUG_LEVEL=0)
     target_compile_options(GeoModelBridge.NativeWriter PRIVATE /W4 /permissive- /utf-8)
-    target_link_libraries(GeoModelBridge.NativeWriter PRIVATE "${FILEGDB_API_ROOT}/lib64/FileGDBAPI.lib" windowscodecs ole32)
+    target_link_libraries(GeoModelBridge.NativeWriter PRIVATE "${FILEGDB_API_ROOT}/lib64/FileGDBAPI.lib")
   else()
     find_package(PNG REQUIRED)
     find_package(JPEG REQUIRED)
-    target_sources(GeoModelBridge.NativeWriter PRIVATE backends/native-filegdb/platform_linux.cpp backends/native-filegdb/images_linux.cpp "${CMAKE_CURRENT_SOURCE_DIR}/src/platform_files_linux.cpp")
+    target_sources(GeoModelBridge.NativeWriter PRIVATE backends/native-filegdb/platform_linux.cpp "${CMAKE_CURRENT_SOURCE_DIR}/src/platform_files_linux.cpp")
     target_compile_options(GeoModelBridge.NativeWriter PRIVATE -Wall -Wextra -Wpedantic)
     target_link_libraries(GeoModelBridge.NativeWriter PRIVATE "${FILEGDB_API_ROOT}/lib/libFileGDBAPI.so" PNG::PNG JPEG::JPEG)
     # FileGDBAPI itself depends on fgdbunixrtl. DT_RPATH also resolves that indirect

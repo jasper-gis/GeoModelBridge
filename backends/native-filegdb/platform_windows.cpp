@@ -24,12 +24,10 @@ bool within(const fs::path& child, const fs::path& root) {
     if (!b.empty() && b.back() != L'\\') b += L'\\';
     return a.rfind(b, 0) == 0;
 }
-PlatformRuntime::PlatformRuntime() {
-    require(SUCCEEDED(CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)), "COM initialization failed.");
-}
-PlatformRuntime::~PlatformRuntime() { CoUninitialize(); }
+PlatformRuntime::PlatformRuntime() = default;
+PlatformRuntime::~PlatformRuntime() = default;
 const char* runtime_description() { return "Requires FileGDB API 1.5.5 Windows x64 and Microsoft C++ runtimes; no ArcGIS Pro dependency."; }
-const char* image_description() { return "PNG is decoded to straight RGBA8 by Windows WIC without ICC conversion; JPEG compressed bytes are preserved."; }
+const char* image_description() { return "PNG is decoded to straight RGBA8 by libpng without gamma/ICC conversion; libjpeg-turbo validates JPEG scans without recovery and original compressed bytes are preserved."; }
 }
 int wmain(int argc, wchar_t** argv) {
     try {

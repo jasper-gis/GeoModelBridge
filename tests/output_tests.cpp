@@ -8,6 +8,12 @@
 #include <iostream>
 #include <iterator>
 #include <stdexcept>
+#ifdef _WIN32
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#endif
 
 namespace fs = std::filesystem;
 namespace {
@@ -37,15 +43,27 @@ void test(const char* name, const std::function<void(const fs::path&)>& operatio
     catch (const Skip& reason) { ++skipped; std::cout << "SKIP " << name << ": " << reason.what() << '\n'; }
     catch (const std::exception& error) { ++failed; std::cerr << "FAIL " << name << ": " << error.what() << '\n'; }
 }
-void create_test_link(const fs::path& path) {
+void create_test_link(const fs::path& target, const fs::path& link, bool directory = false) {
     std::error_code error;
-    fs::create_symlink(path/"absent",path/"link",error);
-    if (!error) return;
 #ifdef _WIN32
+    // MinGW's std::filesystem symlink creation may be unimplemented even when
+    // Windows supports it. Exercise the actual Windows path checks directly.
+    const DWORD flags = directory ? SYMBOLIC_LINK_FLAG_DIRECTORY : 0;
+    if (CreateSymbolicLinkW(link.c_str(), target.c_str(), flags | 0x2)) return;
+    auto code = GetLastError();
+    if (code == ERROR_INVALID_PARAMETER) {
+        if (CreateSymbolicLinkW(link.c_str(), target.c_str(), flags)) return;
+        code = GetLastError();
+    }
     // Unprivileged Windows accounts may not have symlink creation rights.
-    if (error.value()==1314) throw Skip("Windows privilege not held");
+    if (code == ERROR_PRIVILEGE_NOT_HELD) throw Skip("Windows privilege not held");
+    error = std::error_code(static_cast<int>(code), std::system_category());
+#else
+    if (directory) fs::create_directory_symlink(target, link, error);
+    else fs::create_symlink(target, link, error);
+    if (!error) return;
 #endif
-    throw fs::filesystem_error("Cannot create test link",path,error);
+    throw fs::filesystem_error("Cannot create test link",link,error);
 }
 }
 int main() {
@@ -57,6 +75,25 @@ int main() {
         require(read(file)==content,"Existing bytes were truncated/deleted");
         gmb::io::write_exclusive(root/"empty","");
         require(fs::file_size(root/"empty")==0,"Empty file write failed");
+    });
+    test("streaming exclusive writes retain chunks and clean producer failures", [](const fs::path& root) {
+        const std::string first(1500000, 'a'), last("tail\0bytes", 10);
+        gmb::io::write_exclusive(root/"streamed", [&](const gmb::io::WriteChunk& write) {
+            write(first.data(), first.size());
+            write(nullptr, 0);
+            write(last.data(), last.size());
+        });
+        require(read(root/"streamed") == first + last,"Streaming output lost chunk bytes");
+        bool called = false;
+        rejects([&] { gmb::io::write_exclusive(root/"streamed", [&](const gmb::io::WriteChunk&) { called = true; }); });
+        require(!called && read(root/"streamed") == first + last,"Failed exclusive creation called producer or changed original");
+        rejects([&] {
+            gmb::io::write_exclusive(root/"partial", [&](const gmb::io::WriteChunk& write) {
+                write(first.data(), first.size());
+                throw std::runtime_error("Intentional serialization failure");
+            });
+        });
+        require(!fs::exists(root/"partial"),"Failed producer left a partially written file");
     });
     test("late file conflict preserves source and destination", [](const fs::path& root) {
         gmb::io::write_exclusive(root/"staged","new");
@@ -131,7 +168,7 @@ int main() {
         require(std::distance(fs::directory_iterator(root),fs::directory_iterator{})==1,"Failed serialization left staging");
     });
     test("dangling links and linked parents are preserved and rejected", [](const fs::path& root) {
-        create_test_link(root);
+        create_test_link(root/"absent", root/"link");
         const auto link=root/"link";
         gmb::io::write_exclusive(root/"source","original");
         rejects([&] { gmb::io::write_exclusive(link,"replacement"); });
@@ -142,7 +179,7 @@ int main() {
         rejects([&] { gmb::write_bundle(scene,link); });
         require(fs::is_symlink(fs::symlink_status(link)) && !fs::exists(root/"absent"),"Dangling link modified/followed");
         fs::create_directory(root/"real");
-        fs::create_directory_symlink(root/"real",root/"parent-link");
+        create_test_link(root/"real",root/"parent-link",true);
         rejects([&] { gmb::write_report(scene,{},"prepared",root/"parent-link"/"child"/"report.json"); });
         rejects([&] { gmb::write_bundle(scene,root/"parent-link"/"child"/"bundle"); });
         require(fs::is_empty(root/"real"),"Linked parent was used to create output");

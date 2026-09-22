@@ -1,4 +1,5 @@
 #include "gmb/output.hpp"
+#include <algorithm>
 #include <cerrno>
 #include <fcntl.h>
 #include <linux/fs.h>
@@ -22,22 +23,31 @@ void reject_reparse(const fs::path& p) {
     }
 }
 void write_exclusive(const fs::path& path, const std::string& data) {
-    const int file = open(path.c_str(), O_WRONLY | O_CREAT | O_EXCL | O_CLOEXEC | O_NOFOLLOW, 0666);
+    write_exclusive(path, [&](const WriteChunk& write) { write(data.data(), data.size()); });
+}
+void write_exclusive(const fs::path& path, const std::function<void(const WriteChunk&)>& produce) {
+    int file = open(path.c_str(), O_WRONLY | O_CREAT | O_EXCL | O_CLOEXEC | O_NOFOLLOW, 0666);
     if (file < 0)
         throw fs::filesystem_error("Cannot create new file", path, std::error_code(errno, std::generic_category()));
-    bool ok = true;
-    std::size_t offset = 0;
-    while (offset < data.size()) {
-        const auto written = write(file, data.data() + offset, data.size() - offset);
-        if (written < 0 && errno == EINTR) continue;
-        if (written <= 0) { ok = false; break; }
-        offset += static_cast<std::size_t>(written);
-    }
-    if (ok) ok = fsync(file) == 0;
-    if (close(file) != 0) ok = false;
-    if (!ok) {
+    try {
+        produce([&](const char* data, std::size_t size) {
+            while (size) {
+                const auto count = (std::min)(size, std::size_t(1024 * 1024));
+                const auto written = write(file, data, count);
+                if (written < 0 && errno == EINTR) continue;
+                if (written <= 0) throw std::runtime_error("Cannot write file: " + path.u8string());
+                data += written;
+                size -= static_cast<std::size_t>(written);
+            }
+        });
+        if (fsync(file) != 0) throw std::runtime_error("Cannot flush file: " + path.u8string());
+        const bool closed = close(file) == 0;
+        file = -1;
+        if (!closed) throw std::runtime_error("Cannot finish file write: " + path.u8string());
+    } catch (...) {
+        if (file >= 0) close(file);
         unlink(path.c_str()); // This call created the file exclusively.
-        throw std::runtime_error("Cannot finish file write: " + path.u8string());
+        throw;
     }
 }
 bool move_new(const fs::path& source, const fs::path& target) {

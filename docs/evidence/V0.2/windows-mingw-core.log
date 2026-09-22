@@ -1,0 +1,272 @@
+Start testing: Sep 22 17:56 �й���׼ʱ��
+----------------------------------------------------------
+1/9 Testing: core
+1/9 Test: core
+Command: "<workspace>/build/v02-core-audit/bin/gmb_core_tests.exe"
+Directory: <workspace>/build/v02-core-audit
+"core" start time: Sep 22 17:56 �й���׼ʱ��
+Output:
+----------------------------------------------------------
+PASS all synthetic reference scenes validate
+PASS SHA-256 standard vectors
+PASS out-of-range triangle index
+PASS unknown conversion profile
+PASS unknown coordinate space
+PASS local coordinates with assigned WKID
+PASS referenced coordinates without WKID
+PASS nonzero origin without explicit provenance
+PASS textured triangle without corner UV
+PASS nonfinite position
+PASS nonfinite UV
+PASS nonfinite normal
+PASS nonfinite material color
+PASS out-of-range material
+PASS out-of-range texture reference
+PASS missing texture bytes
+PASS unsupported texture format
+PASS mismatched declared texture format
+PASS repeated triangle index
+PASS collinear triangle
+PASS explicit origin translates geometry only
+PASS local translation and omitted origin stay distinct
+PASS UV seams and hard edges survive bundle preparation
+PASS bundle preserves texture bytes and refuses existing output
+PASS streamed bundle preserves escaping, exact numbers and absent channels
+PASS streamed scene spans buffers and duplicate texture bindings retain one resource
+PASS invalid scene leaves no partial bundle
+PASSED 0 test group(s) failed
+<end of output>
+Test time =   0.23 sec
+----------------------------------------------------------
+Test Passed.
+"core" end time: Sep 22 17:56 �й���׼ʱ��
+"core" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/9 Testing: output_safety
+2/9 Test: output_safety
+Command: "<workspace>/build/v02-core-audit/bin/gmb_output_tests.exe"
+Directory: <workspace>/build/v02-core-audit
+"output_safety" start time: Sep 22 17:56 �й���׼ʱ��
+Output:
+----------------------------------------------------------
+PASS exclusive report creation preserves existing bytes
+PASS streaming exclusive writes retain chunks and clean producer failures
+PASS late file conflict preserves source and destination
+PASS late empty directory conflict preserves both directories
+PASS concurrent file commits have exactly one winner
+PASS concurrent report writers leave one complete report and no staging
+PASS concurrent bundle writers preserve winner and clean their staging
+PASS existing empty bundle and invalid report serialization stay untouched
+SKIP dangling links and linked parents are preserved and rejected: Windows privilege not held
+8 groups passed, 0 failed, 1 skipped
+<end of output>
+Test time =   0.24 sec
+----------------------------------------------------------
+Test Passed.
+"output_safety" end time: Sep 22 17:56 �й���׼ʱ��
+"output_safety" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/9 Testing: cli
+3/9 Test: cli
+Command: "<home>/AppData/Local/hermes/hermes-agent/venv/Scripts/python.exe" "<workspace>/tests/cli_test.py" "<workspace>/build/v02-core-audit/bin/geomodelbridge.exe" "<workspace>/tests/fixtures" "<workspace>/build/v02-core-audit/bin/gmb_failing_writer.exe" "<workspace>/build/v02-core-audit/bin/gmb_report_writer.exe"
+Directory: <workspace>/build/v02-core-audit
+"cli" start time: Sep 22 17:56 �й���׼ʱ��
+Output:
+----------------------------------------------------------
+SKIP CLI linked-path checks: Windows symlink privilege not held
+PASS CLI, bundle integrity, original image bytes, PNG alpha, placement, and overwrite protection
+<end of output>
+Test time =   2.12 sec
+----------------------------------------------------------
+Test Passed.
+"cli" end time: Sep 22 17:56 �й���׼ʱ��
+"cli" time elapsed: 00:00:02
+----------------------------------------------------------
+
+4/9 Testing: reader_integration
+4/9 Test: reader_integration
+Command: "<home>/AppData/Local/hermes/hermes-agent/venv/Scripts/python.exe" "<workspace>/tests/reader_integration_test.py" "<workspace>/build/v02-core-audit/bin/geomodelbridge.exe" "<workspace>/tests/fixtures"
+Directory: <workspace>/build/v02-core-audit
+"reader_integration" start time: Sep 22 17:56 �й���׼ʱ��
+Output:
+----------------------------------------------------------
+PASS actual FBX parsing, units, transforms, mirrors, materials, selected UVs, original external/embedded textures, diagnostics and failure reports
+<end of output>
+Test time =   0.61 sec
+----------------------------------------------------------
+Test Passed.
+"reader_integration" end time: Sep 22 17:56 �й���׼ʱ��
+"reader_integration" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/9 Testing: binary_fbx
+5/9 Test: binary_fbx
+Command: "<home>/AppData/Local/hermes/hermes-agent/venv/Scripts/python.exe" "<workspace>/tests/binary_fbx_test.py" "<workspace>/build/v02-core-audit/bin/geomodelbridge.exe" "<workspace>/tests/fixtures"
+Directory: <workspace>/build/v02-core-audit
+"binary_fbx" start time: Sep 22 17:56 �й���׼ʱ��
+Output:
+----------------------------------------------------------
+PASS upstream binary FBX: verified original bytes, Unicode input, geometry, normals, UV seams, and neutral exporter defaults
+<end of output>
+Test time =   0.26 sec
+----------------------------------------------------------
+Test Passed.
+"binary_fbx" end time: Sep 22 17:56 �й���׼ʱ��
+"binary_fbx" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/9 Testing: profile_integration
+6/9 Test: profile_integration
+Command: "<home>/AppData/Local/hermes/hermes-agent/venv/Scripts/python.exe" "<workspace>/tests/profile_integration_test.py" "<workspace>/build/v02-core-audit/bin/geomodelbridge.exe" "<workspace>/tests/fixtures"
+Directory: <workspace>/build/v02-core-audit
+"profile_integration" start time: Sep 22 17:56 �й���׼ʱ��
+Output:
+----------------------------------------------------------
+PASS neutral-exporter-defaults-strict
+PASS zero-factor-displacement-is-inactive-strict
+PASS empty-animation-stack-strict
+PASS neutral-exporter-defaults-gis-static
+PASS zero-factor-displacement-is-inactive-gis-static
+PASS empty-animation-stack-gis-static
+PASS parent-visibility-0-strict
+PASS layer-visibility-0-strict
+PASS parent-visibility-0-gis-static
+PASS layer-visibility-0-gis-static
+PASS parent-visibility-1-strict
+PASS layer-visibility-1-strict
+PASS parent-visibility-1-gis-static
+PASS layer-visibility-1-gis-static
+PASS active-animation-strict
+PASS active-animation-gis-static
+PASS ambient-strict
+PASS ambient-gis-static
+PASS ambient-texture-strict
+PASS ambient-texture-gis-static
+PASS specular-strict
+PASS specular-gis-static
+PASS specular-texture-strict
+PASS specular-texture-gis-static
+PASS reflection-strict
+PASS reflection-gis-static
+PASS reflection-texture-strict
+PASS reflection-texture-gis-static
+PASS omitted-profile-is-strict
+PASS active-reflectivity-strict
+PASS active-reflectivity-gis-static
+PASS emission-strict
+PASS emission-gis-static
+PASS active-displacement-strict
+PASS active-displacement-gis-static
+PASS active-vector-displacement-strict
+PASS active-vector-displacement-gis-static
+PASS unknown-roughness-strict
+PASS unknown-roughness-gis-static
+PASS pbr-shader-strict
+PASS pbr-shader-gis-static
+PASS conflicting-opacity-strict
+PASS conflicting-opacity-gis-static
+PASS colored-transparency-strict
+PASS colored-transparency-gis-static
+PASS normal-map-strict
+PASS normal-map-gis-static
+PASS opacity-map-strict
+PASS opacity-map-gis-static
+PASS jpeg-jfif-original-strict
+PASS jpeg-jfif-original-gis-static
+PASS jpeg-adobe-ycbcr-strict
+PASS jpeg-adobe-ycbcr-gis-static
+PASS jpeg-adobe-orientation-one-strict
+PASS jpeg-adobe-orientation-one-gis-static
+PASS jpeg-big-endian-equal-density-strict
+PASS jpeg-big-endian-equal-density-gis-static
+PASS jpeg-adobe-rgb-ambiguous-strict
+PASS jpeg-adobe-rgb-ambiguous-gis-static
+PASS jpeg-missing-colorspace-metadata-strict
+PASS jpeg-missing-colorspace-metadata-gis-static
+PASS jpeg-orientation-six-strict
+PASS jpeg-orientation-six-gis-static
+PASS jpeg-nonsquare-density-strict
+PASS jpeg-nonsquare-density-gis-static
+PASS jpeg-incomplete-density-strict
+PASS jpeg-incomplete-density-gis-static
+PASS jpeg-cosited-chroma-strict
+PASS jpeg-cosited-chroma-gis-static
+PASS jpeg-unusual-component-ids-strict
+PASS jpeg-unusual-component-ids-gis-static
+PASS jpeg-truncated-scan-header-strict
+PASS jpeg-truncated-scan-header-gis-static
+PASS jpeg-empty-scan-strict
+PASS jpeg-empty-scan-gis-static
+PASS jpeg-missing-end-marker-strict
+PASS jpeg-missing-end-marker-gis-static
+PASS zero-area-strict
+PASS zero-area-gis-static
+PASS all-degenerate-not-empty-success
+PASS tiny-nonzero-triangle-retained
+PASS overflow-area-is-error-not-cleanup
+PASS imbalanced-nonzero-area-is-never-cleaned
+PASS 84 static-GIS profile cases: defaults, animation, lighting-only omission, strict safety, exact-zero cleanup
+<end of output>
+Test time =   2.57 sec
+----------------------------------------------------------
+Test Passed.
+"profile_integration" end time: Sep 22 17:56 �й���׼ʱ��
+"profile_integration" time elapsed: 00:00:02
+----------------------------------------------------------
+
+7/9 Testing: missing_textures
+7/9 Test: missing_textures
+Command: "<home>/AppData/Local/hermes/hermes-agent/venv/Scripts/python.exe" "<workspace>/tests/missing_texture_test.py" "<workspace>/build/v02-core-audit/bin/geomodelbridge.exe" "<workspace>/tests/fixtures"
+Directory: <workspace>/build/v02-core-audit
+"missing_textures" start time: Sep 22 17:56 �й���׼ʱ��
+Output:
+----------------------------------------------------------
+PASS 21 missing-texture cases: color/opacity fallback, aliases, UVs, remaining textures, explicit rejection and source preservation
+SKIP POSIX FIFO, symlink loop and directory permission cases
+<end of output>
+Test time =   0.87 sec
+----------------------------------------------------------
+Test Passed.
+"missing_textures" end time: Sep 22 17:56 �й���׼ʱ��
+"missing_textures" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/9 Testing: normal_repair
+8/9 Test: normal_repair
+Command: "<home>/AppData/Local/hermes/hermes-agent/venv/Scripts/python.exe" "<workspace>/tests/normal_repair_test.py" "<workspace>/build/v02-core-audit/bin/geomodelbridge.exe" "<workspace>/tests/fixtures"
+Directory: <workspace>/build/v02-core-audit
+"normal_repair" start time: Sep 22 17:56 �й���׼ʱ��
+Output:
+----------------------------------------------------------
+PASS 12 normal repair cases: strict rejection, valid corners, transforms, winding, degenerate accounting, UVs and GDB readback
+<end of output>
+Test time =   0.60 sec
+----------------------------------------------------------
+Test Passed.
+"normal_repair" end time: Sep 22 17:56 �й���׼ʱ��
+"normal_repair" time elapsed: 00:00:00
+----------------------------------------------------------
+
+9/9 Testing: python_client
+9/9 Test: python_client
+Command: "<home>/AppData/Local/hermes/hermes-agent/venv/Scripts/python.exe" "<workspace>/tests/python_client_test.py"
+Directory: <workspace>/build/v02-core-audit
+"python_client" start time: Sep 22 17:56 �й���׼ʱ��
+Output:
+----------------------------------------------------------
+....................s..s...
+----------------------------------------------------------------------
+Ran 27 tests in 2.071s
+
+OK (skipped=2)
+<end of output>
+Test time =   2.37 sec
+----------------------------------------------------------
+Test Passed.
+"python_client" end time: Sep 22 17:56 �й���׼ʱ��
+"python_client" time elapsed: 00:00:02
+----------------------------------------------------------
+
+End testing: Sep 22 17:56 �й���׼ʱ��

@@ -5,7 +5,9 @@
 #include <algorithm>
 #include <fstream>
 #include <random>
+#include <set>
 #include <stdexcept>
+#include <streambuf>
 
 namespace gmb {
 using nlohmann::json;
@@ -30,13 +32,31 @@ fs::path unique_sibling(const fs::path& destination) {
     std::random_device rnd;
     return destination.parent_path() / fs::u8path(destination.filename().u8string()+".tmp-"+std::to_string(rnd())+"-"+std::to_string(rnd()));
 }
-void checked_write(const fs::path& path, const void* bytes, std::size_t size) {
-    std::ofstream stream(path,std::ios::binary|std::ios::trunc);
-    if(!stream || !stream.write(static_cast<const char*>(bytes),static_cast<std::streamsize>(size)))
-        throw std::runtime_error("Cannot write file: "+path.u8string());
-    stream.close();
-    if(!stream) throw std::runtime_error("Cannot finish writing: "+path.u8string());
-}
+// Keep scene JSON bounded while the platform layer retains the exclusively
+// created handle. Reopening a reserved path with ofstream would permit replacing
+// an entry between creation and writing and could truncate somebody else's file.
+class ChunkBuffer final : public std::streambuf {
+    const io::WriteChunk& write_;
+    char buffer_[64 * 1024];
+    int sync() override {
+        const auto size = static_cast<std::size_t>(pptr() - pbase());
+        if (size) write_(pbase(), size);
+        setp(buffer_, buffer_ + sizeof(buffer_));
+        return 0;
+    }
+    int_type overflow(int_type value) override {
+        sync();
+        if (!traits_type::eq_int_type(value, traits_type::eof())) {
+            *pptr() = traits_type::to_char_type(value);
+            pbump(1);
+        }
+        return traits_type::not_eof(value);
+    }
+public:
+    explicit ChunkBuffer(const io::WriteChunk& write) : write_(write) {
+        setp(buffer_, buffer_ + sizeof(buffer_));
+    }
+};
 // Serialize the corner arrays directly to the stream. Building a JSON DOM for
 // every corner, then a second complete string, needlessly multiplies model RAM.
 // Keep nlohmann's scalar/string encoding so numeric values and escaping match
@@ -70,20 +90,22 @@ void write_meshes(std::ostream& stream, const std::vector<Mesh>& meshes) {
     stream << ']';
 }
 void write_scene_json(const json& metadata, const Scene& scene, const fs::path& path) {
-    std::ofstream stream(path,std::ios::binary|std::ios::trunc);
-    if (!stream) throw std::runtime_error("Cannot write file: "+path.u8string());
-    stream << '{';
-    bool first = true;
-    for (const auto& item : metadata.items()) {
-        if (!first) stream << ',';
-        first = false;
-        stream << json(item.key()).dump() << ':';
-        if (item.key() == "meshes") write_meshes(stream,scene.meshes);
-        else stream << item.value().dump();
-    }
-    stream << "}\n";
-    stream.close();
-    if (!stream) throw std::runtime_error("Cannot finish writing: "+path.u8string());
+    io::write_exclusive(path, [&](const io::WriteChunk& write) {
+        ChunkBuffer buffer(write);
+        std::ostream stream(&buffer);
+        stream.exceptions(std::ios::badbit | std::ios::failbit);
+        stream << '{';
+        bool first = true;
+        for (const auto& item : metadata.items()) {
+            if (!first) stream << ',';
+            first = false;
+            stream << json(item.key()).dump() << ':';
+            if (item.key() == "meshes") write_meshes(stream,scene.meshes);
+            else stream << item.value().dump();
+        }
+        stream << "}\n";
+        stream.flush();
+    });
 }
 void write_json_new(const json& j,const fs::path& output) {
     io::reject_reparse(output);
@@ -118,11 +140,15 @@ void write_bundle(const Scene& scene,const fs::path& output) {
             {"coordinates",coordinates_json(scene.coordinates)},
             {"nodes",json::array()},{"meshes",json::array()},{"materials",json::array()},{"textures",json::array()}, {"diagnostics",diagnostic_json(diagnostics)}};
         fs::create_directory(staging/"textures");
+        std::set<std::string> stored_textures;
         for(const auto& texture:scene.textures) {
             const auto digest=sha256(texture.bytes);
             const auto path="textures/"+digest+extension_for_mime(texture.mime_type);
             // Equal content is stored once; all original material bindings remain distinct.
-            if(!fs::exists(staging/fs::u8path(path))) checked_write(staging/fs::u8path(path),texture.bytes.data(),texture.bytes.size());
+            if(stored_textures.insert(path).second)
+                io::write_exclusive(staging/fs::u8path(path), [&](const io::WriteChunk& write) {
+                    write(reinterpret_cast<const char*>(texture.bytes.data()), texture.bytes.size());
+                });
             j["textures"].push_back({{"name",texture.name},{"mime_type",texture.mime_type},{"source",texture.source},{"embedded",texture.embedded},
                 {"path",path},{"sha256",digest},{"byte_length",texture.bytes.size()}});
         }

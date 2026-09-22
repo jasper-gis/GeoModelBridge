@@ -1,4 +1,5 @@
 #include "gmb/output.hpp"
+#include <algorithm>
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
@@ -24,18 +25,32 @@ void reject_reparse(const fs::path& p) {
     }
 }
 void write_exclusive(const fs::path& path, const std::string& data) {
-    if (data.size() > MAXDWORD) throw std::runtime_error("Report too large.");
+    write_exclusive(path, [&](const WriteChunk& write) { write(data.data(), data.size()); });
+}
+void write_exclusive(const fs::path& path, const std::function<void(const WriteChunk&)>& produce) {
     HANDLE file = CreateFileW(path.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, nullptr);
     if (file == INVALID_HANDLE_VALUE)
         throw fs::filesystem_error("Cannot create new file", path,
             std::error_code(static_cast<int>(GetLastError()), std::system_category()));
-    DWORD written = 0;
-    bool ok = WriteFile(file, data.data(), static_cast<DWORD>(data.size()), &written, nullptr) && written == data.size();
-    if (ok) ok = FlushFileBuffers(file) != 0;
-    if (!CloseHandle(file)) ok = false;
-    if (!ok) {
+    try {
+        produce([&](const char* data, std::size_t size) {
+            while (size) {
+                const DWORD count = static_cast<DWORD>((std::min)(size, std::size_t(1024 * 1024)));
+                DWORD written = 0;
+                if (!WriteFile(file, data, count, &written, nullptr) || !written)
+                    throw std::runtime_error("Cannot write file: " + path.u8string());
+                data += written;
+                size -= written;
+            }
+        });
+        if (!FlushFileBuffers(file)) throw std::runtime_error("Cannot flush file: " + path.u8string());
+        const bool closed = CloseHandle(file) != 0;
+        file = INVALID_HANDLE_VALUE;
+        if (!closed) throw std::runtime_error("Cannot finish file write: " + path.u8string());
+    } catch (...) {
+        if (file != INVALID_HANDLE_VALUE) CloseHandle(file);
         DeleteFileW(path.c_str()); // This call created the file exclusively.
-        throw std::runtime_error("Cannot finish file write: " + path.u8string());
+        throw;
     }
 }
 bool move_new(const fs::path& source, const fs::path& target) {

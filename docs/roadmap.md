@@ -37,7 +37,7 @@ V0.1.3 已增加显式 GIS 静态兼容策略，修复中性默认材质误报�
 
 V0.1.4 完成中间包流式写出、重复纹理散列复用和 GUI 日志有界预览；未新增批量转换、强制中止或重投影。
 
-版本号格式 `V主版本.次版本.补丁`。项目首次交付为 V0.1.0，当前小迭代为 V0.1.14。更新版本需同步 VERSION、各 CMake project、include/gmb/scene.hpp、GUI csproj/report、当前版文档、测试断言和二进制。`scripts/check_version.py` 核对主要源码声明；历史证据和样例中的版本号不应批量替换。
+版本号格式 `V主版本.次版本.补丁`。项目首次交付为 V0.1.0，当前发布为 V0.2，源码和二进制使用语义版本 0.2.0。更新版本需同步 VERSION、根 CMake project、include/gmb/scene.hpp、GUI csproj/report、当前版文档、测试断言和二进制。`scripts/check_version.py` 核对主要源码声明；历史证据和样例中的版本号不应批量替换。
 
 ## V0.1.6 Ubuntu 支持
 
@@ -74,3 +74,7 @@ Python 进程日志改为有界双路读取，CLI 保留 writer 末尾错误；�
 ## V0.1.14 统一根工程
 
 移除后端独立 CMake 工程，根目录一次配置构建 CLI、writer 和运行库，默认完整构建。构建目录即保持可调用布局，并在安装前验证默认 writer 查找和真实纹理 GDB；无 SDK 的纯核心构建改为显式选择。
+
+## V0.2 结果可靠性审查
+
+加强损坏 PNG/JPEG 拒绝、CLI/GUI/Python 成功报告一致性和共享独占流式写出。GUI 消息递交异常保留已核验成果；双平台验证和未执行的图形验收边界见 [V0.2](validation-v0.2.md)。

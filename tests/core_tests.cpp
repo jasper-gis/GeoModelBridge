@@ -73,6 +73,11 @@ int main() {
                 "cdc76e5c9914fb9281a1c7e284d73e67f1809a48a497200e046d39ccc7112cd0", "Long digest mismatch");
     });
     invalid_scene("out-of-range triangle index", [](auto& s) { s.meshes[0].triangles[0].indices[1] = 1000; });
+    invalid_scene("unknown conversion profile", [](auto& s) { s.conversion_profile = "ignore-everything"; });
+    invalid_scene("unknown coordinate space", [](auto& s) { s.coordinates.space = "unknown"; });
+    invalid_scene("local coordinates with assigned WKID", [](auto& s) { s.coordinates.wkid = 32650; });
+    invalid_scene("referenced coordinates without WKID", [](auto& s) { s.coordinates.space = "referenced"; });
+    invalid_scene("nonzero origin without explicit provenance", [](auto& s) { s.coordinates.origin.x = 10; });
     invalid_scene("textured triangle without corner UV", [](auto& s) { s.meshes[0].vertices[0].has_uv = false; });
     invalid_scene("nonfinite position", [](auto& s) { s.meshes[0].vertices[0].position.z = std::numeric_limits<double>::infinity(); });
     invalid_scene("nonfinite UV", [](auto& s) { s.meshes[0].vertices[0].uv.x = std::numeric_limits<double>::quiet_NaN(); });
@@ -171,6 +176,21 @@ int main() {
         const auto& uv = stored.at("vertices").at(1).at("uv");
         require(std::signbit(uv.at(0).get<double>()), "Signed zero UV changed");
         require(uv.at(1).get<double>() == mesh.vertices[1].uv.y, "Double UV rounded");
+    });
+    run("streamed scene spans buffers and duplicate texture bindings retain one resource", [] {
+        ScratchDirectory temp;
+        auto scene = gmb::make_fixture("uv-plane");
+        scene.meshes[0].name = std::string(150000, 'x');
+        scene.textures.push_back(scene.textures.front());
+        scene.textures.back().name = "second binding";
+        const auto output = temp.path / "large-bundle";
+        gmb::write_bundle(scene, output);
+        std::ifstream file(output / "scene.json");
+        nlohmann::json document; file >> document;
+        require(document.at("meshes").at(0).at("name") == scene.meshes[0].name, "Buffered stream lost bytes");
+        require(document.at("textures").size() == 2, "Duplicate resource removed a texture binding");
+        require(std::distance(std::filesystem::directory_iterator(output / "textures"),
+                              std::filesystem::directory_iterator{}) == 1, "Texture content was not deduplicated");
     });
     run("invalid scene leaves no partial bundle", [] {
         ScratchDirectory temp;

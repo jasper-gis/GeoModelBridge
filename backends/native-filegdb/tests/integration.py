@@ -35,7 +35,7 @@ vertices[1]['normal'] = [1 / math.sqrt(3)] * 3
 vertices[2]['normal'] = [-1 / 256, math.sqrt(1 - (1 / 256) ** 2), 0]
 vertices[3]['normal'] = [1 / 256, math.sqrt(1 - (1 / 256) ** 2), 0]
 meshes = [dict(name='PNG alpha', source_node='test', vertices=vertices, triangles=[dict(indices=[0, 1, 2], material=0), dict(indices=[0, 2, 3], material=0)]), dict(name='JPEG and color', source_node='test', vertices=vertices, triangles=[dict(indices=[0, 1, 2], material=1), dict(indices=[0, 2, 3], material=2)])]
-scene = dict(schema_version=1, generator='GeoModelBridge', version='0.1.14', name='Writer integration', source='generated:test', coordinates=dict(unit='meter', up_axis='Z', space='referenced', wkid=32650, origin=[500000, 4000000, 10], origin_explicit=True), nodes=[], meshes=meshes, materials=[dict(name='PNG', color=[1, 1, 1, 1], texture=0, double_sided=True), dict(name='JPEG', color=[1, 1, 1, 1], texture=1, double_sided=False), dict(name='Color opacity', color=[.13, .58, .91, .427], texture=-1, double_sided=True)], textures=textures)
+scene = dict(schema_version=1, generator='GeoModelBridge', version='0.2.0', name='Writer integration', source='generated:test', coordinates=dict(unit='meter', up_axis='Z', space='referenced', wkid=32650, origin=[500000, 4000000, 10], origin_explicit=True), nodes=[], meshes=meshes, materials=[dict(name='PNG', color=[1, 1, 1, 1], texture=0, double_sided=True), dict(name='JPEG', color=[1, 1, 1, 1], texture=1, double_sided=False), dict(name='Color opacity', color=[.13, .58, .91, .427], texture=-1, double_sided=True)], textures=textures)
 scene['diagnostics'] = [dict(severity='warning', code='TEST_SOURCE_WARNING', message='Test warning retained for traceability.', context='generated:test')]
 (bundle / 'scene.json').write_text(json.dumps(scene), encoding='utf8')
 
@@ -106,6 +106,8 @@ cases = {
     'zero-normal': lambda s: s['meshes'][0]['vertices'][0].update(normal=[0, 0, 0]),
     'nonunit-normal': lambda s: s['meshes'][0]['vertices'][0].update(normal=[0, 0, 2]),
     'nonfinite-position': lambda s: s['meshes'][0]['vertices'][0].update(position=[float('inf'), 0, 0]),
+    'float32-uv-overflow': lambda s: s['meshes'][0]['vertices'][0].update(uv=[1e100, 0]),
+    'unreferenced-float32-uv-overflow': lambda s: s['meshes'][0]['vertices'].append(dict(position=[0, 0, 0], normal=[0, 0, 1], uv=[0, -1e100])),
     'bad-color': lambda s: s['materials'][0].update(color=[1.1, 0, 0, 1]),
     'bad-material-index': lambda s: s['meshes'][0]['triangles'][0].update(material=900),
     'bad-vertex-index': lambda s: s['meshes'][0]['triangles'][0].update(indices=[0, 1, 99]),
@@ -156,6 +158,22 @@ duplicate = run(['--input',order_source,'--output',root/'duplicate.gdb'],success
 assert 'Duplicate root bundle field' in duplicate.stderr and not (root/'duplicate.gdb').exists()
 results.append(dict(case='duplicate-root-mesh-array',passed=True,error=duplicate.stderr.strip()))
 
+# JSON object keys may not silently replace earlier invalid coordinates/materials.
+# These duplicates occur inside a streamed corner and non-geometry metadata.
+for name, old, new in [
+    ('duplicate-corner-position', '"position": [500000, 4000000, 10]',
+     '"position": [null, 0, 0], "position": [500000, 4000000, 10]'),
+    ('duplicate-material-binding', '"texture": 0', '"texture": 9999, "texture": 0'),
+]:
+    duplicate_source = root / name
+    shutil.copytree(bundle, duplicate_source)
+    duplicate_json = json.dumps(scene)
+    assert old in duplicate_json
+    (duplicate_source / 'scene.json').write_text(duplicate_json.replace(old, new, 1), encoding='utf8')
+    duplicate = run(['--input', duplicate_source, '--output', root / (name + '.gdb')], success=False)
+    assert 'Duplicate bundle object field' in duplicate.stderr and not (root / (name + '.gdb')).exists()
+    results.append(dict(case=name, passed=True, error=duplicate.stderr.strip()))
+
 # A substantial corner array catches accidental scene-DOM retention and the
 # callback parser's quadratic discarded-object scan. The existing 90s command
 # timeout also applies here; the fixture contains no user geometry.
@@ -197,6 +215,39 @@ assert not staging_observed, 'Out-of-domain coordinates must be rejected before 
 assert not (root / 'overflow.gdb').exists()
 assert not list(root.glob('*.gmb-*.gdb'))
 results.append(dict(case='coordinate-domain-rejected-before-write', passed=True, staging_observed=False, error=stderr.strip()))
+
+# Native storage preflight must precede even SDK CRS setup, which itself precedes
+# database creation. An invalid CRS makes these checks deterministic without
+# relying only on observing a short-lived staging directory.
+for name in ('uv-range-before-sdk', 'shape-size-before-sdk'):
+    source = root / name
+    shutil.copytree(bundle, source)
+    invalid_scene = copy.deepcopy(scene)
+    invalid_scene['coordinates']['wkid'] = 2147483647
+    if name.startswith('uv'):
+        invalid_scene['meshes'][0]['vertices'][0]['uv'] = [1e100, 0]
+        expected_error = 'UV exceeds native float32 storage range'
+    else:
+        # A highly compressed generated PNG expands to 16 MiB. Thirty-three
+        # distinct material patches would exceed the 512 MiB shape limit even
+        # though their geometry and source image are small.
+        edge = 2048
+        oversized_png = (b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', struct.pack('>IIBBBBB', edge, edge, 8, 6, 0, 0, 0))
+                         + chunk(b'IDAT', zlib.compress((b'\0' + bytes(edge * 4)) * edge)) + chunk(b'IEND', b''))
+        (source / 'textures/alpha.png').write_bytes(oversized_png)
+        invalid_scene['textures'][0].update(sha256=hashlib.sha256(oversized_png).hexdigest(), byte_length=len(oversized_png))
+        invalid_scene['materials'] = [dict(name=str(i), color=[1, 1, 1, 1], texture=0, double_sided=True) for i in range(33)]
+        invalid_scene['meshes'] = [dict(name=name, source_node='generated:test', vertices=vertices,
+                                       triangles=[dict(indices=[0, 1, 2], material=i) for i in range(33)])]
+        expected_error = 'Shape buffer exceeds 512 MiB limit'
+    (source / 'scene.json').write_text(json.dumps(invalid_scene), encoding='utf8')
+    target = root / (name + '.gdb')
+    rejected = run(['--input', source, '--output', target], success=False)
+    assert expected_error in rejected.stderr, rejected.stderr
+    assert not target.exists() and not list(root.glob(name + '.gmb-*.gdb'))
+    assert not target.with_suffix('.writer-report.json').exists()
+    results.append(dict(case=name, passed=True, error=rejected.stderr.strip()))
+print('PASS: all decoded UVs and expanded shape size validated before SDK setup or GDB creation')
 
 # Failure inside the SDK after CreateGeodatabase succeeded must close handles and clean staging.
 schema_out = root / 'schema-failure.gdb'
@@ -256,6 +307,39 @@ for name, data, expected_pixels in images:
     check = json.loads(target.with_suffix('.writer-report.json').read_text(encoding='utf8'))
     assert check['textures'][0]['stored_sha256'] == hashlib.sha256(expected_pixels).hexdigest(), name
 
+def replace_idat(data, mutate):
+    offset = data.index(b'IDAT') - 4
+    length = struct.unpack('>I', data[offset:offset + 4])[0]
+    compressed = data[offset + 8:offset + 8 + length]
+    # Recompute CRC so malformed zlib content reaches the actual PNG decoder.
+    return data[:offset] + chunk(b'IDAT', mutate(compressed)) + data[offset + 12 + length:]
+
+broken_images = [
+    ('png-missing-iend', 0, png[:-12]),
+    ('png-invalid-crc', 0, png[:29] + bytes([png[29] ^ 1]) + png[30:]),
+    ('png-truncated-chunk', 0, png[:-3]),
+    ('png-invalid-deflate-valid-crc', 0, replace_idat(png, lambda data: data[:2] + bytes([data[2] | 6]) + data[3:])),
+    ('png-truncated-deflate-valid-crc', 0, replace_idat(png, lambda data: data[:-5])),
+    ('png-invalid-adler-valid-crc', 0, replace_idat(png, lambda data: data[:-1] + bytes([data[-1] ^ 1]))),
+    ('jpeg-truncated-scan', 1, jpeg[:-12]),
+    ('jpeg-missing-eoi', 1, jpeg[:-2]),
+    ('jpeg-premature-eoi', 1, jpeg[:-12] + b'\xff\xd9'),
+]
+for name, texture_index, data in broken_images:
+    source = root / name
+    shutil.copytree(bundle, source)
+    broken_scene = copy.deepcopy(scene)
+    texture = broken_scene['textures'][texture_index]
+    (source / texture['path']).write_bytes(data)
+    texture.update(sha256=hashlib.sha256(data).hexdigest(), byte_length=len(data))
+    (source / 'scene.json').write_text(json.dumps(broken_scene), encoding='utf8')
+    target = root / (name + '.gdb')
+    rejected = run(['--input', source, '--output', target], success=False)
+    assert not target.exists() and not target.with_suffix('.writer-report.json').exists()
+    assert not list(root.glob(name + '.gmb-*.gdb'))
+    results.append(dict(case=name, passed=True, error=rejected.stderr.strip()))
+print('PASS: corrupt PNG containers, CRC-valid invalid deflate/Adler data and truncated JPEG scans rejected')
+
 # Unicode must survive filesystem paths and SDK wide-string attributes on both OSes.
 unicode_source = root / '中文 模型'
 shutil.copytree(bundle, unicode_source)
@@ -279,16 +363,6 @@ if os.name != 'nt':
     dangling.symlink_to(root / 'absent')
     run(['--input', bundle, '--output', dangling], success=False)
     assert dangling.is_symlink()
-    # libjpeg must not accept a recovered/truncated entropy stream.
-    broken_source = root / 'broken-jpeg'
-    shutil.copytree(bundle, broken_source)
-    broken = jpeg[:-12]
-    (broken_source / 'textures/photo.jpg').write_bytes(broken)
-    broken_scene = copy.deepcopy(scene)
-    broken_scene['textures'][1].update(sha256=hashlib.sha256(broken).hexdigest(), byte_length=len(broken))
-    (broken_source / 'scene.json').write_text(json.dumps(broken_scene), encoding='utf8')
-    run(['--input', broken_source, '--output', root / 'broken.gdb'], success=False)
-    assert not (root / 'broken.gdb').exists()
 print('PASS: palette/gray/Adam7/gamma PNG pixels, Unicode filesystem and SDK attributes; POSIX path checks where applicable')
 (root / 'test-results.json').write_text(json.dumps(dict(status='passed', negative_checks=results, png_alpha_pixel_hash=hashlib.sha256(pixels).hexdigest(), standalone_source_unavailable=True), indent=2), encoding='utf8')
 print(f'PASS: {len(results)} invalid input / cleanup / hash mismatch checks. Evidence: {root}')

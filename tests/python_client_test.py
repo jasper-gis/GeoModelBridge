@@ -35,11 +35,12 @@ class ClientTests(unittest.TestCase):
         return dict(status="written_and_readback_verified", version=__version__, backend="native-filegdb",
                     conversion_profile=request.profile, missing_texture_policy=request.missing_textures,
                     output=str(request.output_gdb), source=str(request.input_fbx), feature_class=request.feature_class,
-                    coordinate_system=dict(wkid=request.wkid, projected=True, unit="meter"), reader_diagnostics=[],
+                    coordinate_system=dict(wkid=request.wkid, projected=True, unit="meter",
+                                           source_coordinates_assigned_without_reprojection=True), reader_diagnostics=[],
                     coordinates=dict(wkid=request.wkid, unit="meter", up_axis="Z", space="referenced",
                                      origin=list(request.origin), origin_explicit=True),
                     verification=dict(level="closed_reopened_file_geodatabase", feature_count=1,
-                                      geometry_material_uv_texture_readback=True))
+                                      geometry_material_uv_texture_readback=True, checks=[dict(mesh_index=0, passed=True)]))
 
     def fake_run(self, report=None, code=0, create_gdb=True, write_report=True):
         def run(command):
@@ -231,6 +232,65 @@ class ClientTests(unittest.TestCase):
             if write:
                 failure.exception.report_path.unlink()
 
+    def test_report_link_created_by_process_is_not_a_verified_result(self):
+        target = self.root / "other-report.json"
+        target.write_text(json.dumps(self.success_report()), encoding="utf-8")
+        alias = self.root / "symlink-check"
+        try:
+            alias.symlink_to(target)
+        except OSError:
+            self.skipTest("Host does not allow unprivileged symlinks")
+        alias.unlink()
+        fake = self.fake_run(write_report=False)
+        def run(command):
+            result = fake(command)
+            if "convert" in command:
+                Path(str(self.request.output_gdb) + ".report.json").symlink_to(target)
+            return result
+        with patch("geomodelbridge.client._run", side_effect=run), self.assertRaises(ConversionError) as failure:
+            self.engine.convert(self.request)
+        self.assertEqual(failure.exception.code, "INVALID_REPORT")
+        self.assertEqual(json.loads(target.read_text(encoding="utf-8")), self.success_report())
+
+    def test_report_parent_link_created_by_process_is_not_verified(self):
+        parent = self.root / "reports"
+        target = self.root / "moved-reports"
+        parent.mkdir()
+        request = replace(self.request, report_path=parent / "result.json")
+        fake = self.fake_run()
+        def run(command):
+            result = fake(command)
+            if "convert" in command:
+                parent.rename(target)
+                if os.name == "nt":
+                    import _winapi
+                    _winapi.CreateJunction(str(target), str(parent))
+                else:
+                    parent.symlink_to(target, target_is_directory=True)
+            return result
+        try:
+            with patch("geomodelbridge.client._run", side_effect=run), self.assertRaises(ConversionError) as failure:
+                self.engine.convert(request)
+            self.assertEqual(failure.exception.code, "INVALID_REPORT")
+            self.assertTrue((target / "result.json").is_file())
+        finally:
+            if os.name == "nt" and os.path.lexists(parent):
+                parent.rmdir()  # Remove only the junction created by this test.
+            elif parent.is_symlink():
+                parent.unlink()
+
+    @unittest.skipUnless(hasattr(os, "mkfifo"), "FIFO report regression requires POSIX")
+    def test_nonregular_report_is_rejected_without_blocking_on_open(self):
+        fake = self.fake_run(write_report=False)
+        def run(command):
+            result = fake(command)
+            if "convert" in command:
+                os.mkfifo(str(self.request.output_gdb) + ".report.json")
+            return result
+        with patch("geomodelbridge.client._run", side_effect=run), self.assertRaises(ConversionError) as failure:
+            self.engine.convert(self.request)
+        self.assertEqual(failure.exception.code, "INVALID_REPORT")
+
     def test_report_must_match_complete_contract(self):
         mutations = [lambda r: r.update(status="prepared"), lambda r: r.update(version="0.0.0"),
                      lambda r: r.update(backend="arcgis-pro"), lambda r: r.update(conversion_profile="gis-static"),
@@ -253,7 +313,23 @@ class ClientTests(unittest.TestCase):
                      lambda r: r.update(verification=[]), lambda r: r.update(coordinate_system=[]),
                      lambda r: r.pop("reader_diagnostics"), lambda r: r.update(reader_diagnostics={}),
                      lambda r: r.update(reader_diagnostics=[dict(severity="error", code="BAD", message="error")]),
-                     lambda r: r.update(reader_diagnostics=[dict(severity="unknown", code="BAD", message="bad")])]
+                     lambda r: r.update(reader_diagnostics=[dict(severity="unknown", code="BAD", message="bad")]),
+                     lambda r: r.update(diagnostics=[dict(severity="error", code="WRITE_FAILED", message="failed")]),
+                     lambda r: r.update(diagnostics={})]
+        mutations.extend([
+            lambda r: r["verification"].pop("checks"),
+            lambda r: r["verification"].update(checks=[]),
+            lambda r: r["verification"].update(checks={}),
+            lambda r: r["verification"]["checks"][0].update(passed=False),
+            lambda r: r["verification"]["checks"][0].update(passed=1),
+            lambda r: r["verification"]["checks"][0].update(mesh_index=True),
+            lambda r: r["verification"]["checks"][0].update(mesh_index=-1),
+            lambda r: r["verification"]["checks"][0].update(mesh_index=1),
+            lambda r: r["verification"].update(feature_count=2, checks=[dict(mesh_index=0, passed=True)] * 2),
+            lambda r: r["coordinate_system"].pop("source_coordinates_assigned_without_reprojection"),
+            lambda r: r["coordinate_system"].update(source_coordinates_assigned_without_reprojection=False),
+            lambda r: r.update(reader_diagnostics=[dict(severity="warning", code="", message="blank code")]),
+        ])
         for mutation in mutations:
             report = self.success_report()
             mutation(report)

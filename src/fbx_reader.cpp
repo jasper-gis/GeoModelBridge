@@ -267,6 +267,7 @@ struct Reader {
     std::unordered_map<const ufbx_texture*, TextureFile> texture_files;
     std::unordered_map<std::string, int> texture_hashes;
     std::vector<const ufbx_texture*> material_textures;
+    std::set<const ufbx_node*> hidden_layer_nodes;
     std::set<std::string> emitted;
     int default_material = -1;
 
@@ -702,7 +703,15 @@ struct Reader {
                 return;
             }
         }
-        if (!node.visible) error("UNSUPPORTED_VISIBILITY", "Hidden mesh visibility is not represented in the scene contract.", context);
+        // ufbx exposes each node's own Visibility and each display layer's Show
+        // separately; node.visible does not fold in either parent visibility or
+        // display layers. The bundle cannot preserve these rendering controls.
+        for (const auto* ancestor = &node; ancestor; ancestor = ancestor->parent) {
+            if (!ancestor->visible || hidden_layer_nodes.count(ancestor)) {
+                error("UNSUPPORTED_VISIBILITY", "Hidden mesh, ancestor, or display-layer visibility is not represented in the scene contract.", context);
+                break;
+            }
+        }
         if (node.element.dom_node) {
             const auto* culling = ufbx_dom_find(node.element.dom_node, "Culling");
             if (culling && culling->values.count && str(culling->values.data[0].value_str) != "CullingOff")
@@ -855,6 +864,8 @@ struct Reader {
             error("UNSUPPORTED_SCENE_BEHAVIOR", "Constraints or LOD groups must be resolved to an explicit static mesh scene.", "scene");
         for (std::size_t i = 0; i < source->metadata.warnings.count; ++i)
             error("FBX_PARSER_WARNING", str(source->metadata.warnings.data[i].description), "scene");
+        for (const auto* layer : source->display_layers)
+            if (!layer->visible) for (const auto* node : layer->nodes) hidden_layer_nodes.insert(node);
         std::unordered_map<const ufbx_node*, int> nodes;
         for (std::size_t i = 0; i < source->nodes.count; ++i) nodes[source->nodes.data[i]] = static_cast<int>(i);
         result.nodes.resize(source->nodes.count);

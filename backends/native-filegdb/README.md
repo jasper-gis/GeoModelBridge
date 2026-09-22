@@ -1,4 +1,4 @@
-# Native FileGDB 后端 · V0.1.14
+# Native FileGDB 后端 · V0.2.0
 
 这个 Windows x64 / Ubuntu 24.04 x86_64 C++17 后端把 Scene Bundle 中的几何、RGB、透明度、UV 和 PNG/JPEG 纹理直接写入新 FileGDB Multipatch。转换时不加载 ArcGIS Pro、不调用 ArcPy、不借用 Pro 导出的 Shape Buffer。第三方 Esri FileGDB API 负责数据库文件格式，项目代码按 Esri 公开文档独立生成扩展 Multipatch Shape Buffer。
 
@@ -58,7 +58,7 @@ Windows 原生后端只链接 release `FileGDBAPI.lib`，支持 `Release`、`Rel
 - 一个源 mesh 对应一个 feature，按首次出现的材质顺序分组为 `Triangles` patch。角点不按位置焊接；UV 与法线边界保留。
 - 源坐标必须已经统一 Z-up、米、右手系，并有显式投影米制 WKID 与 origin。只赋坐标系，不再乘节点矩阵、重复平移或重投影。坐标每个分量须落在 ±99,999,999 米内；XY/Z 分辨率为 0.00001 米，回读容差为 0.00002 米。
 - RGB 四舍五入到 8 位；opacity 换算为整数百分比 transparency。法线先 float32，再由实测 FileGDB 1.5.5 存为 `floor(float32(n)*128+0.5)/128`，逐分量核验并报告最大分量/角度误差；不宣称无损法线。
-- PNG 经 Windows WIC 或 Linux libpng 解码为未预乘 RGBA8，保持透明像素的 RGB，不执行 ICC 色彩转换；JPEG 保留原压缩字节。拒绝 16-bit/动画 PNG 与 CMYK/YCCK/高位深 JPEG。图片每轴不超过 16384、解码像素不超过 256 MiB。
+- PNG 在两平台共用 libpng 解码为未预乘 RGBA8，保持透明像素的 RGB，不执行 ICC 色彩转换；JPEG 在两平台共用 libjpeg 严格扫描校验，拒绝截断与解码恢复后保留原压缩字节；Windows 静态链接固定来源的 libpng 1.6.58、zlib 1.3.2 与 libjpeg-turbo 3.1.4.1，Ubuntu 使用系统库。PNG 的 chunk 长度、CRC、连续 IDAT 与完整 IEND 由共享代码先行校验。拒绝 16-bit/动画 PNG 与 CMYK/YCCK/高位深 JPEG。图片每轴不超过 16384、解码像素不超过 256 MiB。
 - V0.1.3 的上游 FBX reader 可在 GIS 策略下对明确安全的缺 JFIF Adobe YCbCr JPEG 补封装，并记录 `JPEG_CONTAINER_NORMALIZED` 及源/目标散列。此 writer 保存收到的 bundle 图片字节，不重复修复、不重新压缩；源图片不变。
 - FBX 的 V=0 对应图片底部；Esri 文档定义 t=0 对应存储图片首行。PNG 解码行和 JPEG 首行均从顶部开始，因此**所有有 UV 的 patch 都写入 U′=U、V′=1−V**，包括当前无贴图的 UV。源 Bundle 不改写，报告记录转换策略，PNG 与 JPEG 用相同规则。
 - 每个 mesh 最多 1000 万源顶点/展开角点，单 Shape Buffer 上限 512 MiB。未支持的字段、混合缺失的法线、同材质 patch 内混合缺失的 UV、非法索引、图片散列不符与路径逃逸均拒绝。

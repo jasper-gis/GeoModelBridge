@@ -31,6 +31,7 @@ public static class ReportSummaryFormatter
         {
             using var document = JsonDocument.Parse(json);
             var root = document.RootElement;
+            ReportVerifier.RequireUniqueFields(root);
             if (root.ValueKind != JsonValueKind.Object) throw new InvalidDataException("转换报告应为 JSON 对象。");
             var status = Text(root, "status");
             var entries = new List<Entry>();

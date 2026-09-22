@@ -63,6 +63,12 @@ inline std::uint8_t rgb(double v) {
 inline std::uint8_t transparency(double a) {
     return static_cast<std::uint8_t>(std::floor((1 - a) * 100 + 0.5));
 }
+inline void validate_stored_uv(const Vec2& uv) {
+    require(std::isfinite(uv.x) && std::isfinite(uv.y) &&
+                std::isfinite(static_cast<float>(uv.x)) &&
+                std::isfinite(static_cast<float>(1.0 - uv.y)),
+            "UV exceeds native float32 storage range.");
+}
 inline Prepared prepare(const Mesh &mesh) {
     Prepared p;
     p.name = mesh.name;
@@ -120,16 +126,54 @@ inline Bytes material_block(const Material &m, const std::vector<TextureData> &t
     }
     return o.b;
 }
+struct ShapeLayout {
+    std::size_t corners = 0, uv_corners = 0, bytes = 0;
+};
+inline ShapeLayout shape_layout(const Prepared& prepared, const std::vector<Material>& materials,
+                                const std::vector<TextureData>& textures) {
+    ShapeLayout layout;
+    require(!prepared.patches.empty() && prepared.patches.size() <= 65535,
+            "Mesh material patch count must be 1..65535.");
+    for (const auto& patch : prepared.patches) {
+        require(!patch.corners.empty() && patch.corners.size() % 3 == 0,
+                "Each material patch must contain complete triangle corners.");
+        layout.corners += patch.corners.size();
+        for (const auto& vertex : patch.corners)
+            if (vertex.has_uv) {
+                validate_stored_uv(vertex.uv);
+                ++layout.uv_corners;
+            }
+    }
+    require(layout.corners > 0 && layout.corners <= 10000000,
+            "Expanded triangle corner count exceeds 10 million per mesh.");
+    // Exact documented general multipatch size: fixed sections, part arrays,
+    // corner coordinates/normals, optional UV section, and material blocks.
+    layout.bytes = 92 + prepared.patches.size() * 12 +
+                   layout.corners * (24 + (prepared.normals ? 12 : 0));
+    if (layout.uv_corners)
+        layout.bytes += 4 + prepared.patches.size() * 4 + layout.uv_corners * 8;
+    for (const auto& patch : prepared.patches) {
+        const auto& material = materials.at(patch.material);
+        layout.bytes += 6 + (material.double_sided ? 0 : 1);
+        if (material.texture >= 0) {
+            const auto& texture = textures.at(material.texture);
+            require(texture.width > 0 && texture.width <= 16384 && texture.height > 0 &&
+                        texture.height <= 16384 && texture.pixels.size() <= 256ull * 1024 * 1024,
+                    "Texture exceeds supported dimensions or length.");
+            layout.bytes += 14 + texture.pixels.size();
+        }
+        require(layout.bytes <= 512ull * 1024 * 1024, "Shape buffer exceeds 512 MiB limit.");
+    }
+    return layout;
+}
 inline Bytes encode(const Prepared &p, const std::vector<Material> &materials,
                     const std::vector<TextureData> &textures) {
-    std::size_t count = 0, uvcount = 0;
+    const auto layout = shape_layout(p, materials, textures);
+    const auto count = layout.corners, uvcount = layout.uv_corners;
     double xmin = std::numeric_limits<double>::infinity(), ymin = xmin, zmin = xmin, xmax = -xmin,
            ymax = -xmin, zmax = -xmin;
     for (const auto &patch : p.patches)
         for (const auto &v : patch.corners) {
-            ++count;
-            if (v.has_uv)
-                ++uvcount;
             xmin = std::min(xmin, v.position.x);
             ymin = std::min(ymin, v.position.y);
             zmin = std::min(zmin, v.position.z);
@@ -137,19 +181,8 @@ inline Bytes encode(const Prepared &p, const std::vector<Material> &materials,
             ymax = std::max(ymax, v.position.y);
             zmax = std::max(zmax, v.position.z);
         }
-    require(count > 0 && count <= 10000000,
-            "Expanded triangle corner count exceeds 10 million per mesh.");
-    std::size_t estimated =
-        80 + p.patches.size() * 12 + count * (24 + (p.normals ? 12 : 0)) + uvcount * 8;
-    for (const auto &patch : p.patches) {
-        const auto &m = materials.at(patch.material);
-        estimated += 24;
-        if (m.texture >= 0)
-            estimated += textures.at(m.texture).pixels.size();
-        require(estimated <= 512ull * 1024 * 1024, "Shape buffer exceeds 512 MiB limit.");
-    }
     Put o;
-    o.b.reserve(estimated);
+    o.b.reserve(layout.bytes);
     o.u32(54u | 0x80000000u | 0x02000000u | 0x01000000u | (p.normals ? 0x08000000u : 0u) |
           (uvcount ? 0x04000000u : 0u));
     o.f64(xmin);
@@ -196,7 +229,7 @@ inline Bytes encode(const Prepared &p, const std::vector<Material> &materials,
                 start += static_cast<int>(patch.corners.size());
         }
         // FBX V=0 is the image bottom; Esri t=0 is the first stored image row.
-        // WIC rows and original JPEG rows begin at the top. Flip V for every patch with UVs,
+        // Decoded PNG rows and original JPEG rows begin at the top. Flip V for every patch with UVs,
         // including currently untextured patches.
         for (const auto &patch : p.patches)
             for (const auto &v : patch.corners)
@@ -221,7 +254,7 @@ inline Bytes encode(const Prepared &p, const std::vector<Material> &materials,
     o.i32(0); // Documented reserved bytes; no outer material compression is requested.
     for (const auto &block : blocks)
         o.bytes(block);
-    require(o.b.size() <= 512ull * 1024 * 1024, "Shape buffer exceeds 512 MiB limit.");
+    require(o.b.size() == layout.bytes, "Shape buffer does not match its validated layout.");
     return o.b;
 }
 

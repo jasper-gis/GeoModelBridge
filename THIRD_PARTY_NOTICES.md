@@ -15,6 +15,25 @@
 
 The exact distributed files and SHA-256 digests are in `third_party/manifest.json`. `scripts/verify_dependencies.py` verifies them offline. No dependency is fetched automatically during C++ configuration.
 
+## libjpeg-turbo 3.1.4.1 (Windows JPEG validation)
+
+- Official source: https://github.com/libjpeg-turbo/libjpeg-turbo/releases/tag/3.1.4.1
+- Source archive SHA-256: `ecae8008e2cc9ade2f2c1bb9d5e6d4fb73e7c433866a056bd82980741571a022`, checked against the official release asset digest.
+- The unchanged decoder sources, supporting headers and original license texts are retained under `third_party/libjpeg-turbo/`; each distributed file is pinned in `third_party/manifest.json`.
+- The root CMake project builds only a static libjpeg decoder for the Windows writer, with SIMD disabled. No encoder, TurboJPEG API, assembly toolchain or upstream command-line tools are built or installed. Linux continues to use its distribution-provided libjpeg library through the same validation code.
+- Original IJG and BSD license texts are installed as `licenses/libjpeg-turbo/README.ijg` and `LICENSE.md` with the Windows native writer.
+
+This software is based in part on the work of the Independent JPEG Group.
+
+## libpng 1.6.58 and zlib 1.3.2 (Windows PNG decoding)
+
+- Official sources: https://www.libpng.org/pub/png/libpng.html and https://zlib.net/.
+- libpng archive SHA-256: `8c9b05b675ca7301a458df2c2e46f26e1d41ff36b8863f8c33530bc58c2e6225`, checked against the official libpng release page.
+- zlib archive SHA-256: `bb329a0a2cd0274d05519d61c667c062e06990d72e125ee2dfa8de64f0119d16`, checked against the official GitHub release asset digest.
+- Original decoder sources and headers are retained unchanged under `third_party/libpng/` and `third_party/zlib/`; every distributed file and source archive is pinned in `third_party/manifest.json`.
+- The root CMake build generates a decoder-only libpng configuration from the unchanged upstream prebuilt header, disabling PNG write helpers. Only static PNG decoding and zlib inflate/checksum sources are compiled; no encoder, gzip tools, SIMD assembly or additional dynamic library is installed.
+- Original licenses are installed as `licenses/libpng/LICENSE` (PNG Reference Library License version 2) and `licenses/zlib/LICENSE` (zlib license). Linux continues to link distribution-provided libraries with the same decoding implementation.
+
 ## Esri FileGDB API 1.5.5
 
 V0.1.1 adds a separate Windows x64 native backend that links against the official FileGDB API SDK. This release includes the unmodified release `FileGDBAPI.dll`, its original Apache-2.0 license, `userestrictions.txt`, upstream Windows README, and a source/hash record under `dist/licenses/filegdb-api/`. The provenance and exact hashes are also recorded in `backends/native-filegdb/sdk-sources.json`.
@@ -23,7 +42,7 @@ SDK headers, import libraries, debugging DLLs/PDBs, C# wrappers, and the full SD
 
 ## Microsoft development and runtime components
 
-Building the Windows native backend requires an x64 Microsoft C++ toolchain and Windows SDK. The backend uses Windows Imaging Component (WIC) for image decoding. Microsoft compiler packages, Windows SDK packages, and development caches are not part of the project distribution. Microsoft C++ runtime availability remains a separate runtime prerequisite; no local development environment is silently installed by the project build.
+Building the Windows native backend requires an x64 Microsoft C++ toolchain and Windows SDK. The backend statically links pinned libpng/zlib and libjpeg-turbo decoders for strict PNG and JPEG validation. Microsoft compiler packages, Windows SDK packages, and development caches are not part of the project distribution. Microsoft C++ runtime availability remains a separate runtime prerequisite; no local development environment is silently installed by the project build.
 
 ## Microsoft .NET and Windows Desktop runtimes in the GUI
 

@@ -170,6 +170,20 @@ def main():
                 insert_objects(base, EMPTY_STACK, ' C: "OO",601,600\n'), profile, True,
                 "EMPTY_ANIMATION_IGNORED")
 
+        # Node visibility is not inherited by ufbx's node.visible field. Hidden
+        # groups and display layers must never silently turn into visible meshes.
+        for visible in (0, 1):
+            parented = insert_objects(base.replace(' C: "OO",200,0', ' C: "OO",200,201'), f''' Model: 201, "Model::Visibility group", "Null" {{
+  Properties70: {{ P: "Visibility", "Visibility", "", "A", {visible} }}
+ }}''', ' C: "OO",201,0\n')
+            layered = insert_objects(base, f''' CollectionExclusive: 700, "CollectionExclusive::Visibility layer", "DisplayLayer" {{
+  Properties70: {{ P: "Show", "bool", "", "", {visible} }}
+ }}''', ' C: "OO",200,700\n')
+            for profile in ("strict", "gis-static"):
+                for label, source in (("parent", parented), ("layer", layered)):
+                    run(f"{label}-visibility-{visible}-{profile}", source, profile, bool(visible),
+                        None if visible else "UNSUPPORTED_VISIBILITY")
+
         saved_pose = material_value(base, "Lcl Translation", "7,8,9")
         animated = insert_objects(saved_pose, ANIMATION, ANIMATION_CONNECTIONS)
         run("active-animation-strict", animated, "strict", False, "UNSUPPORTED_ANIMATION")

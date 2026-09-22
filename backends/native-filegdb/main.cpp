@@ -506,6 +506,10 @@ int run(const Options &o) {
     std::vector<TextureData> textures;
     for (const auto &t : b.scene.textures)
         textures.push_back(prepare_texture(t));
+    // Validate native scalar ranges and complete shape sizes before any SDK
+    // schema operation or geodatabase creation. Encoding reuses this layout.
+    for (const auto& mesh : b.meshes)
+        shape_layout(mesh, b.scene.materials, textures);
     fg::SpatialReference sr;
     fg::SpatialReferenceInfo sri;
     setup_sr(b.scene.coordinates.wkid, sr, sri);

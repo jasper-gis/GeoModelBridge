@@ -96,6 +96,14 @@ internal static class PathRules
     private static readonly StringComparison Comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
     public static string Normalize(string path) => Path.TrimEndingDirectorySeparator(Path.GetFullPath(path.Trim()));
     public static bool Equal(string first, string second) => string.Equals(Normalize(first), Normalize(second), Comparison);
+    public static void RequireNoLinks(string path)
+    {
+        for (var part = Normalize(path); !string.IsNullOrEmpty(part); part = Path.GetDirectoryName(part))
+        {
+            if ((File.GetAttributes(part) & FileAttributes.ReparsePoint) != 0)
+                throw new InvalidDataException("转换结果路径包含链接或目录联接，无法确认本次输出：" + part);
+        }
+    }
     public static bool IsWithinOrEqual(string candidate, string directory)
     {
         var root = Normalize(directory);

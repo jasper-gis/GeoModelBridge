@@ -1,4 +1,5 @@
 #include "gmb/scene.hpp"
+#include "gmb/output.hpp"
 #include <nlohmann/json.hpp>
 #include <algorithm>
 #include <cmath>
@@ -7,6 +8,7 @@
 #include <iostream>
 #include <optional>
 #include <random>
+#include <set>
 #include <stdexcept>
 #ifdef _WIN32
 #ifndef NOMINMAX
@@ -260,6 +262,8 @@ int convert(const gmb::Scene& scene,Options& o,const std::string& argv0) {
     if(output.extension()!=".gdb")throw UsageError("FileGDB output must end in .gdb.");
     if(o.report.empty())o.report=fs::u8path(output.u8string()+".report.json");
     if(fs::exists(o.report))throw UsageError("Report already exists: "+o.report.u8string());
+    gmb::io::reject_reparse(output);
+    gmb::io::reject_reparse(o.report);
     fs::create_directories(output.parent_path());
     auto temp=output.parent_path()/fs::u8path(".gmb-work-"+std::to_string(std::random_device{}()));
     if(!fs::create_directory(temp))throw std::runtime_error("Could not create isolated writer workspace.");
@@ -284,24 +288,81 @@ int convert(const gmb::Scene& scene,Options& o,const std::string& argv0) {
         if(!fs::exists(o.report))gmb::write_report(scene,{{gmb::Severity::error,"WRITER_FAILED",o.backend+" writer exited with code "+std::to_string(code)+". "+detail,o.writer.u8string()}},"failed",o.report,o.backend);
         std::cerr<<"Writer failed (exit "<<code<<"). See "<<o.report.u8string()<<"\n";return 5;
     }
+    gmb::io::reject_reparse(output);
+    gmb::io::reject_reparse(o.report);
     if(!fs::is_directory(output)||!fs::is_regular_file(o.report))throw std::runtime_error("Writer returned success without output or verification report.");
     json verified;
-    {std::ifstream report(o.report);report>>verified;}
+    {
+        std::ifstream report(o.report);
+        std::vector<std::set<std::string>> keys;
+        verified=json::parse(report,[&](int, json::parse_event_t event,json& value) {
+            if(event==json::parse_event_t::object_start)keys.emplace_back();
+            else if(event==json::parse_event_t::object_end)keys.pop_back();
+            else if(event==json::parse_event_t::key&&!keys.back().insert(value.get<std::string>()).second)
+                throw std::runtime_error("Writer report contains a duplicate JSON field.");
+            return true;
+        });
+    }
     if(verified.value("status","")!="written_and_readback_verified" ||
        verified.value("version","")!=gmb::version ||
        verified.value("feature_class","")!=o.feature_class ||
        verified.value("conversion_profile","")!=scene.conversion_profile ||
        verified.value("missing_texture_policy","")!=scene.missing_texture_policy ||
        verified.value("backend","")!="native-filegdb" ||
-       verified.at("coordinate_system").value("wkid",0)!=scene.coordinates.wkid ||
-       verified.at("coordinates").value("wkid",0)!=scene.coordinates.wkid ||
+       verified.value("source","")!=scene.source ||
+       !verified.at("coordinate_system").at("wkid").is_number_integer() ||
+       verified.at("coordinate_system").at("wkid")!=json(scene.coordinates.wkid) ||
+       verified.at("coordinate_system").value("unit","")!="meter" ||
+       !verified.at("coordinate_system").value("projected",false) ||
+       !verified.at("coordinate_system").value("source_coordinates_assigned_without_reprojection",false) ||
+       !verified.at("coordinates").at("wkid").is_number_integer() ||
+       verified.at("coordinates").at("wkid")!=json(scene.coordinates.wkid) ||
+       verified.at("coordinates").value("unit","")!="meter" ||
+       verified.at("coordinates").value("up_axis","")!="Z" ||
+       verified.at("coordinates").value("space","")!="referenced" ||
        !verified.at("coordinates").value("origin_explicit",false) ||
        verified.at("coordinates").at("origin")!=json::array({scene.coordinates.origin.x,scene.coordinates.origin.y,scene.coordinates.origin.z}) ||
        !verified.at("verification").value("geometry_material_uv_texture_readback",false) ||
        verified.at("verification").value("level","")!="closed_reopened_file_geodatabase" ||
        fs::weakly_canonical(fs::u8path(verified.value("output","")))!=fs::weakly_canonical(output) ||
-       verified.at("verification").value("feature_count",std::size_t(0))!=scene.meshes.size())
+       !verified.at("verification").at("feature_count").is_number_integer() ||
+       verified.at("verification").at("feature_count")!=json(scene.meshes.size()))
         throw std::runtime_error("Writer report does not prove a successful database readback.");
+    for(const char* field:{"reader_diagnostics","diagnostics"}) {
+        if(std::string(field)=="diagnostics"&&!verified.contains(field))continue;
+        const auto& entries=verified.at(field);
+        if(!entries.is_array())throw std::runtime_error("Writer report diagnostics must be an array.");
+        for(const auto& entry:entries) {
+            const auto severity=entry.value("severity","");
+            if((severity!="info"&&severity!="warning")||!entry.at("code").is_string()||
+               entry.at("code").get_ref<const std::string&>().empty()||!entry.at("message").is_string()||
+               !entry.at("context").is_string())
+                throw std::runtime_error("Writer report contains invalid or error diagnostics.");
+            if(scene.missing_texture_policy=="error"&&entry.at("code")=="MISSING_TEXTURE_FALLBACK")
+                throw std::runtime_error("Writer report used missing-texture fallback against the requested policy.");
+        }
+    }
+    std::multiset<std::string> recorded_diagnostics;
+    for(const auto& entry:verified.at("reader_diagnostics"))recorded_diagnostics.insert(entry.dump());
+    for(const auto& diagnostic:scene.diagnostics) {
+        const json expected={{"severity",diagnostic.severity==gmb::Severity::error?"error":"warning"},
+            {"code",diagnostic.code},{"message",diagnostic.message},{"context",diagnostic.context}};
+        const auto found=recorded_diagnostics.find(expected.dump());
+        if(found==recorded_diagnostics.end())
+            throw std::runtime_error("Writer report omitted or changed a reader diagnostic.");
+        recorded_diagnostics.erase(found);
+    }
+    const auto& checks=verified.at("verification").at("checks");
+    if(!checks.is_array()||checks.size()!=scene.meshes.size())
+        throw std::runtime_error("Writer report is missing per-mesh readback checks.");
+    std::set<std::size_t> mesh_indices;
+    for(const auto& check:checks) {
+        if(!check.at("mesh_index").is_number_integer()||!check.value("passed",false))
+            throw std::runtime_error("Writer report contains a failed readback check.");
+        const auto index=check.at("mesh_index").get<std::size_t>();
+        if(index>=scene.meshes.size()||!mesh_indices.insert(index).second)
+            throw std::runtime_error("Writer report contains an invalid or repeated mesh index.");
+    }
     std::cout<<"GDB written and checked by "<<o.backend<<": "<<output.u8string()<<"\nReport: "<<o.report.u8string()<<"\nVisual acceptance for this output requires separate inspection.\n";
     return 0;
 }
@@ -328,6 +389,7 @@ int main_utf8(const std::vector<std::string>& args) {
         }
         if(o.command=="fixture"&&o.input=="all") {
             // Build the suite in a new directory. Each bundle carries its own validation report.
+            gmb::io::reject_reparse(o.output);
             if(!fs::create_directories(o.output))throw std::runtime_error("Could not create fixture suite.");
             try {for(const auto& name:gmb::fixture_names()) {auto s=gmb::make_fixture(name);s.missing_texture_policy=o.reader.missing_texture_fallback?"material-color":"error";gmb::apply_origin(s,o.origin,o.wkid,o.origin_explicit);gmb::write_bundle(s,o.output/fs::u8path(name));}}
             catch(...) {std::error_code ec;fs::remove_all(o.output,ec);throw;}

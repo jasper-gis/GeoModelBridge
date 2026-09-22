@@ -1,4 +1,4 @@
-# V0.1.14 架构
+# V0.2.0 架构
 
 构建统一由仓库根目录一个 `CMakeLists.txt` 定义，默认产生 CLI、原生 writer 及 SDK 运行库。`backends/native-filegdb` 仍是源码模块，但不是独立构建工程。两程序继续通过子进程和 Scene Bundle 通信，构建合并不改变运行时协议。
 
@@ -25,7 +25,7 @@ GUI 是自包含 WPF 程序，通过无 shell 的参数数组调用 CLI。CLI �
 
 Scene Bundle 是 JSON 与资源文件组成的进程边界。CLI 默认严格渲染模式，GUI 默认显式 GIS 静态兼容；`conversion_profile` 随 bundle 和报告传递并核对。独立的 `missing_texture_policy` 默认 `material-color`：Reader 对找不到的图片保留材质颜色与标量透明度、清除图片绑定并告警；`error` 则拒绝。写入端仍执行完整几何、UV、材质和资源检查，不对损坏 Bundle 回退。V0.1.4 引入的流式 JSON 写出与有界日志保留。[协议](bundle-format.md) · [转换策略](compatibility.md)
 
-原生端共用 C++17 源码，Windows 以 MSVC x64 编译并用 WIC 解码，Ubuntu 以 GCC 13 编译并用 libpng/libjpeg 解码，各自链接官方 FileGDB API 1.5.5 平台 SDK。按官方扩展 Shape Buffer 文档构造 Multipatch，每网格一个要素，三角形按材质分 patch。PNG 解码为未预乘 RGBA8，JPEG 保留支持的容器字节，所有有 UV 的 patch 写入 `S=U,T=1-V`。不翻转图片行序、不静默丢弃未知材质通道。
+原生端共用 C++17 源码，Windows 以 MSVC x64 编译并静态链接固定 libpng/zlib/libjpeg-turbo，Ubuntu 以 GCC 13 编译并动态链接系统 libpng/libjpeg，图片解码与完整性检查实现共用，各自链接官方 FileGDB API 1.5.5 平台 SDK。按官方扩展 Shape Buffer 文档构造 Multipatch，每网格一个要素，三角形按材质分 patch。PNG 解码为未预乘 RGBA8，JPEG 保留支持的容器字节，所有有 UV 的 patch 写入 `S=U,T=1-V`。不翻转图片行序、不静默丢弃未知材质通道。
 
 数据库先写入本次创建的暂存目录，关闭重开后核对几何、材质、纹理及存储精度，通过才提交最终路径。独立副本模式只凭源报告核对要素属性与 ShapeBuffer SHA-256，不读取 FBX、bundle 或源贴图。内容散列用于一致性比较，不是数字签名。单库单线程写入，清理只涉及本次创建的路径。
 
@@ -43,7 +43,7 @@ V0.1.10 的报告保留 `coordinates`，三个调用入口核对目标 WKID 和�
 - `src/`、`include/`、`bundle.hpp`、`codec.hpp`、writer `main.cpp` 为共享业务逻辑，不复制 Linux 分支。
 - 后端 `platform_windows.cpp` / `platform_linux.cpp` 负责 UTF-8 与 SDK wstring 转换、路径范围及平台运行时。Linux 使用 wchar32，不依赖系统 locale 的 filesystem wstring 转换。
 - `include/gmb/output.hpp` 与 `src/platform_files_windows.cpp` / `src/platform_files_linux.cpp` 供核心和原生后端共用，负责链接检查、独占文件创建和禁止覆盖的提交；不依赖 FileGDB SDK。两种 CMake 构建入口都编译同一份实现。
-- `images.cpp` 共享容器检查；`images_windows.cpp` / `images_linux.cpp` 实现同一解码契约。PNG 为直通 RGBA8，不做 Gamma/ICC 或预乘；JPEG 检查后保留原字节。
+- `images.cpp` 共享容器检查（含 PNG chunk CRC 与完整 IEND）；`images_png.cpp` / `images_jpeg.cpp` 在两平台共用严格 libpng/libjpeg 解码与扫描校验并拒绝解码恢复。PNG 为直通 RGBA8，不做 Gamma/ICC 或预乘；JPEG 检查后保留原字节。
 - 根 CMake 的 `GMB_BUILD_NATIVE` 可构建完整链路；单独 native CMake 入口仍保留。Python 构建、下载、验证、样例和打包共用 `scripts/gmb_platform.py` 的平台布局。
 - Linux install RPATH 只保留 `$ORIGIN`，两份 SDK 共享库可随目录移动；未附带 SDK 运行库时显式配置 `LD_LIBRARY_PATH`。从 PATH 启动的 CLI 通过 `/proc/self/exe` 找到相邻 writer。
 - Windows 与 Ubuntu CI 都运行 CTest、真实 GDB 集成、独立目录部署和 14 个完整样例；WPF 服务测试由 Windows 执行。维护 master 共享代码，平台适配修改必须回归两侧。

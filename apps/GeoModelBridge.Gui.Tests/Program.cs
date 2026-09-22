@@ -6,7 +6,7 @@ using GeoModelBridge.Gui.Core;
 
 internal static class Program
 {
-    private const string Version = "0.1.14";
+    private const string Version = "0.2.0";
     private static readonly List<TestCase> Results = [];
     private static string Work = "";
     private static string Input = "";
@@ -234,8 +234,10 @@ internal static class Program
             ["conversion_profile"] = settings.Profile,
             ["missing_texture_policy"] = settings.MissingTexturePolicy,
             ["output"] = Path.GetFullPath(settings.OutputPath),
+            ["source"] = Path.GetFullPath(settings.InputPath),
             ["feature_class"] = settings.FeatureClass,
-            ["coordinate_system"] = new JsonObject { ["wkid"] = int.Parse(settings.Wkid), ["projected"] = true, ["unit"] = "meter" },
+            ["coordinate_system"] = new JsonObject { ["wkid"] = int.Parse(settings.Wkid), ["projected"] = true,
+                ["unit"] = "meter", ["source_coordinates_assigned_without_reprojection"] = true },
             ["coordinates"] = new JsonObject
             {
                 ["wkid"] = int.Parse(settings.Wkid), ["unit"] = "meter", ["up_axis"] = "Z", ["space"] = "referenced",
@@ -249,7 +251,8 @@ internal static class Program
             {
                 ["level"] = "closed_reopened_file_geodatabase",
                 ["geometry_material_uv_texture_readback"] = true,
-                ["feature_count"] = 1
+                ["feature_count"] = 1,
+                ["checks"] = new JsonArray(new JsonObject { ["mesh_index"] = 0, ["passed"] = true })
             }
         };
     }
@@ -285,6 +288,9 @@ internal static class Program
         RejectedReport("reject_report_wrong_backend", report => report["backend"] = "arcgis-pro-corehost");
         RejectedReport("reject_report_wrong_output", report => report["output"] = Path.Combine(Work, "unrelated.gdb"));
         RejectedReport("reject_report_relative_output", report => report["output"] = "relative.gdb");
+        RejectedReport("reject_report_missing_source", report => report.Remove("source"));
+        RejectedReport("reject_report_wrong_source", report => report["source"] = Path.Combine(Work, "other.fbx"));
+        RejectedReport("reject_report_relative_source", report => report["source"] = Path.GetFileName(Input));
         RejectedReport("reject_report_wrong_feature_class", report => report["feature_class"] = "OtherModels");
         RejectedReport("reject_report_missing_verification", report => report.Remove("verification"));
         RejectedReport("reject_report_unverified_geometry", report => report["verification"]!["geometry_material_uv_texture_readback"] = false);
@@ -292,10 +298,24 @@ internal static class Program
         RejectedReport("reject_report_zero_features", report => report["verification"]!["feature_count"] = 0);
         RejectedReport("reject_report_negative_features", report => report["verification"]!["feature_count"] = -1);
         RejectedReport("reject_report_fractional_features", report => report["verification"]!["feature_count"] = 1.5);
+        RejectedReport("reject_report_missing_feature_checks", report => report["verification"]!.AsObject().Remove("checks"));
+        RejectedReport("reject_report_empty_feature_checks", report => report["verification"]!["checks"] = new JsonArray());
+        RejectedReport("reject_report_failed_feature_check", report => report["verification"]!["checks"]![0]!["passed"] = false);
+        RejectedReport("reject_report_nonboolean_feature_check", report => report["verification"]!["checks"]![0]!["passed"] = 1);
+        RejectedReport("reject_report_out_of_range_mesh_index", report => report["verification"]!["checks"]![0]!["mesh_index"] = 1);
+        RejectedReport("reject_report_negative_mesh_index", report => report["verification"]!["checks"]![0]!["mesh_index"] = -1);
+        RejectedReport("reject_report_fractional_mesh_index", report => report["verification"]!["checks"]![0]!["mesh_index"] = 0.5);
+        RejectedReport("reject_report_repeated_mesh_index", report =>
+        {
+            report["verification"]!["feature_count"] = 2;
+            report["verification"]!["checks"]!.AsArray().Add(new JsonObject { ["mesh_index"] = 0, ["passed"] = true });
+        });
         RejectedReport("reject_report_wrong_wkid", report => report["coordinate_system"]!["wkid"] = 3857);
         RejectedReport("reject_report_geographic_crs", report => report["coordinate_system"]!["projected"] = false);
         RejectedReport("reject_report_missing_crs", report => report.Remove("coordinate_system"));
         RejectedReport("reject_report_nonmetric_crs", report => report["coordinate_system"]!["unit"] = "feet");
+        RejectedReport("reject_report_missing_assignment_policy", report => report["coordinate_system"]!.AsObject().Remove("source_coordinates_assigned_without_reprojection"));
+        RejectedReport("reject_report_changed_assignment_policy", report => report["coordinate_system"]!["source_coordinates_assigned_without_reprojection"] = false);
         RejectedReport("reject_report_missing_placement", report => report.Remove("coordinates"));
         RejectedReport("reject_report_wrong_origin", report => report["coordinates"]!["origin"]![2] = 99);
         RejectedReport("reject_report_short_origin", report => report["coordinates"]!["origin"] = new JsonArray(1, 2));
@@ -307,6 +327,35 @@ internal static class Program
         {
             new JsonObject { ["severity"] = "error", ["code"] = "MATERIAL_UNSUPPORTED", ["message"] = "Unsupported material." }
         });
+        RejectedReport("reject_success_report_with_writer_error", report => report["diagnostics"] = new JsonArray
+        {
+            new JsonObject { ["severity"] = "error", ["code"] = "WRITE_FAILED", ["message"] = "Write failed." }
+        });
+        foreach (var field in new[] { "severity", "code", "message" })
+            RejectedReport("reject_diagnostic_missing_" + field, report =>
+            {
+                var entry = new JsonObject { ["severity"] = "warning", ["code"] = "NOTE", ["message"] = "A warning." };
+                entry.Remove(field);
+                report["reader_diagnostics"] = new JsonArray(entry);
+            });
+        RejectedReport("reject_diagnostic_unknown_severity", report => report["reader_diagnostics"] = new JsonArray(
+            new JsonObject { ["severity"] = "fatal", ["code"] = "NOTE", ["message"] = "A warning." }));
+        RejectedReport("reject_diagnostic_empty_code", report => report["reader_diagnostics"] = new JsonArray(
+            new JsonObject { ["severity"] = "warning", ["code"] = "", ["message"] = "A warning." }));
+        RejectedReport("reject_diagnostic_invalid_context", report => report["reader_diagnostics"] = new JsonArray(
+            new JsonObject { ["severity"] = "warning", ["code"] = "NOTE", ["message"] = "A warning.", ["context"] = 3 }));
+        foreach (var replacement in new[]
+        {
+            ("\"status\":", "\"status\":\"failed\",\"status\":"),
+            ("\"feature_count\":", "\"feature_count\":0,\"feature_count\":")
+        })
+            Test("reject_duplicate_report_field_" + replacement.Item1, () =>
+            {
+                var json = GoodReport().ToJsonString().Replace(replacement.Item1, replacement.Item2, StringComparison.Ordinal);
+                try { ReportVerifier.Verify(json, Settings); }
+                catch (InvalidDataException) { return; }
+                throw new InvalidOperationException("Conflicting duplicate fields were accepted.");
+            });
         Test("reject_malformed_json_report", () =>
         {
             try { ReportVerifier.Verify("{broken", Settings); }
@@ -577,6 +626,13 @@ internal static class Program
             Assert(!result.Success, "Old engine was accepted.");
             Assert(!File.Exists(Path.Combine(directory, "convert-invoked.txt")), "Conversion started before engine version was rejected.");
         });
+        await TestAsync("reject_truncated_engine_version_before_conversion", async () =>
+        {
+            var directory = CreateFakeEngine("version-overflow");
+            var result = await new EngineService(directory).ConvertAsync(Settings);
+            Assert(!result.Success, "A truncated stdout tail was accepted as the complete version response.");
+            Assert(!File.Exists(Path.Combine(directory, "convert-invoked.txt")), "Conversion started with an invalid version response.");
+        });
         await TestAsync("zero_exit_without_report_is_not_success", async () =>
         {
             var directory = CreateFakeEngine("no-report");
@@ -634,13 +690,46 @@ internal static class Program
             Assert(events.Any(e => e.Message.Contains("此行日志已截断")), "Long line truncation was silent.");
             Assert(result.Message.Contains("END-ERROR") && result.Message.Contains("END-OUTPUT") && result.Message.Length < 4300, "Stdout flooding displaced the actual stderr failure or produced an unbounded result.");
         });
+        await TestAsync("throwing_log_callback_does_not_deadlock_child_pipes", async () =>
+        {
+            var directory = CreateFakeEngine("log-flood-callback");
+            var request = Settings with { OutputPath = Path.Combine(Work, "log-callback.gdb"), ReportPath = Path.Combine(Work, "log-callback.json") };
+            var progress = new InlineProgress<EngineEvent>(item =>
+            {
+                if (item.Kind == EngineEventKind.StandardOutput && item.Message.StartsWith("oooo", StringComparison.Ordinal))
+                    throw new InvalidOperationException("Display host stopped accepting logs.");
+            });
+            var result = await new EngineService(directory).ConvertAsync(request, progress).WaitAsync(TimeSpan.FromSeconds(30));
+            Assert(!result.Success && result.ExitCode == 6, "Progress failure prevented the child process from reaching its exit status.");
+            Assert(result.Message.Contains("部分运行消息无法显示") && result.Message.Contains("END-ERROR"), "The process failure or progress delivery failure was hidden.");
+        });
+        await TestAsync("post_process_callback_failure_retains_verified_result", async () =>
+        {
+            var directory = CreateFakeEngine("valid-callback");
+            var request = Settings with { OutputPath = Path.Combine(Work, "verified-callback.gdb"), ReportPath = Path.Combine(Work, "verified-callback.json") };
+            var progress = new InlineProgress<EngineEvent>(item =>
+            {
+                if (item.Kind == EngineEventKind.Stage && item.Message.Contains("转换进程已结束"))
+                    throw new InvalidOperationException("Display host stopped accepting stages.");
+            });
+            var result = await new EngineService(directory).ConvertAsync(request, progress);
+            Assert(result.Success && result.ExitCode == 0 && result.Report is not null, "Progress failure erased a verified result.");
+            Assert(result.Message.Contains("部分运行消息无法显示"), "Progress delivery failure was hidden.");
+        });
+        await TestAsync("oversize_success_report_is_rejected_before_loading", async () =>
+        {
+            var directory = CreateFakeEngine("oversize-report");
+            var request = Settings with { OutputPath = Path.Combine(Work, "oversize.gdb"), ReportPath = Path.Combine(Work, "oversize.json") };
+            var result = await new EngineService(directory).ConvertAsync(request);
+            Assert(!result.Success && result.Message.Contains("64 MiB"), "Oversized report did not reach bounded report rejection.");
+        });
         await TestAsync("new_engine_without_writer_has_actionable_probe_failure", async () =>
         {
             var directory = CreateFakeEngine("no-writer");
             var result = await new EngineService(directory).ProbeBackendAsync("native-filegdb");
             Assert(!result.Success && !string.IsNullOrWhiteSpace(result.Message), "Missing writer probe did not report failure.");
         });
-        foreach (var mode in new[] { "probe-old-version", "probe-failed-status", "probe-wrong-backend", "probe-needs-pro", "probe-invalid-json" })
+        foreach (var mode in new[] { "probe-old-version", "probe-failed-status", "probe-wrong-backend", "probe-needs-pro", "probe-invalid-json", "probe-overflow", "probe-duplicate" })
             await TestAsync("runtime_rejects_" + mode, async () =>
             {
                 var directory = CreateFakeEngine(mode, includeWriter: true);
@@ -656,24 +745,28 @@ internal static class Program
         var mode = File.ReadAllText(Path.Combine(directory, "fake-engine-mode.txt")).Trim();
         if (args.SequenceEqual(new[] { "--version" }))
         {
+            if (mode == "version-overflow") Console.Write("invalid response" + new string(' ', 300000));
             Console.WriteLine("GeoModelBridge V" + (mode == "old-version" ? "0.1.1" : Version));
             return 0;
         }
         if (args.SequenceEqual(new[] { "--probe" }))
         {
             File.WriteAllText(Path.Combine(directory, "probe-invoked.txt"), mode);
-            Console.WriteLine(mode == "probe-invalid-json" ? "not JSON" : JsonSerializer.Serialize(new
+            if (mode == "probe-overflow") Console.Write("invalid response" + new string(' ', 300000));
+            var probe = JsonSerializer.Serialize(new
             {
                 version = mode == "probe-old-version" ? "0.1.1" : Version,
                 status = mode == "probe-failed-status" ? "unavailable" : "available",
                 backend = mode == "probe-wrong-backend" ? "arcgis-pro-corehost" : "native-filegdb",
                 arcgis_pro_required = mode == "probe-needs-pro"
-            }));
+            });
+            if (mode == "probe-duplicate") probe = probe.Replace("\"status\":", "\"status\":\"unavailable\",\"status\":", StringComparison.Ordinal);
+            Console.WriteLine(mode == "probe-invalid-json" ? "not JSON" : probe);
             return 0;
         }
         if (args.Length == 0 || args[0] != "convert") return 2;
         File.WriteAllText(Path.Combine(directory, "convert-invoked.txt"), JsonSerializer.Serialize(args));
-        if (mode == "log-flood")
+        if (mode.StartsWith("log-flood", StringComparison.Ordinal))
         {
             Console.WriteLine(new string('o', 3 * 1024 * 1024));
             Console.Error.WriteLine(new string('e', 3 * 1024 * 1024));
@@ -687,7 +780,7 @@ internal static class Program
             return 6;
         }
         if (mode == "no-report") Directory.CreateDirectory(After(args, "--output"));
-        if (mode is "no-gdb" or "bad-report" or "failed-report-zero-exit" or "failed-report-nonzero-exit")
+        if (mode is "no-gdb" or "bad-report" or "failed-report-zero-exit" or "failed-report-nonzero-exit" or "valid-callback" or "oversize-report")
         {
             var originIndex = Array.IndexOf(args, "--origin");
             var settings = new ConversionSettings
@@ -698,6 +791,7 @@ internal static class Program
                 FeatureClass = After(args, "--feature-class"), Backend = After(args, "--backend"), Profile = After(args, "--profile"), MissingTexturePolicy = After(args, "--missing-textures")
             };
             var report = GoodReport(settings);
+            if (mode is "valid-callback" or "oversize-report") Directory.CreateDirectory(settings.OutputPath);
             if (mode == "bad-report")
             {
                 Directory.CreateDirectory(settings.OutputPath);
@@ -714,6 +808,11 @@ internal static class Program
                 report["diagnostics"] = diagnostics;
             }
             File.WriteAllText(settings.ReportPath, report.ToJsonString());
+            if (mode == "oversize-report")
+            {
+                using var oversized = new FileStream(settings.ReportPath, FileMode.Open, FileAccess.Write);
+                oversized.SetLength(64 * 1024 * 1024 + 1);
+            }
         }
         return mode == "failed-report-nonzero-exit" ? 3 : 0;
     }
@@ -723,7 +822,7 @@ internal static class Program
         var service = new EngineService(engineDirectory);
         await TestAsync("native_backend_runtime_probe", async () =>
         {
-            Assert(service.IsEnginePresent, "Built V0.1.14 engine is absent: " + service.EnginePath);
+            Assert(service.IsEnginePresent, "Built V0.2.0 engine is absent: " + service.EnginePath);
             var probe = await service.ProbeBackendAsync("native-filegdb");
             Assert(probe.Success, probe.Message);
         });

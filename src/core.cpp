@@ -33,6 +33,8 @@ std::vector<Diagnostic> validate(const Scene& scene) {
         ds.push_back({Severity::error, std::move(code), std::move(message), std::move(ctx)});
     };
     if (scene.meshes.empty()) error("EMPTY_SCENE", "No mesh geometry was found.", scene.name);
+    if (scene.conversion_profile != "strict" && scene.conversion_profile != "gis-static")
+        error("INVALID_CONVERSION_PROFILE", "Unknown conversion profile.", scene.name);
     if (scene.missing_texture_policy != "material-color" && scene.missing_texture_policy != "error")
         error("INVALID_TEXTURE_POLICY", "Unknown missing texture policy.", scene.name);
     if (scene.missing_texture_policy == "error")
@@ -45,6 +47,11 @@ std::vector<Diagnostic> validate(const Scene& scene) {
         error("COORDINATE_CONVENTION", "Core geometry must use meters and Z-up.", scene.name);
     if (!finite(scene.coordinates.origin) || scene.coordinates.wkid < 0)
         error("INVALID_COORDINATES", "Invalid origin or WKID.", scene.name);
+    if (scene.coordinates.space != (scene.coordinates.wkid > 0 ? "referenced" : "local"))
+        error("INVALID_COORDINATES", "Coordinate space must agree with the assigned WKID.", scene.name);
+    if (!scene.coordinates.origin_explicit &&
+        (scene.coordinates.origin.x != 0 || scene.coordinates.origin.y != 0 || scene.coordinates.origin.z != 0))
+        error("INVALID_COORDINATES", "A nonzero origin must be explicitly recorded.", scene.name);
     if (scene.coordinates.wkid > 0 && !scene.coordinates.origin_explicit)
         ds.push_back({Severity::warning,"SPATIAL_REFERENCE_UNPLACED","A WKID is not a placement or reprojection; origin was not explicitly provided.",scene.name});
     for (std::size_t t = 0; t < scene.textures.size(); ++t) {

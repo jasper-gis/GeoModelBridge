@@ -35,6 +35,636 @@
       ],
       "version": "3.12.0",
       "name": "nlohmann/json"
+    },
+    {
+      "name": "libjpeg-turbo (Windows decoder)",
+      "version": "3.1.4.1",
+      "revision": "3.1.4.1",
+      "source": "https://github.com/libjpeg-turbo/libjpeg-turbo",
+      "archive": "https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/3.1.4.1/libjpeg-turbo-3.1.4.1.tar.gz",
+      "archive_sha256": "ecae8008e2cc9ade2f2c1bb9d5e6d4fb73e7c433866a056bd82980741571a022",
+      "files": [
+        {
+          "path": "third_party/libjpeg-turbo/LICENSE.md",
+          "sha256": "e10114e6e40f3d0311c401ca25245ac5ef459a43c20f976fd63f03e816f5741f"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/README.ijg",
+          "sha256": "75815e3bf6484201a3c3d17a1bbf10f2e8e3237f84df10a2357ea896db2a81d6"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/cderror.h",
+          "sha256": "fb756ca784625c16a0c50a46f63cb876b1b1adfca851f189546d8e3963803a4e"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/cdjpeg.h",
+          "sha256": "e04e8acd0974f034478b0d5208c081e3d6d77c7006fe8f0354fb015d6260b1fb"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/cmyk.h",
+          "sha256": "85c195b7f329f1ef9ee4c68db9f8aecd807a88c14eeb6264df0872b9e860e1cb"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jaricom.c",
+          "sha256": "fa144de494da46aa685379a8a0f6f59acaef7a2bb282cbf738a0a8070e1d527e"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jchuff.h",
+          "sha256": "2afdef6a3e99a1b42bd06454a5d3bac429b62e99410db377286d319afd51cac1"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jcmaster.h",
+          "sha256": "c755ce4562022a93a756814727f9bf3c61606673d79233f8c6ae1bbef957083a"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jcomapi.c",
+          "sha256": "b70d463fb2a29b01995e6fa307baee756dd97f83f9ffe0a4dcb2e9220e9c51af"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jconfig.h.in",
+          "sha256": "b47159e0fb3486c1a4033d06494c2a399290da20522a2e2a460b18c95e28cab2"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jconfigint.h.in",
+          "sha256": "5e8682a43026eb56b1041239fed1458f79799b8b605445dfc1b5caa3529b35f6"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdapimin.c",
+          "sha256": "03c7c476f4cfc19fc0b7f53c6bef9f3122e682cbfd37410743fed4a1ecaecbc1"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdapistd.c",
+          "sha256": "cf3818c48a41d4f469d5d7d1597a2a78f598e7ad43c26fba690ad48fdd4387ac"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdarith.c",
+          "sha256": "a0291db89f2a057eefcf234ccf02ad1ea385c00759af13fddec914bab0cfe0d1"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdatasrc.c",
+          "sha256": "25b8689e08ec083106e13a9c5a599b7d79dcf1f182d4565b1600eac014b874d1"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdcoefct.c",
+          "sha256": "edfd068202a3e8350c1deab080800f285a12fbf1a5845c52baeb199be37b4450"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdcoefct.h",
+          "sha256": "a62860fa7914706e571ea12541bd235f1b320150df7c855a210afdc33047146a"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdcol565.c",
+          "sha256": "fc5c3f16be4dbb4f42b6b378570263b56140485dfca3febdf8cd9c4db32565cc"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdcolext.c",
+          "sha256": "ec8b87b7a5c9574cb1da924b077c4df1622cfb2cbb356b3704407e5ddec7d62d"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdcolor.c",
+          "sha256": "b51cdf7f6dc93f8874fdfa82aaea7030cc70bf3408e7fcb60cf76017b07000cf"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdct.h",
+          "sha256": "dec739e58411e143e23041508f828d948d74bf670819aea770e52e6134024de5"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jddctmgr.c",
+          "sha256": "92efac51e3488c93ede3e689f8f1fe859ba8ee17f622bee42af2ebd2b603a3b3"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jddiffct.c",
+          "sha256": "3bf8fedd2b3b45607f23e93a65077b6fc4daa6ca56026853cbb7005225407205"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdhuff.c",
+          "sha256": "712ecd1b7e2b520ce0648cb742f1dad89f675ab8871dc054227cb28aed84b377"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdhuff.h",
+          "sha256": "59acd799211b415f821890e1947d7a7a4c9dfb7e15911cc8b413395d47881b43"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdicc.c",
+          "sha256": "f605e2337afa011e020eb84f9c2f5a211f30d380621e97206d07216e4f78f661"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdinput.c",
+          "sha256": "b3c155ed22ce4b49431d4900392f09354275daa59602450fafc6b9cd7adfcc13"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdlhuff.c",
+          "sha256": "ed965925b5961236b6fcd3a7870ea159386b93bbefbc97cd4fb465ad72446da8"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdlossls.c",
+          "sha256": "d20d42182813833fb051cff5e733415daa18f1e0fa3fbe01aaf7785b4af9af4a"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdmainct.c",
+          "sha256": "995f8132b3a56d251716ef67486d428d7aacf44aac0271d77624de988c55b6b2"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdmainct.h",
+          "sha256": "a47728a202bac48caf2f38a8e99e23e3242ac580cf97606f3103c5025557e6a6"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdmarker.c",
+          "sha256": "1dd922aff8f92ece4f8f2b11eea08cd49b2e232de797ee98db9e331f6d0e3296"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdmaster.c",
+          "sha256": "aeaf73d414cdac5fe34c9c5ae3594a22433c241e56da927d8d77231ee9663c7d"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdmaster.h",
+          "sha256": "2ad7689d61273e464866be6b6b9ad227e70706379fd7b725b5c4535285fa29a4"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdmerge.c",
+          "sha256": "7a08564c3867c660623fac6c45b5eb894ce79616db2f101187bf9e045048cd4c"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdmerge.h",
+          "sha256": "4b5e10488c3d8ac982abda2e9e21563f75f25c6e0daa914cad32be9224b11d05"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdmrg565.c",
+          "sha256": "576f1d8d1b02208029033fd5cb48a267875fed59b8c6513d4738a5a846200ac0"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdmrgext.c",
+          "sha256": "89310d9a437a86b4a29faf23cb0412c001662bc82dec6319db08286b868ed0ae"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdphuff.c",
+          "sha256": "fdaf536fed994d433b08a2f0bc39b85bc100d81f465e1164c78caabcfface7d3"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdpostct.c",
+          "sha256": "42feb659a302a4a1aab2af5fac37b000ec7640d34f4b306f656acd63ddca2315"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdsample.c",
+          "sha256": "7736ee967c5df3afaa0f86e7638bd550e67774b670d484e070d9f8685ced12c0"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdsample.h",
+          "sha256": "2149487f05a459a4ebba48723780a8ee5a912f34ddb3e4ed6f4a984be922ade7"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jdtrans.c",
+          "sha256": "b624447657d4f01737efc0b846285a19974f478a21418af1f6c1143c24bcf16c"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jerror.c",
+          "sha256": "1c3661997d30898f587a2765e934b23e706fabb7e4c316490348843f2003d0a0"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jerror.h",
+          "sha256": "35354d148ea6da234bacd5435155d0ec1de9c05833602232a67f1cf184c04925"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jidctflt.c",
+          "sha256": "b6fc1d4f1333378cc67e77d436be910e5a114fc7711d60c35d484b760e1ebca0"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jidctfst.c",
+          "sha256": "b524cdd2cbb30eef5e9878b290eb837033118338dd3583fc8302ed604e2c36d9"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jidctint.c",
+          "sha256": "25c26bdfdba0fd95413dda570c79de6268e6e3be418299160a58fb03cb3872a4"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jidctred.c",
+          "sha256": "39350089fa43432f299f49412f2b43d1d15974c3570a114df87b2946bfe623f4"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jinclude.h",
+          "sha256": "5b9f31bb7fb5bee3b7c8717ec801f2afe6e813272b502bc3bc96f6324fcfa3e2"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jlossls.h",
+          "sha256": "248616df72adcab8aaf8c1dd2cdf6d798bab96a91aea03945d2dea94837eaf18"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jmemmgr.c",
+          "sha256": "635c7e0cca4fc259ee1038c4d015725f7fe8cceed3c7a08e3184aa990d375d8f"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jmemnobs.c",
+          "sha256": "328ff841f437fa7c2de846c4e295e9145cc628b9041aed718a06eb087c55786c"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jmemsys.h",
+          "sha256": "441fd978684f5bb8f4b1a512221def17948aab73c507b98b8602cc0bda360d96"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jmorecfg.h",
+          "sha256": "b86b4abf452d39b737cb45503591e04e9ca38c5fd0e90d429387d0464005a28b"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jpeg_nbits.c",
+          "sha256": "c8f32852eb9bece6e08beda55275773865ead5aa301c5f5baeb2fc3ade6253aa"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jpeg_nbits.h",
+          "sha256": "82ebb5a854c908d07bf77a03a9fb749f49561f7eb6cb6f80a2621a3d0f8d33f5"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jpegapicomp.h",
+          "sha256": "7ee0ac1b9307c03a6a715d46f89f611abd28c5795b9b9a410255df3a8d1db92d"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jpegint.h",
+          "sha256": "07a75eceaadf7fc986b3451a723c54e5193f3b4f6686b2fec2e93feeb1c9d509"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jpeglib.h",
+          "sha256": "dc3e8220f34b7e9f9e48620f5cb8dc070834feb3214bb12bbad78478ebb29e60"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jquant1.c",
+          "sha256": "c132b33829f8fa3806798e7783e64ee8e986a4ee04db3e8a100159675aae5eaf"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jquant2.c",
+          "sha256": "77ffa8a28129ded74b5de8d21925a3f7fef6c73e6f4fa6b87a693f5d40f7c927"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jsamplecomp.h",
+          "sha256": "cbe390ba987549c89c7ac17ea4f8cea956d513f0b1e51efe3da83adfaaa85a03"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jsimd.h",
+          "sha256": "2faf44670d8d0862f547d83038dee513cc2d0b35e08107ecef6183e643e16165"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jsimddct.h",
+          "sha256": "ed66000db7f841d37919da89ff8870262e719fecc3007d72e1cfcb91e86c8393"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jstdhuff.c",
+          "sha256": "79e2cbf605326ce6349a60f58695b97d574510662f8b089474f30c07bf06be28"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jutils.c",
+          "sha256": "70c0ba2953ca8f4abd6858d8ed71aa3266f37d529313b8e0cdfa0d1a43e31b2e"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/jversion.h.in",
+          "sha256": "86045220239c0bef446c27ec1ba263545c0517ea270845f830efd7ee6a53cab5"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/tjutil.h",
+          "sha256": "4c8290e7c6a26cc72a63f6a198a522b9a71915925345dd465764c225f3fd3750"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/transupp.h",
+          "sha256": "bf210e8d311b8288eb126513a77b3594b36dd8f13a665b8ac007a52cd5c02292"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/turbojpeg.h",
+          "sha256": "ae2abca2e4613e9f5d431b040652cb9caf2f80fdec46b44fa021da3fd0e5de1c"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdapistd-12.c",
+          "sha256": "275519203dc4d9f5e49941dc92aec80cc66660205b6016e51844ae24e6738db9"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdapistd-16.c",
+          "sha256": "9019dc766e92eb7e968a54c03ad32c5143230a7360d1499c86872a5e6eff7718"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdapistd-8.c",
+          "sha256": "ec3f9e51758784a97fca8736937520736dc80c9c50d066d316c9f31be38d8002"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdcoefct-12.c",
+          "sha256": "f198bc02042b61e682282bba855c5b599e6042b509e553ba8d1197dd58dba284"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdcoefct-8.c",
+          "sha256": "db42f048ef044fc7fa623bc6daadfee4a25b3739b6296d6f95f7f448f7c3d958"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdcolor-12.c",
+          "sha256": "a6bdf73a5c6d3cafe460ea248a240d05a37fa5a0edee9b0842fd203dd42eb28b"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdcolor-16.c",
+          "sha256": "1a4bc3b430f7e9f2c7f271665f7088302f686b952006878300340a273f108084"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdcolor-8.c",
+          "sha256": "0c47d50952aad899a6bb8fd48eb2abbfbf89c9d4e658bdfdb937c7673b7e030d"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jddctmgr-12.c",
+          "sha256": "4f8df6bf0e6ad2e44d35fdcd4f8365d2cc461b71a72d9a35c7336f1703a18c18"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jddctmgr-8.c",
+          "sha256": "641a720ad4902df4ac31576a8544f08c957b55e3b63575c62cf57317cc960fa8"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jddiffct-12.c",
+          "sha256": "445d44f9f7d8c04252fb5b1fd324b91547a864309de4696e7f45842accfabbb6"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jddiffct-16.c",
+          "sha256": "2ec770be154c343de004c972c8dc3ca11f6ea68c2eda4bae5ba1f784ed67bbfa"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jddiffct-8.c",
+          "sha256": "95182377bf46c0066f9421a7f64b09bc754133f12c2196acc907e226c20a6775"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdlossls-12.c",
+          "sha256": "24f27614786ed69e379aa0b4d19136a3b4d836ef94a9c7d70eba531c943fda79"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdlossls-16.c",
+          "sha256": "2cd2ca3bcd371b390c53cb102e4f1a163cd1da64d61353e29d34d5622bd75aad"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdlossls-8.c",
+          "sha256": "f7560c613fbd9cdfbfb1c5e62b0a6c9091feef112daaea6859f3e2f14ee2d0f6"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdmainct-12.c",
+          "sha256": "411f6776f749a4f68564831a138805c8829eeaaf9d22c98863e776d84731b79a"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdmainct-16.c",
+          "sha256": "ddb64a93d1ad9daece554d95762530950bd0f70800bd97c24bd64e22039fcead"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdmainct-8.c",
+          "sha256": "238f427ab2f4cee299cff2d56406aeb464fc33ee375b1e19796c7767696d7543"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdmerge-12.c",
+          "sha256": "08278c5b03aff5437b249df4d42d3bc97b1e24cc61ce832a1a1df20add022cd8"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdmerge-8.c",
+          "sha256": "0868fe8b8556243deb057a66bdf72805adb6c7016550a7b1f2b379e50ae125ce"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdpostct-12.c",
+          "sha256": "9823617b6978a26e0a03cd22c108ca03caef7cf85c31bc5aa9306ac985970a8c"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdpostct-16.c",
+          "sha256": "2c8545f3fd0a914d296832972c3fbcab44627c59d645de7b27c7e2cc76028fbc"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdpostct-8.c",
+          "sha256": "c4873dd6642613e21a489ecd88c74417351daad6f87dfd1ac19c8cce3b969a83"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdsample-12.c",
+          "sha256": "3b0a1df083ff95304af922ca43c2f508c649a6bfd44ecece6eb7694c17d6d228"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdsample-16.c",
+          "sha256": "89a599b79eb7881c80a92e3032f853bac8f87a5ec6d5a9a55e2638f253ee2355"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jdsample-8.c",
+          "sha256": "731ba0afcfc9ab0b2bf07fa45a110fc548cd9919c0bd4beaaa1327bef206f9fe"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jidctflt-12.c",
+          "sha256": "70faba9e4c35f7157440f07fd0fd40a84d2d941744509697094018e645a4e56f"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jidctflt-8.c",
+          "sha256": "a74e6d8caaaa114bee7074ebd32b8a835e3b3674af9e8f33517c0a7bfef79795"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jidctfst-12.c",
+          "sha256": "f4a69d725c5a469de383b8ded36649e213ded3299a8e980f75722e937de2dc9d"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jidctfst-8.c",
+          "sha256": "9a2e6223a4105f7befdf302b8f058e46cd2afd423da9d304fdc35d1c74cf6020"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jidctint-12.c",
+          "sha256": "032c2d120aca1946c0c1a7daf27c5c03f0dbc004f60bbb89a986239815717f8a"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jidctint-8.c",
+          "sha256": "eb8f9ac5aa6a5ae7f76318e696a498bfb4447793752c96f138bfb769049fe0e3"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jidctred-12.c",
+          "sha256": "555ae9ff1ad7e6ad8146eddae0da452e3e15c6f40687ef7356b49587f92d1838"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jidctred-8.c",
+          "sha256": "043a0ecaeef92432dc1f7ba8015c17503a7ec6ac466348ff999f068d3516b45a"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jquant1-12.c",
+          "sha256": "e03e2332be79aeaa7f72069721d43d922c79d7cf9f924627a2ea43238fbe70f4"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jquant1-8.c",
+          "sha256": "92728f205b6c5b4672605a3ce953cd44b98320fa1c83b742be1668664ed6bfc4"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jquant2-12.c",
+          "sha256": "c0c7e51095cd87d0fc4feed65b85257c6be0c3f4f5fda66f87d3fe55451bd8ee"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jquant2-8.c",
+          "sha256": "f016e46e69dd303922eb41748ae01ba856337aaad2d21fedeb82ffaaee01983c"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jutils-12.c",
+          "sha256": "ee9c47b293fff476e139faddf40c6e07acc93426f9fa5166d266b4b267b9683a"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jutils-16.c",
+          "sha256": "b86afd43619d70b584fd78a2fe0a876ae1aea1613d93181e037d8e7d6a2a5c6f"
+        },
+        {
+          "path": "third_party/libjpeg-turbo/src/wrapper/jutils-8.c",
+          "sha256": "c455d2f2a626b1ead9bb47b8e5c2199df6125e4f0cf6026cbf369adde20a63cd"
+        }
+      ]
+    },
+    {
+      "name": "libpng (Windows decoder)",
+      "version": "1.6.58",
+      "revision": "v1.6.58",
+      "source": "https://www.libpng.org/pub/png/libpng.html",
+      "archive": "https://download.sourceforge.net/libpng/libpng-1.6.58.tar.gz",
+      "archive_sha256": "8c9b05b675ca7301a458df2c2e46f26e1d41ff36b8863f8c33530bc58c2e6225",
+      "files": [
+        {
+          "path": "third_party/libpng/LICENSE",
+          "sha256": "bdb0a645ea18c60507d0368379b1ac5474b92255fcc2d115e07486a7672ba526"
+        },
+        {
+          "path": "third_party/libpng/png.c",
+          "sha256": "e675e106a5cc637a824c4ad9b5c1ee82c43bde9a47466e9ea36d38bb29aa095c"
+        },
+        {
+          "path": "third_party/libpng/png.h",
+          "sha256": "81501c268ec5c3dc79efc6ac9fddb63b22a25e4931360ddd7b29b1744d6cb6b8"
+        },
+        {
+          "path": "third_party/libpng/pngconf.h",
+          "sha256": "ba8620bbc7612b656cf547eab806ea90bf16b6c0b97fc99e9d39568dc926b802"
+        },
+        {
+          "path": "third_party/libpng/pngdebug.h",
+          "sha256": "923e849bded3f15a74fa943ed87b423d88ba5699feeed214872fea09997c44fc"
+        },
+        {
+          "path": "third_party/libpng/pngerror.c",
+          "sha256": "6e8f475172d8c1e34982f4fa4130042110d5591dccdf95723345c2a7e5c7f761"
+        },
+        {
+          "path": "third_party/libpng/pngget.c",
+          "sha256": "3098a692f096c58b9c0f039fbfd38c29b0a86c464a498a9c775c22698a2bec95"
+        },
+        {
+          "path": "third_party/libpng/pnginfo.h",
+          "sha256": "95fd19c965b86c6f279e426b9ee42c62e83af41a372b51fe8feb52a3427cb44d"
+        },
+        {
+          "path": "third_party/libpng/pngmem.c",
+          "sha256": "2dcf91e5f7d4aaa11c53cdac246223f405e5cc3e1c7ccccb7a40650c41465b56"
+        },
+        {
+          "path": "third_party/libpng/pngpread.c",
+          "sha256": "230e4e01a9748922a33a936d1c4a2f599d61fc6425b49270197949fd3f38443e"
+        },
+        {
+          "path": "third_party/libpng/pngpriv.h",
+          "sha256": "44f9ecf9664767ec55632f900bb6d59f81b63d24f0039258813695ef428f7c48"
+        },
+        {
+          "path": "third_party/libpng/pngread.c",
+          "sha256": "2a2c02673c7dcd6853f3efe8cc16c893df3f7bdffe7b53abde835e7c6e4c6fc3"
+        },
+        {
+          "path": "third_party/libpng/pngrio.c",
+          "sha256": "3c710643f274fd2b4aa2bc154c9dc53a512edae773dda1434f205fb005f2e93e"
+        },
+        {
+          "path": "third_party/libpng/pngrtran.c",
+          "sha256": "e7f9bcd1e85763ca5efeb2de7b1e5c59222f7cfc1935e0b3ce14a6c1d6f195f4"
+        },
+        {
+          "path": "third_party/libpng/pngrutil.c",
+          "sha256": "748f956c603df9bafeaf82ad23f5d9ce57e2d7b0be21a68868eba46615cf8ddc"
+        },
+        {
+          "path": "third_party/libpng/pngset.c",
+          "sha256": "59b8e464113235447540a3e542660967a9ebc8dca7716eae8494cd59ddcf66c8"
+        },
+        {
+          "path": "third_party/libpng/pngstruct.h",
+          "sha256": "46b48213ed1691ddb989cfa7844a272e13fe7a7eb67a97037ca96d76b242bac4"
+        },
+        {
+          "path": "third_party/libpng/pngtrans.c",
+          "sha256": "38aa34b51567a06428b15be16c5819e6f2ae0d3bfce4e1f777ae6242f74eb6d4"
+        },
+        {
+          "path": "third_party/libpng/scripts/pnglibconf.h.prebuilt",
+          "sha256": "1911b17912d9cc9f62126a9daf11e6f6560bd0ec1b8886d08440c92815fc82bf"
+        }
+      ]
+    },
+    {
+      "name": "zlib (Windows decoder)",
+      "version": "1.3.2",
+      "revision": "v1.3.2",
+      "source": "https://zlib.net/",
+      "archive": "https://github.com/madler/zlib/releases/download/v1.3.2/zlib-1.3.2.tar.gz",
+      "archive_sha256": "bb329a0a2cd0274d05519d61c667c062e06990d72e125ee2dfa8de64f0119d16",
+      "files": [
+        {
+          "path": "third_party/zlib/adler32.c",
+          "sha256": "9cd1443a24ff2a3053961695bd432035c58347386a420d3388232376ebabe211"
+        },
+        {
+          "path": "third_party/zlib/crc32.c",
+          "sha256": "da37f3483e77c20f64c28cf55d62d7bed9d62af33eb401be906835d84539b9c9"
+        },
+        {
+          "path": "third_party/zlib/crc32.h",
+          "sha256": "9a2223575183ac2ee8a247f20bf3ac066e8bd0140369556bdbdffc777435749e"
+        },
+        {
+          "path": "third_party/zlib/deflate.h",
+          "sha256": "21f4ea0973dab272fb26e93305ccf8628c8dc07e6c5df09a9861825b1920ba5d"
+        },
+        {
+          "path": "third_party/zlib/gzguts.h",
+          "sha256": "db7690315cda93c0742701365d5218932ff0e2e6b8713c95019553502ada7d2b"
+        },
+        {
+          "path": "third_party/zlib/inffast.c",
+          "sha256": "f96787a11bb7131ffd2221fb40db27f6a5a1dfb12f59c0bc388807010749c34a"
+        },
+        {
+          "path": "third_party/zlib/inffast.h",
+          "sha256": "05cc5dc9ff1da7b8b52a4bd8bda0d8a5c236a2f39efe84b941516ea13857e6c5"
+        },
+        {
+          "path": "third_party/zlib/inffixed.h",
+          "sha256": "fd7c4b1dbdacb283421d0675744aaecda44e840e183b5131448bac94564f6adb"
+        },
+        {
+          "path": "third_party/zlib/inflate.c",
+          "sha256": "90221ea7d762e7044057f6ad5013e969086c6ba3d3051716b7aa786d7a6362ec"
+        },
+        {
+          "path": "third_party/zlib/inflate.h",
+          "sha256": "e6a43bd0e24ab2cf5fa1dca630859e9a2f6a721f033f75faf179f5c0299e4fe2"
+        },
+        {
+          "path": "third_party/zlib/inftrees.c",
+          "sha256": "f7ee9ce5925fc9d1579c76e574feed85f5ca4ccddc446a7795578854bbc65743"
+        },
+        {
+          "path": "third_party/zlib/inftrees.h",
+          "sha256": "d3a7ea301d8ec514823d052a2e42af4636bc81a0cf07052f526030f208068fb8"
+        },
+        {
+          "path": "third_party/zlib/LICENSE",
+          "sha256": "e32ff4e00d9d94930537635291da39e7e612703334bf6fde8c7f1686fe8a45a2"
+        },
+        {
+          "path": "third_party/zlib/trees.h",
+          "sha256": "bb0a9d3ca88ee00c81adb7c636e73b97085f6ef1b52d6d58edbe2b6dc3adeb4d"
+        },
+        {
+          "path": "third_party/zlib/zconf.h",
+          "sha256": "cb7c2c84211473b4699223edd363d3207b43b9578e739b5bf638f42204ea6e0f"
+        },
+        {
+          "path": "third_party/zlib/zlib.h",
+          "sha256": "818667d6ab6a37fe7469cb06a7f0cb2c2cb2f2c948a03e5accf1a4a74bf3020a"
+        },
+        {
+          "path": "third_party/zlib/zutil.c",
+          "sha256": "1279908a15580224a2c1f377555ffdd150327fed71801aa77fc35978dcb741c8"
+        },
+        {
+          "path": "third_party/zlib/zutil.h",
+          "sha256": "a12243cc6d338ffad0c8e3500fbc05bc7fdcdc25a469393b1c2f7e5df307fff3"
+        }
+      ]
     }
   ],
   "schema_version": 1

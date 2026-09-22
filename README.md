@@ -5,7 +5,7 @@
 <p>FBX → 带颜色与贴图的 FileGDB Multipatch</p>
 
 <p>
-  <a href="CHANGELOG.md"><code>V0.1.14</code></a> &nbsp;
+  <a href="CHANGELOG.md"><code>V0.2</code></a> &nbsp;
   <a href="docs/architecture.md"><code>C++17</code></a> &nbsp;
   <a href="#platforms"><code>Windows · Ubuntu</code></a>
 </p>
@@ -180,7 +180,9 @@ V0.1.12 会明确区分“文件缺失”和“路径 / 读取错误”：路径
 
 ## 已有验证
 
-**V0.1.14**：Windows / Ubuntu 的根工程 CTest 均为 **11/11**，包含安装前 CLI 自动发现 writer、纹理写入和复制回读；两平台的 37 项原生输入 / 清理检查、9 项真实 Python 调用、14 个完整样例和发布检查通过；Windows GUI 为 **163/163**。另验证 Windows 纯核心 **9/9**、多配置生成器和缺 SDK 提示。详见[本版验证记录](docs/validation-v0.1.14.md)。
+**V0.2（0.2.0）**：Windows / Ubuntu CTest 均 **11/11**，原生集成各 **52 项**、Python 真实调用各 **9 项**、完整 GDB 样例各 **14 个**和部署/发布检查通过；Windows GUI **191/191**。本版修复损坏图片误接受、成功报告核验遗漏、隐藏层级和独占流式写出问题。详见 [V0.2 验证记录](docs/validation-v0.2.md)，包括平台跳过项及验收边界；下文数字保留为对应历史版本证据。
+
+**V0.1.14**：Windows / Ubuntu 的根工程 CTest 均为 **11/11**，包含安装前 CLI 自动发现 writer、纹理写入和复制回读；两平台的 37 项原生输入 / 清理检查、9 项真实 Python 调用、14 个完整样例和发布检查通过；Windows GUI 为 **163/163**。另验证 Windows 纯核心 **9/9**、多配置生成器和缺 SDK 提示。详见[V0.1.14 验证记录](docs/validation-v0.1.14.md)。
 
 此前命令行与运行库交付验证保留在 [V0.1.13](docs/validation-v0.1.13.md)，包括 PowerShell、cmd.exe、Bash 连续调用示例的执行记录。
 

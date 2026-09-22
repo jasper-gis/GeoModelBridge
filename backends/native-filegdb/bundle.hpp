@@ -108,6 +108,7 @@ inline Vertex load_vertex(const json &v) {
         auto uv = vector(v.at("uv"), 2);
         a.uv = {uv[0], uv[1]};
         a.has_uv = true;
+        validate_stored_uv(a.uv);
     }
     return a;
 }
@@ -149,20 +150,29 @@ inline Bundle load_bundle(const fs::path &root) {
     Bundle b;
     bool in_meshes = false;
     std::string root_key;
-    std::set<std::string> root_keys, mesh_keys;
+    std::vector<std::set<std::string>> object_keys;
     Mesh streamed_mesh;
     std::string mesh_key, geometry_array;
     // The public parser callback discards each corner, triangle and mesh DOM.
     // Read directly from the file: no full-file byte buffer or scene-sized DOM.
     b.source = json::parse(stream, [&](int depth, json::parse_event_t event, json &value) {
+        if (event == json::parse_event_t::object_start) {
+            object_keys.resize(static_cast<std::size_t>(depth) + 1);
+            object_keys.back().clear();
+        }
+        if (event == json::parse_event_t::key) {
+            const auto key = value.get<std::string>();
+            require(depth > 0 && static_cast<std::size_t>(depth) <= object_keys.size(),
+                    "Invalid JSON object depth.");
+            require(object_keys[static_cast<std::size_t>(depth) - 1].insert(key).second,
+                    depth == 1 ? "Duplicate root bundle field: " + key : "Duplicate bundle object field: " + key);
+        }
         if (depth == 1 && event == json::parse_event_t::key) {
             root_key = value.get<std::string>();
-            require(root_keys.insert(root_key).second, "Duplicate root bundle field: " + root_key);
         }
         if (depth == 1 && event == json::parse_event_t::array_start && root_key == "meshes") in_meshes = true;
         if (in_meshes && depth == 3 && event == json::parse_event_t::key) {
             mesh_key = value.get<std::string>();
-            require(mesh_keys.insert(mesh_key).second, "Duplicate mesh field: " + mesh_key);
         }
         if (in_meshes && depth == 3 && event == json::parse_event_t::array_start &&
             (mesh_key == "vertices" || mesh_key == "triangles")) geometry_array = mesh_key;
@@ -185,7 +195,7 @@ inline Bundle load_bundle(const fs::path &root) {
         }
         if (in_meshes && depth == 3 && event == json::parse_event_t::array_end) geometry_array.clear();
         if (in_meshes && depth == 2) {
-            if (event == json::parse_event_t::object_start) { streamed_mesh = Mesh{}; mesh_keys.clear(); }
+            if (event == json::parse_event_t::object_start) streamed_mesh = Mesh{};
 
             require(event != json::parse_event_t::value && event != json::parse_event_t::array_start,
                     "Each mesh must be an object.");

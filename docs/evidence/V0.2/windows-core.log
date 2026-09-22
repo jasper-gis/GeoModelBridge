@@ -1,0 +1,38 @@
+[0/1] Re-running CMake...
+-- Core-only build: inspect/prepare/fixture are available; GDB conversion requires a separately supplied native writer. Use -DGMB_BUILD_NATIVE=ON -DFILEGDB_API_ROOT=<SDK> for a full build.
+-- Configuring done (0.7s)
+-- Generating done (0.0s)
+-- Build files have been written to: <workspace>/build/v02-core
+[1/10] Building CXX object CMakeFiles\gmb_report_writer.dir\tests\report_writer.cpp.obj
+[2/10] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\fbx_reader.cpp.obj
+[3/10] Linking CXX static library GeoModelBridge.Core.lib
+[4/10] Linking CXX executable bin\gmb_report_writer.exe
+[5/10] Linking CXX executable bin\gmb_core_tests.exe
+[6/10] Building CXX object CMakeFiles\gmb_output_tests.dir\tests\output_tests.cpp.obj
+[7/10] Linking CXX executable bin\gmb_output_tests.exe
+[8/10] Building CXX object CMakeFiles\geomodelbridge.dir\src\main.cpp.obj
+<workspace>\src\main.cpp(242): warning C4996: 'getenv': This function or variable may be unsafe. Consider using _dupenv_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+[9/10] Linking CXX executable bin\geomodelbridge.exe
+Test project <workspace>/build/v02-core
+    Start 1: core
+1/9 Test #1: core .............................   Passed    0.10 sec
+    Start 2: output_safety
+2/9 Test #2: output_safety ....................   Passed    0.13 sec
+    Start 3: cli
+3/9 Test #3: cli ..............................   Passed    1.83 sec
+    Start 4: reader_integration
+4/9 Test #4: reader_integration ...............   Passed    0.48 sec
+    Start 5: binary_fbx
+5/9 Test #5: binary_fbx .......................   Passed    0.20 sec
+    Start 6: profile_integration
+6/9 Test #6: profile_integration ..............   Passed    2.23 sec
+    Start 7: missing_textures
+7/9 Test #7: missing_textures .................   Passed    0.70 sec
+    Start 8: normal_repair
+8/9 Test #8: normal_repair ....................   Passed    0.48 sec
+    Start 9: python_client
+9/9 Test #9: python_client ....................   Passed    2.28 sec
+
+100% tests passed, 0 tests failed out of 9
+
+Total Test time (real) =   8.49 sec

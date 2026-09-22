@@ -1,4 +1,4 @@
-# Python 调用库 · V0.1.14
+# Python 调用库 · V0.2.0
 
 `geomodelbridge` 把 FBX 入库封装为普通 Python 函数调用，供以后 Windows ArcGIS `.atbx` 的脚本层复用，也可用于独立 Python 脚本或 Ubuntu。库仅使用 Python 标准库，不导入 `arcpy`，不在 Python 进程内加载 FileGDB SDK；实际转换仍由同版本 EXE 完成。
 
@@ -21,7 +21,7 @@ GeoModelBridge/
 └── docs/python-client.md
 ```
 
-Python 语言兼容目标为 3.9 及以上；实际验证解释器见[本版验证记录](validation-v0.1.14.md)。不需要 `pip install`，将完整发布目录的 `python` 加入调用脚本的 `sys.path` 即可。无需修改 ArcGIS 的 Python 环境或安装第三方包。Ubuntu 使用同一套库，程序名不带 `.exe`，运行库布局见[部署指南](build-and-release.md)。
+Python 语言兼容目标为 3.9 及以上；实际验证解释器见[本版验证记录](validation-v0.2.md)。不需要 `pip install`，将完整发布目录的 `python` 加入调用脚本的 `sys.path` 即可。无需修改 ArcGIS 的 Python 环境或安装第三方包。Ubuntu 使用同一套库，程序名不带 `.exe`，运行库布局见[部署指南](build-and-release.md)。
 
 ## 最小调用
 
@@ -102,7 +102,7 @@ python D:\Tools\GeoModelBridge\python\examples\convert_fbx.py --engine D:\Tools\
 | `PROCESS_FAILED` | CLI 非零退出，原始退出码和可用诊断随异常返回 |
 | `INVALID_REPORT` | 即使退出码为 0，报告或输出仍不能确认成功 |
 
-成功要求：新的 GDB 目录存在；报告的源 FBX、输出、版本、后端、要素类、profile、缺图策略、投影 WKID 和原点 XYZ 均匹配；包含正数要素数量及关闭重开后的几何 / 材质 / UV / 纹理验证；没有错误诊断。`missing_textures="error"` 不能接受缺图回退。报告不是安全签名，这些检查用于发现失败、组件混用和结果错配。
+成功要求：新的 GDB 目录存在；报告的源 FBX、输出、版本、后端、要素类、profile、缺图策略、投影 WKID 和原点 XYZ 均匹配，且明确记录仅指定坐标系、不执行重投影；包含正数要素数量及关闭重开后的几何 / 材质 / UV / 纹理验证，每个网格须有唯一索引且逐项回读通过；两套诊断列表均不能包含错误或无效条目。`missing_textures="error"` 不能接受缺图回退。进程结束后再次检查 GDB 和报告路径中的符号链接与 Windows 目录联接，报告必须为普通文件。报告不是安全签名，这些检查用于发现失败、组件混用和结果错配。
 
 Python 层使用两个读取线程同时排空 stdout / stderr，每路只保留最后 256 KiB，不创建磁盘日志，不按日志行累计内存。超长单行也受同一限制；`stdout_truncated` / `stderr_truncated` 明确标记是否截断。读取线程不会调用消息回调，结束或启动失败时会回收。CLI 内部仍有其自有暂存 writer 日志，失败时只读取末尾 64 KiB；完整模型诊断以 JSON 报告为准。库最多读取 64 MiB 报告；超限会明确报错，保留生成的成果与报告供核查。库不删除转换失败后留下的 GDB 或报告。
 
@@ -139,7 +139,7 @@ except CallbackError as error:
 
 ```powershell
 python tests/python_client_test.py
-python tests/python_client_integration_test.py --install-dir releases/V0.1.14 --work artifacts/new-python-client-check
+python tests/python_client_integration_test.py --install-dir releases/V0.2.0 --work artifacts/new-python-client-check
 ```
 
 第一项在 CTest 中自动运行；第二项使用安装后的库和真实写入端，测试中文 / 空格路径、贴图、缺图策略、法线兼容、已有成果保护，以及成功回调异常恢复，并对四份 GDB 分别复制后独立回读。测试目录必须是新路径。Windows / Ubuntu CI 都已配置此入口；托管运行结果以 GitHub Actions 实际状态为准。

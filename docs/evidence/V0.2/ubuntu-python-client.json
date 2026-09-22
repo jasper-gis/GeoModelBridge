@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "status": "passed",
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "cases": [
+    "贴图 输出",
+    "existing-output-preserved",
+    "缺图",
+    "required-texture",
+    "strict-normal",
+    "法线修复",
+    "消息失败但成果有效",
+    "invalid-image-strict",
+    "invalid-image-gis-static"
+  ],
+  "installed_client": true,
+  "arcpy_imported": false,
+  "input_unchanged": true,
+  "copied_gdb_readbacks": 4,
+  "graphical_acceptance": "not_performed",
+  "atbx_execution": "not_performed"
+}

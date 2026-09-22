@@ -8,7 +8,7 @@ From the project directory:
 dotnet run --project apps/GeoModelBridge.Gui.Tests -c Release -- --work C:\temp\gmb-gui-test-new
 ```
 
-To also exercise real V0.1.14 native conversions through the GUI service, provide the installed engine directory and source fixtures:
+To also exercise real V0.2.0 native conversions through the GUI service, provide the installed engine directory and source fixtures:
 
 ```powershell
 dotnet run --project apps/GeoModelBridge.Gui.Tests -c Release -- --work C:\temp\gmb-gui-integration-new --engine-dir dist/bin --fixtures tests/fixtures
@@ -23,3 +23,5 @@ V0.1.6 rejects the removed backend in settings, environment probes and reports; 
 V0.1.7 checks the independent missing-file policy, safe arguments, report-policy matching, Chinese fallback warnings, and a real missing-texture FBX conversion with no replacement images.
 
 V0.1.8 checks explicit normal-repair warnings, valid corner-count aggregation, malformed count handling, and a real textured FBX with repaired normals through the GUI service.
+
+V0.2.0 also checks input identity, duplicate JSON fields, diagnostic types and codes, complete per-mesh readback records, and the no-reprojection placement policy. Fake child processes exercise truncated version/probe responses, oversized reports, and throwing progress callbacks: both redirected streams must still drain, and a callback failure after process completion must retain the verified result.

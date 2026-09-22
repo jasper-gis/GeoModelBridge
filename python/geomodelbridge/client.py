@@ -210,6 +210,17 @@ def _run(command):
                           *(capture.truncated for capture in captures))
 
 
+def _check_path_links(path):
+    # Check the full path again after the process: an output or its parent may
+    # have been replaced after request validation (Windows junctions included).
+    for part in (path, *path.parents):
+        reparse = False
+        if os.name == "nt" and os.path.lexists(part):
+            reparse = bool(part.lstat().st_file_attributes & stat.FILE_ATTRIBUTE_REPARSE_POINT)
+        if part.is_symlink() or reparse:
+            raise ValueError("symbolic links/junctions are not supported")
+
+
 def _path(value, label):
     try:
         raw = os.fspath(value)
@@ -217,12 +228,7 @@ def _path(value, label):
             raise ValueError("empty, non-text, or NUL-containing path")
         path = Path(raw).absolute()
         # Reject links/junctions (including dangling links) before resolving them.
-        for part in (path, *path.parents):
-            reparse = False
-            if os.name == "nt" and os.path.lexists(part):
-                reparse = bool(part.lstat().st_file_attributes & stat.FILE_ATTRIBUTE_REPARSE_POINT)
-            if part.is_symlink() or reparse:
-                raise ValueError("symbolic links/junctions are not supported")
+        _check_path_links(path)
         return path.resolve()
     except (OSError, ValueError, TypeError, RuntimeError) as error:
         raise ValidationError(f"Invalid {label}: {error}", code="INVALID_PATH") from error
@@ -262,6 +268,9 @@ def _json(text):
 
 
 def _read_report(path):
+    _check_path_links(path)
+    if not stat.S_ISREG(path.stat().st_mode):
+        raise ValueError("Conversion report must be a regular file")
     with path.open("rb") as stream:
         contents = stream.read(REPORT_LIMIT_BYTES + 1)
     if len(contents) > REPORT_LIMIT_BYTES:
@@ -270,17 +279,19 @@ def _read_report(path):
 
 
 def _diagnostics(report):
-    entries = report.get("reader_diagnostics", report.get("diagnostics", []))
-    if not isinstance(entries, list):
-        raise ValueError("Invalid diagnostic array")
     result = []
-    for entry in entries:
-        if (not isinstance(entry, dict)
-                or entry.get("severity") not in ("warning", "error", "info")
-                or not all(isinstance(entry.get(key), str) for key in ("code", "message"))
-                or not isinstance(entry.get("context", ""), str)):
-            raise ValueError("Invalid diagnostic entry")
-        result.append(Diagnostic(entry["severity"], entry["code"], entry["message"], entry.get("context", "")))
+    for name in ("diagnostics", "reader_diagnostics"):
+        entries = report.get(name, [])
+        if not isinstance(entries, list):
+            raise ValueError("Invalid diagnostic array")
+        for entry in entries:
+            if (not isinstance(entry, dict)
+                    or entry.get("severity") not in ("warning", "error", "info")
+                    or not all(isinstance(entry.get(key), str) for key in ("code", "message"))
+                    or not entry["code"]
+                    or not isinstance(entry.get("context", ""), str)):
+                raise ValueError("Invalid diagnostic entry")
+            result.append(Diagnostic(entry["severity"], entry["code"], entry["message"], entry.get("context", "")))
     return tuple(result)
 
 
@@ -442,7 +453,8 @@ class Engine:
         source = report.get("source")
         if not isinstance(source, str) or not Path(source).is_absolute() or Path(source).resolve() != request.input_fbx:
             raise ValueError("Report source does not match the input FBX")
-        if not request.output_gdb.is_dir() or request.output_gdb.is_symlink():
+        _check_path_links(request.output_gdb)
+        if not request.output_gdb.is_dir():
             raise ValueError("Output GDB directory is missing or replaced by a link")
         verification = report["verification"]
         coordinate_system = report["coordinate_system"]
@@ -454,8 +466,19 @@ class Engine:
         count = verification.get("feature_count")
         if type(count) is not int or count <= 0:
             raise ValueError("No verified features")
+        checks = verification.get("checks")
+        if not isinstance(checks, list) or len(checks) != count:
+            raise ValueError("Missing per-feature readback checks")
+        indices = set()
+        for check in checks:
+            if (not isinstance(check, dict) or type(check.get("mesh_index")) is not int
+                    or not 0 <= check["mesh_index"] < count or check.get("passed") is not True
+                    or check["mesh_index"] in indices):
+                raise ValueError("Invalid or failed per-feature readback check")
+            indices.add(check["mesh_index"])
         if (type(coordinate_system.get("wkid")) is not int or coordinate_system["wkid"] != request.wkid
-                or coordinate_system.get("projected") is not True or coordinate_system.get("unit") != "meter"):
+                or coordinate_system.get("projected") is not True or coordinate_system.get("unit") != "meter"
+                or coordinate_system.get("source_coordinates_assigned_without_reprojection") is not True):
             raise ValueError("Requested projected WKID was not verified")
         coordinates = report.get("coordinates")
         if (not isinstance(coordinates, dict) or coordinates.get("unit") != "meter"

@@ -74,7 +74,7 @@ def read_bundle(directory):
 def main():
     exe = Path(sys.argv[1]).resolve()
     assert exe.is_file(), f"Executable not found: {exe}"
-    assert "0.1.14" in invoke(exe, "--version").stdout
+    assert "0.2.0" in invoke(exe, "--version").stdout
     doctor = json.loads(invoke(exe, "doctor").stdout)
     assert "native_filegdb" in doctor and "arcgis_pro" not in doctor
     assert "arcgis-pro" not in invoke(exe, "--help").stdout
@@ -134,6 +134,29 @@ def main():
         invoke(exe, "fixture", "all", "--output", all_fixtures, expect_success=False)
         after = {path.relative_to(all_fixtures): path.read_bytes() for path in all_fixtures.rglob("*") if path.is_file()}
         assert after == before, "Rejected overwrite changed existing output"
+        # Reject linked parents before creating any children or writer workspace.
+        linked_target = root / "linked-target"
+        linked_target.mkdir()
+        linked_parent = root / "linked-parent"
+        try:
+            linked_parent.symlink_to(linked_target, target_is_directory=True)
+        except OSError as error:
+            if getattr(error, "winerror", None) != 1314:
+                raise
+            print("SKIP CLI linked-path checks: Windows symlink privilege not held")
+        else:
+            result = invoke(exe, "fixture", "all", "--output", linked_parent / "new" / "suite", expect_success=False)
+            assert result.returncode == 6 and not list(linked_target.iterdir()), "Fixture suite followed linked parent"
+            if len(sys.argv) > 3:
+                result = invoke(exe, "convert", Path(sys.argv[2]) / "textured_quad.fbx",
+                                "--output", linked_parent / "new" / "output.gdb", "--report", root / "linked-output.json",
+                                "--wkid", 3857, "--origin", 0, 0, 0, "--writer", Path(sys.argv[3]).resolve(), expect_success=False)
+                assert result.returncode == 6 and not list(linked_target.iterdir()), "Conversion created children through linked parent"
+                new_parent = root / "uncreated-output-parent"
+                result = invoke(exe, "convert", Path(sys.argv[2]) / "textured_quad.fbx",
+                                "--output", new_parent / "output.gdb", "--report", linked_parent / "new" / "report.json",
+                                "--wkid", 3857, "--origin", 0, 0, 0, "--writer", Path(sys.argv[3]).resolve(), expect_success=False)
+                assert result.returncode == 6 and not new_parent.exists() and not list(linked_target.iterdir()), "Unsafe report created output staging"
         placed = root / "placed"
         invoke(exe, "fixture", "uv-plane", "--output", placed, "--wkid", 32650, "--origin", 500000, 3000000, 100)
         shifted = read_bundle(placed)
@@ -169,6 +192,17 @@ def main():
             failure = json.loads(Path(str(output) + ".report.json").read_text(encoding="utf-8"))
             assert "FINAL_WRITER_ERROR" in failure["diagnostics"][0]["message"]
             assert not list(root.glob(".gmb-work-*")), "Owned writer staging should be removed"
+        if len(sys.argv) > 4:
+            for mode in ("valid-report", "wrong-source", "wrong-unit", "wrong-axis", "wrong-space",
+                         "fractional-wkid", "overflow-wkid", "fractional-count", "not-projected", "reprojected",
+                         "missing-diagnostics", "dropped-diagnostic", "error-diagnostic", "unknown-diagnostic", "masked-error", "unexpected-fallback", "missing-checks",
+                         "failed-check", "wrong-mesh", "duplicate-field", "trailing-json"):
+                output = root / (mode + ".gdb")
+                result = invoke(exe, "convert", Path(sys.argv[2]) / "textured_quad.fbx", "--output", output,
+                                "--wkid", 3857, "--origin", 100, 100, 100, "--missing-textures", "error", "--writer", Path(sys.argv[4]).resolve(),
+                                expect_success=(mode == "valid-report"))
+                assert result.returncode == (0 if mode == "valid-report" else 6), (mode, result.stderr)
+                assert not list(root.glob(".gmb-work-*"))
     print("PASS CLI, bundle integrity, original image bytes, PNG alpha, placement, and overwrite protection")
 
 

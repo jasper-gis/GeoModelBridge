@@ -1,4 +1,4 @@
-# FileGDB API 调用与依赖核实 · V0.1.14
+# FileGDB API 调用与依赖核实 · V0.2
 
 [首页](../README.md) · [命令行调用](command-line.md) · [构建与发布](build-and-release.md)
 
