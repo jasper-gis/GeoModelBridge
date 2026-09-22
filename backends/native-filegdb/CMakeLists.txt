@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.21)
-project(GeoModelBridgeNative VERSION 0.1.12 LANGUAGES CXX)
+project(GeoModelBridgeNative VERSION 0.1.13 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(FILEGDB_API_ROOT "" CACHE PATH "Extracted official FileGDB API 1.5.5 SDK for this platform")
-option(GMB_INSTALL_FILEGDB_RUNTIME "Install official FileGDB shared libraries and original notices" OFF)
+option(GMB_INSTALL_FILEGDB_RUNTIME "Copy and install official FileGDB shared libraries and original notices" ON)
 if(WIN32 AND NOT MSVC)
   message(FATAL_ERROR "The Windows FileGDB SDK requires the Microsoft STL ABI. Use an x64 MSVC toolchain.")
 elseif(NOT WIN32 AND NOT CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -49,13 +49,33 @@ endif()
 install(TARGETS GeoModelBridge.NativeWriter RUNTIME DESTINATION bin/native-filegdb)
 if(GMB_INSTALL_FILEGDB_RUNTIME)
   if(WIN32)
+    set(GMB_FILEGDB_RUNTIME "${FILEGDB_API_ROOT}/bin64/FileGDBAPI.dll")
     install(FILES "${FILEGDB_API_ROOT}/bin64/FileGDBAPI.dll" DESTINATION bin/native-filegdb)
     install(FILES "${FILEGDB_API_ROOT}/license/Apache License.pdf" "${FILEGDB_API_ROOT}/license/userestrictions.txt" "${FILEGDB_API_ROOT}/README-windows_VS2022.txt" DESTINATION licenses/filegdb-api)
     install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/sdk-sources.json" DESTINATION licenses/filegdb-api)
   else()
+    set(GMB_FILEGDB_RUNTIME "${FILEGDB_API_ROOT}/lib/libFileGDBAPI.so" "${FILEGDB_API_ROOT}/lib/libfgdbunixrtl.so")
+    # Exercise the copied runtime during build-tree probes too, instead of
+    # accidentally succeeding through an absolute development SDK RPATH.
+    set_target_properties(GeoModelBridge.NativeWriter PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
     install(FILES "${FILEGDB_API_ROOT}/lib/libFileGDBAPI.so" "${FILEGDB_API_ROOT}/lib/libfgdbunixrtl.so" DESTINATION bin/native-filegdb)
     install(DIRECTORY "${FILEGDB_API_ROOT}/license/" DESTINATION licenses/filegdb-api)
     install(FILES "${FILEGDB_API_ROOT}/README" "${CMAKE_CURRENT_SOURCE_DIR}/sdk-sources-linux.json" DESTINATION licenses/filegdb-api)
   endif()
+  foreach(runtime IN LISTS GMB_FILEGDB_RUNTIME)
+    if(NOT EXISTS "${runtime}")
+      message(FATAL_ERROR "Missing FileGDB runtime: ${runtime}. Fetch the complete official SDK with scripts/fetch_filegdb_sdk.py.")
+    endif()
+  endforeach()
+  # Run even for a targeted, up-to-date writer build, so a removed DLL is
+  # restored without relinking. TARGET_FILE_DIR adds no dependency (CMP0112).
+  add_custom_target(gmb_filegdb_runtime
+    COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:GeoModelBridge.NativeWriter>"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${GMB_FILEGDB_RUNTIME} "$<TARGET_FILE_DIR:GeoModelBridge.NativeWriter>"
+    COMMENT "Copying official FileGDB runtime beside the native writer"
+    VERBATIM)
+  add_dependencies(GeoModelBridge.NativeWriter gmb_filegdb_runtime)
+  message(STATUS "Native FileGDB runtime: bundled beside the built writer and installed to bin/native-filegdb (licenses in licenses/filegdb-api)")
+else()
+  message(WARNING "FileGDB runtime bundling is OFF: this build/install is not standalone. Supply SDK bin64 via PATH on Windows or SDK lib via LD_LIBRARY_PATH on Linux. Set GMB_INSTALL_FILEGDB_RUNTIME=ON to bundle it. Existing copied libraries are not removed.")
 endif()
-# With runtime installation disabled, add FILEGDB_API_ROOT/bin64 to PATH.

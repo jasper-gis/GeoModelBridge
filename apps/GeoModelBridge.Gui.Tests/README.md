@@ -8,7 +8,7 @@ From the project directory:
 dotnet run --project apps/GeoModelBridge.Gui.Tests -c Release -- --work C:\temp\gmb-gui-test-new
 ```
 
-To also exercise real V0.1.12 native conversions through the GUI service, provide the installed engine directory and source fixtures:
+To also exercise real V0.1.13 native conversions through the GUI service, provide the installed engine directory and source fixtures:
 
 ```powershell
 dotnet run --project apps/GeoModelBridge.Gui.Tests -c Release -- --work C:\temp\gmb-gui-integration-new --engine-dir dist/bin --fixtures tests/fixtures

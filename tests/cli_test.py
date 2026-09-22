@@ -74,10 +74,18 @@ def read_bundle(directory):
 def main():
     exe = Path(sys.argv[1]).resolve()
     assert exe.is_file(), f"Executable not found: {exe}"
-    assert "0.1.12" in invoke(exe, "--version").stdout
+    assert "0.1.13" in invoke(exe, "--version").stdout
     doctor = json.loads(invoke(exe, "doctor").stdout)
     assert "native_filegdb" in doctor and "arcgis_pro" not in doctor
     assert "arcgis-pro" not in invoke(exe, "--help").stdout
+    assert invoke(exe, "-h").stdout == invoke(exe, "--help").stdout
+    for command in ("convert", "inspect", "prepare", "fixture", "doctor"):
+        short = invoke(exe, command, "-h").stdout
+        assert short == invoke(exe, command, "--help").stdout
+        assert "Usage: geomodelbridge " + command in short
+    # Unknown commands/options still fail, rather than masking mistakes as help.
+    assert invoke(exe, "convertt", "-h", expect_success=False).returncode == 2
+    assert invoke(exe, "doctor", "--unknown", expect_success=False).returncode == 2
     with tempfile.TemporaryDirectory(prefix="geomodelbridge-cli-") as scratch:
         root = Path(scratch)
         # Removed backends must fail before input parsing or writer dispatch.

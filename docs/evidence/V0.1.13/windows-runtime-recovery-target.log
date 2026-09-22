@@ -1,0 +1,7 @@
+[0/1] Re-running CMake...
+-- Native FileGDB runtime: bundled beside the built writer and installed to bin/native-filegdb (licenses in licenses/filegdb-api)
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: <workspace>/build/v0113-native-default
+[1/2] Copying official FileGDB runtime beside the native writer
+PASS build-tree runtime hashes, writer -h/--help and SDK probe without development SDK paths

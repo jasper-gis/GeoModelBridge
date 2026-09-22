@@ -1,4 +1,4 @@
-# Native FileGDB 后端 · V0.1.12
+# Native FileGDB 后端 · V0.1.13
 
 这个 Windows x64 / Ubuntu 24.04 x86_64 C++17 后端把 Scene Bundle 中的几何、RGB、透明度、UV 和 PNG/JPEG 纹理直接写入新 FileGDB Multipatch。转换时不加载 ArcGIS Pro、不调用 ArcPy、不借用 Pro 导出的 Shape Buffer。第三方 Esri FileGDB API 负责数据库文件格式，项目代码按 Esri 公开文档独立生成扩展 Multipatch Shape Buffer。
 
@@ -46,7 +46,7 @@ cmake --build build/native
 cmake --install build/native --prefix dist
 ```
 
-`GMB_INSTALL_FILEGDB_RUNTIME` 默认 `OFF`。设为 `ON` 时仅安装官方 release `FileGDBAPI.dll`、完整 Apache 2.0 许可、SDK 的 sample use restrictions、README 及固定来源清单，不安装 debug DLL、PDB、.NET wrapper 或 SDK 开发文件。保持 `OFF` 时，运行前把自己的 `FILEGDB_API_ROOT/bin64` 加入 `PATH`。
+V0.1.13 起 `GMB_INSTALL_FILEGDB_RUNTIME` 默认 `ON`：构建复制官方 release `FileGDBAPI.dll` 到 writer 旁，安装时附带 DLL、完整 Apache 2.0 许可、SDK 的 sample use restrictions、README 及固定来源清单，不安装 debug DLL、PDB、.NET wrapper 或 SDK 开发文件。旧缓存中的 `OFF` 必须显式改成 `ON`。主动关闭时，运行前把自己的 `FILEGDB_API_ROOT/bin64` 加入 `PATH`；不会清理之前复制的 DLL。详见 [源码调用链与依赖缺失核实](../../docs/filegdb-api.md)。
 
 Windows 后端必须用 MSVC ABI 编译。主 C++ 引擎可继续用 MinGW；两者通过独立进程和 Scene Bundle 协议通信，不混用 C++ STL ABI。
 

@@ -1,0 +1,16 @@
+-- The CXX compiler identification is MSVC 19.44.35226.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: <user>/Documents/Codex/2026-09-20/gen/work/msvc-v011/toolchain/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+CMake Warning at CMakeLists.txt:79 (message):
+  FileGDB runtime bundling is OFF: this build/install is not standalone.
+  Supply SDK bin64 via PATH on Windows or SDK lib via LD_LIBRARY_PATH on
+  Linux.  Set GMB_INSTALL_FILEGDB_RUNTIME=ON to bundle it.  Existing copied
+  libraries are not removed.
+
+
+-- Configuring done (0.8s)
+-- Generating done (0.0s)
+-- Build files have been written to: <workspace>/build/v0113-native-off

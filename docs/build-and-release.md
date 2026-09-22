@@ -1,6 +1,6 @@
 # 构建、部署与发布指南
 
-[← 返回项目首页](../README.md) · [原生后端](../backends/native-filegdb/README.md) · [Python 调用库](python-client.md) · [验证记录](validation-v0.1.12.md)
+[← 返回项目首页](../README.md) · [原生后端](../backends/native-filegdb/README.md) · [Python 调用库](python-client.md) · [验证记录](validation-v0.1.13.md)
 
 本文补充 README 的快速开始流程，面向需要自定义构建、迁移客户机或维护发布的使用者。所有命令在仓库根目录执行；默认安装目录为 `dist`。
 
@@ -30,6 +30,8 @@ cmake --install build/linux-x64 --prefix "$PWD/dist"
 
 仅需要检查 FBX 或生成中间 Bundle 时，可运行 `cmake --preset release`、`cmake --build --preset release`、`ctest --preset release`。默认不启用原生后端，此时不能转换为 GDB。
 
+V0.1.13 起，启用 native 后 `GMB_INSTALL_FILEGDB_RUNTIME` 默认 ON，同时复制运行库到构建目录的 writer 旁；安装时保留官方许可。旧 CMake 缓存的 OFF 需要显式改成 ON。纯命令行及连续调用见 [命令行文档](command-line.md)，SDK 源码调用链与旧版 DLL 缺失原因见 [FileGDB API 说明](filegdb-api.md)。
+
 ### Windows 命令行构建
 
 在 x64 Visual Studio Developer PowerShell 中，先准备 Windows 对应的固定 SDK。仅构建命令行与原生写入端可使用共享入口：
@@ -42,7 +44,7 @@ python scripts/build.py --sdk build/filegdb-sdk --include-runtime
 
 ## 客户机部署
 
-客户机使用已构建的完整安装目录，不需要安装编译器或下载完整 SDK。源码仓库本身不包含二进制程序；GitHub Actions 只有在对应构建运行成功时才会生成 Ubuntu 打包附件。
+客户机使用已构建的完整安装目录，不需要安装编译器或下载完整 SDK。源码仓库本身不包含二进制程序；GitHub Actions 的对应原生任务成功后生成 Windows ZIP 或 Ubuntu tar.gz 打包附件及 SHA-256。下载源码 ZIP 不会包含这些构建附件。
 
 ### Ubuntu 24.04 x86_64
 
@@ -71,7 +73,7 @@ dist/
 
 原生写入端通过自身目录的 `$ORIGIN` 加载 FileGDB 运行库，移动目录后无需开发 SDK 路径。CLI 支持从任意工作目录通过 PATH 调用，并按自身真实位置定位 writer。只复制 CLI 一个文件不足以转换。
 
-`--include-runtime` 明确附带官方共享库与原始许可；不使用此选项时需自行提供 SDK 运行库：Linux 在运行前设置 `LD_LIBRARY_PATH=/path/to/sdk/lib`，Windows 将 SDK `bin64` 加入 PATH。无需完整 SDK 的是客户机，源码编译仍需要平台对应 SDK。
+默认附带官方共享库与原始许可，兼容 `--include-runtime` / `-IncludeFileGDBRuntime`。显式 `--no-runtime` / `-ExcludeFileGDBRuntime` 时需自行提供 SDK 运行库：Linux 在运行前设置 `LD_LIBRARY_PATH=/path/to/sdk/lib`，Windows 将 SDK `bin64` 加入 PATH。关闭附带不会删除已有运行库，需在新目录验证该模式。无需完整 SDK 的是客户机，源码编译仍需要平台对应 SDK。
 
 ### Windows x64
 
@@ -122,14 +124,14 @@ python3 tests/normal_repair_test.py dist/bin/geomodelbridge tests/fixtures \
 python3 tests/native_deployment_test.py --install-dir dist --work artifacts/deployment
 python3 tests/python_client_test.py
 python3 tests/python_client_integration_test.py --install-dir dist --work artifacts/python-client
-python3 scripts/generate_examples.py --output examples/V0.1.12
+python3 scripts/generate_examples.py --output examples/V0.1.13
 python3 scripts/package.py --check-only
 # 包含源码、dist 和已验证样例，必须指定仓库外的新归档路径。
-python3 scripts/package.py --output ../GeoModelBridge-V0.1.12-ubuntu24.04-x86_64.tar.gz
+python3 scripts/package.py --output ../GeoModelBridge-V0.1.13-ubuntu24.04-x86_64.tar.gz
 ```
 
 生成样例和部署测试目录必须为新路径。Windows 运行同样的 Python 脚本，writer 文件名增加 `.exe`，发布归档用 `.zip`；还需运行 `dotnet run --project apps/GeoModelBridge.Gui.Tests -c Release -- --work artifacts/gui-tests --engine-dir dist/bin --fixtures tests/fixtures`。打包会检查运行版本、依赖散列、14 个真实 GDB 与复制成果回读；生成 `.sha256` 文件，Linux tar.gz 保留执行权限。
 
 Python 库与普通调用示例自动安装到 `dist/python`，可在不改动 ArcGIS Python 环境的情况下导入；版本必须与 EXE / writer 一致。详见 [Python 接入文档](python-client.md)。
 
-验证记录明确区分核心测试、原生数据库回读、可搬迁部署与目标软件显示验收。自动回读通过不等于完成三维外观验收。[V0.1.12 记录](validation-v0.1.12.md) · [大模型历史记录](validation-v0.1.8.md) · [平台迁移记录](validation-v0.1.6.md) · [验收边界](acceptance.md)
+验证记录明确区分核心测试、原生数据库回读、可搬迁部署与目标软件显示验收。自动回读通过不等于完成三维外观验收。[V0.1.13 记录](validation-v0.1.13.md) · [大模型历史记录](validation-v0.1.8.md) · [平台迁移记录](validation-v0.1.6.md) · [验收边界](acceptance.md)

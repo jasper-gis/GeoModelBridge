@@ -50,7 +50,7 @@ Options options(const std::vector<std::string>& argv) {
         o.help = true;
         return o;
     }
-    if (argc == 2 && argv[1] == "--help") {
+    if (argc == 2 && (argv[1] == "--help" || argv[1] == "-h")) {
         o.help = true;
         return o;
     }
@@ -475,7 +475,13 @@ int run(const Options &o) {
         std::cout << "GeoModelBridge native FileGDB writer " << gmb::version
                   << "\n--input <bundle> --output <new.gdb> [--feature-class Models] [--report "
                      "<new.json>]\n--verify-gdb <copied.gdb> --expected-report <native-report.json> --report <new.json>\n--input <bundle> --verify-gdb <existing.gdb> [--feature-class "
-                     "Models] --report <new.json>\n--probe\n";
+                     "Models] --report <new.json>\n--probe\n-h, --help\n\n"
+                     "Input is a prepared Scene Bundle, not FBX. For FBX use geomodelbridge convert.\n"
+                     "Placement (WKID and origin) comes from the bundle; it is not applied twice.\n"
+                     "Outputs and reports must be new paths; no append or overwrite.\n"
+                     "--probe loads FileGDB API and checks its CRS catalog; it does not write a GDB.\n"
+                     "Keep the SDK runtime beside this executable: FileGDBAPI.dll on Windows;\n"
+                     "libFileGDBAPI.so and libfgdbunixrtl.so on Linux. No ArcGIS Pro required.\n";
         return 0;
     }
     if (o.probe) {

@@ -1,0 +1,2 @@
+[1/1] Copying official FileGDB runtime beside the native writer
+PASS build-tree runtime hashes, writer -h/--help and SDK probe without development SDK paths

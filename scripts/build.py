@@ -10,7 +10,11 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--sdk", type=Path, default=os.environ.get("FILEGDB_API_ROOT"))
 parser.add_argument("--build-dir", type=Path)
 parser.add_argument("--install-dir", type=Path, default=ROOT / "dist")
-parser.add_argument("--include-runtime", action="store_true", help="Install official SDK shared libraries and notices")
+runtime = parser.add_mutually_exclusive_group()
+runtime.add_argument("--include-runtime", dest="include_runtime", action="store_true", default=True,
+                     help="Bundle official SDK shared libraries and notices (default)")
+runtime.add_argument("--no-runtime", dest="include_runtime", action="store_false",
+                     help="Do not copy SDK libraries; deployment must supply them separately")
 parser.add_argument("--jobs", type=int, default=2)
 args = parser.parse_args()
 if not args.sdk:
@@ -32,9 +36,16 @@ run("cmake", "-S", ROOT, "-B", build, "-G", "Ninja", "-DCMAKE_BUILD_TYPE=Release
     "-DGMB_BUILD_NATIVE=ON", "-DGMB_BUILD_TESTS=ON", "-DFILEGDB_API_ROOT=" + str(sdk),
     "-DGMB_INSTALL_FILEGDB_RUNTIME=" + ("ON" if args.include_runtime else "OFF"))
 run("cmake", "--build", build, "--parallel", args.jobs)
+if args.include_runtime:
+    run(sys.executable, ROOT / "tests/native_runtime_test.py", "--writer",
+        build / "backends/native-filegdb" / Path(executable_names()[1]).name)
 run("ctest", "--test-dir", build, "--output-on-failure")
 run("cmake", "--install", build, "--prefix", install)
 run(sys.executable, ROOT / "scripts/verify_dependencies.py", "--install-dir", install)
 if args.include_runtime:
     run(install / executable_names()[1], "--probe")
+else:
+    print("WARNING: SDK runtime not bundled or probed. Supply SDK bin64 via PATH (Windows) or lib via LD_LIBRARY_PATH (Linux). Existing libraries were not removed.")
 print("Installed native CLI: " + str(install / executable_names()[0]))
+print("Native writer: " + str(install / executable_names()[1]))
+print("CLI help: geomodelbridge convert -h; sequential calling examples: docs/command-line.md")

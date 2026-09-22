@@ -1,0 +1,2 @@
+WARNING [UV_SETS_REDUCED] node:Quad: Only each material's selected UV coordinates are retained per corner; extra unsampled UV channels are omitted.
+ERROR: Cannot write file: <workspace>\artifacts\v0113\doc-shell\results-15ff2f39b69647e59c3ea860cb6a3047\.gmb-work-2241743549\bundle.tmp-1267357824-1728479708\textures/7f2538a6e81af23e034f8ca2efc2cb5f1d7d709f502fa30bdccfebe774e4ecab.png

@@ -1,0 +1,19 @@
+-- The CXX compiler identification is MSVC 19.44.35226.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: <user>/Documents/Codex/2026-09-20/gen/work/msvc-v011/toolchain/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Native FileGDB runtime: bundled beside the built writer and installed to bin/native-filegdb (licenses in licenses/filegdb-api)
+-- Configuring done (1.8s)
+-- Generating done (0.0s)
+-- Build files have been written to: <workspace>/build/v0113-native-default
+[1/8] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\images.cpp.obj
+[2/8] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\C_\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\src\platform_files_windows.cpp.obj
+[3/8] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\images_windows.cpp.obj
+[4/8] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\platform_windows.cpp.obj
+[5/8] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\C_\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\src\core.cpp.obj
+[6/8] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\main.cpp.obj
+[7/8] Linking CXX executable GeoModelBridge.NativeWriter.exe
+[8/8] Copying official FileGDB runtime beside the native writer
+PASS build-tree runtime hashes, writer -h/--help and SDK probe without development SDK paths

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(GeoModelBridge VERSION 0.1.12 LANGUAGES C CXX)
+project(GeoModelBridge VERSION 0.1.13 LANGUAGES C CXX)
 
 option(GMB_BUILD_TESTS "Build correctness tests" ON)
 option(GMB_BUILD_NATIVE "Build the native FileGDB writer (requires the platform SDK)" OFF)
@@ -80,6 +80,8 @@ install(DIRECTORY python/geomodelbridge DESTINATION python FILES_MATCHING PATTER
 install(FILES python/examples/convert_fbx.py DESTINATION python/examples)
 if(GMB_BUILD_NATIVE)
   add_subdirectory(backends/native-filegdb)
+else()
+  message(STATUS "Core-only build: inspect/prepare/fixture are available; GDB conversion requires a separately supplied native writer. Use -DGMB_BUILD_NATIVE=ON -DFILEGDB_API_ROOT=<SDK> for a full build.")
 endif()
 install(DIRECTORY docs DESTINATION . PATTERN "*.lock" EXCLUDE)
 install(FILES README.md VERSION CHANGELOG.md THIRD_PARTY_NOTICES.md DESTINATION .)

@@ -5,7 +5,7 @@
 <p>FBX → 带颜色与贴图的 FileGDB Multipatch</p>
 
 <p>
-  <a href="CHANGELOG.md"><code>V0.1.12</code></a> &nbsp;
+  <a href="CHANGELOG.md"><code>V0.1.13</code></a> &nbsp;
   <a href="docs/architecture.md"><code>C++17</code></a> &nbsp;
   <a href="#platforms"><code>Windows · Ubuntu</code></a>
 </p>
@@ -23,6 +23,8 @@
 ---
 
 GeoModelBridge 使用 **原生 FileGDB 后端 `native-filegdb`**，支持 Ubuntu 命令行与 Windows 命令行 / 图形界面。构建、转换和部署均无需安装 ArcGIS Pro、ArcPy 或获取 Pro 许可。
+
+**研发接入：** [纯命令行、完整参数与连续调用 EXE](docs/command-line.md) · [FileGDB API 实际调用链、DLL 缺失原因和修复](docs/filegdb-api.md)。源码下载不包含 EXE / DLL；V0.1.13 起启用原生构建时默认附带官方运行库，纯核心构建仍需显式启用 native 才能生成 GDB。
 
 - **保留模型表达**：处理漫反射颜色、PNG/JPEG 纹理、Alpha、UV 和法线角点边界，节点变换只烘焙一次。
 - **写入后核验**：生成真实 GDB，关闭并重开，核对几何、材质、纹理和空间参考后才报告成功。
@@ -70,7 +72,7 @@ python3 scripts/build.py --sdk build/filegdb-sdk --include-runtime --jobs 2
 ./dist/bin/native-filegdb/GeoModelBridge.NativeWriter --probe
 ```
 
-脚本核对固定 SDK 的 SHA-256，完成 Release 构建、核心测试与安装。`--include-runtime` 将官方 FileGDB 运行库及许可一起放入 `dist`，方便复制到客户机。
+脚本核对固定 SDK 的 SHA-256，完成 Release 构建、核心测试与安装。默认将官方 FileGDB 运行库及许可一起放入 `dist`；`--include-runtime` 保留为兼容显式选项。
 
 </details>
 
@@ -88,6 +90,8 @@ python scripts/fetch_filegdb_sdk.py --output build/filegdb-sdk
 ```
 
 在界面选择 FBX、新的输出 GDB、目标 WKID 与米制原点坐标，然后转换。详见[GUI 使用说明](docs/gui.md)。
+
+只需要命令行时去掉 `-WithGui`，无需 .NET SDK，执行 `dist/bin/geomodelbridge.exe convert -h`。原生 writer 与 `FileGDBAPI.dll` 默认安装于 `dist/bin/native-filegdb/`，无需另外查找 .NET wrapper。
 
 </details>
 
@@ -176,7 +180,9 @@ V0.1.12 会明确区分“文件缺失”和“路径 / 读取错误”：路径
 
 ## 已有验证
 
-**V0.1.12**：Windows / Ubuntu 的 CTest 均为 **9/9**；贴图专项分别通过 **24 / 29** 个场景，Ubuntu 额外覆盖权限、FIFO 和链接路径。两平台各完成 9 项真实 Python 调用、4 份 GDB 独立复制回读及 14 个完整样例；Windows GUI 为 **163/163**。Python 契约测试为 Windows 25 通过 / 1 跳过、Ubuntu 26/26。详情见[本版验证记录](docs/validation-v0.1.12.md)，此前的输出保护见 [V0.1.11](docs/validation-v0.1.11.md)。未进行 ATBX 内运行或取消行为验收。
+**V0.1.13**：Windows / Ubuntu 的 CTest 均为 **9/9**；两平台的构建目录运行库、连续 CLI 调用与冲突保护、37 项原生输入 / 清理检查、9 项真实 Python 调用、14 个完整样例和发布检查通过；Windows GUI 为 **163/163**。PowerShell、cmd.exe、Bash 文档示例已执行。详见[本版验证记录](docs/validation-v0.1.13.md)。
+
+此前 **V0.1.12** 的贴图专项 Windows / Ubuntu 分别通过 **24 / 29** 个场景，Ubuntu 额外覆盖权限、FIFO 和链接路径，保持[原版本证据](docs/validation-v0.1.12.md)；输出保护历史见 [V0.1.11](docs/validation-v0.1.11.md)。未进行 ATBX 内运行或取消行为验收。
 
 以下保留 **V0.1.8 实际 Windows / Ubuntu 执行结果**，大模型与法线专项的来源见[历史验证记录](docs/validation-v0.1.8.md)。
 

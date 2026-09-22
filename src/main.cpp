@@ -34,28 +34,87 @@ struct Options {
     bool origin_explicit=false, profile_explicit=false;
     bool missing_textures_explicit=false;
 };
-void help() {
+void help(const std::string& command="") {
     std::cout<<"GeoModelBridge V"<<gmb::version<<" - static FBX to textured Multipatch pipeline\n\n"
+        "Usage: geomodelbridge COMMAND [ARGUMENTS]\n"
+        "Help:  geomodelbridge -h | --help | COMMAND -h | COMMAND --help\n\n";
+    if(command.empty())std::cout<<
+        "Commands:\n"
+        "  convert   Write a NEW textured FileGDB and verify its readback.\n"
+        "  inspect   Validate FBX; optionally write a JSON report (no GDB).\n"
+        "  prepare   Write an intermediate Scene Bundle (no GDB).\n"
+        "  fixture   Generate synthetic Scene Bundles for testing (no GDB).\n"
+        "  doctor    Show writer discovery; does not load or test the SDK.\n\n"
         "  geomodelbridge --version\n"
         "  geomodelbridge doctor\n"
         "  geomodelbridge inspect INPUT.fbx [--report NEW.json] [--texture-dir DIR]\n"
         "  geomodelbridge prepare INPUT.fbx --output NEW_BUNDLE [OPTIONS]\n"
         "  geomodelbridge fixture NAME|all --output NEW_DIR [OPTIONS]\n"
         "  geomodelbridge convert INPUT.fbx --output NEW.gdb [--backend native-filegdb]\n"
-        "      --wkid PROJECTED_METRIC_WKID --origin X Y Z [--writer WRITER_PATH] [OPTIONS]\n\n"
-        "Options: --report NEW.json, --texture-dir DIR (repeatable), --wkid N,\n"
-        "         --origin X Y Z, --feature-class NAME (convert only),\n"
-        "         --profile strict|gis-static (default: strict),\n"
-        "         --missing-textures material-color|error (default: material-color).\n"
+        "      --wkid PROJECTED_METRIC_WKID --origin X Y Z [OPTIONS]\n\n";
+    else if(command=="doctor") {
+        std::cout<<"Usage: geomodelbridge doctor\n"
+            "Prints JSON with version, writer_path and writer_present.\n"
+            "Exit 0 only means this discovery command ran successfully.\n"
+            "Run native-filegdb/GeoModelBridge.NativeWriter[.exe] --probe\n"
+            "to actually load FileGDB API and query its CRS catalog.\n"
+            "For an end-to-end check, convert the installed demo/textured_quad.fbx.\n";
+        return;
+    } else if(command=="convert")std::cout<<
+        "Usage: geomodelbridge convert INPUT.fbx --output NEW.gdb\n"
+        "         --wkid PROJECTED_METRIC_WKID --origin X Y Z [OPTIONS]\n\n";
+    else if(command=="inspect")std::cout<<
+        "Usage: geomodelbridge inspect INPUT.fbx [--report NEW.json] [OPTIONS]\n"
+        "Validates the model; does not create a GDB or a Scene Bundle.\n\n";
+    else if(command=="prepare")std::cout<<
+        "Usage: geomodelbridge prepare INPUT.fbx --output NEW_BUNDLE [OPTIONS]\n"
+        "Creates scene.json, textures and validation.json, not a GDB.\n"
+        "Supply --wkid and --origin now if this bundle will be written to GDB.\n\n";
+    else if(command=="fixture")std::cout<<
+        "Usage: geomodelbridge fixture NAME|all --output NEW_DIR [OPTIONS]\n"
         "Fixtures: color-cube, uv-plane, mixed-materials, alpha-plane, seam-cube.\n"
-        "No overwrites. Strict mode rejects unsupported rendering.\n"
+        "Each bundle includes validation.json; --report is for a single fixture.\n\n";
+    std::cout<<"Options:\n";
+    if(command!="inspect")std::cout<<
+        "  -o, --output PATH       New GDB / bundle / fixture directory. Required.\n";
+    std::cout<<
+        "  --report NEW.json       Optional new report outside the output directory.\n"
+        "                          convert default: <output>.report.json.\n"
+        "  --wkid N                Positive projected metric CRS ID; required by convert.\n"
+        "  --origin X Y Z          Finite translation in metres; required by convert,\n"
+        "                          including explicit 0 0 0 for already placed geometry.\n";
+    if(command.empty()||command=="convert")std::cout<<
+        "  --feature-class NAME    New Multipatch feature class (default: Models).\n"
+        "  --backend NAME          Only native-filegdb is supported (default).\n"
+        "  --writer PATH           Native writer executable, not FileGDBAPI.dll.\n"
+        "                          Order: --writer, GMB_NATIVE_WRITER, then\n"
+        "                          native-filegdb/GeoModelBridge.NativeWriter[.exe]\n"
+        "                          beside this CLI. Keep the full installation.\n";
+    if(command!="fixture")std::cout<<
+        "  --texture-dir DIR       Additional texture search directory; repeatable.\n"
+        "  --profile PROFILE       strict (default) or gis-static.\n"
+        "  --missing-textures P    material-color (default) or error.\n";
+    std::cout<<"\nPolicies:\n"
+        "No overwrites or appends. Strict mode rejects unsupported rendering.\n"
         "gis-static uses the saved static pose, omits ambient/specular/reflection,\n"
         "removes zero-area triangles, and rebuilds invalid corner normals from\n"
         "valid triangle edges; every adjustment is reported. No baking.\n"
         "Missing image files use material color/opacity and are reported; use\n"
         "--missing-textures error to require every referenced image.\n"
         "WKID assignment and origin translation do not perform CRS reprojection.\n"
-        "The chosen writer must be built and its runtime dependencies available.\n";
+        "Existing corrupt/unreadable images still fail.\n"
+        "The native writer needs FileGDBAPI.dll (Windows), or libFileGDBAPI.so\n"
+        "and libfgdbunixrtl.so (Linux), plus platform runtimes. No ArcGIS Pro.\n\n"
+        "Exit codes: 0 success; 2 arguments/path conflict; 3 model rejected;\n"
+        "            4 backend unavailable; 5 writer failed; 6 operation/IO error.\n";
+    if(command.empty()||command=="convert")std::cout<<
+        "\nSequential calls (one FBX -> one NEW GDB per process; no batch flag):\n"
+        "  geomodelbridge convert \"model A.fbx\" -o new-a.gdb --wkid 32650 --origin 500000 3000000 100\n"
+        "  geomodelbridge convert \"model B.fbx\" -o new-b.gdb --wkid 32650 --origin 500000 3000000 100\n"
+        "Replace sample placement with real coordinates. Wait for each process,\n"
+        "check its exit code and JSON report; warnings may accompany success.\n"
+        "PowerShell: & .\\geomodelbridge.exe ... ; check $LASTEXITCODE immediately.\n"
+        "See docs/command-line.md for PowerShell, cmd.exe and Bash loops.\n";
 }
 double number(const std::string& str) {
     try {std::size_t end=0;auto n=std::stod(str,&end);if(end==str.size()&&std::isfinite(n))return n;}catch(...){}
@@ -248,6 +307,9 @@ int convert(const gmb::Scene& scene,Options& o,const std::string& argv0) {
 }
 int main_utf8(const std::vector<std::string>& args) {
     if(args.size()==1||(args.size()==2&&(args[1]=="--help"||args[1]=="-h"))) {help();return 0;}
+    const std::vector<std::string> commands={"convert","inspect","prepare","fixture","doctor"};
+    if(args.size()==3&&std::find(commands.begin(),commands.end(),args[1])!=commands.end()&&
+       (args[2]=="--help"||args[2]=="-h")) {help(args[1]);return 0;}
     if(args.size()==2&&args[1]=="--version") {std::cout<<"GeoModelBridge V"<<gmb::version<<"\n";return 0;}
     if(args.size()==2&&args[1]=="doctor") {
         std::cout<<json({{"version",gmb::version},{"fbx_reader","ufbx 0.23.0"},{"scene_bundle","available"},

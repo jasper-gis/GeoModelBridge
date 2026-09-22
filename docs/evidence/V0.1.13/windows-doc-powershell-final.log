@@ -1,0 +1,10 @@
+WARNING [UV_SETS_REDUCED] node:Quad: Only each material's selected UV coordinates are retained per corner; extra unsampled UV channels are omitted.
+GDB written and checked by native-filegdb: <temp>\gmb-results-2ef410b59b2944c88922d52f02249767\first.gdb
+Report: <temp>\gmb-results-2ef410b59b2944c88922d52f02249767\first.gdb.report.json
+Visual acceptance for this output requires separate inspection.
+已完成：<temp>\gmb-results-2ef410b59b2944c88922d52f02249767\first.gdb；报告：<temp>\gmb-results-2ef410b59b2944c88922d52f02249767\first.gdb.report.json
+WARNING [UV_SETS_REDUCED] node:Quad: Only each material's selected UV coordinates are retained per corner; extra unsampled UV channels are omitted.
+GDB written and checked by native-filegdb: <temp>\gmb-results-2ef410b59b2944c88922d52f02249767\second.gdb
+Report: <temp>\gmb-results-2ef410b59b2944c88922d52f02249767\second.gdb.report.json
+Visual acceptance for this output requires separate inspection.
+已完成：<temp>\gmb-results-2ef410b59b2944c88922d52f02249767\second.gdb；报告：<temp>\gmb-results-2ef410b59b2944c88922d52f02249767\second.gdb.report.json

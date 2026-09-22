@@ -1,0 +1,8 @@
+WARNING [UV_SETS_REDUCED] node:Quad: Only each material's selected UV coordinates are retained per corner; extra unsampled UV channels are omitted.
+GDB written and checked by native-filegdb: <temp>\gmb-doc-w56o15hn\new-a.gdb
+Report: <temp>\gmb-doc-w56o15hn\new-a.gdb.report.json
+Visual acceptance for this output requires separate inspection.
+WARNING [UV_SETS_REDUCED] node:Quad: Only each material's selected UV coordinates are retained per corner; extra unsampled UV channels are omitted.
+GDB written and checked by native-filegdb: <temp>\gmb-doc-w56o15hn\new-b.gdb
+Report: <temp>\gmb-doc-w56o15hn\new-b.gdb.report.json
+Visual acceptance for this output requires separate inspection.

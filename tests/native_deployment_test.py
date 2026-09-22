@@ -57,6 +57,27 @@ shutil.copytree(work / "textured.gdb", work / "copy.gdb")
 run(writer, "--verify-gdb", work / "copy.gdb", "--expected-report", work / "conversion.json", "--report", work / "copy-check.json")
 copy = json.loads((work / "copy-check.json").read_text(encoding="utf-8"))
 assert copy["status"] == "standalone_copy_verified"
+# Repeated EXE calls must create independent results and preserve placement.
+# A colliding call must leave both the first database and its report untouched.
+before = {str(path.relative_to(work)): hashlib.sha256(path.read_bytes()).hexdigest()
+          for path in (work / "textured.gdb").rglob("*") if path.is_file()}
+report_before = (work / "conversion.json").read_bytes()
+collision = subprocess.run([str(cli), "convert", str(input_path), "--output", str(work / "textured.gdb"),
+                           "--wkid", "3857", "--origin", "0", "0", "0"], cwd=work, env=env,
+                          capture_output=True, timeout=60)
+assert collision.returncode == 2
+assert report_before == (work / "conversion.json").read_bytes()
+assert before == {str(path.relative_to(work)): hashlib.sha256(path.read_bytes()).hexdigest()
+                  for path in (work / "textured.gdb").rglob("*") if path.is_file()}
+run(cli, "convert", input_path, "--output", work / "second.gdb", "--wkid", 3857,
+    "--origin", 100, 200, 300, "--feature-class", "SecondModels")
+second = json.loads((work / "second.gdb.report.json").read_text(encoding="utf-8"))
+assert second["status"] == "written_and_readback_verified"
+assert second["coordinates"]["wkid"] == 3857 and second["coordinates"]["origin"] == [100, 200, 300]
+assert second["feature_class"] == "SecondModels"
+shutil.copytree(work / "second.gdb", work / "second-copy.gdb")
+run(writer, "--verify-gdb", work / "second-copy.gdb", "--expected-report", work / "second.gdb.report.json",
+    "--report", work / "second-copy-check.json")
 # Import only the relocated client with site-packages disabled. Its child engine
 # inherits the same minimal environment, including the intentionally absent Pro.
 python_check = """
@@ -75,6 +96,7 @@ assert hashlib.sha256(input_path.read_bytes()).hexdigest() == input_hash
 summary = {"status":"passed", "version":version, "probe":probe, "feature_count":1,
            "default_native_conversion":True, "textured_readback":True, "standalone_copy":True,
            "input_unchanged":True, "child_path":env["PATH"], "pro_backend_in_package":False, "relocated_python_client":True,
+           "sequential_cli_calls":True, "collision_preserves_first_result":True, "second_placement_verified":True,
            "limitation":"Minimal-package test; does not by itself prove that the host has never had desktop GIS installed. Graphical acceptance is separate."}
 (work / "assessment.json").write_text(json.dumps(summary,indent=2),encoding="utf-8")
 print("PASS minimal native deployment, default backend, textured readback and copied GDB")

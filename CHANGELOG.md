@@ -1,5 +1,13 @@
 # Changelog
 
+## V0.1.13 — 2026-09-22
+
+- 扩展 CLI `-h` / `--help`，支持 convert、inspect、prepare、fixture、doctor 的子命令帮助，说明必填定位、默认策略、报告、writer 查找顺序、退出码及连续调用规则；原生 writer 同步支持 `-h`。
+- 原生构建默认复制 FileGDB API 运行库到构建目录的 writer 旁，安装时保留许可和固定来源清单。保留显式附带参数并提供不附带选项；核心构建明确提示不能单独写 GDB，无效 PowerShell 构建参数提早失败。
+- 增加无开发 SDK 路径的构建目录运行库散列 / probe 检查，以及连续 CLI 转换、路径冲突保护、不同定位与成果复制回读回归。
+- Windows CI 增加完整 ZIP 和 SHA-256 构建附件，与 Ubuntu 附件保持对应；源码 ZIP 仍不包含二进制依赖。
+- 新增中文命令行与 FileGDB API 依赖核实文档，提供 PowerShell、cmd.exe、Bash 示例，明确源码仓库、core-only、原生构建和完整安装的差异。本次验证见 [V0.1.13 记录](docs/validation-v0.1.13.md)。
+
 ## V0.1.12 — 2026-09-22
 
 - 修复贴图路径为目录、错误父路径或访问检查失败时，可能被误当作缺图并回退为纯色的问题。此类情况明确报告 TEXTURE_READ_ERROR，真正缺图继续按既有策略处理。
