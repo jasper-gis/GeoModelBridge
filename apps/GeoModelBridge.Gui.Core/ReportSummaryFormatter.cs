@@ -42,7 +42,12 @@ public static class ReportSummaryFormatter
                 foreach (var item in diagnostics.EnumerateArray())
                 {
                     if (item.ValueKind != JsonValueKind.Object) throw new InvalidDataException("报告中的诊断条目格式无效。");
-                    entries.Add(new(Text(item, "code", "UNKNOWN"), Text(item, "severity", "warning"), Text(item, "context"), Text(item, "message")));
+                    var code = Text(item, "code");
+                    var severity = Text(item, "severity");
+                    if (code.Length == 0 || severity is not ("info" or "warning" or "error") ||
+                        !item.TryGetProperty("message", out var message) || message.ValueKind != JsonValueKind.String)
+                        throw new InvalidDataException("报告中的诊断代码、级别或消息无效，不能确认转换结果。");
+                    entries.Add(new(code, severity, Text(item, "context"), message.GetString()!));
                 }
             }
             var groups = entries.GroupBy(e => (e.Code, e.Severity, Describe(e).Key))
@@ -132,12 +137,16 @@ public static class ReportSummaryFormatter
         bool HasText(JsonElement parent, string key) => parent.TryGetProperty(key, out var value) &&
             value.ValueKind == JsonValueKind.String && !string.IsNullOrWhiteSpace(value.GetString());
         bool True(JsonElement parent, string key) => parent.TryGetProperty(key, out var value) && value.ValueKind == JsonValueKind.True;
+        bool TextEquals(JsonElement parent, string key, string expected) => parent.TryGetProperty(key, out var value) &&
+            value.ValueKind == JsonValueKind.String && value.GetString() == expected;
         bool PositiveInteger(JsonElement parent, string key) => parent.TryGetProperty(key, out var value) &&
             value.ValueKind == JsonValueKind.Number && value.TryGetInt32(out var number) && number > 0;
         if (!HasText(root, "version")) issues.Add("缺少程序版本（version）。");
         if (!HasText(root, "backend")) issues.Add("缺少转换后端（backend）。");
         if (!HasText(root, "output")) issues.Add("缺少输出数据库位置（output）。");
         if (!HasText(root, "feature_class")) issues.Add("缺少要素类名称（feature_class）。");
+        if (TextEquals(root, "version", ProductInfo.Version) && !root.TryGetProperty("reader_diagnostics", out _))
+            issues.Add("当前版本报告缺少模型诊断列表（reader_diagnostics）。");
         if (!root.TryGetProperty("verification", out var verification) || verification.ValueKind != JsonValueKind.Object)
             issues.Add("缺少数据库回读验证记录（verification）。");
         else
@@ -147,10 +156,30 @@ public static class ReportSummaryFormatter
             if (!True(verification, "geometry_material_uv_texture_readback"))
                 issues.Add("未确认几何、材质、UV 和贴图回读通过（verification.geometry_material_uv_texture_readback）。");
             if (!PositiveInteger(verification, "feature_count")) issues.Add("缺少有效的已回读要素数量（verification.feature_count）。");
+            else if (!ReportVerifier.HasCompleteReadbackChecks(verification, verification.GetProperty("feature_count").GetInt32()))
+                issues.Add("逐要素回读记录缺失、失败、重复或索引无效（verification.checks）。");
         }
-        if (!root.TryGetProperty("coordinate_system", out var coordinates) || coordinates.ValueKind != JsonValueKind.Object ||
-            !PositiveInteger(coordinates, "wkid") || !True(coordinates, "projected"))
+        if (!root.TryGetProperty("coordinate_system", out var coordinateSystem) || coordinateSystem.ValueKind != JsonValueKind.Object ||
+            !PositiveInteger(coordinateSystem, "wkid") || !True(coordinateSystem, "projected") ||
+            !TextEquals(coordinateSystem, "unit", "meter") || !True(coordinateSystem, "source_coordinates_assigned_without_reprojection"))
             issues.Add("缺少有效的投影坐标系确认（coordinate_system）。");
+        // Older reports predate the placement block. When present, it must be
+        // internally consistent; the current version always requires it.
+        if (root.TryGetProperty("coordinates", out var coordinates))
+        {
+            if (coordinates.ValueKind != JsonValueKind.Object || !TextEquals(coordinates, "unit", "meter") ||
+                !TextEquals(coordinates, "up_axis", "Z") || !TextEquals(coordinates, "space", "referenced") ||
+                !True(coordinates, "origin_explicit") || !PositiveInteger(coordinates, "wkid") ||
+                coordinateSystem.ValueKind != JsonValueKind.Object || !PositiveInteger(coordinateSystem, "wkid") ||
+                coordinates.GetProperty("wkid").GetInt32() != coordinateSystem.GetProperty("wkid").GetInt32())
+                issues.Add("模型坐标约定或定位参数不完整或不一致（coordinates）。");
+            if (coordinates.ValueKind != JsonValueKind.Object || !coordinates.TryGetProperty("origin", out var origin) ||
+                origin.ValueKind != JsonValueKind.Array || origin.GetArrayLength() != 3 ||
+                origin.EnumerateArray().Any(v => v.ValueKind != JsonValueKind.Number || !v.TryGetDouble(out var number) || !double.IsFinite(number)))
+                issues.Add("缺少完整且有限的原点 X、Y、Z（coordinates.origin）。");
+        }
+        else if (TextEquals(root, "version", ProductInfo.Version))
+            issues.Add("当前版本报告缺少模型定位参数（coordinates）。");
         return issues;
     }
 

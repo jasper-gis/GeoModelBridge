@@ -28,15 +28,7 @@ public static class ReportVerifier
             Require(verification.GetProperty("geometry_material_uv_texture_readback").GetBoolean(), "报告缺少几何、材质、UV 与贴图的回读验证。");
             var featureCount = verification.GetProperty("feature_count").GetInt32();
             Require(featureCount > 0, "报告未验证任何要素。");
-            var checks = verification.GetProperty("checks");
-            Require(checks.ValueKind == JsonValueKind.Array && checks.GetArrayLength() == featureCount, "报告缺少完整的逐要素回读核验。");
-            var indices = new HashSet<int>();
-            foreach (var check in checks.EnumerateArray())
-            {
-                var index = check.GetProperty("mesh_index").GetInt32();
-                Require(index >= 0 && index < featureCount && indices.Add(index) && check.GetProperty("passed").GetBoolean(),
-                    "报告中的逐要素回读核验失败、重复或索引无效。");
-            }
+            Require(HasCompleteReadbackChecks(verification, featureCount), "报告中的逐要素回读核验缺失、失败、重复或索引无效。");
             var coordinateSystem = root.GetProperty("coordinate_system");
             Require(coordinateSystem.GetProperty("wkid").GetInt32() == int.Parse(settings.Wkid.Trim(), CultureInfo.InvariantCulture), "报告中的 WKID 与本次设置不一致。");
             Require(coordinateSystem.GetProperty("projected").GetBoolean(), "报告未确认输出使用投影坐标系。");
@@ -90,6 +82,20 @@ public static class ReportVerifier
         _ => throw new InvalidDataException("未知转换方式。")
     };
     internal static string Text(JsonElement element, string name) => element.GetProperty(name).GetString() ?? throw new InvalidDataException($"报告字段 {name} 为空。");
+    internal static bool HasCompleteReadbackChecks(JsonElement verification, int featureCount)
+    {
+        if (featureCount <= 0 || !verification.TryGetProperty("checks", out var checks)
+            || checks.ValueKind != JsonValueKind.Array || checks.GetArrayLength() != featureCount) return false;
+        var indices = new HashSet<int>();
+        foreach (var check in checks.EnumerateArray())
+        {
+            if (check.ValueKind != JsonValueKind.Object
+                || !check.TryGetProperty("mesh_index", out var value) || value.ValueKind != JsonValueKind.Number
+                || !value.TryGetInt32(out var index) || index < 0 || index >= featureCount || !indices.Add(index)
+                || !check.TryGetProperty("passed", out var passed) || passed.ValueKind != JsonValueKind.True) return false;
+        }
+        return true;
+    }
     internal static void RequireUniqueFields(JsonElement element)
     {
         if (element.ValueKind == JsonValueKind.Object)

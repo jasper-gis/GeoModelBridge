@@ -1,0 +1,15 @@
+PASS writer reference: color-cube
+PASS writer reference: uv-plane
+PASS writer reference: mixed-materials
+PASS writer reference: alpha-plane
+PASS writer reference: seam-cube
+PASS FBX to GDB: colored_quad
+PASS FBX to GDB: textured_quad
+PASS FBX to GDB: embedded_quad
+PASS FBX to GDB: uv_transform
+PASS FBX to GDB: instanced_mirror
+PASS FBX to GDB: multi_material
+PASS FBX to GDB: no_material
+PASS FBX to GDB: sloped_normals
+PASS FBX to GDB: binary_blender
+PASS 14 GDB cases, standalone copy, strict rejection and writer failure reports. Evidence: <workspace>/artifacts/v021-release/examples

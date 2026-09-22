@@ -47,7 +47,8 @@ struct Put {
         scalar(v);
     }
     void f32(double v) {
-        require(std::isfinite(static_cast<float>(v)), "Value exceeds float32 range.");
+        require(std::isfinite(v) && std::abs(v) <= std::numeric_limits<float>::max(),
+                "Value exceeds float32 range.");
         scalar<float>(static_cast<float>(v));
     }
     void f64(double v) {
@@ -65,8 +66,8 @@ inline std::uint8_t transparency(double a) {
 }
 inline void validate_stored_uv(const Vec2& uv) {
     require(std::isfinite(uv.x) && std::isfinite(uv.y) &&
-                std::isfinite(static_cast<float>(uv.x)) &&
-                std::isfinite(static_cast<float>(1.0 - uv.y)),
+                std::abs(uv.x) <= std::numeric_limits<float>::max() &&
+                std::abs(1.0 - uv.y) <= std::numeric_limits<float>::max(),
             "UV exceeds native float32 storage range.");
 }
 inline Prepared prepare(const Mesh &mesh) {

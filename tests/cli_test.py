@@ -74,7 +74,7 @@ def read_bundle(directory):
 def main():
     exe = Path(sys.argv[1]).resolve()
     assert exe.is_file(), f"Executable not found: {exe}"
-    assert "0.2.0" in invoke(exe, "--version").stdout
+    assert "0.2.1" in invoke(exe, "--version").stdout
     doctor = json.loads(invoke(exe, "doctor").stdout)
     assert "native_filegdb" in doctor and "arcgis_pro" not in doctor
     assert "arcgis-pro" not in invoke(exe, "--help").stdout
@@ -88,6 +88,19 @@ def main():
     assert invoke(exe, "doctor", "--unknown", expect_success=False).returncode == 2
     with tempfile.TemporaryDirectory(prefix="geomodelbridge-cli-") as scratch:
         root = Path(scratch)
+        source = Path(sys.argv[2]) / "textured_quad.fbx"
+        for option in ("--report", "--writer", "--backend", "--feature-class", "--texture-dir", "--wkid"):
+            result = invoke(exe, "inspect", source, option, "", expect_success=False)
+            assert result.returncode == 2, (option, result.stderr)
+        assert invoke(exe, "inspect", "", expect_success=False).returncode == 2
+        for option, value in (("--wkid", "3857"), ("--writer", "unused"),
+                              ("--backend", "native-filegdb"), ("--feature-class", "Models")):
+            result = invoke(exe, "inspect", source, option, value, option, value, expect_success=False)
+            assert result.returncode == 2, (option, result.stderr)
+        for value in ("3857.0000000000000001", "3.857e3", "0xF11", "2147483648", "-1", "0"):
+            result = invoke(exe, "inspect", source, "--wkid", value, expect_success=False)
+            assert result.returncode == 2, (value, result.stderr)
+        assert not list(root.iterdir()), "Invalid arguments must not create output"
         # Removed backends must fail before input parsing or writer dispatch.
         for backend in ["arcgis-pro", "arcgis-pro-corehost", "unknown"]:
             output = root / (backend + ".gdb")
@@ -196,7 +209,8 @@ def main():
             for mode in ("valid-report", "wrong-source", "wrong-unit", "wrong-axis", "wrong-space",
                          "fractional-wkid", "overflow-wkid", "fractional-count", "not-projected", "reprojected",
                          "missing-diagnostics", "dropped-diagnostic", "error-diagnostic", "unknown-diagnostic", "masked-error", "unexpected-fallback", "missing-checks",
-                         "failed-check", "wrong-mesh", "duplicate-field", "trailing-json"):
+                         "failed-check", "wrong-mesh", "duplicate-field", "trailing-json",
+                         "nul-string", "nul-trailer", "nul-next-block"):
                 output = root / (mode + ".gdb")
                 result = invoke(exe, "convert", Path(sys.argv[2]) / "textured_quad.fbx", "--output", output,
                                 "--wkid", 3857, "--origin", 100, 100, 100, "--missing-textures", "error", "--writer", Path(sys.argv[4]).resolve(),

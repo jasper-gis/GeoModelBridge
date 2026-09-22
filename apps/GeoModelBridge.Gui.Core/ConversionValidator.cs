@@ -5,7 +5,7 @@ namespace GeoModelBridge.Gui.Core;
 
 public static partial class ConversionValidator
 {
-    [GeneratedRegex("^[A-Za-z][A-Za-z0-9_]{0,63}$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\\A[A-Za-z][A-Za-z0-9_]{0,63}\\z", RegexOptions.CultureInvariant)]
     private static partial Regex FeatureClassPattern();
 
     public static IReadOnlyList<string> Validate(ConversionSettings settings)

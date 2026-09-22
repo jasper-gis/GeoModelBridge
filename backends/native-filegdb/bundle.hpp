@@ -1,5 +1,6 @@
 #pragma once
 #include "codec.hpp"
+#include "gmb/json_input.hpp"
 #include "gmb/output.hpp"
 #include <fstream>
 #include <nlohmann/json.hpp>
@@ -54,11 +55,14 @@ inline Bytes read(const fs::path &p, std::uint64_t limit) {
     Bytes b(static_cast<std::size_t>(size));
     require(bool(f.read(reinterpret_cast<char *>(b.data()), static_cast<std::streamsize>(size))),
             "Cannot read input: " + p.u8string());
+    require(f.peek() == std::char_traits<char>::eof() && !f.bad(),
+            "Input changed or could not be read completely: " + p.u8string());
     return b;
 }
 using gmb::io::reject_reparse;
 inline fs::path safe_input(const fs::path &root, const std::string &rel) {
-    require(!rel.empty() && rel.find(':') == std::string::npos && rel.find('\\') == std::string::npos,
+    require(!rel.empty() && rel.find('\0') == std::string::npos &&
+                rel.find(':') == std::string::npos && rel.find('\\') == std::string::npos,
             "Bundle resource must be a relative path.");
     auto p = fs::u8path(rel);
     require(!p.has_root_path(), "Absolute or drive-rooted bundle path forbidden.");
@@ -73,23 +77,27 @@ struct Bundle {
     json source;
     std::vector<Prepared> meshes;
 };
-// Read scene data in blocks so JSON parser character lookahead stays in memory.
-class SceneInputBuffer : public std::streambuf {
-    std::ifstream file_;
-    std::array<char, 64 * 1024> buffer_{};
-protected:
-    int_type underflow() override {
-        if (gptr() != egptr()) return traits_type::to_int_type(*gptr());
-        file_.read(buffer_.data(), static_cast<std::streamsize>(buffer_.size()));
-        require(!file_.bad(), "Cannot read scene JSON.");
-        const auto size = file_.gcount();
-        if (size == 0) return traits_type::eof();
-        setg(buffer_.data(), buffer_.data(), buffer_.data() + size);
-        return traits_type::to_int_type(*gptr());
-    }
-public:
-    explicit SceneInputBuffer(const fs::path &path) : file_(path, std::ios::binary) {
-        require(bool(file_), "Cannot open scene JSON.");
+// JSON permits escaped NULs, but FileGDB strings and filesystem paths do not
+// preserve them. Reject them before passing decoded metadata to either API.
+struct JsonIntegrity {
+    std::string document;
+    std::vector<std::set<std::string>> object_keys;
+    void inspect(int depth, json::parse_event_t event, const json &value) {
+        if (value.is_string())
+            require(value.get_ref<const std::string &>().find('\0') == std::string::npos,
+                    "NUL characters are forbidden in " + document + " strings.");
+        if (event == json::parse_event_t::object_start) {
+            object_keys.resize(static_cast<std::size_t>(depth) + 1);
+            object_keys.back().clear();
+        }
+        if (event == json::parse_event_t::key) {
+            const auto &key = value.get_ref<const std::string &>();
+            require(depth > 0 && static_cast<std::size_t>(depth) <= object_keys.size(),
+                    "Invalid JSON object depth.");
+            require(object_keys[static_cast<std::size_t>(depth) - 1].insert(key).second,
+                    depth == 1 ? "Duplicate root " + document + " field: " + key
+                               : "Duplicate " + document + " object field: " + key);
+        }
     }
 };
 inline Vertex load_vertex(const json &v) {
@@ -145,28 +153,18 @@ inline Bundle load_bundle(const fs::path &root) {
     const auto path = safe_input(root, "scene.json");
     const auto bytes = fs::file_size(path);
     require(bytes > 0 && bytes <= 16ull * 1024 * 1024 * 1024, "Scene JSON is empty or exceeds 16 GiB.");
-    SceneInputBuffer input(path);
+    gmb::io::JsonInputBuffer input(path, 16ull * 1024 * 1024 * 1024, "scene.json");
     std::istream stream(&input);
     Bundle b;
     bool in_meshes = false;
     std::string root_key;
-    std::vector<std::set<std::string>> object_keys;
+    JsonIntegrity integrity{"bundle", {}};
     Mesh streamed_mesh;
     std::string mesh_key, geometry_array;
     // The public parser callback discards each corner, triangle and mesh DOM.
     // Read directly from the file: no full-file byte buffer or scene-sized DOM.
     b.source = json::parse(stream, [&](int depth, json::parse_event_t event, json &value) {
-        if (event == json::parse_event_t::object_start) {
-            object_keys.resize(static_cast<std::size_t>(depth) + 1);
-            object_keys.back().clear();
-        }
-        if (event == json::parse_event_t::key) {
-            const auto key = value.get<std::string>();
-            require(depth > 0 && static_cast<std::size_t>(depth) <= object_keys.size(),
-                    "Invalid JSON object depth.");
-            require(object_keys[static_cast<std::size_t>(depth) - 1].insert(key).second,
-                    depth == 1 ? "Duplicate root bundle field: " + key : "Duplicate bundle object field: " + key);
-        }
+        integrity.inspect(depth, event, value);
         if (depth == 1 && event == json::parse_event_t::key) {
             root_key = value.get<std::string>();
         }
@@ -253,7 +251,9 @@ inline Bundle load_bundle(const fs::path &root) {
         x.source = t.at("source");
         x.embedded = t.at("embedded");
         x.bytes = read(safe_input(root, t.at("path")), 256ull * 1024 * 1024);
-        require(t.at("byte_length") == x.bytes.size() && t.at("sha256") == gmb::sha256(x.bytes),
+        const auto declared_length = integer(t.at("byte_length"));
+        require(declared_length > 0 && static_cast<std::size_t>(declared_length) == x.bytes.size() &&
+                    t.at("sha256") == gmb::sha256(x.bytes),
                 "Texture byte length/SHA256 mismatch.");
         b.scene.textures.push_back(std::move(x));
     }

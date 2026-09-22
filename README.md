@@ -5,7 +5,7 @@
 <p>FBX → 带颜色与贴图的 FileGDB Multipatch</p>
 
 <p>
-  <a href="CHANGELOG.md"><code>V0.2</code></a> &nbsp;
+  <a href="CHANGELOG.md"><code>V0.2.1</code></a> &nbsp;
   <a href="docs/architecture.md"><code>C++17</code></a> &nbsp;
   <a href="#platforms"><code>Windows · Ubuntu</code></a>
 </p>
@@ -179,6 +179,8 @@ V0.1.12 会明确区分“文件缺失”和“路径 / 读取错误”：路径
 <a id="verification"></a>
 
 ## 已有验证
+
+**V0.2.1**：Windows / Ubuntu CTest 均 **11/11**，原生异常输入检查分别 **80/81 项**，Windows GUI **222/222**；安装后的 Python 真实转换、14 个完整 GDB 样例与部署检查通过。修复 NUL / 非法 JSON 尾部、独立复制报告核验、GUI 报告误报成功及 FBX 预乘透明度检查遗漏；同步收紧 CLI 参数解析和 UV 范围检查。详见 [V0.2.1 验证记录](docs/validation-v0.2.1.md)。
 
 **V0.2（0.2.0）**：Windows / Ubuntu CTest 均 **11/11**，原生集成各 **52 项**、Python 真实调用各 **9 项**、完整 GDB 样例各 **14 个**和部署/发布检查通过；Windows GUI **191/191**。本版修复损坏图片误接受、成功报告核验遗漏、隐藏层级和独占流式写出问题。详见 [V0.2 验证记录](docs/validation-v0.2.md)，包括平台跳过项及验收边界；下文数字保留为对应历史版本证据。
 

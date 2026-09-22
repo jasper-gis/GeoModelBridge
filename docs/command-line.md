@@ -1,4 +1,4 @@
-# 纯命令行与连续调用 EXE · V0.2.0
+# 纯命令行与连续调用 EXE · V0.2.1
 
 [首页](../README.md) · [构建和依赖排错](build-and-release.md) · [FileGDB API 调用与依赖说明](filegdb-api.md)
 
@@ -43,6 +43,8 @@ if ($LASTEXITCODE -ne 0) { throw "转换失败，退出码 $LASTEXITCODE" }
 | `--writer PATH` | convert 的原生可执行文件路径；优先于 `GMB_NATIVE_WRITER` 环境变量，再次为 CLI 同目录下 `native-filegdb/GeoModelBridge.NativeWriter[.exe]` |
 
 WKID 赋值和 origin 平移不执行重投影。输入的节点变换和单位规范化在 FBX 读取阶段完成，不要在外部再重复应用。实际 GIS 兼容调整及缺图回退见报告的诊断项；退出 0 可以伴随警告。
+
+参数值不能为空；除可重复的 `--texture-dir` 外，同一选项只能出现一次，`-o` 与 `--output` 视为同一选项。WKID 必须为正十进制整数，不接受小数、指数或超出 32 位有符号整数范围的写法。
 
 ## PowerShell 连续调用
 

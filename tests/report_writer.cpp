@@ -48,9 +48,12 @@ int main(int argc,char** argv) {
     if(mode=="missing-checks")value["verification"].erase("checks");
     if(mode=="failed-check")value["verification"]["checks"][0]["passed"]=false;
     if(mode=="wrong-mesh")value["verification"]["checks"][0]["mesh_index"]=1;
+    if(mode=="nul-string")value["extra"]=std::string("bad\0field",9);
     auto text=value.dump();
     if(mode=="duplicate-field")text.insert(1,"\"status\":\"failed\",");
     if(mode=="trailing-json")text+=" {}";
+    if(mode=="nul-trailer")text+=std::string("\0ignored",8);
+    if(mode=="nul-next-block")text+=std::string(65536,' ')+std::string("\0ignored",8);
     if(!fs::create_directory(output))return 1;
     gmb::io::write_exclusive(report,text);
     return 0;

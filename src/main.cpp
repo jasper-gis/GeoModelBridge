@@ -1,8 +1,10 @@
 #include "gmb/scene.hpp"
 #include "gmb/output.hpp"
+#include "gmb/json_input.hpp"
 #include <nlohmann/json.hpp>
 #include <algorithm>
 #include <cmath>
+#include <charconv>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
@@ -122,6 +124,13 @@ double number(const std::string& str) {
     try {std::size_t end=0;auto n=std::stod(str,&end);if(end==str.size()&&std::isfinite(n))return n;}catch(...){}
     throw UsageError("Expected finite number, got: "+str);
 }
+int wkid_number(const std::string& str) {
+    int result=0;
+    const auto parsed=std::from_chars(str.data(),str.data()+str.size(),result);
+    if(parsed.ec!=std::errc{}||parsed.ptr!=str.data()+str.size()||result<=0)
+        throw UsageError("WKID must contain a positive decimal integer.");
+    return result;
+}
 Options parse(const std::vector<std::string>& args) {
     if(args.size()<2) throw UsageError("A command is required.");
     Options o;o.command=args[1];
@@ -129,10 +138,17 @@ Options parse(const std::vector<std::string>& args) {
     if(o.command=="inspect"||o.command=="prepare"||o.command=="convert"||o.command=="fixture") {
         if(i>=args.size()||args[i].rfind("--",0)==0)throw UsageError("Input or fixture name is required.");
         o.input=args[i++];
+        if(o.input.empty())throw UsageError("Input or fixture name must not be empty.");
     } else throw UsageError("Unknown command: "+o.command);
+    std::set<std::string> seen;
     for(;i<args.size();++i) {
         const auto flag=args[i];
-        auto value=[&](){if(++i>=args.size())throw UsageError("Missing value for "+flag);return args[i];};
+        const auto canonical=flag=="-o"?"--output":flag;
+        if(flag!="--texture-dir"&&!seen.insert(canonical).second)throw UsageError("Duplicate option: "+flag);
+        auto value=[&](){
+            if(++i>=args.size()||args[i].empty())throw UsageError("Missing or empty value for "+flag);
+            return args[i];
+        };
         if(flag=="--output"||flag=="-o") {if(!o.output.empty())throw UsageError("Duplicate output.");o.output=fs::u8path(value());}
         else if(flag=="--report") {if(!o.report.empty())throw UsageError("Duplicate report.");o.report=fs::u8path(value());}
         else if(flag=="--writer") o.writer=fs::u8path(value());
@@ -151,7 +167,7 @@ Options parse(const std::vector<std::string>& args) {
             if(profile!="strict"&&profile!="gis-static")throw UsageError("Profile must be strict or gis-static.");
             o.profile_explicit=true;o.reader.gis_static=profile=="gis-static";
         }
-        else if(flag=="--wkid") {auto n=number(value());if(n<=0||n>2147483647||std::floor(n)!=n)throw UsageError("WKID must be a positive integer.");o.wkid=int(n);}
+        else if(flag=="--wkid") o.wkid=wkid_number(value());
         else if(flag=="--origin") {
             if(o.origin_explicit)throw UsageError("Duplicate origin.");
             o.origin.x=number(value());o.origin.y=number(value());o.origin.z=number(value());o.origin_explicit=true;
@@ -293,15 +309,19 @@ int convert(const gmb::Scene& scene,Options& o,const std::string& argv0) {
     if(!fs::is_directory(output)||!fs::is_regular_file(o.report))throw std::runtime_error("Writer returned success without output or verification report.");
     json verified;
     {
-        std::ifstream report(o.report);
+        gmb::io::JsonInputBuffer input(o.report,64ull*1024*1024,"writer report");
+        std::istream report(&input);
         std::vector<std::set<std::string>> keys;
         verified=json::parse(report,[&](int, json::parse_event_t event,json& value) {
+            if(value.is_string()&&value.get_ref<const std::string&>().find('\0')!=std::string::npos)
+                throw std::runtime_error("Writer report contains a NUL in a JSON string.");
             if(event==json::parse_event_t::object_start)keys.emplace_back();
             else if(event==json::parse_event_t::object_end)keys.pop_back();
             else if(event==json::parse_event_t::key&&!keys.back().insert(value.get<std::string>()).second)
                 throw std::runtime_error("Writer report contains a duplicate JSON field.");
             return true;
         });
+        if(report.bad())throw std::runtime_error("Cannot finish reading writer report.");
     }
     if(verified.value("status","")!="written_and_readback_verified" ||
        verified.value("version","")!=gmb::version ||

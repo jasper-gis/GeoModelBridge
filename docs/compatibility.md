@@ -12,6 +12,7 @@ FileGDB Multipatch 可承载几何、常规漫反射颜色、透明度、UV 和�
 | 有效三角形上的零值或非有限法线 | 拒绝 | 用变换后三角形的面法线替换无效角点，记录 `NORMALS_REPAIRED` |
 | 缺少 JFIF 标识、且能明确安全补齐的 Adobe YCbCr JPEG | 拒绝并提示需要封装修复 | 仅插入 18 字节 JFIF APP0，逐贴图记录 `JPEG_CONTAINER_NORMALIZED` 与处理前后 SHA-256；不重新压缩图像 |
 | 缺失的图片文件 | 默认保留材质颜色与标量透明度，警告并继续；`--missing-textures error` 可要求完整图片 | 相同 |
+| 保留贴图的 `PremultiplyAlpha` 为 true 或属性类型无效 | 拒绝，报告 `UNSUPPORTED_PREMULTIPLIED_ALPHA`；包括纹理模板继承值 | 相同 |
 | 有效贴图缺少 UV、非有限位置、无法形成有效面的几何、损坏或不可读的现有图片、未知材质语义、活动位移、PBR、自发光、骨骼/形变 | 拒绝 | 仍拒绝 |
 
 保存的静态姿态不等同于第 0 帧，不等同于源软件当前播放帧，也不包含骨骼、蒙皮和形变求值。需要指定时间的动画快照或烘焙光照时，应先在源建模软件中完成。

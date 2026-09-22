@@ -1,4 +1,4 @@
-# Native FileGDB 后端 · V0.2.0
+# Native FileGDB 后端 · V0.2.1
 
 这个 Windows x64 / Ubuntu 24.04 x86_64 C++17 后端把 Scene Bundle 中的几何、RGB、透明度、UV 和 PNG/JPEG 纹理直接写入新 FileGDB Multipatch。转换时不加载 ArcGIS Pro、不调用 ArcPy、不借用 Pro 导出的 Shape Buffer。第三方 Esri FileGDB API 负责数据库文件格式，项目代码按 Esri 公开文档独立生成扩展 Multipatch Shape Buffer。
 
@@ -33,6 +33,8 @@ Windows 完整安装可附带 `dist/bin/native-filegdb/GeoModelBridge.NativeWrit
 ```
 
 `--probe` 检查本进程能否加载 FileGDB API 和查询其坐标系目录。所有输出都必须是新路径；写入、回读和报告核验成功后才提交最终 GDB。失败只清理本次创建的临时目录，已有模型与数据库不会被覆盖。
+
+独立复制验证要求当前版本的完整原生成功报告：逐要素检查必须全部通过，索引和计数一致，两处坐标系及原点记录完整一致，诊断不能包含错误。报告必须是普通文件，大小不超过 64 MiB；重复字段、NUL 和非法尾部内容会被拒绝。复制验证结果保留 `coordinates` 和 `coordinate_system` 供定位追溯。
 
 ## 构建
 

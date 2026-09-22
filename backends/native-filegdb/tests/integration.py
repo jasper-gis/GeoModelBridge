@@ -35,7 +35,7 @@ vertices[1]['normal'] = [1 / math.sqrt(3)] * 3
 vertices[2]['normal'] = [-1 / 256, math.sqrt(1 - (1 / 256) ** 2), 0]
 vertices[3]['normal'] = [1 / 256, math.sqrt(1 - (1 / 256) ** 2), 0]
 meshes = [dict(name='PNG alpha', source_node='test', vertices=vertices, triangles=[dict(indices=[0, 1, 2], material=0), dict(indices=[0, 2, 3], material=0)]), dict(name='JPEG and color', source_node='test', vertices=vertices, triangles=[dict(indices=[0, 1, 2], material=1), dict(indices=[0, 2, 3], material=2)])]
-scene = dict(schema_version=1, generator='GeoModelBridge', version='0.2.0', name='Writer integration', source='generated:test', coordinates=dict(unit='meter', up_axis='Z', space='referenced', wkid=32650, origin=[500000, 4000000, 10], origin_explicit=True), nodes=[], meshes=meshes, materials=[dict(name='PNG', color=[1, 1, 1, 1], texture=0, double_sided=True), dict(name='JPEG', color=[1, 1, 1, 1], texture=1, double_sided=False), dict(name='Color opacity', color=[.13, .58, .91, .427], texture=-1, double_sided=True)], textures=textures)
+scene = dict(schema_version=1, generator='GeoModelBridge', version='0.2.1', name='Writer integration', source='generated:test', coordinates=dict(unit='meter', up_axis='Z', space='referenced', wkid=32650, origin=[500000, 4000000, 10], origin_explicit=True), nodes=[], meshes=meshes, materials=[dict(name='PNG', color=[1, 1, 1, 1], texture=0, double_sided=True), dict(name='JPEG', color=[1, 1, 1, 1], texture=1, double_sided=False), dict(name='Color opacity', color=[.13, .58, .91, .427], texture=-1, double_sided=True)], textures=textures)
 scene['diagnostics'] = [dict(severity='warning', code='TEST_SOURCE_WARNING', message='Test warning retained for traceability.', context='generated:test')]
 (bundle / 'scene.json').write_text(json.dumps(scene), encoding='utf8')
 
@@ -76,6 +76,8 @@ finally:
     hidden.rename(bundle)
 standalone = json.loads((root / 'standalone-report.json').read_text())
 assert standalone['status'] == 'standalone_copy_verified'
+assert standalone['coordinates'] == report['coordinates']
+assert standalone['coordinate_system'] == report['coordinate_system']
 print('PASS: relocated GDB verified in a fresh process while the source bundle path was unavailable')
 
 original_report = report_path.read_bytes()
@@ -98,6 +100,10 @@ cases = {
     'missing-bundle-resource-never-falls-back': lambda s: (s.update(missing_texture_policy='material-color'), s['textures'][0].update(path='textures/absent.png')),
     'hash': lambda s: s['textures'][0].update(sha256='0' * 64),
     'path-traversal': lambda s: s['textures'][0].update(path='../outside.png'),
+    'nul-texture-path': lambda s: s['textures'][0].update(path='textures/alpha.png\0ignored'),
+    'nul-mesh-name': lambda s: s['meshes'][0].update(name='prefix\0ignored'),
+    'nul-source-node': lambda s: s['meshes'][0].update(source_node='prefix\0ignored'),
+    'float-texture-byte-length': lambda s: s['textures'][0].update(byte_length=float(s['textures'][0]['byte_length'])),
     'absolute-texture-path': lambda s: s['textures'][0].update(path=str(bundle / 'textures' / 'alpha.png')),
     'drive-rooted-texture-path': lambda s: s['textures'][0].update(path='\\Windows\\win.ini'),
     'mime-mismatch': lambda s: s['textures'][0].update(mime_type='image/jpeg'),
@@ -107,6 +113,8 @@ cases = {
     'nonunit-normal': lambda s: s['meshes'][0]['vertices'][0].update(normal=[0, 0, 2]),
     'nonfinite-position': lambda s: s['meshes'][0]['vertices'][0].update(position=[float('inf'), 0, 0]),
     'float32-uv-overflow': lambda s: s['meshes'][0]['vertices'][0].update(uv=[1e100, 0]),
+    'float32-uv-rounded-overflow': lambda s: s['meshes'][0]['vertices'][0].update(uv=[math.nextafter(float.fromhex('0x1.fffffep127'), math.inf), 0]),
+    'float32-flipped-v-rounded-overflow': lambda s: s['meshes'][0]['vertices'][0].update(uv=[0, -math.nextafter(float.fromhex('0x1.fffffep127'), math.inf)]),
     'unreferenced-float32-uv-overflow': lambda s: s['meshes'][0]['vertices'].append(dict(position=[0, 0, 0], normal=[0, 0, 1], uv=[0, -1e100])),
     'bad-color': lambda s: s['materials'][0].update(color=[1.1, 0, 0, 1]),
     'bad-material-index': lambda s: s['meshes'][0]['triangles'][0].update(material=900),
@@ -142,6 +150,16 @@ def negative_case(item):
 
 with ThreadPoolExecutor(max_workers=2) as executor:
     results = list(executor.map(negative_case, cases.items()))
+
+# A raw NUL is not JSON EOF. Place it past the first 64 KiB read buffer so
+# valid roots followed by a NUL and unread garbage cannot be accepted.
+nul_source = root / 'raw-nul-scene'
+shutil.copytree(bundle, nul_source)
+(nul_source / 'scene.json').write_bytes(json.dumps(scene).encode('utf8') + b' ' * 70000 + b'\0ignored')
+nul_result = run(['--input', nul_source, '--output', root / 'raw-nul-scene.gdb'], success=False)
+assert not (root / 'raw-nul-scene.gdb').exists()
+assert not list(root.glob('raw-nul-scene.gmb-*.gdb'))
+results.append(dict(case='raw-nul-scene-suffix', passed=True, error=nul_result.stderr.strip()))
 
 # Streaming must not depend on metadata preceding meshes; a duplicate root key
 # must not conceal geometry that the parser already visited.
@@ -219,7 +237,7 @@ results.append(dict(case='coordinate-domain-rejected-before-write', passed=True,
 # Native storage preflight must precede even SDK CRS setup, which itself precedes
 # database creation. An invalid CRS makes these checks deterministic without
 # relying only on observing a short-lived staging directory.
-for name in ('uv-range-before-sdk', 'shape-size-before-sdk'):
+for name in ('uv-range-before-sdk', 'nul-name-before-sdk', 'shape-size-before-sdk'):
     source = root / name
     shutil.copytree(bundle, source)
     invalid_scene = copy.deepcopy(scene)
@@ -227,6 +245,9 @@ for name in ('uv-range-before-sdk', 'shape-size-before-sdk'):
     if name.startswith('uv'):
         invalid_scene['meshes'][0]['vertices'][0]['uv'] = [1e100, 0]
         expected_error = 'UV exceeds native float32 storage range'
+    elif name.startswith('nul'):
+        invalid_scene['meshes'][0]['name'] = 'prefix\0ignored'
+        expected_error = 'NUL characters are forbidden in bundle strings'
     else:
         # A highly compressed generated PNG expands to 16 MiB. Thirty-three
         # distinct material patches would exceed the 512 MiB shape limit even
@@ -282,6 +303,49 @@ corrupt_path.write_text(json.dumps(corrupt_expected), encoding='utf8')
 run(['--verify-gdb', copied, '--expected-report', corrupt_path, '--report', root / 'wrong-verification.json'], success=False)
 assert not (root / 'wrong-verification.json').exists()
 results.append(dict(case='standalone-texture-hash-mismatch', passed=True))
+
+# Standalone readback must validate the report's success/provenance contract,
+# including JSON integrity, instead of truncating counts or ignoring flags.
+expected_cases = {
+    'fractional-count': lambda e: e['verification'].update(feature_count=2.9),
+    'float-count': lambda e: e['verification'].update(feature_count=2.0),
+    'object-checks': lambda e: e['verification'].update(checks=dict(enumerate(e['verification']['checks']))),
+    'wrong-version': lambda e: e.update({'version': '999.0.0'}),
+    'unverified-readback': lambda e: e['verification'].update(geometry_material_uv_texture_readback=False),
+    'failed-feature-check': lambda e: e['verification']['checks'][0].update(passed=False),
+    'wrong-verification-level': lambda e: e['verification'].update(level='not_verified'),
+    'conflicting-placement-wkid': lambda e: e['coordinates'].update(wkid=32649),
+    'implicit-origin': lambda e: e['coordinates'].update(origin_explicit=False),
+    'invalid-origin': lambda e: e['coordinates'].update(origin=[0, None, 0]),
+    'missing-reader-diagnostics': lambda e: e.pop('reader_diagnostics'),
+    'reader-error-diagnostic': lambda e: e['reader_diagnostics'][0].update(severity='error'),
+    'error-diagnostic': lambda e: e.update(diagnostics=[dict(severity='error', code='TEST_ERROR', message='Failure')]),
+    'invalid-reader-diagnostic': lambda e: e['reader_diagnostics'][0].update(code=123),
+    'invalid-diagnostic': lambda e: e.update(diagnostics=[dict(severity='warning', code='', message='No diagnostic code')]),
+    'invalid-reader-diagnostic-array': lambda e: e.update(reader_diagnostics={}),
+    'invalid-diagnostic-array': lambda e: e.update(diagnostics={}),
+}
+for name, mutate in expected_cases.items():
+    invalid_expected = copy.deepcopy(report)
+    mutate(invalid_expected)
+    expected_path = root / ('expected-' + name + '.json')
+    expected_path.write_text(json.dumps(invalid_expected), encoding='utf8')
+    verification_path = root / ('verification-' + name + '.json')
+    rejected = run(['--verify-gdb', copied, '--expected-report', expected_path, '--report', verification_path], success=False)
+    assert not verification_path.exists()
+    results.append(dict(case='standalone-' + name, passed=True, error=rejected.stderr.strip()))
+
+for name, contents in [
+    ('raw-nul', json.dumps(report).encode('utf8') + b' ' * 70000 + b'\0ignored'),
+    ('duplicate-root', (json.dumps(report)[:-1] + ',"status":"written_and_readback_verified"}').encode('utf8')),
+    ('duplicate-nested', json.dumps(report).replace('"feature_count": 2', '"feature_count": 999, "feature_count": 2', 1).encode('utf8')),
+]:
+    expected_path = root / ('expected-' + name + '.json')
+    expected_path.write_bytes(contents)
+    verification_path = root / ('verification-' + name + '.json')
+    rejected = run(['--verify-gdb', copied, '--expected-report', expected_path, '--report', verification_path], success=False)
+    assert not verification_path.exists()
+    results.append(dict(case='standalone-' + name, passed=True, error=rejected.stderr.strip()))
 # Exercise platform decoders against known pixels, including corner cases that
 # cannot be validated merely by writing then reading the same generated buffer.
 def png_image(depth, color, raw, extra=b'', interlace=0):
@@ -351,6 +415,13 @@ run(['--input', unicode_source, '--output', unicode_output])
 run(['--verify-gdb', unicode_output, '--expected-report', unicode_output.with_suffix('.writer-report.json'), '--report', root / '中文 核验.json'])
 
 if os.name != 'nt':
+    fifo_report = root / 'expected-report.fifo'
+    os.mkfifo(fifo_report)
+    fifo_output = root / 'fifo-verification.json'
+    rejected = run(['--verify-gdb', copied, '--expected-report', fifo_report, '--report', fifo_output], success=False)
+    assert 'Expected writer report must be a regular file' in rejected.stderr
+    assert not fifo_output.exists()
+    results.append(dict(case='standalone-fifo-report', passed=True, error=rejected.stderr.strip()))
     # POSIX containment is case-sensitive; similarly named sibling outputs are valid.
     case_source = root / 'CaseBundle'
     shutil.copytree(bundle, case_source)

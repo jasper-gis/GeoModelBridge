@@ -226,6 +226,40 @@ def main():
             for profile in ("strict", "gis-static"):
                 run(name + "-" + profile, source, profile, False)
 
+        # The SDK defines PremultiplyAlpha as a property. Checking only the
+        # texture's legacy direct DOM field silently accepted Properties70 flags.
+        embedded = (fixtures / "embedded_quad.fbx").read_text(encoding="utf-8")
+        for storage, original in (("external", textured), ("embedded", embedded)):
+            for value in (0, 1):
+                source = original.replace('   P: "UVSet",',
+                    f'   P: "PremultiplyAlpha", "bool", "", "", {value}\n   P: "UVSet",')
+                assert source != original
+                for profile in ("strict", "gis-static"):
+                    scene, _ = run(f"premultiplied-property-{storage}-{value}-{profile}", source, profile,
+                                   not value, "UNSUPPORTED_PREMULTIPLIED_ALPHA" if value else None)
+                    if scene:
+                        assert len(scene["textures"]) == 1
+                        assert scene["textures"][0]["sha256"] == hashlib.sha256((fixtures / "checker.png").read_bytes()).hexdigest()
+        template = '''Definitions: {
+ ObjectType: "Texture" {
+  Count: 1
+  PropertyTemplate: "FbxFileTexture" {
+   Properties70: { P: "PremultiplyAlpha", "bool", "", "", 1 }
+  }
+ }
+}
+'''
+        inherited = textured.replace("Objects: {", template + "Objects: {", 1).replace(
+            'Texture: 400, "Texture::Checker", ""', 'Texture: 400, "Texture::Checker", "FileTexture"')
+        overridden = inherited.replace('   P: "UVSet",',
+            '   P: "PremultiplyAlpha", "bool", "", "", 0\n   P: "UVSet",')
+        malformed = textured.replace('   P: "UVSet",',
+            '   P: "PremultiplyAlpha", "bool", "", "", "true"\n   P: "UVSet",')
+        for profile in ("strict", "gis-static"):
+            run("premultiplied-template-" + profile, inherited, profile, False, "UNSUPPORTED_PREMULTIPLIED_ALPHA")
+            run("straight-alpha-overrides-template-" + profile, overridden, profile, True)
+            run("malformed-premultiplied-property-" + profile, malformed, profile, False, "UNSUPPORTED_PREMULTIPLIED_ALPHA")
+
         # Generated project-owned 3x2 JPEG, with deliberately varied metadata.
         # Preserve the complete original compressed stream when normalizing.
         jpeg = (fixtures / "project_rgb.jpg").read_bytes()

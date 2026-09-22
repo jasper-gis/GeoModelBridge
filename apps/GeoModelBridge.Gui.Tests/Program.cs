@@ -6,7 +6,7 @@ using GeoModelBridge.Gui.Core;
 
 internal static class Program
 {
-    private const string Version = "0.2.0";
+    private const string Version = "0.2.1";
     private static readonly List<TestCase> Results = [];
     private static string Work = "";
     private static string Input = "";
@@ -161,7 +161,7 @@ internal static class Program
             Test("accept_profile_" + profile, () => Valid(Settings with { Profile = profile }));
         foreach (var profile in new[] { "", "Strict", "auto", "gis-static --ignore-errors" })
             Test("reject_profile_" + JsonSerializer.Serialize(profile), () => Invalid(Settings with { Profile = profile }));
-        foreach (var name in new[] { "", "Bad name", "bad;table", "../outside" })
+        foreach (var name in new[] { "", "Bad name", "bad;table", "../outside", "Models\n", "Models\r\n", "A" + new string('b', 63) + "\n" })
             Test("reject_feature_class_" + JsonSerializer.Serialize(name), () => Invalid(Settings with { FeatureClass = name }));
         Test("reject_missing_texture_directory", () => Invalid(Settings with { TextureDirectories = [Path.Combine(Work, "missing-textures")] }));
         Test("validation_does_not_touch_existing_files", () =>
@@ -388,7 +388,7 @@ internal static class Program
             Assert(!summary.IsSuccess && summary.ErrorCount == 0 && summary.VerificationIssues.Count > 0, "A bare success label was treated as evidence of database readback.");
             Assert(summary.SummaryText.Contains("不能据此确认转换成功") && summary.DetailedText.Contains("verification"), "Missing verification is not explained to the report reader.");
         });
-        foreach (var field in new[] { "verification", "coordinate_system", "version", "output", "feature_class" })
+        foreach (var field in new[] { "verification", "coordinate_system", "version", "output", "feature_class", "reader_diagnostics" })
             Test("summary_explains_missing_success_evidence_" + field, () =>
             {
                 var report = GoodReport();
@@ -412,6 +412,73 @@ internal static class Program
             var summary = ReportSummaryFormatter.Parse(report.ToJsonString());
             Assert(summary.IsSuccess && summary.VerificationIssues.Count == 0, "Presentation rejected an otherwise complete historical report; current conversion validation is handled separately.");
         });
+        foreach (var (name, mutate) in new (string, Action<JsonObject>)[]
+        {
+            ("missing_checks", r => r["verification"]!.AsObject().Remove("checks")),
+            ("empty_checks", r => r["verification"]!["checks"] = new JsonArray()),
+            ("wrong_checks_type", r => r["verification"]!["checks"] = new JsonObject()),
+            ("failed_check", r => r["verification"]!["checks"]![0]!["passed"] = false),
+            ("false_string_check", r => r["verification"]!["checks"]![0]!["passed"] = "true"),
+            ("missing_check_index", r => r["verification"]!["checks"]![0]!.AsObject().Remove("mesh_index")),
+            ("out_of_range_check", r => r["verification"]!["checks"]![0]!["mesh_index"] = 1),
+            ("duplicate_checks", r => { r["verification"]!["feature_count"] = 2;
+                r["verification"]!["checks"]!.AsArray().Add(r["verification"]!["checks"]![0]!.DeepClone()); }),
+            ("feet", r => r["coordinate_system"]!["unit"] = "feet"),
+            ("reprojected", r => r["coordinate_system"]!["source_coordinates_assigned_without_reprojection"] = false),
+            ("missing_placement", r => r.Remove("coordinates")),
+            ("mismatched_wkid", r => r["coordinates"]!["wkid"] = 3857),
+            ("missing_origin", r => r["coordinates"]!.AsObject().Remove("origin")),
+            ("invalid_origin", r => r["coordinates"]!["origin"] = new JsonArray(1, 2, "bad")),
+            ("implicit_origin", r => r["coordinates"]!["origin_explicit"] = false),
+            ("invalid_up_axis", r => r["coordinates"]!["up_axis"] = "Y")
+        })
+            Test("summary_never_confirms_invalid_evidence_" + name, () =>
+            {
+                var report = GoodReport();
+                mutate(report);
+                var summary = ReportSummaryFormatter.Parse(report.ToJsonString());
+                Assert(!summary.IsSuccess && summary.VerificationIssues.Count > 0,
+                    "Invalid readback or placement evidence was presented as a verified database: " + name);
+                Assert(!summary.SummaryText.StartsWith("已完成", StringComparison.Ordinal), "Summary still claims completed verification.");
+            });
+        Test("historical_report_without_later_placement_fields_remains_readable", () =>
+        {
+            var report = GoodReport();
+            report["version"] = "0.1.2";
+            report.Remove("coordinates");
+            report.Remove("conversion_profile");
+            var summary = ReportSummaryFormatter.Parse(report.ToJsonString());
+            Assert(summary.IsSuccess, "Historical report was rejected for fields introduced in later versions.");
+        });
+        Test("historical_report_without_reader_diagnostics_remains_readable", () =>
+        {
+            var report = GoodReport();
+            report["version"] = "0.1.2";
+            report.Remove("reader_diagnostics");
+            var summary = ReportSummaryFormatter.Parse(report.ToJsonString());
+            Assert(summary.IsSuccess && summary.VerificationIssues.Count == 0,
+                "Historical report was rejected solely because it predates the required reader diagnostics list.");
+        });
+        foreach (var malformed in new JsonObject[]
+        {
+            new() { ["severity"] = "ERROR", ["code"] = "BROKEN", ["message"] = "failed" },
+            new() { ["code"] = "BROKEN", ["message"] = "failed" },
+            new() { ["severity"] = "warning", ["message"] = "failed" },
+            new() { ["severity"] = "warning", ["code"] = "", ["message"] = "failed" },
+            new() { ["severity"] = "warning", ["code"] = "BROKEN" },
+            new() { ["severity"] = "warning", ["code"] = "BROKEN", ["message"] = 42 },
+            new() { ["severity"] = "warning", ["code"] = "BROKEN", ["message"] = "failed", ["context"] = 42 },
+            new() { ["severity"] = "warning", ["code"] = "BROKEN", ["message"] = "failed", ["context"] = null },
+            new() { ["severity"] = "warning", ["code"] = "BROKEN", ["message"] = "failed", ["context"] = new JsonObject() }
+        })
+            Test("summary_rejects_malformed_diagnostic_" + malformed.ToJsonString(), () =>
+            {
+                var report = GoodReport();
+                report["reader_diagnostics"] = new JsonArray(malformed.DeepClone());
+                try { ReportSummaryFormatter.Parse(report.ToJsonString()); }
+                catch (InvalidDataException) { return; }
+                throw new InvalidOperationException("Malformed diagnostics were converted into a success summary.");
+            });
         var repeated = new JsonArray();
         for (var i = 0; i < 144; ++i)
             repeated.Add(new JsonObject { ["severity"] = "error", ["code"] = "UNSUPPORTED_ANIMATION", ["message"] = "Animation data is present.", ["context"] = "node:model-" + i });
@@ -822,7 +889,7 @@ internal static class Program
         var service = new EngineService(engineDirectory);
         await TestAsync("native_backend_runtime_probe", async () =>
         {
-            Assert(service.IsEnginePresent, "Built V0.2.0 engine is absent: " + service.EnginePath);
+            Assert(service.IsEnginePresent, "Built V0.2.1 engine is absent: " + service.EnginePath);
             var probe = await service.ProbeBackendAsync("native-filegdb");
             Assert(probe.Success, probe.Message);
         });

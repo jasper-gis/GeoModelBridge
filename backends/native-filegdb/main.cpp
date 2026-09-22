@@ -380,20 +380,60 @@ json verify_gdb(const fs::path &path, const std::string &name, const Bundle &bun
 }
 int standalone(const Options &o) {
     ensure_new(o.report);
-    auto e = json::parse(read(o.expected, 64ull * 1024 * 1024));
+    require(fs::is_regular_file(o.expected), "Expected writer report must be a regular file.");
+    gmb::io::JsonInputBuffer input(o.expected, 64ull * 1024 * 1024, "expected writer report");
+    std::istream stream(&input);
+    JsonIntegrity integrity{"report", {}};
+    auto e = json::parse(stream, [&](int depth, json::parse_event_t event, json &value) {
+        integrity.inspect(depth, event, value);
+        return true;
+    });
+    require(!stream.bad(), "Cannot finish reading expected writer report.");
     require(e.at("backend") == "native-filegdb" &&
-                e.at("status") == "written_and_readback_verified",
+                e.at("version") == gmb::version &&
+                e.at("status") == "written_and_readback_verified" &&
+                e.at("verification").at("level") == "closed_reopened_file_geodatabase" &&
+                e.at("verification").at("geometry_material_uv_texture_readback") == true,
             "Expected report must be a verified native writer report.");
+    require(e.contains("reader_diagnostics"), "Expected report must include reader diagnostics.");
+    for (const auto *key : {"reader_diagnostics", "diagnostics"}) {
+        if (!e.contains(key)) continue;
+        const auto &entries = e.at(key);
+        require(entries.is_array(), "Expected report diagnostics must be arrays.");
+        for (const auto &entry : entries)
+            require(entry.is_object() && entry.contains("severity") &&
+                        (entry.at("severity") == "warning" || entry.at("severity") == "info") &&
+                        entry.contains("code") && entry.at("code").is_string() &&
+                        !entry.at("code").get_ref<const std::string &>().empty() &&
+                        entry.contains("message") && entry.at("message").is_string() &&
+                        (!entry.contains("context") || entry.at("context").is_string()),
+                    "Expected report contains errors or invalid diagnostics.");
+    }
+    const auto &coordinates = e.at("coordinates");
+    const auto &coordinate_system = e.at("coordinate_system");
+    const auto expected_wkid = integer(coordinates.at("wkid"));
+    require(coordinates.at("unit") == "meter" && coordinates.at("up_axis") == "Z" &&
+                coordinates.at("space") == "referenced" && coordinates.at("origin_explicit") == true &&
+                expected_wkid > 0 && expected_wkid == integer(coordinate_system.at("wkid")) &&
+                coordinate_system.at("unit") == "meter" && coordinate_system.at("projected") == true &&
+                coordinate_system.at("source_coordinates_assigned_without_reprojection") == true,
+            "Expected report placement provenance is inconsistent.");
+    vec3(coordinates.at("origin"));
     const auto name = e.at("feature_class").get<std::string>();
     require(std::regex_match(name, std::regex("[A-Za-z][A-Za-z0-9_]{0,63}")),
             "Invalid report feature class.");
     std::map<int, json> expected;
-    for (const auto &c : e.at("verification").at("checks"))
-        require(expected.emplace(integer(c.at("mesh_index")), c).second,
+    const auto &checks = e.at("verification").at("checks");
+    const auto feature_count = integer(e.at("verification").at("feature_count"));
+    require(checks.is_array() && feature_count > 0 && checks.size() == static_cast<std::size_t>(feature_count),
+            "Invalid expected feature count/checks.");
+    for (const auto &c : checks) {
+        require(c.at("passed") == true, "Expected report contains an unverified feature.");
+        const auto index = integer(c.at("mesh_index"));
+        require(index >= 0 && index < feature_count, "Invalid expected mesh index.");
+        require(expected.emplace(index, c).second,
                 "Duplicate expected mesh.");
-    require(!expected.empty() &&
-                expected.size() == e.at("verification").at("feature_count").get<std::size_t>(),
-            "Invalid expected feature count.");
+    }
     Db d;
     check(fg::OpenGeodatabase(wide(o.verify.u8string()), d.db), "Open copied GDB");
     d.opened = true;
@@ -458,6 +498,8 @@ int standalone(const Options &o) {
                         {"geodatabase", o.verify.u8string()},
                         {"expected_report", o.expected.u8string()},
                         {"feature_class", name},
+                        {"coordinates", coordinates},
+                        {"coordinate_system", coordinate_system},
                         {"feature_count", seen.size()},
                         {"verification",
                          {{"independent_of_bundle_and_source_textures", true},

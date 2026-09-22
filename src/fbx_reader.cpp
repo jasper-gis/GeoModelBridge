@@ -438,7 +438,15 @@ struct Reader {
         if (texture->has_uv_transform && (!finite(ufbx_matrix_determinant(&texture->texture_to_uv)) ||
             ufbx_matrix_determinant(&texture->texture_to_uv) == 0.0))
             error("INVALID_UV_TRANSFORM", "Texture transform is singular or non-finite.", context);
-        if (dom_differs(texture->element.dom_node, "PremultiplyAlpha", 0))
+        // PremultiplyAlpha is an FBX property, including inherited template
+        // defaults. Older exports can also store it directly on the texture.
+        const auto* premultiplied = ufbx_find_prop(&texture->props, "PremultiplyAlpha");
+        const bool straight_alpha = !premultiplied ||
+            ((premultiplied->type == UFBX_PROP_BOOLEAN || premultiplied->type == UFBX_PROP_INTEGER ||
+              premultiplied->type == UFBX_PROP_NUMBER) &&
+             (premultiplied->flags & (UFBX_PROP_FLAG_VALUE_REAL | UFBX_PROP_FLAG_VALUE_INT)) &&
+             premultiplied->value_real == 0.0);
+        if (!straight_alpha || dom_differs(texture->element.dom_node, "PremultiplyAlpha", 0))
             error("UNSUPPORTED_PREMULTIPLIED_ALPHA", "Premultiplied source texture alpha requires explicit conversion to straight alpha.", context);
         if (dom_differs(texture->element.dom_node, "Cropping", 0) ||
             dom_differs(texture->element.dom_node, "ModelUVTranslation", 0) ||
