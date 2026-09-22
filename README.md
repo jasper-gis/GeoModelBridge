@@ -5,7 +5,7 @@
 <p>FBX → 带颜色与贴图的 FileGDB Multipatch</p>
 
 <p>
-  <a href="CHANGELOG.md"><code>V0.1.13</code></a> &nbsp;
+  <a href="CHANGELOG.md"><code>V0.1.14</code></a> &nbsp;
   <a href="docs/architecture.md"><code>C++17</code></a> &nbsp;
   <a href="#platforms"><code>Windows · Ubuntu</code></a>
 </p>
@@ -24,7 +24,7 @@
 
 GeoModelBridge 使用 **原生 FileGDB 后端 `native-filegdb`**，支持 Ubuntu 命令行与 Windows 命令行 / 图形界面。构建、转换和部署均无需安装 ArcGIS Pro、ArcPy 或获取 Pro 许可。
 
-**研发接入：** [纯命令行、完整参数与连续调用 EXE](docs/command-line.md) · [FileGDB API 实际调用链、DLL 缺失原因和修复](docs/filegdb-api.md)。源码下载不包含 EXE / DLL；V0.1.13 起启用原生构建时默认附带官方运行库，纯核心构建仍需显式启用 native 才能生成 GDB。
+**研发接入：** [统一构建入口](docs/build-and-release.md) · [纯命令行与连续调用 EXE](docs/command-line.md) · [FileGDB API 调用链](docs/filegdb-api.md)。项目只保留根目录一个 `CMakeLists.txt`；默认一次构建 CLI、原生 writer 和 SDK 运行库。源码下载不包含 EXE / DLL，先下载固定 SDK 再从根目录构建。
 
 - **保留模型表达**：处理漫反射颜色、PNG/JPEG 纹理、Alpha、UV 和法线角点边界，节点变换只烘焙一次。
 - **写入后核验**：生成真实 GDB，关闭并重开，核对几何、材质、纹理和空间参考后才报告成功。
@@ -66,7 +66,7 @@ sudo apt-get install -y git g++ cmake ninja-build python3 libpng-dev libjpeg-dev
 git clone https://github.com/jasper-gis/GeoModelBridge.git
 cd GeoModelBridge
 python3 scripts/fetch_filegdb_sdk.py --output build/filegdb-sdk
-python3 scripts/build.py --sdk build/filegdb-sdk --include-runtime --jobs 2
+python3 scripts/build.py --jobs 2
 
 ./dist/bin/geomodelbridge doctor
 ./dist/bin/native-filegdb/GeoModelBridge.NativeWriter --probe
@@ -85,13 +85,13 @@ python3 scripts/build.py --sdk build/filegdb-sdk --include-runtime --jobs 2
 git clone https://github.com/jasper-gis/GeoModelBridge.git
 cd GeoModelBridge
 python scripts/fetch_filegdb_sdk.py --output build/filegdb-sdk
-.\scripts\build.ps1 -WithNative -WithGui -FileGDBApiRoot "$PWD/build/filegdb-sdk" -IncludeFileGDBRuntime
+.\scripts\build.ps1 -WithGui
 .\dist\bin\geomodelbridgeGUI.exe
 ```
 
 在界面选择 FBX、新的输出 GDB、目标 WKID 与米制原点坐标，然后转换。详见[GUI 使用说明](docs/gui.md)。
 
-只需要命令行时去掉 `-WithGui`，无需 .NET SDK，执行 `dist/bin/geomodelbridge.exe convert -h`。原生 writer 与 `FileGDBAPI.dll` 默认安装于 `dist/bin/native-filegdb/`，无需另外查找 .NET wrapper。
+只需要命令行时执行 `.\scripts\build.ps1`，无需 .NET SDK；writer 也会一起构建。SDK 默认从 `build/filegdb-sdk` 查找，可用 `FILEGDB_API_ROOT` 或 `-FileGDBApiRoot` 指定已有 SDK。安装后执行 `dist/bin/geomodelbridge.exe convert -h`。原生 writer 与 `FileGDBAPI.dll` 位于 `dist/bin/native-filegdb/`。
 
 </details>
 
@@ -180,7 +180,9 @@ V0.1.12 会明确区分“文件缺失”和“路径 / 读取错误”：路径
 
 ## 已有验证
 
-**V0.1.13**：Windows / Ubuntu 的 CTest 均为 **9/9**；两平台的构建目录运行库、连续 CLI 调用与冲突保护、37 项原生输入 / 清理检查、9 项真实 Python 调用、14 个完整样例和发布检查通过；Windows GUI 为 **163/163**。PowerShell、cmd.exe、Bash 文档示例已执行。详见[本版验证记录](docs/validation-v0.1.13.md)。
+**V0.1.14**：Windows / Ubuntu 的根工程 CTest 均为 **11/11**，包含安装前 CLI 自动发现 writer、纹理写入和复制回读；两平台的 37 项原生输入 / 清理检查、9 项真实 Python 调用、14 个完整样例和发布检查通过；Windows GUI 为 **163/163**。另验证 Windows 纯核心 **9/9**、多配置生成器和缺 SDK 提示。详见[本版验证记录](docs/validation-v0.1.14.md)。
+
+此前命令行与运行库交付验证保留在 [V0.1.13](docs/validation-v0.1.13.md)，包括 PowerShell、cmd.exe、Bash 连续调用示例的执行记录。
 
 此前 **V0.1.12** 的贴图专项 Windows / Ubuntu 分别通过 **24 / 29** 个场景，Ubuntu 额外覆盖权限、FIFO 和链接路径，保持[原版本证据](docs/validation-v0.1.12.md)；输出保护历史见 [V0.1.11](docs/validation-v0.1.11.md)。未进行 ATBX 内运行或取消行为验收。
 

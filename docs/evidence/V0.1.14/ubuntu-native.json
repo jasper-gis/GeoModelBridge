@@ -1,0 +1,192 @@
+{
+  "status": "passed",
+  "negative_checks": [
+    {
+      "case": "non-object-streamed-mesh",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Each mesh must be an object.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "nested-array-streamed-mesh",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Each mesh must be an object.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "unknown-streamed-mesh-field",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Unknown bundle field: unsupported\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "unknown-conversion-profile",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Invalid conversion profile.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "unknown-missing-texture-policy",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Invalid missing texture policy.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "fallback-forbidden-by-policy",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"TEXTURE_POLICY_MISMATCH: Missing texture fallback is forbidden by the selected error policy.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "missing-bundle-resource-never-falls-back",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"filesystem error: cannot get file size: No such file or directory [<workspace>/artifacts/v0114/native/native-filegdb-integration-l4ra28vn/negative/missing-bundle-resource-never-falls-back/bundle/textures/absent.png]\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "hash",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Texture byte length/SHA256 mismatch.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "path-traversal",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Bundle path traversal forbidden.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "absolute-texture-path",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Absolute or drive-rooted bundle path forbidden.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "drive-rooted-texture-path",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Bundle resource must be a relative path.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "mime-mismatch",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"UNSUPPORTED_TEXTURE_FORMAT: Only original PNG/JPEG resources with matching media types are accepted.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "unsupported-format",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"UNSUPPORTED_TEXTURE_FORMAT: Only original PNG/JPEG resources with matching media types are accepted.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "missing-uv",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"MISSING_UV: Textured triangle is missing UV coordinates.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "zero-normal",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"INVALID_NORMAL: A supplied normal has zero length.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "nonunit-normal",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Normals must be unit length; no implicit renormalization.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "nonfinite-position",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"[json.exception.parse_error.101] parse error at line 1, column 375: syntax error while parsing value - invalid literal; last read: '\\\"position\\\": [I'\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "bad-color",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"INVALID_COLOR: Material color/opacity must be finite and in [0,1].\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "bad-material-index",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"INVALID_MATERIAL_INDEX: Triangle must have a valid material.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "bad-vertex-index",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"INVALID_VERTEX_INDEX: Triangle refers to a nonexistent vertex.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "fractional-index",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Integer field must not be fractional.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "fractional-wkid",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Integer field must not be fractional.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "uint64-max-index",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Unsigned integer field out of range.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "uint64-max-material",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Unsigned integer field out of range.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "uint64-max-wkid",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Unsigned integer field out of range.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "fractional-schema",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Integer field must not be fractional.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "unknown-material-semantic",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Unknown bundle field: roughness\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "missing-normal-corner",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Mixed present/missing normals in a mesh are unsupported.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "geographic-crs",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"WKID must identify a projected metre horizontal CRS without a vertical CRS.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "feet-crs",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Projected CRS units must be metres.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "no-explicit-origin",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"An explicit projected metre WKID and origin are required.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "unknown-crs",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"An explicit projected metre WKID and origin are required.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "reader-error",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Bundle contains errors or invalid diagnostic severity.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "duplicate-root-mesh-array",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Duplicate root bundle field: meshes\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "coordinate-domain-rejected-before-write",
+      "passed": true,
+      "staging_observed": false,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Coordinates exceed the explicit native storage domain +/-99,999,999 metres.\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "sdk-schema-failure-cleans-only-owned-staging",
+      "passed": true,
+      "error": "{\"backend\":\"native-filegdb\",\"error\":\"Create multipatch feature class: The table already exists. (-2147220653)\",\"status\":\"failed\"}"
+    },
+    {
+      "case": "standalone-texture-hash-mismatch",
+      "passed": true
+    }
+  ],
+  "png_alpha_pixel_hash": "74e204bdbae49352f72ee1c07cf3fae8615fddf74e0c37a12416d1fdd8802e92",
+  "standalone_source_unavailable": true
+}

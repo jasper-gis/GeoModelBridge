@@ -1,10 +1,14 @@
 # 构建、部署与发布指南
 
-[← 返回项目首页](../README.md) · [原生后端](../backends/native-filegdb/README.md) · [Python 调用库](python-client.md) · [验证记录](validation-v0.1.13.md)
+[← 返回项目首页](../README.md) · [原生后端](../backends/native-filegdb/README.md) · [Python 调用库](python-client.md) · [验证记录](validation-v0.1.14.md)
 
 本文补充 README 的快速开始流程，面向需要自定义构建、迁移客户机或维护发布的使用者。所有命令在仓库根目录执行；默认安装目录为 `dist`。
 
 ## 构建选项
+
+V0.1.14 只保留仓库根目录的 `CMakeLists.txt`。核心库、CLI、原生 writer、SDK 链接、运行库复制、CTest 和安装规则均由此文件定义；`backends/native-filegdb` 仅保留 C++ 源码、SDK 来源清单和测试，不再是可独立配置的 CMake 工程。
+
+默认完整构建，缺少 SDK 会在配置阶段失败并给出下载命令，不会默认留下只能输出中间 JSON 的核心程序。统一构建目录和安装目录均包含 `bin/geomodelbridge[.exe]` 及其旁边的 `bin/native-filegdb/GeoModelBridge.NativeWriter[.exe]` 和 SDK 运行库。
 
 工具要求 CMake ≥ 3.21、Python ≥ 3.11 和支持 C++17 的编译器；[首页快速开始](../README.md#quick-start)列出的 Ubuntu 软件包满足要求。固定 Linux SDK 的 README 要求 GCC ≥ 11.5，本项目使用 Ubuntu GCC 13 验证。Linux 归档名称中的 `RHEL8-64gcc8` 是上游命名，不用它推断最低版本。下载来源与散列见 [Linux SDK 清单](../backends/native-filegdb/sdk-sources-linux.json)。
 
@@ -15,7 +19,19 @@ python3 scripts/fetch_filegdb_sdk.py \
   --archive /path/to/FileGDB_API-RHEL8-64gcc8.tar.gz --output build/filegdb-sdk
 ```
 
-`build.py` 执行版本检查、依赖核对、CMake Release 构建、CTest、安装和运行库探测；可用 `--build-dir`、`--install-dir` 指定目录。构建会更新自己的安装文件，请不要把用户数据放入构建/安装目录。转换、报告和 SDK 下载拒绝覆盖已有输出。首次构建后如只改源码，直接重新运行构建命令，不必重新下载 SDK。
+`build.py` 和 `build.ps1` 都只调用根工程，执行一次配置、构建、CTest 和安装。SDK 优先使用显式 `--sdk` / `-FileGDBApiRoot`，其次 `FILEGDB_API_ROOT`，最后 `build/filegdb-sdk`。可用 `--build-dir` / `-BuildDirectory`、`--install-dir` / `-InstallDirectory` 指定目录。构建会更新自己的安装文件，请不要把用户数据放入构建/安装目录。转换、报告和 SDK 下载拒绝覆盖已有输出。首次构建后直接重跑构建命令，不必重新下载 SDK。
+
+两平台都可在根目录直接使用同一套命令（Windows 在 x64 MSVC 开发终端中运行）：
+
+```text
+python scripts/fetch_filegdb_sdk.py --output build/filegdb-sdk
+cmake --preset release
+cmake --build --preset release
+ctest --preset release
+cmake --install build/release --prefix dist
+```
+
+Ubuntu 可将 `python` 换成 `python3`。默认 `release` 构建含 writer 和运行库；构建后即能从 `build/release/bin` 调用 CLI，不需要手动补 `--writer`。发布仍使用完整安装目录，包含许可和文档。
 
 也可直接使用统一 CMake：
 
@@ -28,19 +44,27 @@ ctest --test-dir build/linux-x64 --output-on-failure
 cmake --install build/linux-x64 --prefix "$PWD/dist"
 ```
 
-仅需要检查 FBX 或生成中间 Bundle 时，可运行 `cmake --preset release`、`cmake --build --preset release`、`ctest --preset release`。默认不启用原生后端，此时不能转换为 GDB。
+仅需要检查 FBX 或生成中间 Bundle 时，显式运行 `cmake --preset core-release`、`cmake --build --preset core-release`、`ctest --preset core-release`，或 `build.ps1 -CoreOnly` / CMake `-DGMB_BUILD_NATIVE=OFF`。此模式不需要 SDK，也不会编译 writer。`debug` preset 同样仅构建核心，不使用与 release SDK 不兼容的 Debug STL ABI。
 
-V0.1.13 起，启用 native 后 `GMB_INSTALL_FILEGDB_RUNTIME` 默认 ON，同时复制运行库到构建目录的 writer 旁；安装时保留官方许可。旧 CMake 缓存的 OFF 需要显式改成 ON。纯命令行及连续调用见 [命令行文档](command-line.md)，SDK 源码调用链与旧版 DLL 缺失原因见 [FileGDB API 说明](filegdb-api.md)。
+运行库沿用 V0.1.13 的默认附带策略；`release` preset 显式设置 `GMB_BUILD_NATIVE=ON` 和 `GMB_INSTALL_FILEGDB_RUNTIME=ON`。直接使用旧缓存时，原有 OFF 不会自动改变。纯命令行及连续调用见 [命令行文档](command-line.md)，SDK 调用链见 [FileGDB API 说明](filegdb-api.md)。
 
 ### Windows 命令行构建
 
 在 x64 Visual Studio Developer PowerShell 中，先准备 Windows 对应的固定 SDK。仅构建命令行与原生写入端可使用共享入口：
 
 ```powershell
-python scripts/build.py --sdk build/filegdb-sdk --include-runtime
+python scripts/build.py
 ```
 
-需要 WPF GUI 时使用 `scripts/build.ps1 -WithNative -WithGui`，完整参数见[首页快速开始](../README.md#quick-start)。Windows 原生后端要求 MSVC ABI；GUI 另需 .NET 8 SDK。不要将 Linux SDK 与 Windows 构建混用。
+也可执行 `scripts/build.ps1`；需要 WPF GUI 时加 `-WithGui`。`-WithNative` 保留兼容，但现在是默认行为。Windows 完整构建统一使用 x64 MSVC 编译 CLI 与 writer；GUI 另需 .NET 8 SDK。不要将 Linux SDK 与 Windows 构建混用。
+
+### 从旧分离构建迁移
+
+- 不再执行 `cmake -S backends/native-filegdb`，全部改成 `cmake -S .` 或根目录 preset。
+- `build.ps1` 的 `-NativeBuildDirectory` 已移除；只用 `-BuildDirectory` 指定统一目录。建议首次迁移用新目录，保留旧产物。
+- 原生子工程的 CMake 缓存不能当成根工程缓存使用。旧 MinGW 核心缓存也不能用于完整 Windows MSVC 构建；使用新目录。
+- 构建产物不再散落在 build 根目录和 backend 子目录，全部归入 `<build>/bin`。多配置生成器使用 `<build>/bin/Release` 等配置子目录，其内同样保留 `native-filegdb`；构建、CTest、安装时分别加 `--config Release`、`-C Release`、`--config Release`。
+- `core-release` / `-CoreOnly` 用新目录验证，不会删除旧目录中之前生成的 writer 或 DLL。
 
 ## 客户机部署
 
@@ -124,14 +148,14 @@ python3 tests/normal_repair_test.py dist/bin/geomodelbridge tests/fixtures \
 python3 tests/native_deployment_test.py --install-dir dist --work artifacts/deployment
 python3 tests/python_client_test.py
 python3 tests/python_client_integration_test.py --install-dir dist --work artifacts/python-client
-python3 scripts/generate_examples.py --output examples/V0.1.13
+python3 scripts/generate_examples.py --output examples/V0.1.14
 python3 scripts/package.py --check-only
 # 包含源码、dist 和已验证样例，必须指定仓库外的新归档路径。
-python3 scripts/package.py --output ../GeoModelBridge-V0.1.13-ubuntu24.04-x86_64.tar.gz
+python3 scripts/package.py --output ../GeoModelBridge-V0.1.14-ubuntu24.04-x86_64.tar.gz
 ```
 
 生成样例和部署测试目录必须为新路径。Windows 运行同样的 Python 脚本，writer 文件名增加 `.exe`，发布归档用 `.zip`；还需运行 `dotnet run --project apps/GeoModelBridge.Gui.Tests -c Release -- --work artifacts/gui-tests --engine-dir dist/bin --fixtures tests/fixtures`。打包会检查运行版本、依赖散列、14 个真实 GDB 与复制成果回读；生成 `.sha256` 文件，Linux tar.gz 保留执行权限。
 
 Python 库与普通调用示例自动安装到 `dist/python`，可在不改动 ArcGIS Python 环境的情况下导入；版本必须与 EXE / writer 一致。详见 [Python 接入文档](python-client.md)。
 
-验证记录明确区分核心测试、原生数据库回读、可搬迁部署与目标软件显示验收。自动回读通过不等于完成三维外观验收。[V0.1.13 记录](validation-v0.1.13.md) · [大模型历史记录](validation-v0.1.8.md) · [平台迁移记录](validation-v0.1.6.md) · [验收边界](acceptance.md)
+验证记录明确区分核心测试、原生数据库回读、可搬迁部署与目标软件显示验收。自动回读通过不等于完成三维外观验收。[V0.1.14 记录](validation-v0.1.14.md) · [大模型历史记录](validation-v0.1.8.md) · [平台迁移记录](validation-v0.1.6.md) · [验收边界](acceptance.md)

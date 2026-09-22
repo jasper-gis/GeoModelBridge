@@ -1,5 +1,12 @@
 # Changelog
 
+## V0.1.14 — 2026-09-22
+
+- 合并原生 writer 的目标、SDK 链接、平台源码、运行库复制和安装规则到根 `CMakeLists.txt`，删除后端独立 CMake 工程；Windows 脚本改为一次根目录配置 / 构建 / 测试 / 安装，不再需要 `NativeBuildDirectory`。
+- 默认完整构建 CLI、writer 和 FileGDB API 运行库，SDK 默认定位到 `build/filegdb-sdk`，支持显式路径或环境变量；缺 SDK 提早报出准备步骤。新增 `core-release` preset 和 `-CoreOnly`，显式保留无 SDK 的核心构建。
+- 统一构建产物到 `bin` 与 `bin/native-filegdb`，多配置生成器保留配置子目录；只构建 CLI 目标也会生成 writer 和运行库。新增 CTest，直接验证安装前的默认 writer 查找、纹理写入和复制回读。
+- 更新双平台 CI、版本检查及研发文档，保持独立进程、Scene Bundle、材质和输出保护规则不变。结果见 [V0.1.14 验证记录](docs/validation-v0.1.14.md)。
+
 ## V0.1.13 — 2026-09-22
 
 - 扩展 CLI `-h` / `--help`，支持 convert、inspect、prepare、fixture、doctor 的子命令帮助，说明必填定位、默认策略、报告、writer 查找顺序、退出码及连续调用规则；原生 writer 同步支持 `-h`。

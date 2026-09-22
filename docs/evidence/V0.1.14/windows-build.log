@@ -1,0 +1,595 @@
+Verified ufbx 0.23.0
+Verified nlohmann/json 3.12.0
+Verified GeoModelBridge 0.1.14: 6 required declarations and runtime release references agree.
+-- The C compiler identification is MSVC 19.44.35226.0
+-- The CXX compiler identification is MSVC 19.44.35226.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: <user>/Documents/Codex/2026-09-20/gen/work/msvc-v011/toolchain/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: <user>/Documents/Codex/2026-09-20/gen/work/msvc-v011/toolchain/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - not found
+-- Found Threads: TRUE
+-- Native FileGDB runtime: bundled beside the built writer and installed to bin/native-filegdb (licenses in licenses/filegdb-api)
+-- Configuring done (4.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: <workspace>/build/v0114-unified
+[1/24] Copying official FileGDB runtime beside the native writer
+[2/24] Building CXX object CMakeFiles\gmb_failing_writer.dir\tests\failing_writer.cpp.obj
+[3/24] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\backends\native-filegdb\images.cpp.obj
+[4/24] Linking CXX executable bin\gmb_failing_writer.exe
+[5/24] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\platform_files_windows.cpp.obj
+[6/24] Building C object CMakeFiles\gmb_ufbx.dir\third_party\ufbx\ufbx.c.obj
+[7/24] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\fixtures.cpp.obj
+[8/24] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\src\platform_files_windows.cpp.obj
+[9/24] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\backends\native-filegdb\images_windows.cpp.obj
+[10/24] Linking C static library gmb_ufbx.lib
+[11/24] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\backends\native-filegdb\platform_windows.cpp.obj
+[12/24] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\core.cpp.obj
+[13/24] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\src\core.cpp.obj
+[14/24] Building CXX object CMakeFiles\gmb_core_tests.dir\tests\core_tests.cpp.obj
+[15/24] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\bundle.cpp.obj
+[16/24] Building CXX object CMakeFiles\gmb_output_tests.dir\tests\output_tests.cpp.obj
+[17/24] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\fbx_reader.cpp.obj
+[18/24] Linking CXX static library GeoModelBridge.Core.lib
+[19/24] Linking CXX executable bin\gmb_output_tests.exe
+[20/24] Linking CXX executable bin\gmb_core_tests.exe
+[21/24] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\backends\native-filegdb\main.cpp.obj
+[22/24] Linking CXX executable bin\native-filegdb\GeoModelBridge.NativeWriter.exe
+[23/24] Building CXX object CMakeFiles\geomodelbridge.dir\src\main.cpp.obj
+<workspace>\src\main.cpp(240): warning C4996: 'getenv': This function or variable may be unsafe. Consider using _dupenv_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+[24/24] Linking CXX executable bin\geomodelbridge.exe
+Test project <workspace>/build/v0114-unified
+      Start  1: core
+ 1/11 Test  #1: core .............................   Passed    0.15 sec
+      Start  2: output_safety
+ 2/11 Test  #2: output_safety ....................   Passed    0.17 sec
+      Start  3: cli
+ 3/11 Test  #3: cli ..............................   Passed    0.83 sec
+      Start  4: reader_integration
+ 4/11 Test  #4: reader_integration ...............   Passed    0.55 sec
+      Start  5: binary_fbx
+ 5/11 Test  #5: binary_fbx .......................   Passed    0.23 sec
+      Start  6: profile_integration
+ 6/11 Test  #6: profile_integration ..............   Passed    2.18 sec
+      Start  7: missing_textures
+ 7/11 Test  #7: missing_textures .................   Passed    0.72 sec
+      Start  8: normal_repair
+ 8/11 Test  #8: normal_repair ....................   Passed    0.40 sec
+      Start  9: python_client
+ 9/11 Test  #9: python_client ....................   Passed    1.76 sec
+      Start 10: native_runtime
+10/11 Test #10: native_runtime ...................   Passed    0.34 sec
+      Start 11: native_build_layout
+11/11 Test #11: native_build_layout ..............   Passed    0.40 sec
+
+100% tests passed, 0 tests failed out of 11
+
+Total Test time (real) =   7.80 sec
+-- Install configuration: "Release"
+-- Installing: <workspace>\releases\V0.1.14/bin/geomodelbridge.exe
+-- Installing: <workspace>\releases\V0.1.14/bin/demo/textured_quad.fbx
+-- Installing: <workspace>\releases\V0.1.14/bin/demo/checker.png
+-- Installing: <workspace>\releases\V0.1.14/python/geomodelbridge
+-- Installing: <workspace>\releases\V0.1.14/python/geomodelbridge/client.py
+-- Installing: <workspace>\releases\V0.1.14/python/geomodelbridge/_version.py
+-- Installing: <workspace>\releases\V0.1.14/python/geomodelbridge/__init__.py
+-- Installing: <workspace>\releases\V0.1.14/python/examples/convert_fbx.py
+-- Installing: <workspace>\releases\V0.1.14/bin/native-filegdb/GeoModelBridge.NativeWriter.exe
+-- Installing: <workspace>\releases\V0.1.14/bin/native-filegdb/FileGDBAPI.dll
+-- Installing: <workspace>\releases\V0.1.14/licenses/filegdb-api/Apache License.pdf
+-- Installing: <workspace>\releases\V0.1.14/licenses/filegdb-api/userestrictions.txt
+-- Installing: <workspace>\releases\V0.1.14/licenses/filegdb-api/README-windows_VS2022.txt
+-- Installing: <workspace>\releases\V0.1.14/licenses/filegdb-api/sdk-sources.json
+-- Installing: <workspace>\releases\V0.1.14/./docs
+-- Installing: <workspace>\releases\V0.1.14/./docs/acceptance.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/architecture.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/build-and-release.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/bundle-format.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/command-line.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/compatibility.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/core-tests.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/pro-integration.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/README.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/core-tests.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000001.gdbindexes
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000001.gdbtable
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000001.gdbtablx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000001.TablesByName.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000002.gdbtable
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000002.gdbtablx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000003.gdbindexes
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000003.gdbtable
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000003.gdbtablx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000004.CatItemsByPhysicalName.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000004.CatItemsByType.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000004.FDO_UUID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000004.gdbindexes
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000004.gdbtable
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000004.gdbtablx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000004.horizon
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000005.CatItemTypesByName.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000005.CatItemTypesByParentTypeID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000005.CatItemTypesByUUID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000005.gdbindexes
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000005.gdbtable
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000005.gdbtablx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000006.CatRelsByDestinationID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000006.CatRelsByOriginID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000006.CatRelsByType.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000006.FDO_UUID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000006.gdbindexes
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000006.gdbtable
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000006.gdbtablx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000007.CatRelTypesByBackwardLabel.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000007.CatRelTypesByDestItemTypeID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000007.CatRelTypesByForwardLabel.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000007.CatRelTypesByName.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000007.CatRelTypesByOriginItemTypeID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000007.CatRelTypesByUUID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000007.gdbindexes
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000007.gdbtable
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000007.gdbtablx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000009.gdbindexes
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000009.gdbtable
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000009.gdbtablx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/a00000009.horizon
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/gdb
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-jpeg-plane.gdb/timestamps
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-writer-report.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/native-writer.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000001.gdbindexes
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000001.gdbtable
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000001.gdbtablx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000001.TablesByName.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000002.gdbtable
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000002.gdbtablx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000003.gdbindexes
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000003.gdbtable
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000003.gdbtablx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000004.CatItemsByPhysicalName.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000004.CatItemsByType.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000004.FDO_UUID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000004.freelist
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000004.gdbindexes
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000004.gdbtable
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000004.gdbtablx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000004.horizon
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000004.spx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000005.CatItemTypesByName.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000005.CatItemTypesByParentTypeID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000005.CatItemTypesByUUID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000005.gdbindexes
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000005.gdbtable
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000005.gdbtablx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000006.CatRelsByDestinationID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000006.CatRelsByOriginID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000006.CatRelsByType.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000006.FDO_UUID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000006.gdbindexes
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000006.gdbtable
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000006.gdbtablx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000007.CatRelTypesByBackwardLabel.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000007.CatRelTypesByDestItemTypeID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000007.CatRelTypesByForwardLabel.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000007.CatRelTypesByName.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000007.CatRelTypesByOriginItemTypeID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000007.CatRelTypesByUUID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000007.gdbindexes
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000007.gdbtable
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000007.gdbtablx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000009.EditingTemplatesByDatasetGUID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000009.EditingTemplatesByName.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000009.EditingTemplatesByType.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000009.FDO_GlobalID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000009.gdbindexes
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000009.gdbtable
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a00000009.gdbtablx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000a.EditingTemplateRelsByDestinationID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000a.EditingTemplateRelsByOriginID.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000a.EditingTemplateRelsByType.atx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000a.gdbindexes
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000a.gdbtable
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000a.gdbtablx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000b.gdbindexes
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000b.gdbtable
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000b.gdbtablx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000b.horizon
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/a0000000b.spx
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/gdb
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-jpeg-plane.gdb/timestamps
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-writer-report.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/pro-writer.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/source-bundle
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/source-bundle/scene.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/source-bundle/textures
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/source-bundle/textures/aefee6ad6a7c5cc986190df94b1da12a7487604a4cec3a8a7efb7002bc2fa686.jpg
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/source-direction.jpg
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/source-direction.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/jpeg-direction/source-preparation.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/legacy-writer-rejection.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/native-independent-pro
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/native-independent-pro/alpha-plane.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/native-independent-pro/binary_blender.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/native-independent-pro/color-cube.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/native-independent-pro/colored_quad.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/native-independent-pro/embedded_quad.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/native-independent-pro/instanced_mirror.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/native-independent-pro/mixed-materials.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/native-independent-pro/multi_material.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/native-independent-pro/no_material.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/native-independent-pro/seam-cube.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/native-independent-pro/sloped_normals.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/native-independent-pro/summary.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/native-independent-pro/textured_quad.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/native-independent-pro/uv-plane.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/native-independent-pro/uv_transform.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/native-integration.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/pro-integration.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/assessment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/index.html
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/renders
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/renders/alpha-plane-top.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/renders/color-cube-oblique.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/renders/color-cube-opposite.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/renders/color-cube-top.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/renders/mixed-materials-oblique.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/renders/mixed-materials-top.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/renders/native-jpeg-plane-top.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/renders/native-uv-plane-top.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/renders/pro-jpeg-plane-top.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/renders/seam-cube-oblique.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/renders/seam-cube-opposite.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/renders/seam-cube-top.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/renders/standalone-copy-top.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/renders/uv-plane-top.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/sources
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/sources/uv-direction.jpg
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/sources/uv-direction.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.1/visual/visual-project.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/ubuntu-build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/ubuntu-ctest-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/ubuntu-deployment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/ubuntu-deployment.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/ubuntu-examples.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/ubuntu-examples.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/ubuntu-native.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/ubuntu-package-check.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/ubuntu-python-client.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/ubuntu-python-client.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/ubuntu-python-unit.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/windows-build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/windows-ctest-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/windows-deployment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/windows-examples.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/windows-gui-initial.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/windows-gui.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/windows-native.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/windows-package-check.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/windows-python-client.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.10/windows-python-unit.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/ubuntu-build-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/ubuntu-build-initial.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/ubuntu-ctest-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/ubuntu-deployment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/ubuntu-deployment.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/ubuntu-examples.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/ubuntu-examples.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/ubuntu-native.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/ubuntu-native.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/ubuntu-output-safety.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/ubuntu-package-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/ubuntu-package.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/ubuntu-python-client.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/ubuntu-python-client.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/ubuntu-python-unit.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/windows-build-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/windows-build-initial.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/windows-ctest-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/windows-deployment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/windows-deployment.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/windows-examples.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/windows-examples.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/windows-gui.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/windows-gui.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/windows-native.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/windows-native.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/windows-output-build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/windows-output-safety.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/windows-package-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/windows-package.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/windows-python-client.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/windows-python-client.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.11/windows-python-unit.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/texture-path-before-after.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/ubuntu-build-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/ubuntu-ctest-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/ubuntu-deployment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/ubuntu-deployment.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/ubuntu-examples.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/ubuntu-examples.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/ubuntu-missing-textures.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/ubuntu-native.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/ubuntu-native.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/ubuntu-package.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/ubuntu-python-client.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/ubuntu-python-client.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/ubuntu-python-unit.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/windows-build-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/windows-build-initial.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/windows-ctest-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/windows-deployment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/windows-deployment.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/windows-examples.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/windows-examples.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/windows-gui.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/windows-gui.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/windows-missing-textures.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/windows-native.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/windows-native.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/windows-package.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/windows-python-client.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/windows-python-client.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.12/windows-python-unit.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/ubuntu-build-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/ubuntu-build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/ubuntu-ctest-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/ubuntu-deployment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/ubuntu-deployment.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/ubuntu-doc-bash.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/ubuntu-examples.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/ubuntu-examples.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/ubuntu-native.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/ubuntu-native.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/ubuntu-package.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/ubuntu-python-client.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/ubuntu-python-client.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/ubuntu-python-unit.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/ubuntu-runtime-recovery.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/ubuntu-writer-dependencies.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-build-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-ctest-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-default-build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-deployment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-deployment.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-doc-cmd.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-doc-powershell-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-doc-powershell.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-examples.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-examples.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-gui.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-gui.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-invalid-build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-native.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-native.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-package.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-python-client.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-python-client.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-python-unit.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-runtime-off.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-runtime-recovery-target.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-runtime-recovery.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.13/windows-writer-dependencies.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.2
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.2/build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.2/core-tests.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.2/dotnet-runtime-licenses.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.2/gui-demo-reset.txt
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.2/gui-native-report.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.2/gui-native-success.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.2/gui-native-success.txt
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.2/gui-pro-probe.txt
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.2/gui-tests.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.2/gui-ui-checks.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.2/native-tests.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.2/pro-tests.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/baseline-v012.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/core-build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/core-tests.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/dotnet-runtime-licenses.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/final-strict-inspection.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/gui-build-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/gui-native-report.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/gui-no-overwrite-hashes.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/gui-no-overwrite.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/gui-no-overwrite.txt
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/gui-raw-report.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/gui-readable-report.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/gui-readable-report.txt
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/gui-real-success.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/gui-real-success.txt
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/gui-result-independent-pro.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/gui-result-independent-pro.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/gui-retry-new-name.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/gui-strict-failure.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/gui-tests.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/independent-pro-tool
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/independent-pro-tool/README.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/input-inspection.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/jpeg-normalization-pixels.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/native-pro-coordinate-differences.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/native-read-by-pro-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/native-read-by-pro.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/native-tests-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/native-tests.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/original-files-unchanged.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/pro-tests-jpeg-final.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/pro-tests.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/profile-tests.txt
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/real-pro-report.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.3/release-files.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.4
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.4/baseline-prepare.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.4/benchmark_prepare.py
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.4/core-build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.4/core-tests.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.4/gui-build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.4/gui-release-report.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.4/gui-release-success.png
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.4/gui-release-success.txt
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.4/gui-tests.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.4/native-tests.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.4/native-tests.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.4/original-files-unchanged.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.4/pro-tests.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.4/pro-tests.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.4/reader-benchmark.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.4/real-native-report.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.4/real-native-v013-equivalence.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.4/release-files.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.4/streaming-prepare.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.5
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.5/build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.5/examples.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.5/gui-tests.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.5/native-deployment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.5/native-tests.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.5/release-checks.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.5/release-dependencies.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/cross_readback.py
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/independent-os-output-comparison.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/ubuntu-alpha-plane.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/ubuntu-archive-deployment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/ubuntu-build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/ubuntu-deployment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/ubuntu-deployment.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/ubuntu-environment.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/ubuntu-examples.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/ubuntu-examples.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/ubuntu-native.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/ubuntu-native.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/ubuntu-package.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/ubuntu-sloped_normals.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/ubuntu-textured_quad.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/ubuntu-to-windows.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/windows-alpha-plane.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/windows-build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/windows-deployment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/windows-examples.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/windows-gui.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/windows-native.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/windows-native.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/windows-sloped_normals.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/windows-textured_quad.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/windows-to-ubuntu.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.6/windows-unified-build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.7
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.7/real-model-assessment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.7/ubuntu-build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.7/ubuntu-deployment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.7/ubuntu-deployment.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.7/ubuntu-examples.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.7/ubuntu-examples.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.7/ubuntu-missing-textures.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.7/ubuntu-native.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.7/ubuntu-package-check.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.7/windows-build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.7/windows-deployment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.7/windows-examples.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.7/windows-gui.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.7/windows-missing-textures.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.7/windows-native.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.7/windows-package-check.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.8
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.8/real-model-assessment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.8/ubuntu-build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.8/ubuntu-deployment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.8/ubuntu-deployment.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.8/ubuntu-examples.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.8/ubuntu-examples.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.8/ubuntu-final-ctest.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.8/ubuntu-final-native-build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.8/ubuntu-native.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.8/ubuntu-normal.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.8/ubuntu-package-check.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.8/windows-build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.8/windows-deployment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.8/windows-examples.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.8/windows-gui.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.8/windows-native.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.8/windows-normal.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.8/windows-package-check.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.9
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.9/ubuntu-build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.9/ubuntu-deployment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.9/ubuntu-deployment.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.9/ubuntu-examples.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.9/ubuntu-examples.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.9/ubuntu-native.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.9/ubuntu-package-check.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.9/ubuntu-python-client.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.9/ubuntu-python-client.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.9/ubuntu-python-unit.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.9/windows-build.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.9/windows-deployment.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.9/windows-examples.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.9/windows-gui.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.9/windows-native.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.9/windows-package-check.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.9/windows-python-client.json
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.9/windows-python-example.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/evidence/V0.1.9/windows-python-unit.log
+-- Installing: <workspace>\releases\V0.1.14/./docs/filegdb-api.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/gui.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/python-client.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/roadmap.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/validation-results.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/validation-v0.1.1.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/validation-v0.1.10.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/validation-v0.1.11.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/validation-v0.1.12.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/validation-v0.1.13.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/validation-v0.1.2.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/validation-v0.1.3.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/validation-v0.1.4.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/validation-v0.1.5.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/validation-v0.1.6.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/validation-v0.1.7.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/validation-v0.1.8.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/validation-v0.1.9.md
+-- Installing: <workspace>\releases\V0.1.14/./docs/visual-acceptance-setup.md
+-- Installing: <workspace>\releases\V0.1.14/./README.md
+-- Installing: <workspace>\releases\V0.1.14/./VERSION
+-- Installing: <workspace>\releases\V0.1.14/./CHANGELOG.md
+-- Installing: <workspace>\releases\V0.1.14/./THIRD_PARTY_NOTICES.md
+-- Installing: <workspace>\releases\V0.1.14/licenses/ufbx/LICENSE
+-- Installing: <workspace>\releases\V0.1.14/licenses/nlohmann/LICENSE.MIT
+{"arcgis_pro_required":false,"backend":"native-filegdb","filegdb_api":"1.5.5","status":"available","version":"0.1.14"}
+  正在确定要还原的项目…
+  已还原 <workspace>\apps\GeoModelBridge.Gui.Core\GeoModelBridge.Gui.Core.csproj (用时 1.17 秒)。
+  已还原 <workspace>\apps\GeoModelBridge.Gui\GeoModelBridge.Gui.csproj (用时 1.19 秒)。
+  GeoModelBridge.Gui.Core -> <workspace>\apps\GeoModelBridge.Gui.Core\bin\Release\net8.0\GeoModelBridge.Gui.Core.dll
+  GeoModelBridge.Gui -> <workspace>\apps\GeoModelBridge.Gui\bin\Release\net8.0-windows\win-x64\geomodelbridgeGUI.dll
+  GeoModelBridge.Gui -> <workspace>\releases\V0.1.14\bin\
+Installed 3 original .NET runtime notice files: <workspace>\releases\V0.1.14\licenses\dotnet
+GUI: <workspace>\releases\V0.1.14\bin\geomodelbridgeGUI.exe
+Verified ufbx 0.23.0
+Verified nlohmann/json 3.12.0
+Verified FileGDB API 1.5.5.330 runtime and original license files
+GeoModelBridge built and tested. CLI: <workspace>\releases\V0.1.14\bin\geomodelbridge.exe
+Native writer: <workspace>\releases\V0.1.14\bin\native-filegdb\GeoModelBridge.NativeWriter.exe (runtime bundling: ON)
+CLI help: geomodelbridge.exe convert -h; sequential calling examples: docs/command-line.md

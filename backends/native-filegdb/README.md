@@ -1,4 +1,4 @@
-# Native FileGDB 后端 · V0.1.13
+# Native FileGDB 后端 · V0.1.14
 
 这个 Windows x64 / Ubuntu 24.04 x86_64 C++17 后端把 Scene Bundle 中的几何、RGB、透明度、UV 和 PNG/JPEG 纹理直接写入新 FileGDB Multipatch。转换时不加载 ArcGIS Pro、不调用 ArcPy、不借用 Pro 导出的 Shape Buffer。第三方 Esri FileGDB API 负责数据库文件格式，项目代码按 Esri 公开文档独立生成扩展 Multipatch Shape Buffer。
 
@@ -38,17 +38,18 @@ Windows 完整安装可附带 `dist/bin/native-filegdb/GeoModelBridge.NativeWrit
 
 从 [Esri 官方仓库](https://github.com/Esri/file-geodatabase-api/tree/master/FileGDB_API_1.5.5) 下载 Windows VS2022 x64 SDK。固定下载地址、版本及 SHA256 见 [sdk-sources.json](sdk-sources.json)。本次验证使用 SDK 1.5.5.330、MSVC 14.44 和 Windows SDK 10.0.22621.0。
 
-在 MSVC x64 开发环境中执行：
+构建只从仓库根目录发起。本目录不再包含独立 `CMakeLists.txt`；CLI 与 writer 的目标、SDK 链接和安装规则统一位于[根 CMakeLists.txt](../../CMakeLists.txt)。在 MSVC x64 开发环境中执行：
 
 ```powershell
-cmake -S backends/native-filegdb -B build/native -G Ninja -DCMAKE_BUILD_TYPE=Release -DFILEGDB_API_ROOT=C:/SDK/FileGDB_API -DGMB_INSTALL_FILEGDB_RUNTIME=ON
-cmake --build build/native
-cmake --install build/native --prefix dist
+cmake -S . -B build/release -G Ninja -DCMAKE_BUILD_TYPE=Release -DFILEGDB_API_ROOT=C:/SDK/FileGDB_API
+cmake --build build/release
+ctest --test-dir build/release --output-on-failure
+cmake --install build/release --prefix dist
 ```
 
 V0.1.13 起 `GMB_INSTALL_FILEGDB_RUNTIME` 默认 `ON`：构建复制官方 release `FileGDBAPI.dll` 到 writer 旁，安装时附带 DLL、完整 Apache 2.0 许可、SDK 的 sample use restrictions、README 及固定来源清单，不安装 debug DLL、PDB、.NET wrapper 或 SDK 开发文件。旧缓存中的 `OFF` 必须显式改成 `ON`。主动关闭时，运行前把自己的 `FILEGDB_API_ROOT/bin64` 加入 `PATH`；不会清理之前复制的 DLL。详见 [源码调用链与依赖缺失核实](../../docs/filegdb-api.md)。
 
-Windows 后端必须用 MSVC ABI 编译。主 C++ 引擎可继续用 MinGW；两者通过独立进程和 Scene Bundle 协议通信，不混用 C++ STL ABI。
+Windows 完整构建中，CLI 和 writer 统一使用 x64 MSVC 工具链；显式 SDK-free 核心构建仍可使用 MinGW。两者仍通过独立进程和 Scene Bundle 协议通信，合并 CMake 不改变运行时接口。
 
 Windows 原生后端只链接 release `FileGDBAPI.lib`，支持 `Release`、`RelWithDebInfo` 和 `MinSizeRel`，固定 `/MD` 与 `_ITERATOR_DEBUG_LEVEL=0`。`Debug` 会在配置阶段拒绝，以免 `/MDd` 或调试迭代器布局跨越 SDK 的 STL ABI。主引擎的 Debug 构建不受这个限制影响。
 

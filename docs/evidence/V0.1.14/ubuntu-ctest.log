@@ -1,0 +1,28 @@
+Internal ctest changing into directory: <workspace>/build/v0114-unified
+Test project <workspace>/build/v0114-unified
+      Start  1: core
+ 1/11 Test  #1: core .............................   Passed    0.14 sec
+      Start  2: output_safety
+ 2/11 Test  #2: output_safety ....................   Passed    0.15 sec
+      Start  3: cli
+ 3/11 Test  #3: cli ..............................   Passed    1.03 sec
+      Start  4: reader_integration
+ 4/11 Test  #4: reader_integration ...............   Passed    0.78 sec
+      Start  5: binary_fbx
+ 5/11 Test  #5: binary_fbx .......................   Passed    0.46 sec
+      Start  6: profile_integration
+ 6/11 Test  #6: profile_integration ..............   Passed    2.27 sec
+      Start  7: missing_textures
+ 7/11 Test  #7: missing_textures .................   Passed    1.10 sec
+      Start  8: normal_repair
+ 8/11 Test  #8: normal_repair ....................   Passed    0.71 sec
+      Start  9: python_client
+ 9/11 Test  #9: python_client ....................   Passed    2.70 sec
+      Start 10: native_runtime
+10/11 Test #10: native_runtime ...................   Passed    0.70 sec
+      Start 11: native_build_layout
+11/11 Test #11: native_build_layout ..............   Passed    0.90 sec
+
+100% tests passed, 0 tests failed out of 11
+
+Total Test time (real) =  10.98 sec

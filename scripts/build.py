@@ -7,7 +7,8 @@ import sys
 from gmb_platform import ROOT, executable_names, platform_name
 
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument("--sdk", type=Path, default=os.environ.get("FILEGDB_API_ROOT"))
+parser.add_argument("--sdk", type=Path, default=os.environ.get("FILEGDB_API_ROOT") or ROOT / "build/filegdb-sdk",
+                    help="Official SDK (default: FILEGDB_API_ROOT or build/filegdb-sdk)")
 parser.add_argument("--build-dir", type=Path)
 parser.add_argument("--install-dir", type=Path, default=ROOT / "dist")
 runtime = parser.add_mutually_exclusive_group()
@@ -17,9 +18,9 @@ runtime.add_argument("--no-runtime", dest="include_runtime", action="store_false
                      help="Do not copy SDK libraries; deployment must supply them separately")
 parser.add_argument("--jobs", type=int, default=2)
 args = parser.parse_args()
-if not args.sdk:
-    parser.error("Supply --sdk or FILEGDB_API_ROOT; fetch it with fetch_filegdb_sdk.py first")
 sdk = args.sdk.resolve()
+if not (sdk / "include/FileGDBAPI.h").is_file():
+    parser.error("SDK not found: " + str(sdk) + ". Run python scripts/fetch_filegdb_sdk.py --output build/filegdb-sdk or supply --sdk <SDK>")
 build = (args.build_dir or ROOT / "build" / platform_name()).resolve()
 install = args.install_dir.resolve()
 if (install / "bin/arcgis-pro").exists():
@@ -32,13 +33,11 @@ def run(*command):
 
 run(sys.executable, ROOT / "scripts/check_version.py")
 run(sys.executable, ROOT / "scripts/verify_dependencies.py", "--install-dir", install)
-run("cmake", "-S", ROOT, "-B", build, "-G", "Ninja", "-DCMAKE_BUILD_TYPE=Release",
+compiler = ["-DCMAKE_C_COMPILER=cl", "-DCMAKE_CXX_COMPILER=cl"] if os.name == "nt" else []
+run("cmake", "-S", ROOT, "-B", build, "-G", "Ninja", "-DCMAKE_BUILD_TYPE=Release", *compiler,
     "-DGMB_BUILD_NATIVE=ON", "-DGMB_BUILD_TESTS=ON", "-DFILEGDB_API_ROOT=" + str(sdk),
     "-DGMB_INSTALL_FILEGDB_RUNTIME=" + ("ON" if args.include_runtime else "OFF"))
 run("cmake", "--build", build, "--parallel", args.jobs)
-if args.include_runtime:
-    run(sys.executable, ROOT / "tests/native_runtime_test.py", "--writer",
-        build / "backends/native-filegdb" / Path(executable_names()[1]).name)
 run("ctest", "--test-dir", build, "--output-on-failure")
 run("cmake", "--install", build, "--prefix", install)
 run(sys.executable, ROOT / "scripts/verify_dependencies.py", "--install-dir", install)

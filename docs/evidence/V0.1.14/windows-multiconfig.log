@@ -1,0 +1,51 @@
+-- The C compiler identification is MSVC 19.44.35226.0
+-- The CXX compiler identification is MSVC 19.44.35226.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: <user>/Documents/Codex/2026-09-20/gen/work/msvc-v011/toolchain/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: <user>/Documents/Codex/2026-09-20/gen/work/msvc-v011/toolchain/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - not found
+-- Found Threads: TRUE
+-- Native FileGDB runtime: bundled beside the built writer and installed to bin/native-filegdb (licenses in licenses/filegdb-api)
+-- Configuring done (4.6s)
+-- Generating done (0.1s)
+-- Build files have been written to: <workspace>/build/v0114-multi
+[1/18] Copying official FileGDB runtime beside the native writer
+[2/18] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\Release\backends\native-filegdb\images.cpp.obj
+[3/18] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\Release\src\platform_files_windows.cpp.obj
+[4/18] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\Release\src\platform_files_windows.cpp.obj
+[5/18] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\Release\src\fixtures.cpp.obj
+[6/18] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\Release\backends\native-filegdb\images_windows.cpp.obj
+[7/18] Building C object CMakeFiles\gmb_ufbx.dir\Release\third_party\ufbx\ufbx.c.obj
+[8/18] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\Release\backends\native-filegdb\platform_windows.cpp.obj
+[9/18] Linking C static library Release\gmb_ufbx.lib
+[10/18] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\Release\src\core.cpp.obj
+[11/18] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\Release\src\core.cpp.obj
+[12/18] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\Release\src\bundle.cpp.obj
+[13/18] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\Release\src\fbx_reader.cpp.obj
+[14/18] Linking CXX static library Release\GeoModelBridge.Core.lib
+[15/18] Building CXX object CMakeFiles\GeoModelBridge.NativeWriter.dir\Release\backends\native-filegdb\main.cpp.obj
+[16/18] Linking CXX executable bin\Release\native-filegdb\GeoModelBridge.NativeWriter.exe
+[17/18] Building CXX object CMakeFiles\geomodelbridge.dir\Release\src\main.cpp.obj
+<workspace>\src\main.cpp(240): warning C4996: 'getenv': This function or variable may be unsafe. Consider using _dupenv_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+[18/18] Linking CXX executable bin\Release\geomodelbridge.exe
+Test project <workspace>/build/v0114-multi
+    Start 10: native_runtime
+1/2 Test #10: native_runtime ...................   Passed    0.44 sec
+    Start 11: native_build_layout
+2/2 Test #11: native_build_layout ..............   Passed    0.60 sec
+
+100% tests passed, 0 tests failed out of 2
+
+Total Test time (real) =   1.06 sec

@@ -1,9 +1,76 @@
 {
   "version": 3,
   "configurePresets": [
-    { "name": "release", "displayName": "Core-only Release (Ninja; no FileGDB writer)", "generator": "Ninja", "binaryDir": "${sourceDir}/build/release", "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "GMB_BUILD_TESTS": "ON", "GMB_BUILD_NATIVE": "OFF" } },
-    { "name": "debug", "displayName": "Core-only Debug (Ninja; no FileGDB writer)", "generator": "Ninja", "binaryDir": "${sourceDir}/build/debug", "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "GMB_BUILD_TESTS": "ON", "GMB_BUILD_NATIVE": "OFF" } }
+    {
+      "name": "release",
+      "displayName": "Complete Release (CLI + FileGDB writer + runtime)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "GMB_BUILD_TESTS": "ON",
+        "GMB_BUILD_NATIVE": "ON",
+        "GMB_INSTALL_FILEGDB_RUNTIME": "ON"
+      }
+    },
+    {
+      "name": "core-release",
+      "displayName": "Core-only Release (no SDK / GDB writer)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/core-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "GMB_BUILD_TESTS": "ON",
+        "GMB_BUILD_NATIVE": "OFF"
+      }
+    },
+    {
+      "name": "debug",
+      "displayName": "Core-only Debug (Ninja; no FileGDB writer)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/core-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "GMB_BUILD_TESTS": "ON",
+        "GMB_BUILD_NATIVE": "OFF"
+      }
+    }
   ],
-  "buildPresets": [ { "name": "release", "configurePreset": "release" }, { "name": "debug", "configurePreset": "debug" } ],
-  "testPresets": [ { "name": "release", "configurePreset": "release", "output": { "outputOnFailure": true } }, { "name": "debug", "configurePreset": "debug", "output": { "outputOnFailure": true } } ]
+  "buildPresets": [
+    {
+      "name": "release",
+      "configurePreset": "release"
+    },
+    {
+      "name": "core-release",
+      "configurePreset": "core-release"
+    },
+    {
+      "name": "debug",
+      "configurePreset": "debug"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "release",
+      "configurePreset": "release",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "core-release",
+      "configurePreset": "core-release",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "debug",
+      "configurePreset": "debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
 }

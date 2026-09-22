@@ -1,0 +1,63 @@
+-- The C compiler identification is MSVC 19.44.35226.0
+-- The CXX compiler identification is MSVC 19.44.35226.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: <user>/Documents/Codex/2026-09-20/gen/work/msvc-v011/toolchain/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: <user>/Documents/Codex/2026-09-20/gen/work/msvc-v011/toolchain/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - not found
+-- Found Threads: TRUE
+-- Core-only build: inspect/prepare/fixture are available; GDB conversion requires a separately supplied native writer. Use -DGMB_BUILD_NATIVE=ON -DFILEGDB_API_ROOT=<SDK> for a full build.
+-- Configuring done (4.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: <workspace>/build/v0114-core
+[1/16] Building CXX object CMakeFiles\gmb_failing_writer.dir\tests\failing_writer.cpp.obj
+[2/16] Linking CXX executable bin\gmb_failing_writer.exe
+[3/16] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\platform_files_windows.cpp.obj
+[4/16] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\fixtures.cpp.obj
+[5/16] Building C object CMakeFiles\gmb_ufbx.dir\third_party\ufbx\ufbx.c.obj
+[6/16] Linking C static library gmb_ufbx.lib
+[7/16] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\core.cpp.obj
+[8/16] Building CXX object CMakeFiles\gmb_core_tests.dir\tests\core_tests.cpp.obj
+[9/16] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\bundle.cpp.obj
+[10/16] Building CXX object CMakeFiles\gmb_output_tests.dir\tests\output_tests.cpp.obj
+[11/16] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\fbx_reader.cpp.obj
+[12/16] Linking CXX static library GeoModelBridge.Core.lib
+[13/16] Building CXX object CMakeFiles\geomodelbridge.dir\src\main.cpp.obj
+<workspace>\src\main.cpp(240): warning C4996: 'getenv': This function or variable may be unsafe. Consider using _dupenv_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+[14/16] Linking CXX executable bin\gmb_core_tests.exe
+[15/16] Linking CXX executable bin\gmb_output_tests.exe
+[16/16] Linking CXX executable bin\geomodelbridge.exe
+Test project <workspace>/build/v0114-core
+    Start 1: core
+1/9 Test #1: core .............................   Passed    0.17 sec
+    Start 2: output_safety
+2/9 Test #2: output_safety ....................   Passed    0.19 sec
+    Start 3: cli
+3/9 Test #3: cli ..............................   Passed    0.94 sec
+    Start 4: reader_integration
+4/9 Test #4: reader_integration ...............   Passed    0.57 sec
+    Start 5: binary_fbx
+5/9 Test #5: binary_fbx .......................   Passed    0.24 sec
+    Start 6: profile_integration
+6/9 Test #6: profile_integration ..............   Passed    2.36 sec
+    Start 7: missing_textures
+7/9 Test #7: missing_textures .................   Passed    0.82 sec
+    Start 8: normal_repair
+8/9 Test #8: normal_repair ....................   Passed    0.47 sec
+    Start 9: python_client
+9/9 Test #9: python_client ....................   Passed    1.95 sec
+
+100% tests passed, 0 tests failed out of 9
+
+Total Test time (real) =   7.79 sec

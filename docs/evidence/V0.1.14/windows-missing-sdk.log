@@ -1,0 +1,21 @@
+-- The C compiler identification is MSVC 19.44.35226.0
+-- The CXX compiler identification is MSVC 19.44.35226.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: <user>/Documents/Codex/2026-09-20/gen/work/msvc-v011/toolchain/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: <user>/Documents/Codex/2026-09-20/gen/work/msvc-v011/toolchain/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+CMake Error at CMakeLists.txt:40 (message):
+  FileGDB SDK not found at
+  <workspace>/artifacts/v0114/absent-sdk.
+  From the repository root run: python scripts/fetch_filegdb_sdk.py --output
+  build/filegdb-sdk.  Or set -DFILEGDB_API_ROOT=<SDK> / FILEGDB_API_ROOT.
+  For inspect/prepare only, explicitly use -DGMB_BUILD_NATIVE=OFF.
+
+
+-- Configuring incomplete, errors occurred!
