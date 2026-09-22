@@ -67,6 +67,25 @@ void create_test_link(const fs::path& target, const fs::path& link, bool directo
 }
 }
 int main() {
+    test("path containment respects components and platform case rules", [](const fs::path& root) {
+        const auto parent=root/"Bundle";
+        require(gmb::io::within(parent,parent),"Equal paths must be contained");
+        require(gmb::io::within(parent/"child"/"report.json",parent/""),"Descendant or trailing separator missed");
+        require(!gmb::io::within(root/"Bundle-other"/"report.json",parent),"Sibling prefix treated as descendant");
+        require(!gmb::io::within(parent/".."/"outside.json",parent),"Dot segment escaped containment");
+#ifdef _WIN32
+        require(gmb::io::within(root/"bundle"/"report.json",parent),"Windows ASCII case alias missed");
+        require(gmb::io::within(root/fs::u8path(u8"äbundle")/"report.json",root/fs::u8path(u8"ÄBundle")),"Windows Unicode case alias missed");
+        require(!gmb::io::within(fs::path(L"Z:\\bundle\\report.json"),fs::path(L"C:\\bundle")),"Different drives treated as contained");
+        for (const auto* alias : {L"Bundle.", L"Bundle "}) {
+            rejects([&] { gmb::io::within(root/alias/"report.json",parent); });
+            rejects([&] { gmb::io::reject_reparse(root/alias/"report.json"); });
+        }
+#else
+        require(!gmb::io::within(root/"bundle"/"report.json",parent),"Linux ASCII case folded");
+        require(!gmb::io::within(root/fs::u8path(u8"äbundle")/"report.json",root/fs::u8path(u8"ÄBundle")),"Linux Unicode case folded");
+#endif
+    });
     test("exclusive report creation preserves existing bytes", [](const fs::path& root) {
         const auto file=root/"report.json";
         const std::string content("original\0binary\n",16);

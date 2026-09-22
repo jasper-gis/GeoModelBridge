@@ -9,6 +9,12 @@ namespace gmb::io {
 // a process replacing parent directories while a conversion is in progress.
 void reject_reparse(const std::filesystem::path& path);
 
+// Lexical containment after making paths absolute; includes equality. Windows
+// uses ordinal case-insensitive component comparison and rejects ambiguous
+// trailing dots/spaces in components; Linux is case-sensitive.
+// Link rejection is a separate requirement before using either path.
+bool within(const std::filesystem::path& child, const std::filesystem::path& root);
+
 // Creates exclusively and flushes the complete contents. A failed create never
 // removes the existing entry. A failed write cleans up only the file it created.
 void write_exclusive(const std::filesystem::path& path, const std::string& data);

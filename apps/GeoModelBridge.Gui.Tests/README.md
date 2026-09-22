@@ -8,7 +8,7 @@ From the project directory:
 dotnet run --project apps/GeoModelBridge.Gui.Tests -c Release -- --work C:\temp\gmb-gui-test-new
 ```
 
-To also exercise real V0.2.1 native conversions through the GUI service, provide the installed engine directory and source fixtures:
+To also exercise real V0.2.2 native conversions through the GUI service, provide the installed engine directory and source fixtures:
 
 ```powershell
 dotnet run --project apps/GeoModelBridge.Gui.Tests -c Release -- --work C:\temp\gmb-gui-integration-new --engine-dir dist/bin --fixtures tests/fixtures
@@ -27,3 +27,5 @@ V0.1.8 checks explicit normal-repair warnings, valid corner-count aggregation, m
 V0.2.0 also checks input identity, duplicate JSON fields, diagnostic types and codes, complete per-mesh readback records, and the no-reprojection placement policy. Fake child processes exercise truncated version/probe responses, oversized reports, and throwing progress callbacks: both redirected streams must still drain, and a callback failure after process completion must retain the verified result.
 
 V0.2.1 also verifies that the report viewer cannot label failed, missing, or duplicate per-mesh checks, inconsistent placement metadata, or malformed diagnostics as successful. Current reports must include reader diagnostics; historical reports remain readable without fields introduced later. Feature-class validation rejects terminal line breaks, including after the 64-character limit.
+
+V0.2.2 verifies that relative request paths and mutable texture-directory lists are captured before callbacks and asynchronous work. A host working-directory change cannot redirect the conversion or hide its verified result.

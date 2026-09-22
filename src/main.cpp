@@ -72,12 +72,12 @@ void help(const std::string& command="") {
         "Validates the model; does not create a GDB or a Scene Bundle.\n\n";
     else if(command=="prepare")std::cout<<
         "Usage: geomodelbridge prepare INPUT.fbx --output NEW_BUNDLE [OPTIONS]\n"
-        "Creates scene.json, textures and validation.json, not a GDB.\n"
+        "Creates scene.json, textures and report.json, not a GDB.\n"
         "Supply --wkid and --origin now if this bundle will be written to GDB.\n\n";
     else if(command=="fixture")std::cout<<
         "Usage: geomodelbridge fixture NAME|all --output NEW_DIR [OPTIONS]\n"
         "Fixtures: color-cube, uv-plane, mixed-materials, alpha-plane, seam-cube.\n"
-        "Each bundle includes validation.json; --report is for a single fixture.\n\n";
+        "Each bundle includes report.json; --report is for a single fixture.\n\n";
     std::cout<<"Options:\n";
     if(command!="inspect")std::cout<<
         "  -o, --output PATH       New GDB / bundle / fixture directory. Required.\n";
@@ -181,11 +181,8 @@ Options parse(const std::vector<std::string>& args) {
         throw UsageError("GDB writing requires explicit --wkid and --origin X Y Z.");
     if(!o.output.empty()&&fs::exists(o.output))throw UsageError("Output already exists: "+o.output.u8string());
     if(!o.report.empty()&&fs::exists(o.report))throw UsageError("Report already exists: "+o.report.u8string());
-    if(!o.output.empty()&&!o.report.empty()) {
-        auto out=fs::absolute(o.output).lexically_normal();
-        auto rel=fs::absolute(o.report).lexically_normal().lexically_relative(out);
-        if(rel.empty()||*rel.begin()!="..")throw UsageError("--report must be outside the output directory.");
-    }
+    if(!o.output.empty()&&!o.report.empty()&&gmb::io::within(o.report,o.output))
+        throw UsageError("--report must be outside the output directory.");
     return o;
 }
 void diagnostics(const std::vector<gmb::Diagnostic>& ds) {

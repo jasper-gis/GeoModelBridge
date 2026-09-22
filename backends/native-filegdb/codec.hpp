@@ -70,6 +70,10 @@ inline void validate_stored_uv(const Vec2& uv) {
                 std::abs(1.0 - uv.y) <= std::numeric_limits<float>::max(),
             "UV exceeds native float32 storage range.");
 }
+inline void validate_stored_normal(const Vec3& normal) {
+    require(std::abs(normal.x * normal.x + normal.y * normal.y + normal.z * normal.z - 1) <= 2e-5,
+            "Normals must be unit length; no implicit renormalization.");
+}
 inline Prepared prepare(const Mesh &mesh) {
     Prepared p;
     p.name = mesh.name;
@@ -96,9 +100,7 @@ inline Prepared prepare(const Mesh &mesh) {
             require(v.has_uv == patch.corners.front().has_uv,
                     "Mixed present/missing UVs in a material patch are unsupported.");
             if (v.has_normal)
-                require(std::abs(v.normal.x * v.normal.x + v.normal.y * v.normal.y +
-                                 v.normal.z * v.normal.z - 1) <= 2e-5,
-                        "Normals must be unit length; no implicit renormalization.");
+                validate_stored_normal(v.normal);
         }
     return p;
 }

@@ -6,7 +6,7 @@ using GeoModelBridge.Gui.Core;
 
 internal static class Program
 {
-    private const string Version = "0.2.1";
+    private const string Version = "0.2.2";
     private static readonly List<TestCase> Results = [];
     private static string Work = "";
     private static string Input = "";
@@ -686,6 +686,48 @@ internal static class Program
 
     private static async Task FakeEngineTests()
     {
+        foreach (var phase in new[] { "before-launch", "after-process" })
+            await TestAsync("relative_request_paths_remain_bound_to_initial_directory_" + phase, async () =>
+            {
+                var directory = CreateFakeEngine("valid-relative-" + phase);
+                var initial = Path.Combine(Work, "relative-initial-" + phase);
+                var changed = Path.Combine(Work, "relative-changed-" + phase);
+                foreach (var path in new[] { initial, changed })
+                {
+                    Directory.CreateDirectory(path);
+                    File.WriteAllText(Path.Combine(path, "model.fbx"), "source in " + path);
+                    Directory.CreateDirectory(Path.Combine(path, "textures"));
+                    Directory.CreateDirectory(Path.Combine(path, "other-textures"));
+                }
+                var textures = new List<string> { "textures" };
+                var request = Settings with { InputPath = "model.fbx", OutputPath = "new.gdb", ReportPath = "",
+                    TextureDirectories = textures };
+                var previousDirectory = Environment.CurrentDirectory;
+                try
+                {
+                    Environment.CurrentDirectory = initial;
+                    var switched = false;
+                    var progress = new InlineProgress<EngineEvent>(item =>
+                    {
+                        if (switched || item.Kind != EngineEventKind.Stage ||
+                            !(phase == "before-launch" ? item.Message.Contains("正在检查转换引擎") : item.Message.Contains("正在核对结果报告"))) return;
+                        switched = true;
+                        Environment.CurrentDirectory = changed;
+                        textures[0] = "other-textures";
+                    });
+                    var result = await new EngineService(directory).ConvertAsync(request, progress);
+                    Assert(switched, "Test did not change the host working directory during the conversion.");
+                    Assert(!Directory.Exists(Path.Combine(changed, "new.gdb")) && !File.Exists(Path.Combine(changed, "new.gdb.report.json")),
+                        "Host directory changes redirected output to a location the initial request did not select.");
+                    Assert(result.Success && result.Report is not null, "A host working-directory change invalidated a completed conversion: " + result.Message);
+                    Assert(result.Report!.OutputPath == Path.Combine(initial, "new.gdb") && result.ReportPath == Path.Combine(initial, "new.gdb.report.json"),
+                        "Reported result paths changed after request validation.");
+                    var arguments = JsonSerializer.Deserialize<string[]>(File.ReadAllText(Path.Combine(directory, "convert-invoked.txt")))!;
+                    Assert(arguments[1] == Path.Combine(initial, "model.fbx") && After(arguments, "--texture-dir") == Path.Combine(initial, "textures"),
+                        "Source or texture arguments did not retain the validated request snapshot.");
+                }
+                finally { Environment.CurrentDirectory = previousDirectory; }
+            });
         await TestAsync("reject_old_engine_version_before_conversion", async () =>
         {
             var directory = CreateFakeEngine("old-version");
@@ -847,7 +889,7 @@ internal static class Program
             return 6;
         }
         if (mode == "no-report") Directory.CreateDirectory(After(args, "--output"));
-        if (mode is "no-gdb" or "bad-report" or "failed-report-zero-exit" or "failed-report-nonzero-exit" or "valid-callback" or "oversize-report")
+        if (mode is "no-gdb" or "bad-report" or "failed-report-zero-exit" or "failed-report-nonzero-exit" or "valid-callback" or "oversize-report" || mode.StartsWith("valid-relative-", StringComparison.Ordinal))
         {
             var originIndex = Array.IndexOf(args, "--origin");
             var settings = new ConversionSettings
@@ -858,7 +900,7 @@ internal static class Program
                 FeatureClass = After(args, "--feature-class"), Backend = After(args, "--backend"), Profile = After(args, "--profile"), MissingTexturePolicy = After(args, "--missing-textures")
             };
             var report = GoodReport(settings);
-            if (mode is "valid-callback" or "oversize-report") Directory.CreateDirectory(settings.OutputPath);
+            if (mode is "valid-callback" or "oversize-report" || mode.StartsWith("valid-relative-", StringComparison.Ordinal)) Directory.CreateDirectory(settings.OutputPath);
             if (mode == "bad-report")
             {
                 Directory.CreateDirectory(settings.OutputPath);
@@ -889,7 +931,7 @@ internal static class Program
         var service = new EngineService(engineDirectory);
         await TestAsync("native_backend_runtime_probe", async () =>
         {
-            Assert(service.IsEnginePresent, "Built V0.2.1 engine is absent: " + service.EnginePath);
+            Assert(service.IsEnginePresent, "Built V0.2.2 engine is absent: " + service.EnginePath);
             var probe = await service.ProbeBackendAsync("native-filegdb");
             Assert(probe.Success, probe.Message);
         });

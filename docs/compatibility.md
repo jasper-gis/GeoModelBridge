@@ -13,9 +13,12 @@ FileGDB Multipatch 可承载几何、常规漫反射颜色、透明度、UV 和�
 | 缺少 JFIF 标识、且能明确安全补齐的 Adobe YCbCr JPEG | 拒绝并提示需要封装修复 | 仅插入 18 字节 JFIF APP0，逐贴图记录 `JPEG_CONTAINER_NORMALIZED` 与处理前后 SHA-256；不重新压缩图像 |
 | 缺失的图片文件 | 默认保留材质颜色与标量透明度，警告并继续；`--missing-textures error` 可要求完整图片 | 相同 |
 | 保留贴图的 `PremultiplyAlpha` 为 true 或属性类型无效 | 拒绝，报告 `UNSUPPORTED_PREMULTIPLIED_ALPHA`；包括纹理模板继承值 | 相同 |
+| 保留颜色的非中性第四分量，或漫反射/透明度因子的多维值 | 拒绝；RGB 或第四分量明确为 1 的颜色可接受，标量属性必须为一维 | 相同 |
 | 有效贴图缺少 UV、非有限位置、无法形成有效面的几何、损坏或不可读的现有图片、未知材质语义、活动位移、PBR、自发光、骨骼/形变 | 拒绝 | 仍拒绝 |
 
 保存的静态姿态不等同于第 0 帧，不等同于源软件当前播放帧，也不包含骨骼、蒙皮和形变求值。需要指定时间的动画快照或烘焙光照时，应先在源建模软件中完成。
+
+保留的 Lambert 漫反射/透明度颜色按 RGB、因子按标量解释，依据 [Autodesk FBX Lambert 属性定义](https://help.autodesk.com/cloudhelp/2019/ENU/FBX-Developer-Help/cpp_ref/class_fbx_surface_lambert.html)。如果导出文件使用额外 alpha，且其值不是中性的 1，报告 `UNSUPPORTED_MATERIAL_ALPHA`；维度不匹配报告 `INVALID_MATERIAL_DIMENSIONS`。工具不会猜测额外 alpha 与独立透明度因子的组合公式。
 
 V0.1.8 的法线修复发生在轴/单位、节点变换及镜像绕序处理之后。根据有限三角形边向量计算单位面法线，仅替换无效角点，保留已有有效法线、位置、UV 和材质边界，不跨面平滑或按位置合并角点。无法计算有限非零面法线时仍拒绝。零面积面已被明确删除时，其无效法线另以 `DEGENERATE_NORMALS_DISCARDED` 计数；这不会额外删除有效几何。局部光照可能变硬，修复不等于还原原作者的平滑法线。已生成 Bundle 的法线仍由 writer 严格核验。
 

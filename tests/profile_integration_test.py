@@ -226,6 +226,31 @@ def main():
             for profile in ("strict", "gis-static"):
                 run(name + "-" + profile, source, profile, False)
 
+        # Retained RGB colors and scalar factors must not silently lose supplied
+        # components. A neutral fourth color component is safe; no alpha mixing
+        # formula is inferred for a non-neutral one.
+        for channel, rgb in (("DiffuseColor", "0.8,0.2,0.1"), ("TransparentColor", "1,1,1")):
+            rgba = base.replace(f'"{channel}", "Color",', f'"{channel}", "ColorAndAlpha",')
+            for alpha in ("1", "0.25", "-1", "1e309"):
+                source = material_value(rgba, channel, rgb + "," + alpha)
+                for profile in ("strict", "gis-static"):
+                    scene, _ = run(f"{channel}-four-components-{alpha}-{profile}", source, profile,
+                                   alpha == "1", None if alpha == "1" else "UNSUPPORTED_MATERIAL_ALPHA")
+                    if scene:
+                        assert scene["materials"][0]["color"] == [0.4, 0.1, 0.05, 0.75]
+        malformed_dimensions = {
+            "vector-diffuse-factor": material_value(base.replace('"DiffuseFactor", "Number",',
+                '"DiffuseFactor", "Vector3D",'), "DiffuseFactor", "0.5,0.8,0.9"),
+            "vector-transparency-factor": material_value(base.replace('"TransparencyFactor", "Number",',
+                '"TransparencyFactor", "Vector3D",'), "TransparencyFactor", "0.25,0.8,0.9"),
+            "vector-opacity": properties(base, '   P: "Opacity", "Vector3D", "", "A", 0.75,0.5,0.25'),
+            "scalar-diffuse-color": material_value(base, "DiffuseColor", "0.8"),
+            "two-component-transparency-color": material_value(base, "TransparentColor", "1,1"),
+        }
+        for name, source in malformed_dimensions.items():
+            for profile in ("strict", "gis-static"):
+                run(name + "-" + profile, source, profile, False, "INVALID_MATERIAL_DIMENSIONS")
+
         # The SDK defines PremultiplyAlpha as a property. Checking only the
         # texture's legacy direct DOM field silently accepted Properties70 flags.
         embedded = (fixtures / "embedded_quad.fbx").read_text(encoding="utf-8")

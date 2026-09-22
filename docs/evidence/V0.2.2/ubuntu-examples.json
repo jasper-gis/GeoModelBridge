@@ -1,0 +1,82 @@
+{
+  "version": "0.2.2",
+  "backend": "native-filegdb",
+  "status": "passed",
+  "gdb_cases": [
+    {
+      "name": "color-cube",
+      "kind": "synthetic_writer_reference",
+      "passed": true
+    },
+    {
+      "name": "uv-plane",
+      "kind": "synthetic_writer_reference",
+      "passed": true
+    },
+    {
+      "name": "mixed-materials",
+      "kind": "synthetic_writer_reference",
+      "passed": true
+    },
+    {
+      "name": "alpha-plane",
+      "kind": "synthetic_writer_reference",
+      "passed": true
+    },
+    {
+      "name": "seam-cube",
+      "kind": "synthetic_writer_reference",
+      "passed": true
+    },
+    {
+      "name": "colored_quad",
+      "kind": "fbx_to_gdb",
+      "passed": true
+    },
+    {
+      "name": "textured_quad",
+      "kind": "fbx_to_gdb",
+      "passed": true
+    },
+    {
+      "name": "embedded_quad",
+      "kind": "fbx_to_gdb",
+      "passed": true
+    },
+    {
+      "name": "uv_transform",
+      "kind": "fbx_to_gdb",
+      "passed": true
+    },
+    {
+      "name": "instanced_mirror",
+      "kind": "fbx_to_gdb",
+      "passed": true
+    },
+    {
+      "name": "multi_material",
+      "kind": "fbx_to_gdb",
+      "passed": true
+    },
+    {
+      "name": "no_material",
+      "kind": "fbx_to_gdb",
+      "passed": true
+    },
+    {
+      "name": "sloped_normals",
+      "kind": "fbx_to_gdb",
+      "passed": true
+    },
+    {
+      "name": "binary_blender",
+      "kind": "fbx_to_gdb",
+      "passed": true
+    }
+  ],
+  "standalone_copy_verified": true,
+  "reader_rejections_checked": 2,
+  "external_writer_failure_report_checked": true,
+  "graphical_acceptance": "pending",
+  "placement": "Synthetic test position only: EPSG 32650, origin 500000/3000000/100 metres"
+}

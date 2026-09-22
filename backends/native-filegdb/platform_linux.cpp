@@ -9,8 +9,7 @@ std::string narrow(const std::wstring& value) {
     return std::wstring_convert<std::codecvt_utf8<wchar_t>>{}.to_bytes(value);
 }
 bool within(const fs::path& child, const fs::path& root) {
-    const auto relative = child.lexically_normal().lexically_relative(root.lexically_normal());
-    return !relative.empty() && *relative.begin() != "..";
+    return gmb::io::within(child, root);
 }
 PlatformRuntime::PlatformRuntime() = default;
 PlatformRuntime::~PlatformRuntime() = default;

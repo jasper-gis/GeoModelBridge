@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import os
 from pathlib import Path
 import struct
 import subprocess
@@ -74,7 +75,7 @@ def read_bundle(directory):
 def main():
     exe = Path(sys.argv[1]).resolve()
     assert exe.is_file(), f"Executable not found: {exe}"
-    assert "0.2.1" in invoke(exe, "--version").stdout
+    assert "0.2.2" in invoke(exe, "--version").stdout
     doctor = json.loads(invoke(exe, "doctor").stdout)
     assert "native_filegdb" in doctor and "arcgis_pro" not in doctor
     assert "arcgis-pro" not in invoke(exe, "--help").stdout
@@ -101,6 +102,23 @@ def main():
             result = invoke(exe, "inspect", source, "--wkid", value, expect_success=False)
             assert result.returncode == 2, (value, result.stderr)
         assert not list(root.iterdir()), "Invalid arguments must not create output"
+        # Case aliases on Windows must not turn an external report into a write
+        # inside the just-created bundle. Linux keeps distinct case spellings.
+        for upper, lower in (("Bundle", "bundle"), ("ÄBundle", "äbundle")):
+            destination = root / upper
+            report = root / lower / "external.json"
+            result = invoke(exe, "prepare", source, "--output", destination, "--report", report,
+                            expect_success=os.name != "nt")
+            if os.name == "nt":
+                assert result.returncode == 2 and not destination.exists() and not report.exists()
+            else:
+                assert (destination / "scene.json").is_file() and report.is_file()
+        if os.name == "nt":
+            for alias in ("DotBundle.", "SpaceBundle "):
+                destination = root / alias.rstrip(". ")
+                report = root / alias / "external.json"
+                result = invoke(exe, "prepare", source, "--output", destination, "--report", report, expect_success=False)
+                assert not destination.exists() and not report.exists(), "Ambiguous path created output"
         # Removed backends must fail before input parsing or writer dispatch.
         for backend in ["arcgis-pro", "arcgis-pro-corehost", "unknown"]:
             output = root / (backend + ".gdb")

@@ -33,8 +33,19 @@ public sealed class EngineService
         int? exitCode = null;
         try
         {
+            var requestDirectory = Environment.CurrentDirectory;
             var issues = ConversionValidator.Validate(settings);
             if (issues.Count > 0) return new(false, null, string.Join(Environment.NewLine, issues), "", null);
+            // Bind the request before any callback or await. The host can change
+            // its working directory or mutate the supplied texture list later.
+            string FullPath(string path) => Path.TrimEndingDirectorySeparator(Path.GetFullPath(path.Trim(), requestDirectory));
+            settings = settings with
+            {
+                InputPath = FullPath(settings.InputPath),
+                OutputPath = FullPath(settings.OutputPath),
+                ReportPath = FullPath(string.IsNullOrWhiteSpace(settings.ReportPath) ? FullPath(settings.OutputPath) + ".report.json" : settings.ReportPath),
+                TextureDirectories = settings.TextureDirectories.Select(FullPath).ToArray()
+            };
             reportPath = ConversionCommand.GetReportPath(settings);
             Stage(progress, "正在检查转换引擎版本…");
             var version = await CheckEngineAsync(progress).ConfigureAwait(false);

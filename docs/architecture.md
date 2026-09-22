@@ -1,4 +1,4 @@
-# V0.2.1 架构
+# V0.2.2 架构
 
 构建统一由仓库根目录一个 `CMakeLists.txt` 定义，默认产生 CLI、原生 writer 及 SDK 运行库。`backends/native-filegdb` 仍是源码模块，但不是独立构建工程。两程序继续通过子进程和 Scene Bundle 通信，构建合并不改变运行时协议。
 

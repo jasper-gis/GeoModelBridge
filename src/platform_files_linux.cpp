@@ -9,6 +9,11 @@
 
 namespace gmb::io {
 namespace fs = std::filesystem;
+bool within(const fs::path& child, const fs::path& root) {
+    const auto relative = fs::absolute(child).lexically_normal().lexically_relative(
+        fs::absolute(root).lexically_normal());
+    return !relative.empty() && *relative.begin() != "..";
+}
 void reject_reparse(const fs::path& p) {
     for (auto path = fs::absolute(p); !path.empty();) {
         std::error_code error;

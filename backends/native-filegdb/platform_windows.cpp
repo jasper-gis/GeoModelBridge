@@ -1,6 +1,5 @@
 #include "platform.hpp"
 #include <windows.h>
-#include <cwctype>
 namespace gmb::native {
 std::wstring wide(const std::string& s) {
     int n = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, s.data(), static_cast<int>(s.size()), nullptr, 0);
@@ -17,12 +16,7 @@ std::string narrow(const std::wstring& s) {
     return result;
 }
 bool within(const fs::path& child, const fs::path& root) {
-    auto a = child.lexically_normal().wstring(), b = root.lexically_normal().wstring();
-    std::transform(a.begin(), a.end(), a.begin(), ::towlower);
-    std::transform(b.begin(), b.end(), b.begin(), ::towlower);
-    if (a == b) return true;
-    if (!b.empty() && b.back() != L'\\') b += L'\\';
-    return a.rfind(b, 0) == 0;
+    return gmb::io::within(child, root);
 }
 PlatformRuntime::PlatformRuntime() = default;
 PlatformRuntime::~PlatformRuntime() = default;

@@ -111,6 +111,7 @@ inline Vertex load_vertex(const json &v) {
     if (!v.at("normal").is_null()) {
         a.normal = vec3(v.at("normal"));
         a.has_normal = true;
+        validate_stored_normal(a.normal);
     }
     if (!v.at("uv").is_null()) {
         auto uv = vector(v.at("uv"), 2);

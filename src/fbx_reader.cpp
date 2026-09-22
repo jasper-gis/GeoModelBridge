@@ -543,6 +543,21 @@ struct Reader {
         }
     }
 
+    void check_retained_dimensions(const ufbx_material_map& map, bool color,
+                                   const char* name, const std::string& context) {
+        if (!map.has_value) return;
+        if (color ? (map.value_components != 3 && map.value_components != 4) : map.value_components != 1) {
+            error("INVALID_MATERIAL_DIMENSIONS", std::string(name) +
+                (color ? " must provide three color components." : " must provide one scalar component."), context);
+        } else if (color && map.value_components == 4 && map.value_vec4.w != 1.0) {
+            // FBX Lambert colors are RGB; ufbx also retains ColorAndAlpha
+            // properties. A non-neutral fourth value has no defined mapping
+            // to the separately represented scalar transparency in our contract.
+            error("UNSUPPORTED_MATERIAL_ALPHA", std::string(name) +
+                " has a non-neutral or invalid fourth component; resolve color alpha and scalar opacity explicitly.", context);
+        }
+    }
+
     int add_material(const ufbx_material* source_material) {
         if (!source_material) return -1;
         auto found = materials.find(source_material);
@@ -584,6 +599,12 @@ struct Reader {
         }
         const auto& color = classic ? m.fbx.diffuse_color : m.pbr.base_color;
         const auto& factor = classic ? m.fbx.diffuse_factor : m.pbr.base_factor;
+        if (classic) {
+            check_retained_dimensions(color, true, "Diffuse color", context);
+            check_retained_dimensions(factor, false, "Diffuse factor", context);
+            check_retained_dimensions(m.fbx.transparency_color, true, "Transparency color", context);
+            check_retained_dimensions(m.fbx.transparency_factor, false, "Transparency factor", context);
+        }
         const double f = factor.has_value ? factor.value_real : 1.0;
         if (color.has_value) out.color = {color.value_vec3.x * f, color.value_vec3.y * f, color.value_vec3.z * f, 1.0};
         else out.color = {f, f, f, 1.0};
@@ -597,6 +618,8 @@ struct Reader {
             out.color.a = 1.0 - transparency;
             // Some exporters write the legacy Opacity property instead of FBX transparency.
             if (const auto* opacity = ufbx_find_prop(&m.props, "Opacity")) {
+                if (!(opacity->flags & UFBX_PROP_FLAG_VALUE_REAL))
+                    error("INVALID_MATERIAL_DIMENSIONS", "Opacity must provide one scalar component.", context);
                 if ((t.has_value || tf.has_value) && nonzero(opacity->value_real - out.color.a))
                     error("AMBIGUOUS_OPACITY", "Opacity and transparency properties disagree; resolve this in the source material.", context);
                 else out.color.a = opacity->value_real;

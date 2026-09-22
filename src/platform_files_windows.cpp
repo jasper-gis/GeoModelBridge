@@ -8,7 +8,34 @@
 
 namespace gmb::io {
 namespace fs = std::filesystem;
+namespace {
+void check_components(const fs::path& path) {
+    for (const auto& part : path) {
+        const auto& text = part.native();
+        if (text.empty() || text == L"." || text == L"..") continue;
+        if (text.back() == L'.' || text.back() == L' ')
+            throw std::runtime_error("Path components ending in dots or spaces are not supported: " + path.u8string());
+    }
+}
+}
+bool within(const fs::path& child, const fs::path& root) {
+    check_components(child);
+    check_components(root);
+    const auto a = fs::absolute(child).lexically_normal();
+    const auto b = fs::absolute(root).lexically_normal();
+    auto part = a.begin();
+    for (const auto& parent : b) {
+        if (parent.empty()) continue; // A trailing directory separator.
+        if (part == a.end()) return false;
+        const auto left = part->native(), right = parent.native();
+        if (CompareStringOrdinal(left.c_str(), -1, right.c_str(), -1, TRUE) != CSTR_EQUAL)
+            return false;
+        ++part;
+    }
+    return true;
+}
 void reject_reparse(const fs::path& p) {
+    check_components(p);
     for (auto path = fs::absolute(p); !path.empty();) {
         const auto attr = GetFileAttributesW(path.c_str());
         if (attr == INVALID_FILE_ATTRIBUTES) {

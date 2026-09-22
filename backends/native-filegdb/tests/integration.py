@@ -35,7 +35,7 @@ vertices[1]['normal'] = [1 / math.sqrt(3)] * 3
 vertices[2]['normal'] = [-1 / 256, math.sqrt(1 - (1 / 256) ** 2), 0]
 vertices[3]['normal'] = [1 / 256, math.sqrt(1 - (1 / 256) ** 2), 0]
 meshes = [dict(name='PNG alpha', source_node='test', vertices=vertices, triangles=[dict(indices=[0, 1, 2], material=0), dict(indices=[0, 2, 3], material=0)]), dict(name='JPEG and color', source_node='test', vertices=vertices, triangles=[dict(indices=[0, 1, 2], material=1), dict(indices=[0, 2, 3], material=2)])]
-scene = dict(schema_version=1, generator='GeoModelBridge', version='0.2.1', name='Writer integration', source='generated:test', coordinates=dict(unit='meter', up_axis='Z', space='referenced', wkid=32650, origin=[500000, 4000000, 10], origin_explicit=True), nodes=[], meshes=meshes, materials=[dict(name='PNG', color=[1, 1, 1, 1], texture=0, double_sided=True), dict(name='JPEG', color=[1, 1, 1, 1], texture=1, double_sided=False), dict(name='Color opacity', color=[.13, .58, .91, .427], texture=-1, double_sided=True)], textures=textures)
+scene = dict(schema_version=1, generator='GeoModelBridge', version='0.2.2', name='Writer integration', source='generated:test', coordinates=dict(unit='meter', up_axis='Z', space='referenced', wkid=32650, origin=[500000, 4000000, 10], origin_explicit=True), nodes=[], meshes=meshes, materials=[dict(name='PNG', color=[1, 1, 1, 1], texture=0, double_sided=True), dict(name='JPEG', color=[1, 1, 1, 1], texture=1, double_sided=False), dict(name='Color opacity', color=[.13, .58, .91, .427], texture=-1, double_sided=True)], textures=textures)
 scene['diagnostics'] = [dict(severity='warning', code='TEST_SOURCE_WARNING', message='Test warning retained for traceability.', context='generated:test')]
 (bundle / 'scene.json').write_text(json.dumps(scene), encoding='utf8')
 
@@ -111,6 +111,8 @@ cases = {
     'missing-uv': lambda s: s['meshes'][0]['vertices'][0].update(uv=None),
     'zero-normal': lambda s: s['meshes'][0]['vertices'][0].update(normal=[0, 0, 0]),
     'nonunit-normal': lambda s: s['meshes'][0]['vertices'][0].update(normal=[0, 0, 2]),
+    'unreferenced-nonunit-normal': lambda s: s['meshes'][0]['vertices'].append(dict(position=[0, 0, 0], normal=[0, 0, 2], uv=[0, 0])),
+    'unreferenced-overflow-normal': lambda s: s['meshes'][0]['vertices'].append(dict(position=[0, 0, 0], normal=[1e200, 0, 0], uv=[0, 0])),
     'nonfinite-position': lambda s: s['meshes'][0]['vertices'][0].update(position=[float('inf'), 0, 0]),
     'float32-uv-overflow': lambda s: s['meshes'][0]['vertices'][0].update(uv=[1e100, 0]),
     'float32-uv-rounded-overflow': lambda s: s['meshes'][0]['vertices'][0].update(uv=[math.nextafter(float.fromhex('0x1.fffffep127'), math.inf), 0]),
@@ -237,7 +239,7 @@ results.append(dict(case='coordinate-domain-rejected-before-write', passed=True,
 # Native storage preflight must precede even SDK CRS setup, which itself precedes
 # database creation. An invalid CRS makes these checks deterministic without
 # relying only on observing a short-lived staging directory.
-for name in ('uv-range-before-sdk', 'nul-name-before-sdk', 'shape-size-before-sdk'):
+for name in ('uv-range-before-sdk', 'unreferenced-normal-before-sdk', 'nul-name-before-sdk', 'shape-size-before-sdk'):
     source = root / name
     shutil.copytree(bundle, source)
     invalid_scene = copy.deepcopy(scene)
@@ -245,6 +247,9 @@ for name in ('uv-range-before-sdk', 'nul-name-before-sdk', 'shape-size-before-sd
     if name.startswith('uv'):
         invalid_scene['meshes'][0]['vertices'][0]['uv'] = [1e100, 0]
         expected_error = 'UV exceeds native float32 storage range'
+    elif name.startswith('unreferenced-normal'):
+        invalid_scene['meshes'][0]['vertices'].append(dict(position=[0, 0, 0], normal=[1e200, 0, 0], uv=[0, 0]))
+        expected_error = 'Normals must be unit length'
     elif name.startswith('nul'):
         invalid_scene['meshes'][0]['name'] = 'prefix\0ignored'
         expected_error = 'NUL characters are forbidden in bundle strings'

@@ -1,4 +1,4 @@
-# 纯命令行与连续调用 EXE · V0.2.1
+# 纯命令行与连续调用 EXE · V0.2.2
 
 [首页](../README.md) · [构建和依赖排错](build-and-release.md) · [FileGDB API 调用与依赖说明](filegdb-api.md)
 
@@ -27,7 +27,7 @@ if ($LASTEXITCODE -ne 0) { throw "转换失败，退出码 $LASTEXITCODE" }
 | --- | --- |
 | `convert INPUT.fbx` | 转换为新 FileGDB，写入后关闭、重新打开并核验 |
 | `inspect INPUT.fbx` | 解析和校验，只有指定 `--report` 才输出报告，不生成 GDB |
-| `prepare INPUT.fbx` | 生成含 `scene.json`、纹理和 `validation.json` 的中间包，不生成 GDB |
+| `prepare INPUT.fbx` | 生成含 `scene.json`、纹理和 `report.json` 的中间包，不生成 GDB |
 | `fixture NAME\|all` | 生成合成测试中间包；不是 FBX 批量入口 |
 | `-h` / `--help` | 总帮助；五个子命令也支持 `COMMAND -h` / `COMMAND --help` |
 | `--version` | 当前引擎版本 |
@@ -45,6 +45,8 @@ if ($LASTEXITCODE -ne 0) { throw "转换失败，退出码 $LASTEXITCODE" }
 WKID 赋值和 origin 平移不执行重投影。输入的节点变换和单位规范化在 FBX 读取阶段完成，不要在外部再重复应用。实际 GIS 兼容调整及缺图回退见报告的诊断项；退出 0 可以伴随警告。
 
 参数值不能为空；除可重复的 `--texture-dir` 外，同一选项只能出现一次，`-o` 与 `--output` 视为同一选项。WKID 必须为正十进制整数，不接受小数、指数或超出 32 位有符号整数范围的写法。
+
+报告路径必须在输出目录之外，Windows 比较路径组件时不区分大小写，Linux 区分大小写。Windows 路径组件不能以点或空格结尾（正常的 `.` / `..` 路径片段除外）；这类不明确的路径会在写出前拒绝。
 
 ## PowerShell 连续调用
 
