@@ -24,6 +24,8 @@
 
 GeoModelBridge 使用 **原生 FileGDB 后端 `native-filegdb`**，支持 Ubuntu 命令行与 Windows 命令行 / 图形界面。构建、转换和部署均无需安装 ArcGIS Pro、ArcPy 或获取 Pro 许可。
 
+V0.3.0 的 OBJ 读取及 Scene Bundle 检查已通过本机测试；OBJ 的真实 FileGDB 写入与双平台回读仍待执行，见 [验证状态](docs/validation-v0.3.0.md)。
+
 **研发接入：** [统一构建入口](docs/build-and-release.md) · [纯命令行与连续调用 EXE](docs/command-line.md) · [FileGDB API 调用链](docs/filegdb-api.md)。项目只保留根目录一个 `CMakeLists.txt`；默认一次构建 CLI、原生 writer 和 SDK 运行库。源码下载不包含 EXE / DLL，先下载固定 SDK 再从根目录构建。
 
 - **保留模型表达**：处理漫反射颜色、PNG/JPEG 纹理、Alpha、UV 和法线角点边界，节点变换只烘焙一次。

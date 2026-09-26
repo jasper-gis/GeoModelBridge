@@ -4,7 +4,7 @@
 
 - 增加 OBJ/MTL → Scene Bundle → 原生 FileGDB 通路，复用现有角点、贴图、定位、独占写出和回读核验。CLI、Windows GUI 与无第三方依赖的 Python 客户端均可选择 OBJ。
 - OBJ 源单位和向上轴可显式指定，默认右手 Z-up、每单位 1 米并在报告中记录；只读取模型目录内声明的单个 MTL 文件。保留漫反射颜色、标量透明度和 `map_Kd`，拒绝未表示的材质指令；GIS 静态兼容可记录省略环境光/高光参数。
-- 新增 OBJ Scene Bundle 和原生构建目录转换回读测试，并将安装后的 Python 客户端真实 GDB 检查扩展到 OBJ；历史版本验证记录保持原状。
+- 新增 OBJ Scene Bundle 和原生构建目录转换回读测试，并将安装后的 Python 客户端真实 GDB 检查扩展到 OBJ。当前已执行与尚待执行的检查见 [V0.3.0 验证状态](docs/validation-v0.3.0.md)；历史版本验证记录保持原状。
 
 ## V0.2.2 — 2026-09-22
 
