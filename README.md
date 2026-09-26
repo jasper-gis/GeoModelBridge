@@ -2,10 +2,10 @@
 
 <h1>GeoModelBridge</h1>
 <p><strong>将静态三维模型转换为 GIS 数据</strong></p>
-<p>FBX → 带颜色与贴图的 FileGDB Multipatch</p>
+<p>FBX / OBJ → 带颜色与贴图的 FileGDB Multipatch</p>
 
 <p>
-  <a href="CHANGELOG.md"><code>V0.2.2</code></a> &nbsp;
+  <a href="CHANGELOG.md"><code>V0.3.0</code></a> &nbsp;
   <a href="docs/architecture.md"><code>C++17</code></a> &nbsp;
   <a href="#platforms"><code>Windows · Ubuntu</code></a>
 </p>
@@ -33,7 +33,7 @@ GeoModelBridge 使用 **原生 FileGDB 后端 `native-filegdb`**，支持 Ubuntu
 
 ```mermaid
 flowchart LR
-    A[FBX + 纹理] --> B[解析与校验]
+    A[FBX / OBJ + 纹理] --> B[解析与校验]
     B --> C[Scene Bundle]
     C --> D[原生 FileGDB 写入]
     D --> E[GDB + 回读报告]

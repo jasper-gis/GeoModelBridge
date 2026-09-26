@@ -52,7 +52,7 @@ public sealed class EngineService
             if (!version.Success) return new(false, null, version.Message, reportPath, null);
             // Revalidate after the version check; another task might have created a destination.
             var info = ConversionCommand.CreateStartInfo(EnginePath, settings);
-            Stage(progress, "正在启动转换：读取 FBX、写入 GDB 并回读核验…");
+            Stage(progress, "正在启动转换：读取模型、写入 GDB 并回读核验…");
             var result = await RunAsync(info, progress).ConfigureAwait(false);
             exitCode = result.ExitCode;
             if (result.ExitCode != 0)

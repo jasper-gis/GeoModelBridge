@@ -26,6 +26,11 @@ public static class ConversionCommand
             "--report", GetReportPath(settings)
         };
         foreach (var directory in settings.TextureDirectories) { result.Add("--texture-dir"); result.Add(PathRules.Normalize(directory)); }
+        if (string.Equals(Path.GetExtension(settings.InputPath), ".obj", StringComparison.OrdinalIgnoreCase))
+        {
+            result.Add("--obj-up-axis"); result.Add(settings.ObjUpAxis);
+            result.Add("--obj-unit-meters"); result.Add(Number(settings.ObjUnitMeters));
+        }
         return result;
     }
 

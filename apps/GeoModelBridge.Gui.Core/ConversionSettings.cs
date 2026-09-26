@@ -12,6 +12,8 @@ public sealed record ConversionSettings
     public string Backend { get; init; } = "native-filegdb";
     public string Profile { get; init; } = "gis-static";
     public string MissingTexturePolicy { get; init; } = "material-color";
+    public string ObjUpAxis { get; init; } = "Z";
+    public string ObjUnitMeters { get; init; } = "1";
     public string ReportPath { get; init; } = "";
     public IReadOnlyList<string> TextureDirectories { get; init; } = Array.Empty<string>();
 }
@@ -28,5 +30,5 @@ public sealed record ConversionReport(string Backend, string Version, string Out
 
 public static class ProductInfo
 {
-    public const string Version = "0.2.2";
+    public const string Version = "0.3.0";
 }

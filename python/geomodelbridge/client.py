@@ -42,7 +42,7 @@ class Message:
 
 @dataclass(frozen=True)
 class ConversionRequest:
-    input_fbx: PathLike
+    input_fbx: PathLike  # Source model (.fbx or .obj); name retained for API compatibility.
     output_gdb: PathLike
     wkid: int
     origin: Tuple[float, float, float]
@@ -51,6 +51,8 @@ class ConversionRequest:
     missing_textures: str = "material-color"
     texture_dirs: Tuple[PathLike, ...] = ()
     report_path: Optional[PathLike] = None
+    obj_up_axis: str = "Z"
+    obj_unit_meters: float = 1.0
 
 
 @dataclass(frozen=True)
@@ -327,11 +329,14 @@ class Engine:
     def validate(self, request: ConversionRequest) -> ConversionRequest:
         """Return a normalized copy; no directories, files or processes are created."""
         _require(isinstance(request, ConversionRequest), "Expected ConversionRequest")
-        source = _path(request.input_fbx, "input FBX")
+        source = _path(request.input_fbx, "input model")
         output = _path(request.output_gdb, "output GDB")
         report = _path(request.report_path if request.report_path is not None
                        else str(output) + ".report.json", "report")
-        _require(source.is_file() and source.suffix.lower() == ".fbx", "Input must be an existing FBX file")
+        _require(source.is_file() and source.suffix.lower() in (".fbx", ".obj"), "Input must be an existing FBX or OBJ file")
+        _require(request.obj_up_axis in ("Z", "Y"), "OBJ up axis must be Z or Y")
+        _require(type(request.obj_unit_meters) in (int, float) and math.isfinite(request.obj_unit_meters)
+                 and request.obj_unit_meters > 0, "OBJ unit size must be finite and positive")
         _require(output.suffix == ".gdb", "Output must have the .gdb suffix")
         _require(not output.exists() and not report.exists(), "Output GDB and report must be new paths", "PATH_EXISTS")
         _require(output.parent.is_dir() and report.parent.is_dir(), "Output/report parent directories must already exist")
@@ -395,6 +400,8 @@ class Engine:
                   "--wkid", request.wkid, "--origin", *request.origin, "--feature-class", request.feature_class,
                   "--profile", request.profile, "--missing-textures", request.missing_textures,
                   "--report", request.report_path, "--backend", "native-filegdb", "--writer", self.writer]
+        if request.input_fbx.suffix.lower() == ".obj":
+            values.extend(("--obj-up-axis", request.obj_up_axis, "--obj-unit-meters", request.obj_unit_meters))
         for directory in request.texture_dirs:
             values.extend(("--texture-dir", directory))
         return tuple(map(str, values))
@@ -410,7 +417,7 @@ class Engine:
         request = self.validate(request)
         _emit(on_message, "info", "CHECKING_ENGINE", "Checking GeoModelBridge and native FileGDB runtime...")
         self.check()
-        _emit(on_message, "info", "CONVERTING", "Reading FBX, writing GDB and verifying readback...")
+        _emit(on_message, "info", "CONVERTING", "Reading model, writing GDB and verifying readback...")
         # Revalidate after probing and the callback to catch newly occupied paths.
         command = self.command(request)
         result = self._execute(command, report_path=request.report_path)
@@ -452,7 +459,7 @@ class Engine:
             raise ValueError("Report output does not match the requested GDB")
         source = report.get("source")
         if not isinstance(source, str) or not Path(source).is_absolute() or Path(source).resolve() != request.input_fbx:
-            raise ValueError("Report source does not match the input FBX")
+            raise ValueError("Report source does not match the input model")
         _check_path_links(request.output_gdb)
         if not request.output_gdb.is_dir():
             raise ValueError("Output GDB directory is missing or replaced by a link")

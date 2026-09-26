@@ -1,0 +1,5 @@
+newmtl Checker
+Kd 0.8 0.6 0.4
+d 0.75
+illum 1
+map_Kd checker.png

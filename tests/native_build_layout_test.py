@@ -45,4 +45,16 @@ with tempfile.TemporaryDirectory(prefix="gmb-build-") as directory:
     run(writer, "--verify-gdb", work / "copy.gdb", "--expected-report", report_path,
         "--report", work / "copy.json")
     assert json.loads((work / "copy.json").read_text())["status"] == "standalone_copy_verified"
-print("PASS root build layout: default writer discovery, textured GDB and standalone copy readback")
+    obj = fixture.with_suffix(".obj")
+    run(cli, "convert", obj, "--output", work / "obj.gdb", "--wkid", 32650,
+        "--origin", 500000, 3000000, 100)
+    obj_report_path = work / "obj.gdb.report.json"
+    obj_report = json.loads(obj_report_path.read_text(encoding="utf-8"))
+    assert obj_report["status"] == "written_and_readback_verified"
+    assert obj_report["source"] == str(obj)
+    assert any(check["textured_patches"] > 0 for check in obj_report["verification"]["checks"])
+    shutil.copytree(work / "obj.gdb", work / "obj-copy.gdb")
+    run(writer, "--verify-gdb", work / "obj-copy.gdb", "--expected-report", obj_report_path,
+        "--report", work / "obj-copy.json")
+    assert json.loads((work / "obj-copy.json").read_text())["status"] == "standalone_copy_verified"
+print("PASS root build layout: FBX/OBJ textured GDBs and standalone copy readback")

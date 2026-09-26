@@ -12,13 +12,13 @@ public static partial class ConversionValidator
     {
         ArgumentNullException.ThrowIfNull(settings);
         var issues = new List<string>();
-        var input = FullPath(settings.InputPath, "输入 FBX", issues);
+        var input = FullPath(settings.InputPath, "输入模型", issues);
         var output = FullPath(settings.OutputPath, "输出 GDB", issues);
         if (input is not null)
         {
-            if (!string.Equals(Path.GetExtension(input), ".fbx", StringComparison.OrdinalIgnoreCase))
-                issues.Add("输入模型必须是 .fbx 文件。");
-            if (!File.Exists(input)) issues.Add("找不到输入 FBX 文件，请重新选择。");
+            if (!new[] { ".fbx", ".obj" }.Contains(Path.GetExtension(input), StringComparer.OrdinalIgnoreCase))
+                issues.Add("输入模型必须是 .fbx 或 .obj 文件。");
+            if (!File.Exists(input)) issues.Add("找不到输入模型文件，请重新选择。");
         }
         if (output is not null)
         {
@@ -39,6 +39,12 @@ public static partial class ConversionValidator
             issues.Add("请选择 GIS 静态兼容或严格检查转换策略。");
         if (settings.MissingTexturePolicy is not ("material-color" or "error"))
             issues.Add("缺失贴图策略必须为材质颜色回退或停止转换。");
+        if (input is not null && string.Equals(Path.GetExtension(input), ".obj", StringComparison.OrdinalIgnoreCase))
+        {
+            if (settings.ObjUpAxis is not ("Z" or "Y")) issues.Add("OBJ 源模型向上轴必须为 Z 或 Y。");
+            if (!double.TryParse(settings.ObjUnitMeters?.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out var unit) ||
+                !double.IsFinite(unit) || unit <= 0) issues.Add("OBJ 每单位米数必须为正的有限数值。");
+        }
         if (output is not null)
         {
             var report = FullPath(string.IsNullOrWhiteSpace(settings.ReportPath) ? output + ".report.json" : settings.ReportPath,
@@ -47,7 +53,7 @@ public static partial class ConversionValidator
             {
                 CheckNewDestination(report, "转换报告", issues);
                 if (PathRules.IsWithinOrEqual(report, output)) issues.Add("转换报告必须保存在输出 GDB 目录之外。");
-                if (input is not null && PathRules.Equal(report, input)) issues.Add("转换报告不能覆盖输入 FBX。");
+                if (input is not null && PathRules.Equal(report, input)) issues.Add("转换报告不能覆盖输入模型。");
             }
         }
         if (settings.TextureDirectories is null) issues.Add("贴图目录列表无效。");

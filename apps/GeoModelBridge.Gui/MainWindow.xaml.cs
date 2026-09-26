@@ -27,7 +27,7 @@ public partial class MainWindow : Window
         if (!_engine.IsEnginePresent)
             SetStatus("缺少转换引擎", "请将 GUI 与 geomodelbridge.exe 保持在同一个文件夹，并保留后端目录。", true);
         else
-            AppendLog("请选择 FBX 或点击“加载演示”。");
+            AppendLog("请选择 FBX/OBJ 或点击“加载演示”。");
     }
 
     private const string Backend = "native-filegdb";
@@ -45,6 +45,8 @@ public partial class MainWindow : Window
         Backend = Backend,
         Profile = Profile,
         MissingTexturePolicy = MissingTextureFallbackBox.IsChecked == true ? "material-color" : "error",
+        ObjUpAxis = (ObjUpAxisBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "Z",
+        ObjUnitMeters = ObjUnitMetersBox.Text.Trim(),
         TextureDirectories = TextureDirectoriesBox.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
     };
 
@@ -162,7 +164,7 @@ public partial class MainWindow : Window
 
     private void BrowseInput_Click(object sender, RoutedEventArgs e)
     {
-        var dialog = new OpenFileDialog { Title = "选择 FBX 模型", Filter = "FBX 模型 (*.fbx)|*.fbx", CheckFileExists = true, Multiselect = false };
+        var dialog = new OpenFileDialog { Title = "选择 FBX 或 OBJ 模型", Filter = "模型文件 (*.fbx;*.obj)|*.fbx;*.obj|FBX (*.fbx)|*.fbx|OBJ (*.obj)|*.obj", CheckFileExists = true, Multiselect = false };
         if (dialog.ShowDialog(this) == true) { InputPathBox.Text = dialog.FileName; DemoNotice.Visibility = Visibility.Collapsed; }
     }
 
@@ -177,7 +179,7 @@ public partial class MainWindow : Window
             DemoNotice.Visibility = Visibility.Collapsed;
             SetStatus("请填写模型位置", "已切换模型并清除演示坐标，请按新模型的实际坐标填写。");
         }
-        if (!File.Exists(input) || !string.Equals(Path.GetExtension(input), ".fbx", StringComparison.OrdinalIgnoreCase)) return;
+        if (!File.Exists(input) || !IsModelFile(input)) return;
         if (string.IsNullOrWhiteSpace(OutputPathBox.Text) || OutputPathBox.Text == _suggestedOutput)
         {
             _suggestedOutput = NewOutput(Path.GetDirectoryName(Path.GetFullPath(input))!, Path.GetFileNameWithoutExtension(input));
@@ -270,11 +272,15 @@ public partial class MainWindow : Window
     {
         e.Handled = true;
         if (_running || e.Data.GetData(DataFormats.FileDrop) is not string[] files) return;
-        if (files.Length != 1 || !string.Equals(Path.GetExtension(files[0]), ".fbx", StringComparison.OrdinalIgnoreCase))
-        { SetStatus("请选择一个 FBX", "一次拖入一个 .fbx 模型文件。", true); return; }
+        if (files.Length != 1 || !IsModelFile(files[0]))
+        { SetStatus("请选择一个模型", "一次拖入一个 .fbx 或 .obj 模型文件。", true); return; }
         InputPathBox.Text = files[0];
         DemoNotice.Visibility = Visibility.Collapsed;
     }
+
+    private static bool IsModelFile(string path) =>
+        string.Equals(Path.GetExtension(path), ".fbx", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(Path.GetExtension(path), ".obj", StringComparison.OrdinalIgnoreCase);
 
     private void OpenOutput_Click(object sender, RoutedEventArgs e)
     {

@@ -77,6 +77,17 @@ class ClientTests(unittest.TestCase):
         self.assertIn("error", args)
         self.assertIsNone(self.request.report_path)
 
+    def test_obj_source_and_coordinate_options(self):
+        obj = self.root / "模型.obj"
+        obj.write_text("o example\n", encoding="utf-8")
+        request = replace(self.request, input_fbx=obj, obj_up_axis="Y", obj_unit_meters=0.01)
+        args = self.engine.command(request)
+        self.assertEqual(args[args.index("--obj-up-axis") + 1], "Y")
+        self.assertEqual(args[args.index("--obj-unit-meters") + 1], "0.01")
+        for change in (dict(obj_up_axis="X"), dict(obj_unit_meters=0), dict(obj_unit_meters=float("nan"))):
+            with self.subTest(change=change), self.assertRaises(ValidationError):
+                self.engine.validate(replace(request, **change))
+
     def test_invalid_requests(self):
         changes = [dict(wkid=True), dict(wkid="3857"), dict(wkid=0), dict(wkid=2**31),
                    dict(origin=(1, 2)), dict(origin=(1, 2, float("nan"))), dict(origin=(1, 2, float("inf"))),

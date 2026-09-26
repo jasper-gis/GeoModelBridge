@@ -9,6 +9,7 @@
 #include <limits>
 #include <memory>
 #include <set>
+#include <sstream>
 #include <stdexcept>
 #include <unordered_map>
 
@@ -566,6 +567,34 @@ struct Reader {
         Material out;
         out.name = str(m.name);
         const std::string context = "material:" + out.name;
+        if (source->metadata.file_format == UFBX_FILE_FORMAT_OBJ) {
+            if (m.shader_type != UFBX_SHADER_WAVEFRONT_MTL)
+                error("UNSUPPORTED_SHADING_MODEL", "OBJ material is not a Wavefront MTL material.", context);
+            const auto& color = m.pbr.base_color;
+            if (color.has_value) {
+                if (color.value_components != 3 && color.value_components != 4)
+                    error("INVALID_MATERIAL_DIMENSIONS", "MTL Kd must contain three color components.", context);
+                out.color = {color.value_vec3.x, color.value_vec3.y, color.value_vec3.z, 1.0};
+            }
+            const auto* dissolve = ufbx_find_prop(&m.props, "d");
+            const auto* transparency = ufbx_find_prop(&m.props, "Tr");
+            if (dissolve && transparency)
+                error("AMBIGUOUS_OPACITY", "MTL d and Tr are both present; provide one opacity convention.", context);
+            if (dissolve) out.color.a = dissolve->value_real;
+            if (transparency) out.color.a = 1.0 - transparency->value_real;
+            for (const auto& entry : m.textures)
+                if (missing_file(entry.texture)) missing_warning(entry.texture, context);
+            const auto* selected = has_texture(color) ? color.texture : nullptr;
+            for (const auto& entry : m.textures)
+                if (!missing_file(entry.texture) && (entry.texture != selected || str(entry.material_prop) != "Kd"))
+                    error("UNSUPPORTED_TEXTURE_CONNECTION", "Only MTL map_Kd can be retained.", context);
+            out.texture = add_texture(selected, context);
+            const int index = static_cast<int>(result.materials.size());
+            result.materials.push_back(out);
+            material_textures.push_back(missing_file(selected) ? nullptr : selected);
+            materials[source_material] = index;
+            return index;
+        }
         // Account for every unavailable file connection, including transparency
         // aliases. Existing but unsupported/corrupt textures still fail validation.
         for (const auto& entry : m.textures)
@@ -894,7 +923,8 @@ struct Reader {
         if (source->constraints.count || source->lod_groups.count)
             error("UNSUPPORTED_SCENE_BEHAVIOR", "Constraints or LOD groups must be resolved to an explicit static mesh scene.", "scene");
         for (std::size_t i = 0; i < source->metadata.warnings.count; ++i)
-            error("FBX_PARSER_WARNING", str(source->metadata.warnings.data[i].description), "scene");
+            error(source->metadata.file_format == UFBX_FILE_FORMAT_OBJ ? "OBJ_PARSER_WARNING" : "FBX_PARSER_WARNING",
+                str(source->metadata.warnings.data[i].description), "scene");
         for (const auto* layer : source->display_layers)
             if (!layer->visible) for (const auto* node : layer->nodes) hidden_layer_nodes.insert(node);
         std::unordered_map<const ufbx_node*, int> nodes;
@@ -911,20 +941,142 @@ struct Reader {
                                            m.m02, m.m12, m.m22, 0.0, m.m03, m.m13, m.m23, 1.0};
             if (source_node.mesh) add_mesh(source_node, i);
         }
-        if (result.meshes.empty()) error("EMPTY_SCENE", "The FBX contains no usable static polygon meshes.", "scene");
+        if (result.meshes.empty()) error("EMPTY_SCENE", "The model contains no usable static polygon meshes.", "scene");
         return std::move(result);
     }
 };
 } // namespace
 
-Scene read_fbx(const std::filesystem::path& input, const ReaderOptions& options) {
+std::string trimmed(std::string value) {
+    const auto first = value.find_first_not_of(" \t\r");
+    if (first == std::string::npos) return {};
+    const auto last = value.find_last_not_of(" \t\r");
+    return value.substr(first, last-first+1);
+}
+
+std::vector<Diagnostic> inspect_mtl(const std::vector<std::uint8_t>& bytes, bool gis_static,
+                                    std::set<std::string>& names) {
+    std::vector<Diagnostic> diagnostics;
+    std::istringstream lines(std::string(bytes.begin(), bytes.end()));
+    std::set<std::string> properties;
+    std::string line, material;
+    std::size_t number = 0;
+    while (std::getline(lines, line)) {
+        ++number;
+        line = trimmed(line);
+        if (line.empty() || line[0] == '#') continue;
+        std::istringstream parts(line);
+        std::string key;
+        parts >> key;
+        std::string value;
+        std::getline(parts, value);
+        value = trimmed(value);
+        const auto context = "mtl:" + std::to_string(number);
+        const auto reject = [&](const std::string& message) {
+            diagnostics.push_back({Severity::error, "UNSUPPORTED_MTL_DIRECTIVE", message, context});
+        };
+        if (key == "newmtl") {
+            if (value.empty() || !names.insert(value).second) reject("MTL material name is empty or duplicated.");
+            material = value;
+            properties.clear();
+            continue;
+        }
+        if (material.empty()) { reject("MTL property appears before newmtl."); continue; }
+        if (!properties.insert(key).second) { reject("MTL property is duplicated: " + key); continue; }
+        if (key == "Kd" || key == "d" || key == "Tr" ||
+            (gis_static && (key == "Ka" || key == "Ks" || key == "Ns"))) {
+            std::istringstream values(value);
+            const int count = key == "Kd" || key == "Ka" || key == "Ks" ? 3 : 1;
+            bool valid = true;
+            for (int i = 0; i < count; ++i) {
+                double v = 0;
+                if (!(values >> v) || !finite(v) || v < 0 ||
+                    ((key == "Kd" || key == "d" || key == "Tr") && v > 1)) valid = false;
+            }
+            std::string extra;
+            if (values >> extra) valid = false;
+            if (!valid) reject("MTL " + key + " has invalid numeric values.");
+            else if (key == "Ka" || key == "Ks" || key == "Ns")
+                diagnostics.push_back({Severity::warning, "MATERIAL_CHANNEL_OMITTED",
+                    "GIS static profile omits MTL " + key + " lighting; diffuse color, opacity and map_Kd remain. Appearance is not baked.",
+                    "material:" + material});
+        } else if (key == "map_Kd") {
+            if (value.empty() || value[0] == '-') reject("MTL map_Kd requires one plain image path without mapping options.");
+        } else if (key == "illum" && value == "1") {
+            // Diffuse-only illumination has no extra rendering channels.
+        } else if (gis_static && key == "illum" && value == "2") {
+            diagnostics.push_back({Severity::warning, "MATERIAL_CHANNEL_OMITTED",
+                "GIS static profile omits MTL " + key + " lighting; diffuse color, opacity and map_Kd remain. Appearance is not baked.",
+                "material:" + material});
+        } else {
+            reject("MTL directive is not represented: " + key);
+        }
+    }
+    return diagnostics;
+}
+
+Scene read_model(const std::filesystem::path& input, const ReaderOptions& options) {
     const auto path = std::filesystem::absolute(input);
+    auto extension = path.extension().u8string();
+    std::transform(extension.begin(), extension.end(), extension.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    if (extension != ".fbx" && extension != ".obj") throw std::invalid_argument("Input must be .fbx or .obj: " + path.u8string());
+    const bool obj = extension == ".obj";
     const auto bytes = read_bytes(path, options.max_file_bytes);
-    if (bytes.empty()) throw std::runtime_error("FBX file is empty: " + path.u8string());
+    if (bytes.empty()) throw std::runtime_error("Model file is empty: " + path.u8string());
+    if (obj && (!finite(options.obj_unit_meters) || options.obj_unit_meters <= 0))
+        throw std::invalid_argument("OBJ unit size must be finite and positive.");
+    std::vector<std::uint8_t> mtl_bytes;
+    std::vector<Diagnostic> mtl_diagnostics;
+    if (obj) {
+        if (std::find(bytes.begin(), bytes.end(), 0) != bytes.end())
+            throw std::runtime_error("OBJ contains a NUL byte.");
+        std::istringstream lines(std::string(bytes.begin(), bytes.end()));
+        std::string line, library;
+        std::set<std::string> used_materials;
+        while (std::getline(lines, line)) {
+            line = trimmed(line);
+            if (line.empty() || line[0] == '#') continue;
+            std::istringstream parts(line);
+            std::string key;
+            parts >> key;
+            if (key == "usemtl") {
+                std::string value;
+                std::getline(parts, value);
+                value = trimmed(value);
+                if (!value.empty()) used_materials.insert(value);
+            }
+            if (key == "mtllib") {
+                std::string value;
+                std::getline(parts, value);
+                value = trimmed(value);
+                if (value.empty() || !library.empty()) throw std::runtime_error("OBJ must name exactly one MTL library.");
+                library = value;
+            }
+        }
+        if (!used_materials.empty() && library.empty()) throw std::runtime_error("OBJ uses materials but has no mtllib declaration.");
+        if (!library.empty()) {
+            const auto relative = std::filesystem::u8path(library);
+            if (relative.is_absolute() || library.find(':') != std::string::npos || library.find('\\') != std::string::npos ||
+                std::any_of(relative.begin(), relative.end(), [](const auto& part) { return part == ".."; }))
+                throw std::runtime_error("OBJ MTL path must stay inside the model directory.");
+            const auto root = std::filesystem::weakly_canonical(path.parent_path());
+            const auto material_path = std::filesystem::weakly_canonical(root / relative);
+            if (!contained_path(root, material_path)) throw std::runtime_error("OBJ MTL path escapes the model directory.");
+            mtl_bytes = read_bytes(material_path, options.max_texture_bytes);
+            if (std::find(mtl_bytes.begin(), mtl_bytes.end(), 0) != mtl_bytes.end())
+                throw std::runtime_error("MTL contains a NUL byte.");
+            std::set<std::string> declared_materials;
+            mtl_diagnostics = inspect_mtl(mtl_bytes, options.gis_static, declared_materials);
+            for (const auto& name : used_materials)
+                if (!declared_materials.count(name))
+                    mtl_diagnostics.push_back({Severity::error, "MISSING_MTL_MATERIAL",
+                        "OBJ usemtl references a material not declared by its MTL library: " + name, "scene"});
+        }
+    }
     const auto filename = path.u8string();
     ufbx_load_opts opts{};
     opts.filename = {filename.data(), filename.size()};
-    opts.file_format = UFBX_FILE_FORMAT_FBX;
+    opts.file_format = obj ? UFBX_FILE_FORMAT_OBJ : UFBX_FILE_FORMAT_FBX;
     opts.strict = true;
     opts.load_external_files = false;
     opts.index_error_handling = UFBX_INDEX_ERROR_HANDLING_ABORT_LOADING;
@@ -933,6 +1085,11 @@ Scene read_fbx(const std::filesystem::path& input, const ReaderOptions& options)
     opts.retain_dom = true; // Inspect rendering flags that ufbx does not expose in normalized structs.
     opts.target_axes = ufbx_axes_right_handed_z_up;
     opts.target_unit_meters = 1.0;
+    if (obj) {
+        opts.obj_axes = options.obj_y_up ? ufbx_axes_right_handed_y_up : ufbx_axes_right_handed_z_up;
+        opts.obj_unit_meters = options.obj_unit_meters;
+        opts.obj_mtl_data = {mtl_bytes.data(), mtl_bytes.size()};
+    }
     opts.space_conversion = UFBX_SPACE_CONVERSION_TRANSFORM_ROOT;
     opts.node_depth_limit = 1024;
     // A hard bound also limits decompressed arrays in maliciously small FBX files.
@@ -947,8 +1104,19 @@ Scene read_fbx(const std::filesystem::path& input, const ReaderOptions& options)
     if (!source) {
         char description[1024]{};
         ufbx_format_error(description, sizeof(description), &error);
-        throw std::runtime_error(std::string("FBX parse failed: ") + description);
+        throw std::runtime_error(std::string(obj ? "OBJ" : "FBX") + " parse failed: " + description);
     }
-    return Reader(options, source.get(), path).run();
+    auto scene = Reader(options, source.get(), path).run();
+    if (obj) {
+        scene.diagnostics.push_back({Severity::warning, "OBJ_COORDINATE_ASSUMPTION",
+            std::string("OBJ coordinates interpreted as right-handed ") + (options.obj_y_up ? "Y" : "Z") +
+            "-up with one source unit = " + std::to_string(options.obj_unit_meters) +
+            " metres; normalized to right-handed Z-up metres before the requested origin is applied.", "scene"});
+        scene.diagnostics.insert(scene.diagnostics.end(), mtl_diagnostics.begin(), mtl_diagnostics.end());
+    }
+    return scene;
+}
+Scene read_fbx(const std::filesystem::path& input, const ReaderOptions& options) {
+    return read_model(input, options);
 }
 } // namespace gmb

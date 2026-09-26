@@ -1,11 +1,11 @@
-# Windows 图形界面 · V0.2.2
+# Windows 图形界面 · V0.3.0
 
-入口为本机 `releases/V0.2.2/bin/geomodelbridgeGUI.exe`，默认源码安装位置为 `dist/bin`。GUI 自带 .NET，原生 FileGDB 写入端与官方运行库位于旁边的 `native-filegdb` 子目录；保留完整发布目录。客户机需 Windows x64 和 Visual C++ x64 运行库，无需安装 ArcGIS Pro。
+入口为本机 `dist/bin/geomodelbridgeGUI.exe`。GUI 自带 .NET，原生 FileGDB 写入端与官方运行库位于旁边的 `native-filegdb` 子目录；保留完整发布目录。客户机需 Windows x64 和 Visual C++ x64 运行库，无需安装 ArcGIS Pro。
 
 服务开始转换时会按调用时的工作目录固定输入、输出、报告和贴图目录的绝对路径。宿主程序或进度回调随后切换工作目录，不会改变已提交请求的读写位置。
 
 1. 点击“检查运行环境”，核对 CLI 版本、原生写入端和 FileGDB 坐标系目录。
-2. 选择源 FBX 和尚不存在的新 GDB 路径，需要时添加额外贴图目录。
+2. 选择源 FBX 或 OBJ 和尚不存在的新 GDB 路径，需要时添加额外贴图目录。OBJ 可在转换选项中填写向上轴与每单位米数；默认 Z-up、1 米，并在报告中记录这一假设。
 3. 填写米制投影 WKID 与 X/Y/Z 原点；这些参数不执行配准或重投影。
 4. 选择 GIS 静态兼容或严格检查策略。转换选项中默认勾选“缺少贴图时使用材质颜色继续转换”；如果要求完整图片，取消勾选。后端固定为原生 FileGDB，无需选择。
 5. 点击转换，完成后查看中文摘要或原始 JSON。失败后可用“换个新名称”重试，保留已有报告与成果。

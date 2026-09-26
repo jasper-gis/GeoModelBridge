@@ -26,7 +26,7 @@ assert not engine.check().arcgis_pro_required
 fixtures = Path(__file__).resolve().parent / "fixtures"
 source_dir = work / "中文 模型 & 输入"
 source_dir.mkdir()
-for name in ("textured_quad.fbx", "checker.png", "missing_texture.fbx"):
+for name in ("textured_quad.fbx", "textured_quad.obj", "textured_quad.mtl", "checker.png", "missing_texture.fbx"):
     shutil.copy2(fixtures / name, source_dir / name)
 base = (fixtures / "textured_quad.fbx").read_text(encoding="utf-8")
 broken = re.sub(r"Normals: \*\d+ \{ a: [^}]+", "Normals: *12 { a: " + ",".join(["0"] * 12) + " ", base)
@@ -56,6 +56,12 @@ result = engine.convert(request, on_message=events.append)
 report = verify_copy(result)
 assert any(check["textured_patches"] > 0 for check in report["verification"]["checks"])
 assert events[-1].code == "VERIFIED"
+obj_request = replace(request, input_fbx=source_dir / "textured_quad.obj", output_gdb=work / "OBJ 贴图.gdb",
+                      feature_class="ImportedOBJ")
+obj_result = engine.convert(obj_request)
+obj_report = verify_copy(obj_result)
+assert any(check["textured_patches"] > 0 for check in obj_report["verification"]["checks"])
+assert any(d.code == "OBJ_COORDINATE_ASSUMPTION" for d in obj_result.diagnostics)
 try:
     engine.convert(request)
     raise AssertionError("Existing GDB accepted")
@@ -117,6 +123,6 @@ assert all(hashlib.sha256(path.read_bytes()).hexdigest() == digest for path, dig
 assert "arcpy" not in sys.modules
 assessment = dict(version=geomodelbridge.__version__, status="passed", python=sys.version,
                   cases=results, installed_client=True, arcpy_imported=False, input_unchanged=True,
-                  copied_gdb_readbacks=4, graphical_acceptance="not_performed", atbx_execution="not_performed")
+                  copied_gdb_readbacks=5, graphical_acceptance="not_performed", atbx_execution="not_performed")
 (work / "assessment.json").write_text(json.dumps(assessment, ensure_ascii=False, indent=2), encoding="utf-8")
-print(f"PASS installed Python client: {len(results)} cases, 4 GDBs independently copied and reopened")
+print(f"PASS installed Python client: {len(results)} cases, 5 GDBs independently copied and reopened")

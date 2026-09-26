@@ -7,7 +7,7 @@
 #include <vector>
 
 namespace gmb {
-inline constexpr const char* version = "0.2.2";
+inline constexpr const char* version = "0.3.0";
 struct Vec2 { double x = 0, y = 0; };
 struct Vec3 { double x = 0, y = 0, z = 0; };
 struct Color { double r = 1, g = 1, b = 1, a = 1; };
@@ -68,8 +68,11 @@ struct ReaderOptions {
     std::vector<std::filesystem::path> texture_directories;
     std::uint64_t max_file_bytes = 512ull * 1024 * 1024;
     std::uint64_t max_texture_bytes = 256ull * 1024 * 1024;
+    double obj_unit_meters = 1.0;
+    bool obj_y_up = false;
 };
 Scene read_fbx(const std::filesystem::path& input, const ReaderOptions& options = {});
+Scene read_model(const std::filesystem::path& input, const ReaderOptions& options = {});
 std::vector<Diagnostic> validate(const Scene& scene);
 bool has_errors(const std::vector<Diagnostic>& diagnostics);
 void apply_origin(Scene& scene, Vec3 origin, int wkid, bool origin_explicit);

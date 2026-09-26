@@ -6,7 +6,7 @@ using GeoModelBridge.Gui.Core;
 
 internal static class Program
 {
-    private const string Version = "0.2.2";
+    private const string Version = "0.3.0";
     private static readonly List<TestCase> Results = [];
     private static string Work = "";
     private static string Input = "";
@@ -137,7 +137,12 @@ internal static class Program
         Test("reject_empty_input", () => Invalid(Settings with { InputPath = "" }));
         var objPath = Path.Combine(Work, "wrong.obj");
         File.WriteAllText(objPath, "test");
-        Test("reject_non_fbx_input", () => Invalid(Settings with { InputPath = objPath }));
+        Test("accept_obj_input", () => Valid(Settings with { InputPath = objPath }));
+        Test("reject_obj_bad_axis", () => Invalid(Settings with { InputPath = objPath, ObjUpAxis = "X" }));
+        Test("reject_obj_bad_unit", () => Invalid(Settings with { InputPath = objPath, ObjUnitMeters = "0" }));
+        var wrongPath = Path.Combine(Work, "wrong.txt");
+        File.WriteAllText(wrongPath, "test");
+        Test("reject_non_model_input", () => Invalid(Settings with { InputPath = wrongPath }));
         Test("reject_empty_output", () => Invalid(Settings with { OutputPath = "" }));
         Test("reject_non_gdb_output", () => Invalid(Settings with { OutputPath = Path.Combine(Work, "wrong.sqlite") }));
         var existingGdb = Path.Combine(Work, "existing.gdb");
@@ -173,6 +178,13 @@ internal static class Program
 
     private static void ArgumentTests()
     {
+        Test("obj_arguments_preserve_axis_and_units", () =>
+        {
+            var obj = Path.Combine(Work, "model.obj");
+            File.WriteAllText(obj, "o sample\n");
+            var args = ConversionCommand.BuildArguments(Settings with { InputPath = obj, ObjUpAxis = "Y", ObjUnitMeters = "0.01" }).ToArray();
+            Assert(After(args, "--obj-up-axis") == "Y" && After(args, "--obj-unit-meters") == "0.01", "OBJ coordinate options were lost.");
+        });
         foreach (var policy in new[] { "material-color", "error" })
             Test("arguments_preserve_missing_texture_policy_" + policy, () =>
             {
@@ -931,7 +943,7 @@ internal static class Program
         var service = new EngineService(engineDirectory);
         await TestAsync("native_backend_runtime_probe", async () =>
         {
-            Assert(service.IsEnginePresent, "Built V0.2.2 engine is absent: " + service.EnginePath);
+            Assert(service.IsEnginePresent, "Built V0.3.0 engine is absent: " + service.EnginePath);
             var probe = await service.ProbeBackendAsync("native-filegdb");
             Assert(probe.Success, probe.Message);
         });

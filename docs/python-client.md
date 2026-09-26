@@ -1,6 +1,6 @@
-# Python 调用库 · V0.2.2
+# Python 调用库 · V0.3.0
 
-`geomodelbridge` 把 FBX 入库封装为普通 Python 函数调用，供以后 Windows ArcGIS `.atbx` 的脚本层复用，也可用于独立 Python 脚本或 Ubuntu。库仅使用 Python 标准库，不导入 `arcpy`，不在 Python 进程内加载 FileGDB SDK；实际转换仍由同版本 EXE 完成。
+`geomodelbridge` 把 FBX/OBJ 入库封装为普通 Python 函数调用，供以后 Windows ArcGIS `.atbx` 的脚本层复用，也可用于独立 Python 脚本或 Ubuntu。库仅使用 Python 标准库，不导入 `arcpy`，不在 Python 进程内加载 FileGDB SDK；实际转换仍由同版本 EXE 完成。`ConversionRequest.input_fbx` 为兼容既有调用保留字段名，也接受 `.obj`；OBJ 可指定 `obj_up_axis="Y"`、`obj_unit_meters=0.01` 等源坐标约定。
 
 本次交付函数库、普通 Python 示例和测试，未制作 `.atbx` / `.pyt`，未进行 ArcGIS 工具箱内运行验收。
 

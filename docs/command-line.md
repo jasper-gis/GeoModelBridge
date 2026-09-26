@@ -1,10 +1,10 @@
-# 纯命令行与连续调用 EXE · V0.2.2
+# 纯命令行与连续调用 EXE · V0.3.0
 
 [首页](../README.md) · [构建和依赖排错](build-and-release.md) · [FileGDB API 调用与依赖说明](filegdb-api.md)
 
 ## 入口与一次转换
 
-Windows 使用 `dist/bin/geomodelbridge.exe`；Linux 使用 `dist/bin/geomodelbridge`。两者均为独立控制台程序，不启动 GUI、不需要 .NET、ArcPy 或 ArcGIS Pro。`geomodelbridgeGUI.exe` 才是 Windows GUI。主 CLI 解析 FBX，启动原生 writer 子进程并等待其完成，核对成功报告后退出。
+Windows 使用 `dist/bin/geomodelbridge.exe`；Linux 使用 `dist/bin/geomodelbridge`。两者均为独立控制台程序，不启动 GUI、不需要 .NET、ArcPy 或 ArcGIS Pro。`geomodelbridgeGUI.exe` 才是 Windows GUI。主 CLI 解析 FBX 或 OBJ，启动原生 writer 子进程并等待其完成，核对成功报告后退出。
 
 在 PowerShell 中，从仓库根目录执行（测试定位值必须替换为模型实际坐标）：
 
@@ -25,9 +25,9 @@ if ($LASTEXITCODE -ne 0) { throw "转换失败，退出码 $LASTEXITCODE" }
 
 | 参数 / 命令 | 含义与默认行为 |
 | --- | --- |
-| `convert INPUT.fbx` | 转换为新 FileGDB，写入后关闭、重新打开并核验 |
-| `inspect INPUT.fbx` | 解析和校验，只有指定 `--report` 才输出报告，不生成 GDB |
-| `prepare INPUT.fbx` | 生成含 `scene.json`、纹理和 `report.json` 的中间包，不生成 GDB |
+| `convert INPUT.fbx\|INPUT.obj` | 转换为新 FileGDB，写入后关闭、重新打开并核验 |
+| `inspect INPUT.fbx\|INPUT.obj` | 解析和校验，只有指定 `--report` 才输出报告，不生成 GDB |
+| `prepare INPUT.fbx\|INPUT.obj` | 生成含 `scene.json`、纹理和 `report.json` 的中间包，不生成 GDB |
 | `fixture NAME\|all` | 生成合成测试中间包；不是 FBX 批量入口 |
 | `-h` / `--help` | 总帮助；五个子命令也支持 `COMMAND -h` / `COMMAND --help` |
 | `--version` | 当前引擎版本 |
@@ -36,13 +36,15 @@ if ($LASTEXITCODE -ne 0) { throw "转换失败，退出码 $LASTEXITCODE" }
 | `--origin X Y Z` | convert 必填，有限数值，单位米；已定位模型也要显式传 `0 0 0` |
 | `--feature-class NAME` | convert 的要素类名称，默认 `Models` |
 | `--report NEW.json` | 新报告路径；convert 缺省为 `<output>.report.json`，其他命令可选；`fixture all` 不接受外部报告 |
-| `--texture-dir DIR` | FBX 的附加贴图搜索目录，可重复指定 |
+| `--texture-dir DIR` | 附加贴图搜索目录，可重复指定 |
+| `--obj-up-axis Z\|Y` | OBJ 源坐标向上轴，默认 Z；读取后统一为右手 Z-up |
+| `--obj-unit-meters N` | 每个 OBJ 源单位代表的米数，默认 1；须为正的有限数值 |
 | `--profile strict\|gis-static` | 默认 `strict`；`gis-static` 显式使用保存的静态姿态、允许有记录的材质简化 / 退化面移除 / 无效法线修复 |
 | `--missing-textures material-color\|error` | 默认真正缺图时保留颜色及标量透明度并告警；error 改为拒绝；损坏、不可读或非普通文件仍失败 |
 | `--backend native-filegdb` | convert 默认值，也是唯一支持的后端 |
 | `--writer PATH` | convert 的原生可执行文件路径；优先于 `GMB_NATIVE_WRITER` 环境变量，再次为 CLI 同目录下 `native-filegdb/GeoModelBridge.NativeWriter[.exe]` |
 
-WKID 赋值和 origin 平移不执行重投影。输入的节点变换和单位规范化在 FBX 读取阶段完成，不要在外部再重复应用。实际 GIS 兼容调整及缺图回退见报告的诊断项；退出 0 可以伴随警告。
+WKID 赋值和 origin 平移不执行重投影。输入的节点变换和单位规范化在模型读取阶段完成，不要在外部再重复应用。OBJ 自身不声明单位和向上轴，默认按右手 Z-up、每单位 1 米处理并记录 `OBJ_COORDINATE_ASSUMPTION`；Y-up 或厘米等模型应显式传入上述 OBJ 参数。OBJ 可读取一个位于模型目录内的 `mtllib`，保留 `Kd`、`d` 或 `Tr`、`map_Kd`；不支持的 MTL 通道会拒绝，GIS 静态模式可有记录地省略环境光和高光参数。实际 GIS 兼容调整及缺图回退见报告的诊断项；退出 0 可以伴随警告。
 
 参数值不能为空；除可重复的 `--texture-dir` 外，同一选项只能出现一次，`-o` 与 `--output` 视为同一选项。WKID 必须为正十进制整数，不接受小数、指数或超出 32 位有符号整数范围的写法。
 
