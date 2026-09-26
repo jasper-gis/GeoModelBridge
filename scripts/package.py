@@ -80,7 +80,8 @@ for name in sorted(set(listing)):
         continue
     path = root / rel
     if path.is_file(): files[rel.as_posix()] = path
-binary_files = [cli_name, native_name, *[p.relative_to(install).as_posix() for p in runtimes], "bin/demo/textured_quad.fbx", "bin/demo/checker.png"]
+binary_files = [cli_name, native_name, *[p.relative_to(install).as_posix() for p in runtimes],
+                "bin/demo/textured_quad.fbx", "bin/demo/textured_quad.obj", "bin/demo/textured_quad.mtl", "bin/demo/checker.png"]
 # Explicit SDK files: fail on missing/stale installed libraries instead of shipping
 # a release whose Python client silently targets a different executable version.
 for relative in ("geomodelbridge/__init__.py", "geomodelbridge/_version.py", "geomodelbridge/client.py", "examples/convert_fbx.py"):

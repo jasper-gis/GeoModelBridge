@@ -24,6 +24,7 @@ with tempfile.TemporaryDirectory(prefix="gmb-obj-") as directory:
     image = root / "checker.png"
     for name in (source.name, material.name, image.name):
         shutil.copyfile(fixtures / name, root / name)
+    assert run("inspect", fixtures / "textured_quad.fbx", "--obj-up-axis", "Y", success=False).returncode == 2
     bundle = root / "prepared"
     run("prepare", source, "--output", bundle, "--wkid", 32650,
         "--origin", 500000, 3000000, 100)

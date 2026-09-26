@@ -3,6 +3,7 @@
 #include "gmb/json_input.hpp"
 #include <nlohmann/json.hpp>
 #include <algorithm>
+#include <cctype>
 #include <cmath>
 #include <charconv>
 #include <cstdlib>
@@ -36,7 +37,7 @@ struct Options {
     gmb::Vec3 origin;
     int wkid=0;
     bool origin_explicit=false, profile_explicit=false;
-    bool missing_textures_explicit=false;
+    bool missing_textures_explicit=false, obj_options_explicit=false;
 };
 void help(const std::string& command="") {
     std::cout<<"GeoModelBridge V"<<gmb::version<<" - static FBX/OBJ to textured Multipatch pipeline\n\n"
@@ -156,8 +157,8 @@ Options parse(const std::vector<std::string>& args) {
         else if(flag=="--writer") o.writer=fs::u8path(value());
         else if(flag=="--backend") o.backend=value();
         else if(flag=="--texture-dir") o.reader.texture_directories.push_back(fs::u8path(value()));
-        else if(flag=="--obj-up-axis") {const auto axis=value();if(axis!="Z"&&axis!="Y")throw UsageError("OBJ up axis must be Z or Y.");o.reader.obj_y_up=axis=="Y";}
-        else if(flag=="--obj-unit-meters") {o.reader.obj_unit_meters=number(value());if(o.reader.obj_unit_meters<=0)throw UsageError("OBJ unit size must be positive.");}
+        else if(flag=="--obj-up-axis") {const auto axis=value();if(axis!="Z"&&axis!="Y")throw UsageError("OBJ up axis must be Z or Y.");o.reader.obj_y_up=axis=="Y";o.obj_options_explicit=true;}
+        else if(flag=="--obj-unit-meters") {o.reader.obj_unit_meters=number(value());if(o.reader.obj_unit_meters<=0)throw UsageError("OBJ unit size must be positive.");o.obj_options_explicit=true;}
         else if(flag=="--feature-class") o.feature_class=value();
         else if(flag=="--missing-textures") {
             if(o.missing_textures_explicit)throw UsageError("Duplicate missing-textures policy.");
@@ -178,6 +179,10 @@ Options parse(const std::vector<std::string>& args) {
         } else throw UsageError("Unknown option: "+flag);
     }
     if(o.command!="inspect"&&o.output.empty())throw UsageError("--output is required.");
+    auto extension=fs::u8path(o.input).extension().u8string();
+    std::transform(extension.begin(),extension.end(),extension.begin(),[](unsigned char c){return static_cast<char>(std::tolower(c));});
+    if(o.obj_options_explicit&&(o.command=="fixture"||extension!=".obj"))
+        throw UsageError("--obj-up-axis and --obj-unit-meters apply only to OBJ input.");
     if(o.command=="convert"&&o.report.empty())o.report=fs::u8path(fs::absolute(o.output).u8string()+".report.json");
     if(o.command=="fixture"&&o.input=="all"&&!o.report.empty())throw UsageError("fixture all writes a report inside each bundle; --report is only supported for a single fixture.");
     if(o.command=="inspect"&&!o.output.empty())throw UsageError("inspect does not create a model output; use --report.");

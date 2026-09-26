@@ -15,9 +15,11 @@ Windows 使用 `dist/bin/geomodelbridge.exe`；Linux 使用 `dist/bin/geomodelbr
 .\dist\bin\native-filegdb\GeoModelBridge.NativeWriter.exe --probe
 .\dist\bin\geomodelbridge.exe convert ".\dist\bin\demo\textured_quad.fbx" --output ".\new-demo.gdb" --wkid 32650 --origin 500000 3000000 100 --feature-class Models --report ".\new-demo.json"
 if ($LASTEXITCODE -ne 0) { throw "转换失败，退出码 $LASTEXITCODE" }
+# 对 Y-up、厘米单位的 OBJ 明确指定源坐标约定，输出使用另一个新路径：
+.\dist\bin\geomodelbridge.exe convert ".\my-model.obj" --obj-up-axis Y --obj-unit-meters 0.01 --output ".\new-obj.gdb" --wkid 32650 --origin 500000 3000000 100
 ```
 
-最后一次调用产生 `new-demo.gdb/Models` 和 `new-demo.json`。不写 `--report` 时默认为 `<输出GDB路径>.report.json`。输出 GDB 与报告均必须不存在，报告必须位于 GDB 目录外。不能追加要素类、覆盖已有 GDB，也没有内置 `--batch` / 通配符参数。一个进程接收一个 FBX；一个 FBX 中多个 mesh 可形成多个要素。
+FBX 示例产生 `new-demo.gdb/Models` 和 `new-demo.json`；OBJ 示例产生 `new-obj.gdb` 及默认的 `new-obj.gdb.report.json`。不写 `--report` 时默认为 `<输出GDB路径>.report.json`。输出 GDB 与报告均必须不存在，报告必须位于 GDB 目录外。不能追加要素类、覆盖已有 GDB，也没有内置 `--batch` / 通配符参数。一个进程接收一个 FBX 或 OBJ；一个模型中多个 mesh 可形成多个要素。
 
 `doctor` 的 `writer_present=true` 只说明可执行文件存在；`--probe` 才实际加载 SDK 和检查坐标系目录。完整写入检查须运行上面的演示转换。普通 FBX 调用主 CLI，不把 FBX 或 `FileGDBAPI.dll` 传给 writer 的 `--input` / CLI 的 `--writer`。
 

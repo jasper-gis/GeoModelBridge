@@ -20,7 +20,8 @@ if (install / "bin/arcgis-pro").exists(): raise AssertionError("Removed backend 
 cli_name, writer_name = executable_names()
 runtime_names = ["bin/native-filegdb/" + Path(name).name for name in sdk_manifest()["runtime_files"]]
 python_files = ["python/geomodelbridge/" + name for name in ("__init__.py", "_version.py", "client.py")]
-for name in [cli_name, writer_name, *runtime_names, "bin/demo/textured_quad.fbx", "bin/demo/checker.png", *python_files]:
+for name in [cli_name, writer_name, *runtime_names, "bin/demo/textured_quad.fbx", "bin/demo/textured_quad.obj",
+             "bin/demo/textured_quad.mtl", "bin/demo/checker.png", *python_files]:
     destination = work / name
     destination.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(install / name, destination)
