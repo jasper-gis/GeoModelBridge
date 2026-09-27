@@ -57,7 +57,26 @@ with tempfile.TemporaryDirectory(prefix="gmb-glb-") as directory:
         (500012, 3000001, 101), (500010, 3000001, 101)}
     assert {tuple(v["uv"]) for v in vertices} == {
         (0.25, 0.875), (0.75, 0.875), (0.75, 0.375), (0.25, 0.375)}
+    rotated = variation(root,"rotated-uv",lambda d: d["materials"][0]["pbrMetallicRoughness"]
+                        ["baseColorTexture"]["extensions"]["KHR_texture_transform"].update(rotation=1.5707963267948966))
+    rb = root / "rotated-bundle"
+    run("prepare",rotated,"--output",rb)
+    rotated_uvs = {tuple(round(x,5) for x in v["uv"]) for v in
+                   json.loads((rb / "scene.json").read_text())["meshes"][0]["vertices"]}
+    assert rotated_uvs == {(0.25,0.875),(0.25,0.375),(-0.25,0.375),(-0.25,0.875)}
     assert all(v["normal"] == [0, 0, 1] for v in vertices)
+    sparse_bytes = binary + b"\0\0\0\0" + struct.pack("<3f",1,0,0)
+    def sparse_position(d):
+        d["buffers"][0]["byteLength"] = len(sparse_bytes)
+        d["bufferViews"].extend([{"buffer":0,"byteOffset":len(binary),"byteLength":1},
+                                 {"buffer":0,"byteOffset":len(binary)+4,"byteLength":12}])
+        d["accessors"][0]["sparse"] = {"count":1,"indices":{"bufferView":5,"componentType":5121},
+                                         "values":{"bufferView":6}}
+    sparse = variation(root,"sparse",sparse_position,sparse_bytes)
+    sb = root / "sparse-bundle"
+    run("prepare",sparse,"--output",sb)
+    sparse_scene = json.loads((sb / "scene.json").read_text())
+    assert (11,-2,1) in {tuple(v["position"]) for v in sparse_scene["meshes"][0]["vertices"]}
     assert all(abs(x-y)<1e-6 for x,y in zip(scene["materials"][0]["color"], [0.8,0.6,0.4,0.75]))
     texture = scene["textures"][0]
     assert (bundle / texture["path"]).read_bytes() == (Path(sys.argv[2]) / "checker.png").read_bytes()
@@ -88,6 +107,8 @@ with tempfile.TemporaryDirectory(prefix="gmb-glb-") as directory:
     assert any(d["code"] == "MATERIAL_CHANNEL_OMITTED" for d in json.loads(report.read_text())["diagnostics"])
     masked = variation(root,"mask",lambda d: d["materials"][0].update(alphaMode="MASK",alphaCutoff=0.4))
     rejected(masked,"UNSUPPORTED_GLTF_ALPHA",root)
+    opaque_png = variation(root,"opaque-png",lambda d: d["materials"][0].update(alphaMode="OPAQUE"))
+    rejected(opaque_png,"UNSUPPORTED_GLTF_ALPHA",root)
     animated = variation(root,"animated",lambda d: d.update(animations=[{"samplers":[],"channels":[]}]))
     empty_report = root / "empty-animation.json"
     run("inspect",animated,"--report",empty_report)

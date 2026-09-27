@@ -149,14 +149,56 @@ const cgltf_accessor* attribute(const cgltf_primitive& p, cgltf_attribute_type t
 std::array<float,4> values(const cgltf_accessor* a, cgltf_size i, cgltf_size n, const std::string& ctx,
                            bool allow_nonfinite=false) {
     std::array<float,4> out{};
-    if (!a || i>=a->count || !cgltf_accessor_read_float(a,i,out.data(),n))
+    if (!a || i>=a->count)
         reject("INVALID_GLTF_ACCESSOR","GLB attribute cannot be decoded.",ctx);
+    auto base=*a;
+    base.is_sparse=false;
+    if (!cgltf_accessor_read_float(&base,i,out.data(),n))
+        reject("INVALID_GLTF_ACCESSOR","GLB base attribute cannot be decoded.",ctx);
+    if (a->is_sparse && a->sparse.count) {
+        const auto& sparse=a->sparse;
+        const auto* indices=cgltf_buffer_view_data(sparse.indices_buffer_view)+sparse.indices_byte_offset;
+        const auto index_size=cgltf_component_size(sparse.indices_component_type);
+        cgltf_size low=0,high=sparse.count;
+        while (low<high) {
+            const auto mid=low+(high-low)/2;
+            const auto at=cgltf_component_read_index(indices+mid*index_size,sparse.indices_component_type);
+            if (at<i) low=mid+1; else high=mid;
+        }
+        if (low<sparse.count && cgltf_component_read_index(indices+low*index_size,sparse.indices_component_type)==i) {
+            const auto* raw=cgltf_buffer_view_data(sparse.values_buffer_view)+sparse.values_byte_offset+
+                            low*cgltf_calc_size(a->type,a->component_type);
+            if (!cgltf_element_read_float(raw,a->type,a->component_type,a->normalized,out.data(),n))
+                reject("INVALID_GLTF_ACCESSOR","GLB sparse attribute cannot be decoded.",ctx);
+        }
+    }
     for (cgltf_size j=0;j<n;++j) if (!allow_nonfinite && !finite(out[j]))
         reject("NONFINITE_VERTEX","GLB attribute is nonfinite.",ctx);
     return out;
 }
 bool valid_normal(Vec3 n) {
     return finite(n.x)&&finite(n.y)&&finite(n.z)&&std::hypot(n.x,n.y,n.z)>1e-10;
+}
+bool png_has_alpha_channel(const std::vector<std::uint8_t>& bytes) {
+    if (bytes.size()<33 || bytes[8]!=0 || bytes[9]!=0 || bytes[10]!=0 || bytes[11]!=13 ||
+        bytes[12]!='I' || bytes[13]!='H' || bytes[14]!='D' || bytes[15]!='R')
+        reject("UNSUPPORTED_TEXTURE_FORMAT","GLB PNG has an invalid IHDR.","texture");
+    const auto color_type=bytes[25];
+    if (color_type==4 || color_type==6) return true;
+    std::size_t offset=8;
+    while (offset<bytes.size()) {
+        if (bytes.size()-offset<12)
+            reject("UNSUPPORTED_TEXTURE_FORMAT","GLB PNG chunk header is incomplete.","texture");
+        const auto length=(std::uint32_t(bytes[offset])<<24)|(std::uint32_t(bytes[offset+1])<<16)|
+                          (std::uint32_t(bytes[offset+2])<<8)|bytes[offset+3];
+        if (length>bytes.size()-offset-12)
+            reject("UNSUPPORTED_TEXTURE_FORMAT","GLB PNG chunk exceeds image bytes.","texture");
+        const auto type=std::string(reinterpret_cast<const char*>(bytes.data()+offset+4),4);
+        if (type=="tRNS") return true;
+        if (type=="IDAT" || type=="IEND") break;
+        offset+=12+length;
+    }
+    return false;
 }
 void require_no_extensions(const cgltf_extension* extensions, cgltf_size count, const std::string& ctx) {
     if (count) reject("UNSUPPORTED_GLTF_EXTENSION", "GLB extension is not represented: " + label(extensions[0].name,"unknown"),ctx);
@@ -184,6 +226,11 @@ Scene read_glb(const std::filesystem::path& input, const ReaderOptions& options)
             const std::string ext=data->extensions_used[i];
             if (ext!="KHR_materials_unlit" && ext!="KHR_texture_transform" && ext!="KHR_mesh_quantization")
                 reject("UNSUPPORTED_GLTF_EXTENSION","GLB extension is not represented: " + ext,"scene");
+        }
+        for (cgltf_size i=0;i<data->extensions_required_count;++i) {
+            const std::string ext=data->extensions_required[i];
+            if (ext!="KHR_materials_unlit" && ext!="KHR_texture_transform" && ext!="KHR_mesh_quantization")
+                reject("UNSUPPORTED_GLTF_EXTENSION","Required GLB extension is not represented: " + ext,"scene");
         }
         require_no_extensions(data->data_extensions,data->data_extensions_count,"scene");
         require_no_extensions(data->asset.extensions,data->asset.extensions_count,"asset");
@@ -265,6 +312,14 @@ Scene read_glb(const std::filesystem::path& input, const ReaderOptions& options)
                     s.values_byte_offset>s.values_buffer_view->size ||
                     s.count>(s.values_buffer_view->size-s.values_byte_offset)/element)
                     reject("INVALID_GLTF_ACCESSOR","GLB sparse accessor exceeds its buffer view.","scene");
+                const auto* raw=cgltf_buffer_view_data(s.indices_buffer_view)+s.indices_byte_offset;
+                cgltf_size previous=0;
+                for (cgltf_size k=0;k<s.count;++k) {
+                    const auto index=cgltf_component_read_index(raw+k*index_size,s.indices_component_type);
+                    if (index>=a.count || (k && index<=previous))
+                        reject("INVALID_GLTF_ACCESSOR","GLB sparse indices must be strictly increasing and in range.","scene");
+                    previous=index;
+                }
             }
         }
         if (cgltf_validate(data.get())!=cgltf_result_success)
@@ -341,6 +396,10 @@ Scene read_glb(const std::filesystem::path& input, const ReaderOptions& options)
                     if (detected=="application/octet-stream" ||
                         (texture->image->mime_type && detected!=texture->image->mime_type))
                         reject("UNSUPPORTED_TEXTURE_FORMAT","GLB image bytes or declared media type are unsupported.",ctx);
+                    if (source->alpha_mode==cgltf_alpha_mode_opaque && detected=="image/png" &&
+                        png_has_alpha_channel(image))
+                        reject("UNSUPPORTED_GLTF_ALPHA",
+                            "GLB OPAQUE mode ignores image alpha, but the FileGDB texture would retain it; export an opaque RGB image or use BLEND.",ctx);
                     Texture t; t.name=label(texture->image->name,"GLB image "+std::to_string(out.textures.size()));
                     t.mime_type=detected; t.source=texture->image->uri?texture->image->uri:"embedded:GLB";
                     t.embedded=texture->image->buffer_view!=nullptr; t.bytes=std::move(image);

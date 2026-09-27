@@ -10,5 +10,5 @@
 
 ## 尚待验证
 
-- 本机无 MSVC x64 工具链；`cmake --preset release` 在 CMake 的 FileGDB SDK/MSVC ABI 检查处终止。没有可用的 Ubuntu WSL 发行版。本版 GLB 的 Windows 与 Ubuntu 原生 FileGDB 写入、关闭重开、独立 GDB 副本核验、安装后 Python 客户端真实转换及 GUI 服务真实转换尚未执行。代码和 CI 已加入这些用例，运行通过前不能称 V0.4.0 GLB→FileGDB 已经通过原生验收。
+- 本机无 MSVC x64 工具链；`cmake --preset release` 在 CMake 的 FileGDB SDK/MSVC ABI 检查处终止。没有可用的 Ubuntu WSL 发行版。[本版 GitHub Actions 运行](https://github.com/jasper-gis/GeoModelBridge/actions/runs/36288264581) 的原生 Windows/Ubuntu 作业没有获得运行器；GitHub 检查注释为 “The job was not started because your account is locked due to a billing issue.” 本版 GLB 的 Windows 与 Ubuntu 原生 FileGDB 写入、关闭重开、独立 GDB 副本核验、安装后 Python 客户端真实转换及 GUI 服务真实转换尚未执行。代码和 CI 已加入这些用例，运行通过前不能称 V0.4.0 GLB→FileGDB 已经通过原生验收。
 - 目标 GIS 中的三维视觉验收为单独检查。GLB 的 UV 图片方向与透明度虽经过 Bundle 层检查，真实 FileGDB 回读与目标软件显示仍需核验。
