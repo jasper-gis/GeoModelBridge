@@ -363,7 +363,8 @@ Scene read_glb(const std::filesystem::path& input, const ReaderOptions& options)
                 if (!options.gis_static) reject("UNSUPPORTED_GLTF_MATERIAL","PBR shading requires explicit gis-static profile or an unlit material.",ctx);
                 out.diagnostics.push_back({Severity::warning,"MATERIAL_CHANNEL_OMITTED",
                     "GIS static profile omits glTF metallic/roughness PBR lighting; base color, scalar opacity and base-color image remain. Appearance is not baked.",ctx});
-            }
+            } else out.diagnostics.push_back({Severity::warning,"UNLIT_SHADING_MAPPED",
+                "glTF unlit base color is mapped to FileGDB diffuse material; the target scene may light it differently because the shape material has no unlit flag.",ctx});
             Material m; m.name=label(source->name,"GLB material "+std::to_string(mi));
             m.double_sided=source->double_sided;
             const auto& pbr=source->pbr_metallic_roughness;

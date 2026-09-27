@@ -81,6 +81,7 @@ with tempfile.TemporaryDirectory(prefix="gmb-glb-") as directory:
     texture = scene["textures"][0]
     assert (bundle / texture["path"]).read_bytes() == (Path(sys.argv[2]) / "checker.png").read_bytes()
     assert any(d["code"] == "GLTF_COORDINATE_CONVENTION" for d in scene["diagnostics"])
+    assert any(d["code"] == "UNLIT_SHADING_MAPPED" for d in scene["diagnostics"])
     sole_scene = variation(root,"sole-scene",lambda d: d.pop("scene"))
     sole_report = root / "sole-scene.json"
     run("inspect",sole_scene,"--report",sole_report)

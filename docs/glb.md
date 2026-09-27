@@ -6,6 +6,8 @@
 
 严格模式只接受 `KHR_materials_unlit`；普通 glTF PBR 材质需要显式 `--profile gis-static`。GIS 静态模式保留基色与贴图，逐项报告省略金属度、粗糙度与光照的 `MATERIAL_CHANNEL_OMITTED`。活动的节点变换动画在严格模式下拒绝；GIS 静态模式使用文件保存的节点姿态并记录 `STATIC_POSE_USED`，不选择某个动画时刻。两种模式均拒绝法线、遮蔽、发光、金属粗糙度等无法保留的图片通道，以及顶点色、alpha MASK、非默认采样器、未知扩展、形变、蒙皮、材质变体、压缩网格与非三角形图元。`OPAQUE` 模式的 PNG 若带 alpha 通道或 `tRNS` 也会拒绝，因为当前 FileGDB 贴图会保留图片 alpha；可导出 RGB 图片或改用 `BLEND`。缺少图片的默认策略仅移除该图片绑定，保留基色与标量透明度并报告 `MISSING_TEXTURE_FALLBACK`；`--missing-textures error` 改为拒绝。损坏、不可读或格式不符的图片始终失败。
 
+`KHR_materials_unlit` 的基色映射到 FileGDB 漫反射材质，报告记录 `UNLIT_SHADING_MAPPED`；目标场景仍可能施加光照，因此严格模式的成功不代表无光照外观逐像素一致。
+
 例如：
 
 ```powershell

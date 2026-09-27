@@ -535,7 +535,7 @@ internal static class Program
             var summary = ReportSummaryFormatter.Parse(report.ToJsonString());
             Assert(summary.ErrorCount == 1 && summary.WarningCount == 1 && !summary.IsSuccess, "One diagnostic array was dropped.");
         });
-        foreach (var code in new[] { "STATIC_POSE_USED", "MATERIAL_CHANNEL_OMITTED", "DEGENERATE_TRIANGLES_REMOVED", "JPEG_CONTAINER_NORMALIZED", "MISSING_TEXTURE_FALLBACK", "NORMALS_REPAIRED", "DEGENERATE_NORMALS_DISCARDED" })
+        foreach (var code in new[] { "STATIC_POSE_USED", "MATERIAL_CHANNEL_OMITTED", "UNLIT_SHADING_MAPPED", "DEGENERATE_TRIANGLES_REMOVED", "JPEG_CONTAINER_NORMALIZED", "MISSING_TEXTURE_FALLBACK", "NORMALS_REPAIRED", "DEGENERATE_NORMALS_DISCARDED" })
             Test("compatibility_adjustment_is_explicit_" + code, () =>
             {
                 var report = GoodReport();

@@ -5,7 +5,7 @@
 ## 已完成
 
 - Windows 核心构建：`cmake --preset core-release`、`cmake --build --preset core-release -j 4`、`ctest --preset core-release --output-on-failure`，11/11 通过。GLB 用例覆盖坐标与原点、UV 原点及变换、镜像实例、嵌入/外置图片、缺图策略、动画保存姿态、PBR 策略、法线修复、无效缓冲区与路径、以及无法表示的渲染语义拒绝；`output_safety` 原有并发与链接路径检查仍通过。
-- Windows GUI：`dotnet build apps/GeoModelBridge.Gui/GeoModelBridge.Gui.csproj -c Release` 成功，0 警告；`dotnet run --project apps/GeoModelBridge.Gui.Tests -c Release -- --work build/gui-glb-test`，223/223 服务测试通过（不含真实 FileGDB 转换）。
+- Windows GUI：`dotnet build apps/GeoModelBridge.Gui/GeoModelBridge.Gui.csproj -c Release` 成功，0 警告；`dotnet run --project apps/GeoModelBridge.Gui.Tests -c Release -- --work build/gui-glb-final`，224/224 服务测试通过（不含真实 FileGDB 转换）。
 - `python scripts/verify_dependencies.py` 与 `python scripts/check_version.py` 通过，包含 cgltf 1.15 与固定 FileGDB SDK 文件的哈希校验。Python 客户端单元契约包含 `.glb` 请求。
 
 ## 尚待验证

@@ -129,7 +129,7 @@ public static class ReportSummaryFormatter
         { throw new InvalidDataException("无法解析转换报告：" + ex.Message, ex); }
     }
 
-    private static bool IsCompatibilityCode(string code) => code is "STATIC_POSE_USED" or "MATERIAL_CHANNEL_OMITTED" or "DEGENERATE_TRIANGLES_REMOVED" or "JPEG_CONTAINER_NORMALIZED" or "MISSING_TEXTURE_FALLBACK" or "NORMALS_REPAIRED" or "DEGENERATE_NORMALS_DISCARDED";
+    private static bool IsCompatibilityCode(string code) => code is "STATIC_POSE_USED" or "MATERIAL_CHANNEL_OMITTED" or "UNLIT_SHADING_MAPPED" or "DEGENERATE_TRIANGLES_REMOVED" or "JPEG_CONTAINER_NORMALIZED" or "MISSING_TEXTURE_FALLBACK" or "NORMALS_REPAIRED" or "DEGENERATE_NORMALS_DISCARDED";
 
     private static IReadOnlyList<string> CheckReportedVerification(JsonElement root)
     {
@@ -289,6 +289,8 @@ public static class ReportSummaryFormatter
                 entry.Message.Contains("reflection", StringComparison.OrdinalIgnoreCase) ? "反射" : "额外渲染";
             return new(code + channel, "已省略" + channel + "通道", "保留常规颜色、漫反射贴图和 UV；环境光、高光或反射效果可能与源模型不同。");
         }
+        if (code == "UNLIT_SHADING_MAPPED")
+            return new(code, "GLB 无光照材质已映射为漫反射材质", "保留基色与贴图；目标场景可能施加光照，因此实际外观仍需检查。");
         return new(code, "已进行兼容处理：" + Clip(entry.Message, 100), "具体处理记录请查看原始报告。");
     }
 
