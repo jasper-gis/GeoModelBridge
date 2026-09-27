@@ -2,10 +2,10 @@
 
 <h1>GeoModelBridge</h1>
 <p><strong>将静态三维模型转换为 GIS 数据</strong></p>
-<p>FBX / OBJ → 带颜色与贴图的 FileGDB Multipatch</p>
+<p>FBX / OBJ / GLB → 带颜色与贴图的 FileGDB Multipatch</p>
 
 <p>
-  <a href="CHANGELOG.md"><code>V0.3.0</code></a> &nbsp;
+  <a href="CHANGELOG.md"><code>V0.4.0</code></a> &nbsp;
   <a href="docs/architecture.md"><code>C++17</code></a> &nbsp;
   <a href="#platforms"><code>Windows · Ubuntu</code></a>
 </p>
@@ -24,7 +24,7 @@
 
 GeoModelBridge 使用 **原生 FileGDB 后端 `native-filegdb`**，支持 Ubuntu 命令行与 Windows 命令行 / 图形界面。构建、转换和部署均无需安装 ArcGIS Pro、ArcPy 或获取 Pro 许可。
 
-V0.3.0 的 OBJ 读取及 Scene Bundle 检查已通过本机测试；OBJ 的真实 FileGDB 写入与双平台回读仍待执行，见 [验证状态](docs/validation-v0.3.0.md)。
+V0.4.0 新增 GLB 静态三角网格读取、材质与贴图检查，并接入现有原生 FileGDB 链路。当前实际验证范围见 [验证状态](docs/validation-v0.4.0.md)；历史 OBJ 验证状态保留在 [V0.3.0 记录](docs/validation-v0.3.0.md)。
 
 **研发接入：** [统一构建入口](docs/build-and-release.md) · [纯命令行与连续调用 EXE](docs/command-line.md) · [FileGDB API 调用链](docs/filegdb-api.md)。项目只保留根目录一个 `CMakeLists.txt`；默认一次构建 CLI、原生 writer 和 SDK 运行库。源码下载不包含 EXE / DLL，先下载固定 SDK 再从根目录构建。
 
@@ -33,9 +33,11 @@ V0.3.0 的 OBJ 读取及 Scene Bundle 检查已通过本机测试；OBJ 的真�
 - **缺图也能继续**：缺失的图片默认回退为材质颜色和标量透明度，保留警告及原路径；有效贴图照常写入。
 - **共用转换链路**：两平台使用同一套 C++17 核心、Scene Bundle 协议和报告格式，转换不覆盖已有模型或成果。
 
+GLB 的具体材质策略和可接受语义见 [GLB 输入说明](docs/glb.md)。
+
 ```mermaid
 flowchart LR
-    A[FBX / OBJ + 纹理] --> B[解析与校验]
+    A[FBX / OBJ / GLB + 纹理] --> B[解析与校验]
     B --> C[Scene Bundle]
     C --> D[原生 FileGDB 写入]
     D --> E[GDB + 回读报告]

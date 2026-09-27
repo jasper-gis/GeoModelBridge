@@ -88,6 +88,14 @@ class ClientTests(unittest.TestCase):
             with self.subTest(change=change), self.assertRaises(ValidationError):
                 self.engine.validate(replace(request, **change))
 
+    def test_glb_source(self):
+        glb = self.root / "模型.glb"
+        glb.write_bytes(b"placeholder")
+        request = replace(self.request, input_fbx=glb)
+        args = self.engine.command(request)
+        self.assertIn(str(glb), args)
+        self.assertNotIn("--obj-up-axis", args)
+
     def test_invalid_requests(self):
         changes = [dict(wkid=True), dict(wkid="3857"), dict(wkid=0), dict(wkid=2**31),
                    dict(origin=(1, 2)), dict(origin=(1, 2, float("nan"))), dict(origin=(1, 2, float("inf"))),

@@ -5,7 +5,7 @@
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Version>0.3.0</Version>
+    <Version>0.4.0</Version>
     <AssemblyName>geomodelbridgeGUI</AssemblyName>
     <ApplicationIcon>Assets/AppIcon.ico</ApplicationIcon>
     <RootNamespace>GeoModelBridge.Gui</RootNamespace>
@@ -17,12 +17,13 @@
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <DebugType>none</DebugType>
     <Product>GeoModelBridge GUI</Product>
-    <Description>三维模型转换工具 · FBX to FileGDB Multipatch</Description>
+    <Description>三维模型转换工具 · FBX/OBJ/GLB to FileGDB Multipatch</Description>
   </PropertyGroup>
   <ItemGroup>
     <Resource Include="Assets/AppIcon.ico" />
     <ProjectReference Include="../GeoModelBridge.Gui.Core/GeoModelBridge.Gui.Core.csproj" />
     <Content Include="../../tests/fixtures/textured_quad.fbx" Link="demo/textured_quad.fbx" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    <Content Include="../../tests/fixtures/textured_quad.glb" Link="demo/textured_quad.glb" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
     <Content Include="../../tests/fixtures/checker.png" Link="demo/checker.png" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
   </ItemGroup>
 </Project>

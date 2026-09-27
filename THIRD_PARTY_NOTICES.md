@@ -1,5 +1,13 @@
 # Third-party notices
 
+## cgltf 1.15
+
+- Source: https://github.com/jkuhlmann/cgltf
+- Commit: `360db1a95480fe102ae9c69b27c5d101167ff5ba` (tag `v1.15`).
+- File: `third_party/cgltf/cgltf.h`.
+- MIT license: `third_party/cgltf/LICENSE`, retained unchanged and installed with the CLI.
+- Used only for glTF 2.0 GLB parsing and accessor decoding. Unsupported rendering extensions and deformation are rejected by the application.
+
 ## ufbx 0.23.0
 
 - Source: https://github.com/ufbx/ufbx

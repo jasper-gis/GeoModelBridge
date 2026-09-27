@@ -8,6 +8,9 @@ flowchart LR
   PY[Python 调用库 / 后续 ATBX 脚本] --> C
   C --> R
   FBX[静态 FBX 与图片] --> R[ufbx Reader / C++17]
+  OBJ[OBJ/MTL 与图片] --> R
+  GLB[glTF 2.0 GLB 与图片] --> L[cgltf Reader / C++17]
+  L --> S
   R --> S[统一 Scene 与严格验证]
   F[人工测试网格] --> S
   S --> B[Scene Bundle 与图片]

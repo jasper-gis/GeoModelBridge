@@ -20,7 +20,7 @@ if (install / "bin/arcgis-pro").exists(): raise AssertionError("Removed backend 
 cli_name, writer_name = executable_names()
 runtime_names = ["bin/native-filegdb/" + Path(name).name for name in sdk_manifest()["runtime_files"]]
 python_files = ["python/geomodelbridge/" + name for name in ("__init__.py", "_version.py", "client.py")]
-for name in [cli_name, writer_name, *runtime_names, "bin/demo/textured_quad.fbx", "bin/demo/textured_quad.obj",
+for name in [cli_name, writer_name, *runtime_names, "bin/demo/textured_quad.fbx", "bin/demo/textured_quad.obj", "bin/demo/textured_quad.glb",
              "bin/demo/textured_quad.mtl", "bin/demo/checker.png", *python_files]:
     destination = work / name
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -76,6 +76,16 @@ second = json.loads((work / "second.gdb.report.json").read_text(encoding="utf-8"
 assert second["status"] == "written_and_readback_verified"
 assert second["coordinates"]["wkid"] == 3857 and second["coordinates"]["origin"] == [100, 200, 300]
 assert second["feature_class"] == "SecondModels"
+run(cli, "convert", work / "bin/demo/textured_quad.glb", "--output", work / "glb.gdb",
+    "--wkid", 3857, "--origin", 100, 200, 300)
+glb_report = json.loads((work / "glb.gdb.report.json").read_text(encoding="utf-8"))
+assert glb_report["status"] == "written_and_readback_verified"
+assert glb_report["coordinates"]["origin"] == [100, 200, 300]
+assert any(check["textured_patches"] > 0 for check in glb_report["verification"]["checks"])
+shutil.copytree(work / "glb.gdb", work / "glb-copy.gdb")
+run(writer, "--verify-gdb", work / "glb-copy.gdb", "--expected-report", work / "glb.gdb.report.json",
+    "--report", work / "glb-copy-check.json")
+assert json.loads((work / "glb-copy-check.json").read_text(encoding="utf-8"))["status"] == "standalone_copy_verified"
 shutil.copytree(work / "second.gdb", work / "second-copy.gdb")
 run(writer, "--verify-gdb", work / "second-copy.gdb", "--expected-report", work / "second.gdb.report.json",
     "--report", work / "second-copy-check.json")

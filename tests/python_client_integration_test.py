@@ -26,7 +26,7 @@ assert not engine.check().arcgis_pro_required
 fixtures = Path(__file__).resolve().parent / "fixtures"
 source_dir = work / "中文 模型 & 输入"
 source_dir.mkdir()
-for name in ("textured_quad.fbx", "textured_quad.obj", "textured_quad.mtl", "checker.png", "missing_texture.fbx"):
+for name in ("textured_quad.fbx", "textured_quad.obj", "textured_quad.glb", "textured_quad.mtl", "checker.png", "missing_texture.fbx"):
     shutil.copy2(fixtures / name, source_dir / name)
 base = (fixtures / "textured_quad.fbx").read_text(encoding="utf-8")
 broken = re.sub(r"Normals: \*\d+ \{ a: [^}]+", "Normals: *12 { a: " + ",".join(["0"] * 12) + " ", base)
@@ -62,6 +62,12 @@ obj_result = engine.convert(obj_request)
 obj_report = verify_copy(obj_result)
 assert any(check["textured_patches"] > 0 for check in obj_report["verification"]["checks"])
 assert any(d.code == "OBJ_COORDINATE_ASSUMPTION" for d in obj_result.diagnostics)
+glb_request = replace(request, input_fbx=source_dir / "textured_quad.glb", output_gdb=work / "GLB 贴图.gdb",
+                      feature_class="ImportedGLB", profile="strict")
+glb_result = engine.convert(glb_request)
+glb_report = verify_copy(glb_result)
+assert any(check["textured_patches"] > 0 for check in glb_report["verification"]["checks"])
+assert glb_report["coordinates"]["origin"] == [100, 100, 100]
 try:
     engine.convert(request)
     raise AssertionError("Existing GDB accepted")

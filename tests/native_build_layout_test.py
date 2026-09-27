@@ -45,16 +45,19 @@ with tempfile.TemporaryDirectory(prefix="gmb-build-") as directory:
     run(writer, "--verify-gdb", work / "copy.gdb", "--expected-report", report_path,
         "--report", work / "copy.json")
     assert json.loads((work / "copy.json").read_text())["status"] == "standalone_copy_verified"
-    obj = fixture.with_suffix(".obj")
-    run(cli, "convert", obj, "--output", work / "obj.gdb", "--wkid", 32650,
-        "--origin", 500000, 3000000, 100)
-    obj_report_path = work / "obj.gdb.report.json"
-    obj_report = json.loads(obj_report_path.read_text(encoding="utf-8"))
-    assert obj_report["status"] == "written_and_readback_verified"
-    assert obj_report["source"] == str(obj)
-    assert any(check["textured_patches"] > 0 for check in obj_report["verification"]["checks"])
-    shutil.copytree(work / "obj.gdb", work / "obj-copy.gdb")
-    run(writer, "--verify-gdb", work / "obj-copy.gdb", "--expected-report", obj_report_path,
-        "--report", work / "obj-copy.json")
-    assert json.loads((work / "obj-copy.json").read_text())["status"] == "standalone_copy_verified"
-print("PASS root build layout: FBX/OBJ textured GDBs and standalone copy readback")
+    for extension in (".obj", ".glb"):
+        source = fixture.with_suffix(extension)
+        label = extension[1:]
+        run(cli, "convert", source, "--output", work / (label + ".gdb"), "--wkid", 32650,
+            "--origin", 500000, 3000000, 100)
+        report_path = work / (label + ".gdb.report.json")
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+        assert report["status"] == "written_and_readback_verified"
+        assert report["source"] == str(source)
+        assert report["coordinates"]["origin"] == [500000, 3000000, 100]
+        assert any(check["textured_patches"] > 0 for check in report["verification"]["checks"])
+        shutil.copytree(work / (label + ".gdb"), work / (label + "-copy.gdb"))
+        run(writer, "--verify-gdb", work / (label + "-copy.gdb"), "--expected-report", report_path,
+            "--report", work / (label + "-copy.json"))
+        assert json.loads((work / (label + "-copy.json")).read_text())["status"] == "standalone_copy_verified"
+print("PASS root build layout: FBX/OBJ/GLB textured GDBs and standalone copy readback")

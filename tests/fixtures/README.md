@@ -1,9 +1,15 @@
-# Project-authored FBX acceptance assets
+# Project-authored model acceptance assets
 
 These small ASCII FBX 7.4 fixtures and the generated 2 x 2 RGBA PNG were authored
 for GeoModelBridge. The project owner has not selected an open-source license. They do not copy
 third-party models. `checker.png` pixels (top row then bottom row): red, green,
 blue, white. All pixels are opaque.
+
+`textured_quad.glb` is generated deterministically by `../glb_fixture.py` from
+the same project-authored PNG. It is glTF 2.0: Y-up metres, unlit RGBA base
+color, embedded PNG, UV transform, one translated node and two triangles.
+`../glb_integration_test.py` also creates mirrored instances, external image
+paths and deliberately invalid GLBs in temporary directories.
 
 * `colored_quad.fbx`: one Z-up, meter quad spanning X=[0,2], Y=[0,3], Z=0.
   Two triangles after triangulation; Lambert RGBA=(0.4,0.1,0.05,0.75).

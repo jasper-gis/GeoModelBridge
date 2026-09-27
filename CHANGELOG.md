@@ -1,5 +1,11 @@
 # Changelog
 
+## V0.4.0 — 2026-09-27
+
+- 新增 glTF 2.0 GLB → 共享 Scene Bundle → 原生 FileGDB 通路，包含节点层级与镜像实例、角点法线和 UV、嵌入/外置 PNG/JPEG、基色与透明度、`KHR_texture_transform` 以及位置与来源记录。CLI、Windows GUI 和标准库 Python 客户端均可选择 GLB。
+- 严格模式要求无光照材质；显式 GIS 静态模式可记录省略普通 PBR 光照、采用保存的节点动画姿态并保留基色贴图。未表示的材质通道、形变、未知扩展、采样器语义等会明确拒绝；缺图回退沿用两种模式的既定策略。
+- 增加 GLB 解析/边界测试、原生构建目录和部署回读用例、安装后 Python 客户端及 GUI 服务用例，并固定 cgltf 1.15 的来源、许可与哈希。实际执行情况见 [V0.4.0 验证状态](docs/validation-v0.4.0.md)。
+
 ## V0.3.0 — 2026-09-26
 
 - 增加 OBJ/MTL → Scene Bundle → 原生 FileGDB 通路，复用现有角点、贴图、定位、独占写出和回读核验。CLI、Windows GUI 与无第三方依赖的 Python 客户端均可选择 OBJ。

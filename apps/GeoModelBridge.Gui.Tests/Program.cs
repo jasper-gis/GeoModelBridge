@@ -6,7 +6,7 @@ using GeoModelBridge.Gui.Core;
 
 internal static class Program
 {
-    private const string Version = "0.3.0";
+    private const string Version = "0.4.0";
     private static readonly List<TestCase> Results = [];
     private static string Work = "";
     private static string Input = "";
@@ -138,6 +138,9 @@ internal static class Program
         var objPath = Path.Combine(Work, "wrong.obj");
         File.WriteAllText(objPath, "test");
         Test("accept_obj_input", () => Valid(Settings with { InputPath = objPath }));
+        var glbPath = Path.Combine(Work, "model.glb");
+        File.WriteAllBytes(glbPath, [1, 2, 3]);
+        Test("accept_glb_input", () => Valid(Settings with { InputPath = glbPath }));
         Test("reject_obj_bad_axis", () => Invalid(Settings with { InputPath = objPath, ObjUpAxis = "X" }));
         Test("reject_obj_bad_unit", () => Invalid(Settings with { InputPath = objPath, ObjUnitMeters = "0" }));
         var wrongPath = Path.Combine(Work, "wrong.txt");
@@ -943,7 +946,7 @@ internal static class Program
         var service = new EngineService(engineDirectory);
         await TestAsync("native_backend_runtime_probe", async () =>
         {
-            Assert(service.IsEnginePresent, "Built V0.3.0 engine is absent: " + service.EnginePath);
+            Assert(service.IsEnginePresent, "Built V0.4.0 engine is absent: " + service.EnginePath);
             var probe = await service.ProbeBackendAsync("native-filegdb");
             Assert(probe.Success, probe.Message);
         });
@@ -975,6 +978,20 @@ internal static class Program
             var textures = report["textures"]!.AsArray();
             Assert(textures.Count > 0 && textures.All(texture => texture!["readback_bytes_equal"]!.GetValue<bool>()), "Texture bytes were not verified after GDB reopen.");
             Assert(events.Count > 0, "No GUI progress events were delivered.");
+        });
+        await TestAsync("real_native_glb_conversion_from_gui_service", async () =>
+        {
+            var glbInput = Path.Combine(caseDirectory, "嵌入贴图.glb");
+            File.Copy(Path.Combine(fixtureDirectory, "textured_quad.glb"), glbInput);
+            var glbRequest = request with { InputPath = glbInput,
+                OutputPath = Path.Combine(caseDirectory, "GLB 结果.gdb"),
+                ReportPath = Path.Combine(caseDirectory, "GLB 核验.json"), Profile = "strict" };
+            var result = await service.ConvertAsync(glbRequest);
+            Assert(result.Success && result.ExitCode == 0, result.Message);
+            ReportVerifier.Verify(File.ReadAllText(glbRequest.ReportPath), glbRequest);
+            var report = JsonNode.Parse(File.ReadAllText(glbRequest.ReportPath))!;
+            Assert(report["status"]!.GetValue<string>() == "written_and_readback_verified", "GLB native readback failed.");
+            Assert(report["textures"]!.AsArray().Any(t => t!["readback_bytes_equal"]!.GetValue<bool>()), "GLB texture was not verified.");
         });
         await TestAsync("repeat_conversion_refuses_to_overwrite_gdb_and_report", async () =>
         {

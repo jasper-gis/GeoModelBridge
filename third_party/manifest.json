@@ -1,6 +1,22 @@
 {
   "dependencies": [
     {
+      "name": "cgltf",
+      "version": "1.15",
+      "revision": "360db1a95480fe102ae9c69b27c5d101167ff5ba",
+      "source": "https://github.com/jkuhlmann/cgltf",
+      "files": [
+        {
+          "path": "third_party/cgltf/cgltf.h",
+          "sha256": "e378a21c084bf1f288bb799de827bb26906efb024255f1ecf1705ea13f11c6ec"
+        },
+        {
+          "path": "third_party/cgltf/LICENSE",
+          "sha256": "f619925f80ef862497aaf8e8155ef218fa6a2190055129523ca3df9119a9ba95"
+        }
+      ]
+    },
+    {
       "revision": "fcc5d6ba444cfd3eb80677dba5e37e493941abe5",
       "source": "https://github.com/ufbx/ufbx",
       "files": [
