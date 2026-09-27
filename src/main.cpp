@@ -1,6 +1,7 @@
 #include "gmb/scene.hpp"
 #include "gmb/output.hpp"
 #include "gmb/json_input.hpp"
+#include "gmb/max_adapter.hpp"
 #include <nlohmann/json.hpp>
 #include <algorithm>
 #include <cctype>
@@ -34,13 +35,15 @@ struct Options {
     std::string command, input, backend="native-filegdb", feature_class="Models";
     fs::path output,report,writer;
     gmb::ReaderOptions reader;
+    gmb::MaxOptions max;
+    bool max_frame_explicit=false, max_options_explicit=false;
     gmb::Vec3 origin;
     int wkid=0;
     bool origin_explicit=false, profile_explicit=false;
     bool missing_textures_explicit=false, obj_options_explicit=false;
 };
 void help(const std::string& command="") {
-    std::cout<<"GeoModelBridge V"<<gmb::version<<" - static FBX/OBJ/GLB/glTF/WRL to textured Multipatch pipeline\n\n"
+    std::cout<<"GeoModelBridge V"<<gmb::version<<" - static FBX/OBJ/GLB/glTF/WRL/MAX to textured Multipatch pipeline\n\n"
         "Usage: geomodelbridge COMMAND [ARGUMENTS]\n"
         "Help:  geomodelbridge -h | --help | COMMAND -h | COMMAND --help\n\n";
     if(command.empty())std::cout<<
@@ -52,10 +55,10 @@ void help(const std::string& command="") {
         "  doctor    Show writer discovery; does not load or test the SDK.\n\n"
         "  geomodelbridge --version\n"
         "  geomodelbridge doctor\n"
-        "  geomodelbridge inspect INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl [--report NEW.json] [OPTIONS]\n"
-        "  geomodelbridge prepare INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl --output NEW_BUNDLE [OPTIONS]\n"
+        "  geomodelbridge inspect INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl|INPUT.max [--report NEW.json] [OPTIONS]\n"
+        "  geomodelbridge prepare INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl|INPUT.max --output NEW_BUNDLE [OPTIONS]\n"
         "  geomodelbridge fixture NAME|all --output NEW_DIR [OPTIONS]\n"
-        "  geomodelbridge convert INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl --output NEW.gdb [--backend native-filegdb]\n"
+        "  geomodelbridge convert INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl|INPUT.max --output NEW.gdb [--backend native-filegdb]\n"
         "      --wkid PROJECTED_METRIC_WKID --origin X Y Z [OPTIONS]\n\n";
     else if(command=="doctor") {
         std::cout<<"Usage: geomodelbridge doctor\n"
@@ -66,13 +69,13 @@ void help(const std::string& command="") {
             "For an end-to-end check, convert the installed demo/textured_quad.fbx.\n";
         return;
     } else if(command=="convert")std::cout<<
-        "Usage: geomodelbridge convert INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl --output NEW.gdb\n"
+        "Usage: geomodelbridge convert INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl|INPUT.max --output NEW.gdb\n"
         "         --wkid PROJECTED_METRIC_WKID --origin X Y Z [OPTIONS]\n\n";
     else if(command=="inspect")std::cout<<
-        "Usage: geomodelbridge inspect INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl [--report NEW.json] [OPTIONS]\n"
+        "Usage: geomodelbridge inspect INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl|INPUT.max [--report NEW.json] [OPTIONS]\n"
         "Validates the model; does not create a GDB or a Scene Bundle.\n\n";
     else if(command=="prepare")std::cout<<
-        "Usage: geomodelbridge prepare INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl --output NEW_BUNDLE [OPTIONS]\n"
+        "Usage: geomodelbridge prepare INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl|INPUT.max --output NEW_BUNDLE [OPTIONS]\n"
         "Creates scene.json, textures and report.json, not a GDB.\n"
         "Supply --wkid and --origin now if this bundle will be written to GDB.\n\n";
     else if(command=="fixture")std::cout<<
@@ -101,6 +104,10 @@ void help(const std::string& command="") {
         "  --missing-textures P    material-color (default) or error.\n"
         "  --obj-up-axis Z|Y       OBJ source up axis (default Z).\n"
         "  --obj-unit-meters N     Metres per OBJ unit (default 1).\n";
+    if(command!="fixture")std::cout<<
+        "  --max-batch PATH        Licensed Windows 3dsmaxbatch.exe; MAX input only.\n"
+        "  --max-frame N           Required integer frame for MAX static capture.\n"
+        "  --max-timeout N         Max Batch timeout in seconds, 1..86400 (default 600).\n";
     std::cout<<"\nPolicies:\n"
         "No overwrites or appends. Strict mode rejects unsupported rendering.\n"
         "gis-static uses the saved static pose, omits ambient/specular/reflection,\n"
@@ -110,6 +117,8 @@ void help(const std::string& command="") {
         "--missing-textures error to require every referenced image.\n"
         "GLB/glTF use glTF 2.0 Y-up metres; strict accepts unlit materials.\n"
         "WRL supports VRML97 static IndexedFaceSet meshes in Y-up metres.\n"
+        "MAX requires an optional Windows Max Batch runtime and explicit frame;\n"
+        "only the documented static mesh/Standard material subset is accepted.\n"
         "Use gis-static for ordinary PBR base color with reported lighting loss.\n"
         "WKID assignment and origin translation do not perform CRS reprojection.\n"
         "Existing corrupt/unreadable images still fail.\n"
@@ -118,7 +127,7 @@ void help(const std::string& command="") {
         "Exit codes: 0 success; 2 arguments/path conflict; 3 model rejected;\n"
         "            4 backend unavailable; 5 writer failed; 6 operation/IO error.\n";
     if(command.empty()||command=="convert")std::cout<<
-        "\nSequential calls (one FBX/OBJ/GLB/glTF/WRL -> one NEW GDB per process; no batch flag):\n"
+        "\nSequential calls (one FBX/OBJ/GLB/glTF/WRL/MAX -> one NEW GDB per process; no batch flag):\n"
         "  geomodelbridge convert \"model A.fbx\" -o new-a.gdb --wkid 32650 --origin 500000 3000000 100\n"
         "  geomodelbridge convert \"model B.fbx\" -o new-b.gdb --wkid 32650 --origin 500000 3000000 100\n"
         "Replace sample placement with real coordinates. Wait for each process,\n"
@@ -158,6 +167,17 @@ Options parse(const std::vector<std::string>& args) {
         if(flag=="--output"||flag=="-o") {if(!o.output.empty())throw UsageError("Duplicate output.");o.output=fs::u8path(value());}
         else if(flag=="--report") {if(!o.report.empty())throw UsageError("Duplicate report.");o.report=fs::u8path(value());}
         else if(flag=="--writer") o.writer=fs::u8path(value());
+        else if(flag=="--max-batch") {o.max.batch_executable=fs::u8path(value());o.max_options_explicit=true;}
+        else if(flag=="--max-frame") {
+            const auto v=value();const auto p=std::from_chars(v.data(),v.data()+v.size(),o.max.frame);
+            if(p.ec!=std::errc{}||p.ptr!=v.data()+v.size()||o.max.frame < -1000000||o.max.frame>1000000)throw UsageError("MAX frame must be an integer in -1000000..1000000.");
+            o.max_frame_explicit=true;o.max_options_explicit=true;
+        }
+        else if(flag=="--max-timeout") {
+            const auto v=value();const auto p=std::from_chars(v.data(),v.data()+v.size(),o.max.timeout_seconds);
+            if(p.ec!=std::errc{}||p.ptr!=v.data()+v.size()||o.max.timeout_seconds<1||o.max.timeout_seconds>86400)throw UsageError("MAX timeout must be an integer in 1..86400.");
+            o.max_options_explicit=true;
+        }
         else if(flag=="--backend") o.backend=value();
         else if(flag=="--texture-dir") o.reader.texture_directories.push_back(fs::u8path(value()));
         else if(flag=="--obj-up-axis") {const auto axis=value();if(axis!="Z"&&axis!="Y")throw UsageError("OBJ up axis must be Z or Y.");o.reader.obj_y_up=axis=="Y";o.obj_options_explicit=true;}
@@ -186,6 +206,8 @@ Options parse(const std::vector<std::string>& args) {
     std::transform(extension.begin(),extension.end(),extension.begin(),[](unsigned char c){return static_cast<char>(std::tolower(c));});
     if(o.obj_options_explicit&&(o.command=="fixture"||extension!=".obj"))
         throw UsageError("--obj-up-axis and --obj-unit-meters apply only to OBJ input.");
+    if(o.max_options_explicit&&(o.command=="fixture"||extension!=".max"))throw UsageError("MAX options apply only to .max input.");
+    if(extension==".max"&&o.command!="fixture"&&(!o.max_frame_explicit||o.max.batch_executable.empty()))throw UsageError("MAX input requires --max-batch PATH and --max-frame N.");
     if(o.command=="convert"&&o.report.empty())o.report=fs::u8path(fs::absolute(o.output).u8string()+".report.json");
     if(o.command=="fixture"&&o.input=="all"&&!o.report.empty())throw UsageError("fixture all writes a report inside each bundle; --report is only supported for a single fixture.");
     if(o.command=="inspect"&&!o.output.empty())throw UsageError("inspect does not create a model output; use --report.");
@@ -263,16 +285,23 @@ int run_process(const std::vector<std::string>& args,const fs::path& log_path) {
     return WIFEXITED(status)?WEXITSTATUS(status):5;
 #endif
 }
-fs::path default_writer(const std::string& argv0) {
-    if(const auto* env=std::getenv("GMB_NATIVE_WRITER"))return fs::u8path(env);
+fs::path executable_directory(const std::string& argv0) {
     fs::path exe=fs::absolute(fs::u8path(argv0));
 #ifdef _WIN32
     wchar_t path[32768];auto len=GetModuleFileNameW(nullptr,path,32768);if(len>0&&len<32768)exe=fs::path(std::wstring(path,len));
-    return exe.parent_path()/"native-filegdb"/"GeoModelBridge.NativeWriter.exe";
+    return exe.parent_path();
 #else
     // argv[0] may be only a command name found through PATH, or a symlink.
     std::error_code ec;auto resolved=fs::read_symlink("/proc/self/exe",ec);if(!ec)exe=resolved;
-    return exe.parent_path()/"native-filegdb"/"GeoModelBridge.NativeWriter";
+    return exe.parent_path();
+#endif
+}
+fs::path default_writer(const std::string& argv0) {
+    if(const auto* env=std::getenv("GMB_NATIVE_WRITER"))return fs::u8path(env);
+#ifdef _WIN32
+    return executable_directory(argv0)/"native-filegdb"/"GeoModelBridge.NativeWriter.exe";
+#else
+    return executable_directory(argv0)/"native-filegdb"/"GeoModelBridge.NativeWriter";
 #endif
 }
 int convert(const gmb::Scene& scene,Options& o,const std::string& argv0) {
@@ -424,7 +453,11 @@ int main_utf8(const std::vector<std::string>& args) {
             catch(...) {std::error_code ec;fs::remove_all(o.output,ec);throw;}
             std::cout<<"Fixture suite prepared: "<<o.output.u8string()<<"\n";return 0;
         }
-        gmb::Scene scene=o.command=="fixture"?gmb::make_fixture(o.input):gmb::read_model(fs::u8path(o.input),o.reader);
+        auto ext=fs::u8path(o.input).extension().u8string();
+        std::transform(ext.begin(),ext.end(),ext.begin(),[](unsigned char c){return static_cast<char>(std::tolower(c));});
+        gmb::Scene scene=o.command=="fixture"?gmb::make_fixture(o.input):
+            ext==".max"?gmb::read_max(fs::u8path(o.input),o.reader,o.max,executable_directory(args[0])/"max-adapter"/"worker.py"):
+            gmb::read_model(fs::u8path(o.input),o.reader);
         scene.missing_texture_policy=o.reader.missing_texture_fallback?"material-color":"error";
         gmb::apply_origin(scene,o.origin,o.wkid,o.origin_explicit);
         auto ds=gmb::validate(scene);diagnostics(ds);

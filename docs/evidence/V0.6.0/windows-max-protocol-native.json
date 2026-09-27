@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "real_max_runtime_used": false,
+  "real_filegdb_written": true,
+  "independent_copy_readback": true,
+  "installed_client": true,
+  "invalid_binding_rejected_before_gdb": true
+}

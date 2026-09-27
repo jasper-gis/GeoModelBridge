@@ -4,6 +4,8 @@
 
 本文补充 README 的快速开始流程，面向需要自定义构建、迁移客户机或维护发布的使用者。所有命令在仓库根目录执行；默认安装目录为 `dist`。
 
+V0.6.0 的完整安装还包含 `bin/max-adapter/worker.py`；它必须与引擎同版本。MAX 预处理仅在用户另行配置了 Windows 3ds Max Batch 时运行，普通构建及其他格式转换不需要 Max。MAX 接受范围和实机验证状态见 [适配器说明](max-adapter.md)。
+
 ## 构建选项
 
 V0.1.14 只保留仓库根目录的 `CMakeLists.txt`。核心库、CLI、原生 writer、SDK 链接、运行库复制、CTest 和安装规则均由此文件定义；`backends/native-filegdb` 仅保留 C++ 源码、SDK 来源清单和测试，不再是可独立配置的 CMake 工程。

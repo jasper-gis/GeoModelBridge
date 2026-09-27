@@ -16,8 +16,8 @@ public static partial class ConversionValidator
         var output = FullPath(settings.OutputPath, "输出 GDB", issues);
         if (input is not null)
         {
-            if (!new[] { ".fbx", ".obj", ".glb", ".gltf", ".wrl" }.Contains(Path.GetExtension(input), StringComparer.OrdinalIgnoreCase))
-                issues.Add("输入模型必须是 .fbx、.obj、.glb、.gltf 或 .wrl 文件。");
+            if (!new[] { ".fbx", ".obj", ".glb", ".gltf", ".wrl", ".max" }.Contains(Path.GetExtension(input), StringComparer.OrdinalIgnoreCase))
+                issues.Add("输入模型必须是 .fbx、.obj、.glb、.gltf、.wrl 或 .max 文件。");
             if (!File.Exists(input)) issues.Add("找不到输入模型文件，请重新选择。");
         }
         if (output is not null)
@@ -55,6 +55,16 @@ public static partial class ConversionValidator
                 if (PathRules.IsWithinOrEqual(report, output)) issues.Add("转换报告必须保存在输出 GDB 目录之外。");
                 if (input is not null && PathRules.Equal(report, input)) issues.Add("转换报告不能覆盖输入模型。");
             }
+        }
+        if (input is not null && string.Equals(Path.GetExtension(input), ".max", StringComparison.OrdinalIgnoreCase))
+        {
+            var batch = FullPath(settings.MaxBatchPath, "3ds Max Batch 程序", issues);
+            if (batch is not null && (!File.Exists(batch) || !string.Equals(Path.GetExtension(batch), ".exe", StringComparison.OrdinalIgnoreCase)))
+                issues.Add("请选择已安装并授权的 3dsmaxbatch.exe。");
+            if (!int.TryParse(settings.MaxFrame?.Trim(), NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var frame) || frame < -1000000 || frame > 1000000)
+                issues.Add("MAX 必须明确填写采样帧（-1000000 到 1000000 的整数）。");
+            if (!int.TryParse(settings.MaxTimeout?.Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out var timeout) || timeout < 1 || timeout > 86400)
+                issues.Add("MAX 超时秒数必须是 1 到 86400 的整数。");
         }
         if (settings.TextureDirectories is null) issues.Add("贴图目录列表无效。");
         else foreach (var directory in settings.TextureDirectories)

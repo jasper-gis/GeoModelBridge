@@ -1,8 +1,10 @@
-# 纯命令行与连续调用 EXE · V0.5.0
+# 纯命令行与连续调用 EXE · V0.6.0
 
 [首页](../README.md) · [构建和依赖排错](build-and-release.md) · [FileGDB API 调用与依赖说明](filegdb-api.md)
 
 ## 入口与一次转换
+
+MAX 输入额外需要 Windows Max Batch、`--max-batch` 和显式 `--max-frame`；详见 [MAX 适配器与限制](max-adapter.md)。
 
 Windows 使用 `dist/bin/geomodelbridge.exe`；Linux 使用 `dist/bin/geomodelbridge`。两者均为独立控制台程序，不启动 GUI、不需要 .NET、ArcPy 或 ArcGIS Pro。`geomodelbridgeGUI.exe` 才是 Windows GUI。主 CLI 解析 FBX、OBJ、GLB、glTF 或 WRL，启动原生 writer 子进程并等待其完成，核对成功报告后退出。
 

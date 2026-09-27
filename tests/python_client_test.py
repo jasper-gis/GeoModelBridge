@@ -111,6 +111,47 @@ class ClientTests(unittest.TestCase):
                 self.engine.convert(replace(self.request, **change))
             runner.assert_not_called()
 
+    def test_max_parameters_and_platform(self):
+        source = self.root / "模型.max"
+        source.touch()
+        request = replace(self.request, input_fbx=source, max_batch=self.exe, max_frame=-12)
+        if os.name != "nt":
+            with self.assertRaises(ValidationError) as error:
+                self.engine.command(request)
+            self.assertEqual(error.exception.code, "MAX_PLATFORM_UNSUPPORTED")
+            return
+        command = self.engine.command(request)
+        self.assertEqual(command[command.index("--max-frame") + 1], "-12")
+        self.assertEqual(command[command.index("--max-batch") + 1], str(self.exe))
+        for changes in (dict(max_frame=None), dict(max_frame=True), dict(max_frame=0.5), dict(max_frame=1000001),
+                        dict(max_timeout=0), dict(max_timeout=True), dict(max_batch=None)):
+            with self.subTest(changes=changes), self.assertRaises(ValidationError):
+                self.engine.command(replace(request, **changes))
+        with self.assertRaises(ValidationError):
+            self.engine.command(replace(self.request, max_frame=0))
+
+    @unittest.skipUnless(os.name == "nt", "Windows-only MAX client")
+    def test_max_report_requires_matching_frame_and_runtime(self):
+        source = self.root / "模型.max"
+        source.touch()
+        request = self.engine.validate(replace(self.request, input_fbx=source, max_batch=self.exe, max_frame=7))
+        report = self.success_report(request)
+        request.output_gdb.mkdir()
+        from geomodelbridge.client import _diagnostics
+        with self.assertRaises(ValueError):
+            self.engine._verify_report(report, request, _diagnostics(report))
+        proof = dict(adapter_protocol_version=1, engine_version=__version__, status="exported",
+                     frame=7, source=str(source), batch_executable=str(self.exe))
+        def set_proof(value):
+            report["reader_diagnostics"] = [dict(severity="warning", code="MAX_ADAPTER_PROVENANCE", message=json.dumps(value), context=str(source))]
+        set_proof(proof)
+        self.assertEqual(self.engine._verify_report(report, request, _diagnostics(report)), 1)
+        for changes in (dict(frame=8), dict(frame=7.0), dict(batch_executable=str(self.engine.writer)),
+                        dict(engine_version="0.0.0"), dict(source=str(self.source))):
+            set_proof(dict(proof, **changes))
+            with self.subTest(changes=changes), self.assertRaises(ValueError):
+                self.engine._verify_report(report, request, _diagnostics(report))
+
     def test_existing_outputs_and_reports_are_preserved(self):
         for path in (self.request.output_gdb, Path(str(self.request.output_gdb) + ".report.json")):
             with self.subTest(path=path):

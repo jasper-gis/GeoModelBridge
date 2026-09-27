@@ -53,6 +53,9 @@ class ConversionRequest:
     report_path: Optional[PathLike] = None
     obj_up_axis: str = "Z"
     obj_unit_meters: float = 1.0
+    max_batch: Optional[PathLike] = None
+    max_frame: Optional[int] = None
+    max_timeout: int = 600
 
 
 @dataclass(frozen=True)
@@ -333,7 +336,20 @@ class Engine:
         output = _path(request.output_gdb, "output GDB")
         report = _path(request.report_path if request.report_path is not None
                        else str(output) + ".report.json", "report")
-        _require(source.is_file() and source.suffix.lower() in (".fbx", ".obj", ".glb", ".gltf", ".wrl"), "Input must be an existing FBX, OBJ, GLB, glTF or WRL file")
+        _require(source.is_file() and source.suffix.lower() in (".fbx", ".obj", ".glb", ".gltf", ".wrl", ".max"), "Input must be an existing FBX, OBJ, GLB, glTF, WRL or MAX file")
+        batch = None
+        if source.suffix.lower() == ".max":
+            _require(os.name == "nt", "MAX preprocessing requires Windows", "MAX_PLATFORM_UNSUPPORTED")
+            _require(request.max_batch is not None, "MAX requires max_batch pointing to 3dsmaxbatch.exe")
+            batch = _path(request.max_batch, "3ds Max Batch executable")
+            _require(batch.is_file() and batch.suffix.lower() == ".exe", "3ds Max Batch executable is missing")
+            _require(type(request.max_frame) is int and -1000000 <= request.max_frame <= 1000000,
+                     "MAX requires an explicit integer max_frame in -1000000..1000000")
+            _require(type(request.max_timeout) is int and 1 <= request.max_timeout <= 86400,
+                     "max_timeout must be an integer in 1..86400")
+        else:
+            _require(request.max_batch is None and request.max_frame is None and request.max_timeout == 600,
+                     "MAX settings apply only to .max input")
         _require(request.obj_up_axis in ("Z", "Y"), "OBJ up axis must be Z or Y")
         _require(type(request.obj_unit_meters) in (int, float) and math.isfinite(request.obj_unit_meters)
                  and request.obj_unit_meters > 0, "OBJ unit size must be finite and positive")
@@ -359,7 +375,7 @@ class Engine:
         textures = tuple(_path(path, "texture directory") for path in request.texture_dirs)
         _require(all(path.is_dir() for path in textures), "Texture directories must exist")
         return replace(request, input_fbx=source, output_gdb=output, report_path=report,
-                       origin=origin, texture_dirs=textures)
+                       origin=origin, texture_dirs=textures, max_batch=batch)
 
     def _execute(self, command, **context):
         try:
@@ -402,6 +418,9 @@ class Engine:
                   "--report", request.report_path, "--backend", "native-filegdb", "--writer", self.writer]
         if request.input_fbx.suffix.lower() == ".obj":
             values.extend(("--obj-up-axis", request.obj_up_axis, "--obj-unit-meters", request.obj_unit_meters))
+        if request.input_fbx.suffix.lower() == ".max":
+            values.extend(("--max-batch", request.max_batch, "--max-frame", request.max_frame,
+                           "--max-timeout", request.max_timeout))
         for directory in request.texture_dirs:
             values.extend(("--texture-dir", directory))
         return tuple(map(str, values))
@@ -502,4 +521,15 @@ class Engine:
             raise ValueError("Missing reader diagnostics or a success report containing errors")
         if request.missing_textures == "error" and any(d.code == "MISSING_TEXTURE_FALLBACK" for d in diagnostics):
             raise ValueError("Missing-texture fallback contradicts the requested policy")
+        if request.input_fbx.suffix.lower() == ".max":
+            entries = [d for d in diagnostics if d.code == "MAX_ADAPTER_PROVENANCE"]
+            if len(entries) != 1:
+                raise ValueError("Missing or duplicate MAX provenance")
+            provenance = _json(entries[0].message)
+            if (provenance.get("adapter_protocol_version") != 1 or provenance.get("engine_version") != __version__
+                    or type(provenance.get("frame")) is not int or provenance["frame"] != request.max_frame
+                    or provenance.get("status") != "exported"
+                    or _path(provenance.get("source"), "MAX source") != request.input_fbx
+                    or _path(provenance.get("batch_executable"), "MAX runtime") != request.max_batch):
+                raise ValueError("MAX provenance does not match the requested runtime/frame/source")
         return count

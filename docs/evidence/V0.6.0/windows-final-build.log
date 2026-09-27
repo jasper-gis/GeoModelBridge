@@ -1,0 +1,9 @@
+[1/9] C:\WINDOWS\system32\cmd.exe /C "cd /D <project>\build\v060-native && <home>\AppData\Local\Microsoft\WinGet\Packages\BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\mingw64\bin\cmake.exe -E make_directory <project>/build/v060-native/bin/max-adapter && <home>\AppData\Local\Microsoft\WinGet\Packages\BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\mingw64\bin\cmake.exe -E copy_if_different <project>/adapters/3dsmax/worker.py <project>/build/v060-native/bin/max-adapter/worker.py"
+[2/9] Copying official FileGDB runtime beside the native writer
+[3/9] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\max_adapter.cpp.obj
+[4/9] Linking CXX static library GeoModelBridge.Core.lib
+[5/9] Linking CXX executable bin\gmb_report_writer.exe
+[6/9] Linking CXX executable bin\gmb_core_tests.exe
+[7/9] Linking CXX executable bin\gmb_output_tests.exe
+[8/9] Linking CXX executable bin\geomodelbridge.exe
+[9/9] Linking CXX executable bin\gmb_max_batch_stub.exe

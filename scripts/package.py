@@ -68,7 +68,7 @@ with tempfile.TemporaryDirectory(prefix="gmb-package-check-") as work:
                     "--expected-report", str(examples / "reports/alpha-plane.json"),
                     "--report", str(Path(work) / "standalone.json")], check=True, stdout=subprocess.DEVNULL)
 # Enumerate source through Git, never by recursively sweeping local results or older releases.
-source_roots = {"src", "include", "backends", "apps", "tests", "scripts", "third_party", "docs", ".github", "python"}
+source_roots = {"src", "include", "backends", "apps", "tests", "scripts", "third_party", "docs", ".github", "python", "adapters"}
 source_files = {"AGENTS.md", "README.md", "VERSION", "CHANGELOG.md", "THIRD_PARTY_NOTICES.md", "CMakeLists.txt", "CMakePresets.json", ".gitignore", ".gitattributes", "examples/README.md"}
 files = {}
 listing = subprocess.check_output(["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=root).decode("utf-8").split("\0")
@@ -82,10 +82,12 @@ for name in sorted(set(listing)):
     if path.is_file(): files[rel.as_posix()] = path
 binary_files = [cli_name, native_name, *[p.relative_to(install).as_posix() for p in runtimes],
                 "bin/demo/textured_quad.fbx", "bin/demo/textured_quad.obj", "bin/demo/textured_quad.mtl", "bin/demo/textured_quad.glb",
-                "bin/demo/textured_quad.gltf", "bin/demo/textured_quad.bin", "bin/demo/textured_quad.wrl", "bin/demo/checker.png"]
+                "bin/demo/textured_quad.gltf", "bin/demo/textured_quad.bin", "bin/demo/textured_quad.wrl", "bin/demo/checker.png", "bin/max-adapter/worker.py"]
 for name in binary_files:
     if not (install / name).is_file():
         raise SystemExit("Required release file is missing: " + name)
+if (install / "bin/max-adapter/worker.py").read_bytes() != (root / "adapters/3dsmax/worker.py").read_bytes():
+    raise SystemExit("Installed MAX worker is stale")
 # Explicit SDK files: fail on missing/stale installed libraries instead of shipping
 # a release whose Python client silently targets a different executable version.
 for relative in ("geomodelbridge/__init__.py", "geomodelbridge/_version.py", "geomodelbridge/client.py", "examples/convert_fbx.py"):

@@ -1,5 +1,12 @@
 # Changelog
 
+## V0.6.0 — 2026-09-27
+
+- 实现可选 Windows Max Batch → 静态 FBX → 共享 Scene Bundle / 原生 FileGDB 流程；CLI、GUI、标准库 Python 客户端支持 MAX 运行环境、显式采样帧和超时参数。
+- 独占临时目录、独立 Job Object 进程树、双流有界日志；源文件/FBX/图片哈希和导出几何、材质绑定清单校验，保留原 MAX 来源及采样帧追溯。
+- 接受受限静态网格及 Standard/Multi-Sub 材质，明确拒绝未知插件、XRef、复杂材质、变形与未支持的贴图语义；不提供自动渲染烘焙。
+- 增加适配器协议/异常路径、客户端追溯校验及可手动运行的真实 MAX 验收入口。**尚无真实 Max Batch 环境与 MAX 样本验收，不将替身测试描述为 MAX 实机通过。** 具体边界见 `docs/max-adapter.md`。
+
 ## V0.5.0 — 2026-09-27
 
 - 新增 `.gltf` JSON、外置 BIN/图片及严格 base64 data URI，复用 GLB 场景与材质验证。

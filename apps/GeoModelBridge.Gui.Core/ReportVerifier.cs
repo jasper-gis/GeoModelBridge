@@ -50,6 +50,7 @@ public static class ReportVerifier
                     "报告中的原点 X、Y、Z 与本次设置不一致。");
             }
             var diagnostics = new List<string>();
+            var maxProvenanceCount = 0;
             Require(root.TryGetProperty("reader_diagnostics", out _), "报告缺少模型诊断列表。");
             foreach (var name in new[] { "diagnostics", "reader_diagnostics" })
             {
@@ -67,8 +68,21 @@ public static class ReportVerifier
                     Require(severity != "error", "成功报告仍包含模型错误，不能确认转换成功。");
                     Require(settings.MissingTexturePolicy != "error" || code != "MISSING_TEXTURE_FALLBACK", "要求完整贴图时不能接受缺图回退报告。");
                     diagnostics.Add($"[{code}] {message}");
+                    if (code == "MAX_ADAPTER_PROVENANCE" && string.Equals(Path.GetExtension(settings.InputPath), ".max", StringComparison.OrdinalIgnoreCase))
+                    {
+                        ++maxProvenanceCount;
+                        using var manifest = JsonDocument.Parse(message);
+                        var value = manifest.RootElement;
+                        RequireUniqueFields(value);
+                        Require(value.GetProperty("adapter_protocol_version").GetInt32() == 1 && Text(value, "engine_version") == ProductInfo.Version &&
+                            Text(value, "status") == "exported" && value.GetProperty("frame").GetInt32() == int.Parse(settings.MaxFrame, CultureInfo.InvariantCulture) &&
+                            PathRules.Equal(Text(value, "source"), settings.InputPath) && PathRules.Equal(Text(value, "batch_executable"), settings.MaxBatchPath),
+                            "MAX 来源、采样帧或运行环境与本次请求不一致。");
+                    }
                 }
             }
+            if (string.Equals(Path.GetExtension(settings.InputPath), ".max", StringComparison.OrdinalIgnoreCase))
+                Require(maxProvenanceCount == 1, "报告缺少唯一的 MAX 来源与采样帧记录。");
             return new ConversionReport(backend, ProductInfo.Version, PathRules.Normalize(output), settings.FeatureClass, featureCount, diagnostics)
                 { Summary = ReportSummaryFormatter.Parse(json) };
         }

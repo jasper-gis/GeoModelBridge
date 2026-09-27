@@ -5,7 +5,7 @@
 <p>FBX / OBJ / GLB / glTF / WRL → 带颜色与贴图的 FileGDB Multipatch</p>
 
 <p>
-  <a href="CHANGELOG.md"><code>V0.5.0</code></a> &nbsp;
+  <a href="CHANGELOG.md"><code>V0.6.0</code></a> &nbsp;
   <a href="docs/architecture.md"><code>C++17</code></a> &nbsp;
   <a href="#platforms"><code>Windows · Ubuntu</code></a>
 </p>
@@ -24,7 +24,7 @@
 
 GeoModelBridge 使用 **原生 FileGDB 后端 `native-filegdb`**，支持 Ubuntu 命令行与 Windows 命令行 / 图形界面。构建、转换和部署均无需安装 ArcGIS Pro、ArcPy 或获取 Pro 许可。
 
-V0.5.0 补齐 glTF JSON 资源读取，并新增 WRL / VRML97 静态多边形入库。OBJ、GLB、glTF、WRL 共用原生 FileGDB 链路；当前实际验证范围见 [验证记录](docs/validation-v0.5.0.md)。`.max` 尚未支持，实施路线见 [.max 设计](docs/max-roadmap.md)。历史版本的验收结论保持原样。
+V0.6.0 新增 Windows 可选 MAX Batch 适配器，CLI、GUI 和 Python 均可配置运行环境与采样帧。它先检查受支持的静态几何和 Standard 材质，再导出 FBX 并进入原生 FileGDB 校验链路。MAX 实机验收需要已授权的 3ds Max，当前验证状态及限制见 [MAX 使用说明](docs/max-adapter.md)。
 
 **研发接入：** [统一构建入口](docs/build-and-release.md) · [纯命令行与连续调用 EXE](docs/command-line.md) · [FileGDB API 调用链](docs/filegdb-api.md)。项目只保留根目录一个 `CMakeLists.txt`；默认一次构建 CLI、原生 writer 和 SDK 运行库。源码下载不包含 EXE / DLL，先下载固定 SDK 再从根目录构建。
 
@@ -184,6 +184,8 @@ V0.1.12 会明确区分“文件缺失”和“路径 / 读取错误”：路径
 
 ## 已有验证
 
+**V0.6.0**：双平台 CTest 各 **17/17**、Windows GUI 服务 **245/245**，安装后客户端和原生 GDB 回归通过；MAX 适配器完成协议替身及真实 FileGDB 后段验证，**真实 MAX 实机验收尚未完成**。详见 [V0.6.0 验证状态](docs/validation-v0.6.0.md)。
+
 **V0.5.0**：OBJ、GLB、glTF、WRL 均完成双平台真实贴图 GDB 写入与复制回读。Windows / Ubuntu CTest 各 **15/15**，GUI 服务 **236/236**，安装后的 Python 客户端各 **13 项**、**8 份 GDB 复制回读**通过。详见 [V0.5.0 验收记录](docs/validation-v0.5.0.md)。
 
 **V0.2.2**：双平台 CTest 各 **11/11**，原生异常输入检查分别 **83/84 项**，Windows GUI **224/224**；Python 真实转换、部署和 14 个完整 GDB 样例通过。补全未引用角点的法线预检，拒绝材质额外分量静默丢失，修复 Windows 报告路径别名与 GUI 相对路径漂移。详见 [V0.2.2 验证记录](docs/validation-v0.2.2.md)。
@@ -222,7 +224,7 @@ Windows ↔ Ubuntu 双向互读及归档解压验证见 [V0.1.6 历史记录](do
 | Python 函数调用、后续 ATBX 接入与错误处理 | [Python 调用库](docs/python-client.md) |
 | 支持的模型、材质与兼容行为 | [兼容策略](docs/compatibility.md) |
 | GLB/glTF、WRL 具体输入范围 | [glTF](docs/glb.md) · [WRL](docs/wrl.md) |
-| 后续 .max 接入设计 | [Max Batch 预处理路线](docs/max-roadmap.md) |
+| MAX 可选适配器与实机验收 | [MAX 使用说明](docs/max-adapter.md) · [后续烘焙路线](docs/max-roadmap.md) |
 | 原生写入、存储精度与独立回读 | [FileGDB 后端](backends/native-filegdb/README.md) |
 | 共享核心、平台适配与数据契约 | [架构](docs/architecture.md) · [Scene Bundle](docs/bundle-format.md) |
 | 版本变化与历史证据 | [CHANGELOG](CHANGELOG.md) · [历史记录](docs/evidence/README.md) |

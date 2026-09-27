@@ -42,6 +42,7 @@ public sealed class EngineService
             settings = settings with
             {
                 InputPath = FullPath(settings.InputPath),
+                MaxBatchPath = string.Equals(Path.GetExtension(settings.InputPath), ".max", StringComparison.OrdinalIgnoreCase) ? FullPath(settings.MaxBatchPath) : settings.MaxBatchPath,
                 OutputPath = FullPath(settings.OutputPath),
                 ReportPath = FullPath(string.IsNullOrWhiteSpace(settings.ReportPath) ? FullPath(settings.OutputPath) + ".report.json" : settings.ReportPath),
                 TextureDirectories = settings.TextureDirectories.Select(FullPath).ToArray()

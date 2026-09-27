@@ -263,6 +263,15 @@ public static class ReportSummaryFormatter
                 entry.Message.Contains("reflection", StringComparison.OrdinalIgnoreCase) ? "反射" : "其他渲染通道";
             return new(code + channel, "材质使用" + channel, channel == "其他渲染通道" ? "请在建模软件中烘焙到漫反射颜色或贴图，未支持的通道不会自动忽略。" : "GIS 静态兼容会省略环境光、高光及反射通道，并在报告中记录；如需保留其外观，请先烘焙到漫反射贴图。");
         }
+        if (code == "MAX_RUNTIME_UNAVAILABLE") return new(code, "缺少 3ds Max Batch 运行环境", "在 MAX 预处理选项中选择已安装并授权的 3dsmaxbatch.exe；引擎不附带 Autodesk 软件。");
+        if (code == "MAX_TIMEOUT") return new(code, "MAX 预处理超时", "本次 Max Batch 进程树已终止。检查场景依赖、运行许可，或增加超时秒数后使用新的输出名称。");
+        if (code == "MAX_ADAPTER_PROVENANCE") return new(code, "已记录 MAX 来源和采样帧", "原始报告包含源文件哈希、采样帧、运行版本以及几何材质核对记录。");
+        if (code == "MAX_BATCH_LOG") return new(code, "已保存 Max Batch 日志尾部", "日志按大小保留尾部，截断情况见原始报告。");
+        if (code == "MAX_STATIC_FRAME") return new(code, "已按指定帧生成静态网格", "转换不保留动画；请核对指定帧是否为期望姿态。");
+        if (code is "MAX_LIGHTING_OMITTED" or "MAX_NONMESH_OMITTED" or "MAX_TWO_SIDED_POLICY" or "MAX_COLOR_POLICY" or "MAX_DIFFUSE_REPLACEMENT")
+            return new(code, "已按 MAX 静态材质策略处理", "保留受支持的颜色、标量透明度与图像；具体调整见原始报告及 MAX 使用说明，实际外观需要视觉验收。");
+        if (code.StartsWith("MAX_", StringComparison.Ordinal) && entry.Severity == "error")
+            return new(code, "MAX 场景未通过预处理或导出校验", "查看原始报告中的具体节点或材质。复杂渲染材质、XRef、未知修改器需在建模端先处理；导出内容不一致时不会创建 GDB。");
         if (code == "DEGENERATE_TRIANGLE") return new(code, "存在退化三角形", "GIS 静态兼容可删除有限坐标的零面积面；非有限坐标等损坏几何仍需修复。");
         if (code == "MISSING_TEXTURE_FALLBACK") return new(code, "缺失贴图已回退为材质颜色", "对应图片确实不可用；保留材质颜色和标量透明度并继续转换，未生成替代图片。找回贴图后可添加目录重新转换。");
         if (code == "TEXTURE_READ_ERROR") return new(code, "贴图路径或读取失败", "检查报告中的路径是否为图片文件、父目录是否可访问，并修复权限或损坏的图片。缺图回退仅用于找不到文件的情况，不能跳过已有路径的读取错误。");

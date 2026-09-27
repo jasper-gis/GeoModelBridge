@@ -31,6 +31,10 @@ public static class ConversionCommand
             result.Add("--obj-up-axis"); result.Add(settings.ObjUpAxis);
             result.Add("--obj-unit-meters"); result.Add(Number(settings.ObjUnitMeters));
         }
+        if (string.Equals(Path.GetExtension(settings.InputPath), ".max", StringComparison.OrdinalIgnoreCase))
+            result.AddRange(["--max-batch", Path.GetFullPath(settings.MaxBatchPath.Trim()),
+                "--max-frame", int.Parse(settings.MaxFrame.Trim(), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                "--max-timeout", settings.MaxTimeout.Trim()]);
         return result;
     }
 

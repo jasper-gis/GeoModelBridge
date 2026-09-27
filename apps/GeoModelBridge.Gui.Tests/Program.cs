@@ -6,7 +6,7 @@ using GeoModelBridge.Gui.Core;
 
 internal static class Program
 {
-    private const string Version = "0.5.0";
+    private const string Version = "0.6.0";
     private static readonly List<TestCase> Results = [];
     private static string Work = "";
     private static string Input = "";
@@ -43,6 +43,7 @@ internal static class Program
             ValidationTests();
             ArgumentTests();
             ReportTests();
+            MaxTests();
             SummaryTests();
             await MissingEngineTests();
             await FakeEngineTests();
@@ -288,6 +289,47 @@ internal static class Program
             try { ReportVerifier.Verify(report.ToJsonString(), Settings); }
             catch (InvalidDataException) { return; }
             throw new InvalidOperationException("False or mismatching success report was accepted.");
+        });
+    }
+
+    private static void MaxTests()
+    {
+        var source = Path.Combine(Work, "中文 static model.max");
+        var batch = Path.Combine(Work, "test runtime.exe");
+        File.WriteAllText(source, "contract placeholder, not a MAX fixture");
+        File.WriteAllText(batch, "argument-only executable placeholder");
+        var settings = Settings with { InputPath = source, MaxBatchPath = batch, MaxFrame = "-12", MaxTimeout = "90" };
+        Test("max_arguments_preserve_path_frame_timeout", () =>
+        {
+            var args = ConversionCommand.BuildArguments(settings).ToArray();
+            Assert(After(args, "--max-batch") == batch && After(args, "--max-frame") == "-12" && After(args, "--max-timeout") == "90", "MAX argument mismatch.");
+        });
+        foreach (var invalid in new[] { settings with { MaxFrame = "" }, settings with { MaxFrame = "1.5" },
+            settings with { MaxBatchPath = "" }, settings with { MaxTimeout = "0" } })
+            Test("max_reject_invalid_" + invalid.MaxFrame + "_" + invalid.MaxTimeout + "_" + Path.GetFileName(invalid.MaxBatchPath),
+                () => Assert(ConversionValidator.Validate(invalid).Count > 0, "Invalid MAX settings accepted."));
+        var proof = new JsonObject { ["adapter_protocol_version"] = 1, ["engine_version"] = Version,
+            ["status"] = "exported", ["frame"] = -12, ["source"] = source, ["batch_executable"] = batch };
+        var report = GoodReport(settings);
+        Test("max_reject_missing_provenance", () =>
+        {
+            try { ReportVerifier.Verify(report.ToJsonString(), settings); }
+            catch (InvalidDataException) { return; }
+            throw new Exception("Missing MAX provenance accepted.");
+        });
+        report["reader_diagnostics"] = new JsonArray(new JsonObject { ["severity"] = "warning", ["code"] = "MAX_ADAPTER_PROVENANCE", ["message"] = proof.ToJsonString(), ["context"] = source });
+        Test("max_accept_matching_provenance", () => ReportVerifier.Verify(report.ToJsonString(), settings));
+        Test("max_reject_changed_frame", () =>
+        {
+            try { ReportVerifier.Verify(report.ToJsonString(), settings with { MaxFrame = "0" }); }
+            catch (InvalidDataException) { return; }
+            throw new Exception("Changed MAX frame accepted.");
+        });
+        Test("max_reject_changed_runtime", () =>
+        {
+            try { ReportVerifier.Verify(report.ToJsonString(), settings with { MaxBatchPath = Input }); }
+            catch (InvalidDataException) { return; }
+            throw new Exception("Changed MAX runtime accepted.");
         });
     }
 
@@ -953,7 +995,7 @@ internal static class Program
         var service = new EngineService(engineDirectory);
         await TestAsync("native_backend_runtime_probe", async () =>
         {
-            Assert(service.IsEnginePresent, "Built V0.5.0 engine is absent: " + service.EnginePath);
+            Assert(service.IsEnginePresent, "Built V0.6.0 engine is absent: " + service.EnginePath);
             var probe = await service.ProbeBackendAsync("native-filegdb");
             Assert(probe.Success, probe.Message);
         });
