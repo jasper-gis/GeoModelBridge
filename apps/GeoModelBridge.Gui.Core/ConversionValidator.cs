@@ -16,8 +16,8 @@ public static partial class ConversionValidator
         var output = FullPath(settings.OutputPath, "输出 GDB", issues);
         if (input is not null)
         {
-            if (!new[] { ".fbx", ".obj", ".glb" }.Contains(Path.GetExtension(input), StringComparer.OrdinalIgnoreCase))
-                issues.Add("输入模型必须是 .fbx、.obj 或 .glb 文件。");
+            if (!new[] { ".fbx", ".obj", ".glb", ".gltf", ".wrl" }.Contains(Path.GetExtension(input), StringComparer.OrdinalIgnoreCase))
+                issues.Add("输入模型必须是 .fbx、.obj、.glb、.gltf 或 .wrl 文件。");
             if (!File.Exists(input)) issues.Add("找不到输入模型文件，请重新选择。");
         }
         if (output is not null)

@@ -81,7 +81,11 @@ for name in sorted(set(listing)):
     path = root / rel
     if path.is_file(): files[rel.as_posix()] = path
 binary_files = [cli_name, native_name, *[p.relative_to(install).as_posix() for p in runtimes],
-                "bin/demo/textured_quad.fbx", "bin/demo/textured_quad.obj", "bin/demo/textured_quad.mtl", "bin/demo/textured_quad.glb", "bin/demo/checker.png"]
+                "bin/demo/textured_quad.fbx", "bin/demo/textured_quad.obj", "bin/demo/textured_quad.mtl", "bin/demo/textured_quad.glb",
+                "bin/demo/textured_quad.gltf", "bin/demo/textured_quad.bin", "bin/demo/textured_quad.wrl", "bin/demo/checker.png"]
+for name in binary_files:
+    if not (install / name).is_file():
+        raise SystemExit("Required release file is missing: " + name)
 # Explicit SDK files: fail on missing/stale installed libraries instead of shipping
 # a release whose Python client silently targets a different executable version.
 for relative in ("geomodelbridge/__init__.py", "geomodelbridge/_version.py", "geomodelbridge/client.py", "examples/convert_fbx.py"):

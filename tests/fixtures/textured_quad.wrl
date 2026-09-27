@@ -1,0 +1,24 @@
+#VRML V2.0 utf8
+# Original GeoModelBridge fixture, CC0. Y-up metres, 2 x 3 metre quad.
+DEF Placement Transform {
+  translation 10 1 2
+  children [
+    DEF Quad Shape {
+      appearance Appearance {
+        material Material { diffuseColor 0.8 0.6 0.4 ambientIntensity 0 transparency 0.25 }
+        texture ImageTexture { url [ "checker.png" ] }
+        textureTransform TextureTransform { translation 0.25 0.125 scale 0.5 0.5 }
+      }
+      geometry IndexedFaceSet {
+        solid FALSE
+        coord Coordinate { point [ 0 0 0, 2 0 0, 2 0 -3, 0 0 -3 ] }
+        coordIndex [ 0 1 2 3 -1 ]
+        normal Normal { vector [ 0 1 0 ] }
+        normalPerVertex FALSE
+        normalIndex [ 0 ]
+        texCoord TextureCoordinate { point [ 0 0, 1 0, 1 1, 0 1 ] }
+        texCoordIndex [ 0 1 2 3 -1 ]
+      }
+    }
+  ]
+}

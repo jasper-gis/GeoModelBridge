@@ -26,7 +26,7 @@ assert not engine.check().arcgis_pro_required
 fixtures = Path(__file__).resolve().parent / "fixtures"
 source_dir = work / "中文 模型 & 输入"
 source_dir.mkdir()
-for name in ("textured_quad.fbx", "textured_quad.obj", "textured_quad.glb", "textured_quad.mtl", "checker.png", "missing_texture.fbx"):
+for name in ("textured_quad.fbx", "textured_quad.obj", "textured_quad.glb", "textured_quad.gltf", "textured_quad.bin", "textured_quad.wrl", "textured_quad.mtl", "checker.png", "missing_texture.fbx"):
     shutil.copy2(fixtures / name, source_dir / name)
 base = (fixtures / "textured_quad.fbx").read_text(encoding="utf-8")
 broken = re.sub(r"Normals: \*\d+ \{ a: [^}]+", "Normals: *12 { a: " + ",".join(["0"] * 12) + " ", base)
@@ -68,6 +68,13 @@ glb_result = engine.convert(glb_request)
 glb_report = verify_copy(glb_result)
 assert any(check["textured_patches"] > 0 for check in glb_report["verification"]["checks"])
 assert glb_report["coordinates"]["origin"] == [100, 100, 100]
+for extension in ("gltf", "wrl"):
+    converted = engine.convert(replace(request, input_fbx=source_dir / ("textured_quad." + extension),
+        output_gdb=work / (extension + ".gdb"), profile="strict"))
+    verified = verify_copy(converted)
+    assert any(c["textured_patches"] > 0 for c in verified["verification"]["checks"])
+    assert verified["coordinates"]["origin"] == [100, 100, 100]
+
 try:
     engine.convert(request)
     raise AssertionError("Existing GDB accepted")
@@ -129,6 +136,6 @@ assert all(hashlib.sha256(path.read_bytes()).hexdigest() == digest for path, dig
 assert "arcpy" not in sys.modules
 assessment = dict(version=geomodelbridge.__version__, status="passed", python=sys.version,
                   cases=results, installed_client=True, arcpy_imported=False, input_unchanged=True,
-                  copied_gdb_readbacks=5, graphical_acceptance="not_performed", atbx_execution="not_performed")
+                  copied_gdb_readbacks=8, graphical_acceptance="not_performed", atbx_execution="not_performed")
 (work / "assessment.json").write_text(json.dumps(assessment, ensure_ascii=False, indent=2), encoding="utf-8")
-print(f"PASS installed Python client: {len(results)} cases, 5 GDBs independently copied and reopened")
+print(f"PASS installed Python client: {len(results)} cases, 8 GDBs independently copied and reopened")

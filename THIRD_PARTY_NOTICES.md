@@ -6,7 +6,7 @@
 - Commit: `360db1a95480fe102ae9c69b27c5d101167ff5ba` (tag `v1.15`).
 - File: `third_party/cgltf/cgltf.h`.
 - MIT license: `third_party/cgltf/LICENSE`, retained unchanged and installed with the CLI.
-- Used only for glTF 2.0 GLB parsing and accessor decoding. Unsupported rendering extensions and deformation are rejected by the application.
+- Used for glTF 2.0 GLB/JSON parsing and accessor decoding. Unsupported rendering extensions and deformation are rejected by the application.
 
 ## ufbx 0.23.0
 
@@ -14,6 +14,7 @@
 - Commit: `fcc5d6ba444cfd3eb80677dba5e37e493941abe5` (tag `v0.23.0`).
 - Files: `third_party/ufbx/ufbx.c`, `ufbx.h`, `LICENSE`.
 - Upstream license: dual MIT / public-domain alternative; original license text is included unchanged.
+- Used for FBX/OBJ reading and for triangulating validated VRML97 polygons.
 
 ## nlohmann/json 3.12.0
 

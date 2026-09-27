@@ -45,7 +45,7 @@ with tempfile.TemporaryDirectory(prefix="gmb-build-") as directory:
     run(writer, "--verify-gdb", work / "copy.gdb", "--expected-report", report_path,
         "--report", work / "copy.json")
     assert json.loads((work / "copy.json").read_text())["status"] == "standalone_copy_verified"
-    for extension in (".obj", ".glb"):
+    for extension in (".obj", ".glb", ".gltf", ".wrl"):
         source = fixture.with_suffix(extension)
         label = extension[1:]
         run(cli, "convert", source, "--output", work / (label + ".gdb"), "--wkid", 32650,

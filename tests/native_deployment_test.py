@@ -20,7 +20,7 @@ if (install / "bin/arcgis-pro").exists(): raise AssertionError("Removed backend 
 cli_name, writer_name = executable_names()
 runtime_names = ["bin/native-filegdb/" + Path(name).name for name in sdk_manifest()["runtime_files"]]
 python_files = ["python/geomodelbridge/" + name for name in ("__init__.py", "_version.py", "client.py")]
-for name in [cli_name, writer_name, *runtime_names, "bin/demo/textured_quad.fbx", "bin/demo/textured_quad.obj", "bin/demo/textured_quad.glb",
+for name in [cli_name, writer_name, *runtime_names, "bin/demo/textured_quad.fbx", "bin/demo/textured_quad.obj", "bin/demo/textured_quad.glb", "bin/demo/textured_quad.gltf", "bin/demo/textured_quad.bin", "bin/demo/textured_quad.wrl",
              "bin/demo/textured_quad.mtl", "bin/demo/checker.png", *python_files]:
     destination = work / name
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -76,16 +76,23 @@ second = json.loads((work / "second.gdb.report.json").read_text(encoding="utf-8"
 assert second["status"] == "written_and_readback_verified"
 assert second["coordinates"]["wkid"] == 3857 and second["coordinates"]["origin"] == [100, 200, 300]
 assert second["feature_class"] == "SecondModels"
-run(cli, "convert", work / "bin/demo/textured_quad.glb", "--output", work / "glb.gdb",
-    "--wkid", 3857, "--origin", 100, 200, 300)
-glb_report = json.loads((work / "glb.gdb.report.json").read_text(encoding="utf-8"))
-assert glb_report["status"] == "written_and_readback_verified"
-assert glb_report["coordinates"]["origin"] == [100, 200, 300]
-assert any(check["textured_patches"] > 0 for check in glb_report["verification"]["checks"])
-shutil.copytree(work / "glb.gdb", work / "glb-copy.gdb")
-run(writer, "--verify-gdb", work / "glb-copy.gdb", "--expected-report", work / "glb.gdb.report.json",
-    "--report", work / "glb-copy-check.json")
-assert json.loads((work / "glb-copy-check.json").read_text(encoding="utf-8"))["status"] == "standalone_copy_verified"
+format_checks = {}
+for extension in ("obj", "glb", "gltf", "wrl"):
+    output = work / (extension + ".gdb")
+    report_path = work / (extension + ".gdb.report.json")
+    run(cli, "convert", work / ("bin/demo/textured_quad." + extension), "--output", output,
+        "--wkid", 3857, "--origin", 100, 200, 300)
+    model_report = json.loads(report_path.read_text(encoding="utf-8"))
+    assert model_report["status"] == "written_and_readback_verified"
+    assert model_report["coordinates"]["origin"] == [100, 200, 300]
+    assert model_report["coordinates"]["wkid"] == 3857
+    assert any(check["textured_patches"] > 0 for check in model_report["verification"]["checks"])
+    copied = work / (extension + "-copy.gdb")
+    copy_check = work / (extension + "-copy-check.json")
+    shutil.copytree(output, copied)
+    run(writer, "--verify-gdb", copied, "--expected-report", report_path, "--report", copy_check)
+    assert json.loads(copy_check.read_text(encoding="utf-8"))["status"] == "standalone_copy_verified"
+    format_checks[extension] = "textured GDB written and standalone copy verified"
 shutil.copytree(work / "second.gdb", work / "second-copy.gdb")
 run(writer, "--verify-gdb", work / "second-copy.gdb", "--expected-report", work / "second.gdb.report.json",
     "--report", work / "second-copy-check.json")
@@ -105,7 +112,7 @@ print('PASS relocated Python client without site-packages')
 run(sys.executable, "-S", "-c", python_check, work / "python", cli, input_path, work / "python-client.gdb")
 assert hashlib.sha256(input_path.read_bytes()).hexdigest() == input_hash
 summary = {"status":"passed", "version":version, "probe":probe, "feature_count":1,
-           "default_native_conversion":True, "textured_readback":True, "standalone_copy":True,
+           "formats":format_checks, "default_native_conversion":True, "textured_readback":True, "standalone_copy":True,
            "input_unchanged":True, "child_path":env["PATH"], "pro_backend_in_package":False, "relocated_python_client":True,
            "sequential_cli_calls":True, "collision_preserves_first_result":True, "second_placement_verified":True,
            "limitation":"Minimal-package test; does not by itself prove that the host has never had desktop GIS installed. Graphical acceptance is separate."}

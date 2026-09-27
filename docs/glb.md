@@ -1,6 +1,8 @@
-# GLB 输入与渲染策略（V0.4.0）
+# GLB / glTF 输入与渲染策略（V0.5.0）
 
-`geomodelbridge inspect/prepare/convert model.glb` 读取 glTF 2.0 GLB。GLB 使用右手 Y-up、米制；程序将默认场景中各节点的世界矩阵烘焙一次，再旋转到右手 Z-up 米制。报告保存原节点矩阵、WKID 与显式原点。WKID 赋值不执行重投影。
+`geomodelbridge inspect/prepare/convert model.glb` 或 `model.gltf` 读取 glTF 2.0。两种封装共用读取器、校验和原生 FileGDB 链路。源坐标使用右手 Y-up、米制；程序将默认场景中各节点的世界矩阵烘焙一次，再旋转到右手 Z-up 米制。报告保存原节点矩阵、WKID 与显式原点。WKID 赋值不执行重投影。
+
+`.gltf` 支持模型目录内的外置 BIN、外置 PNG/JPEG，以及规范 base64 的 `data:application/octet-stream`、`data:application/gltf-buffer`、`data:image/png`、`data:image/jpeg` 资源。GLB 也支持这些 URI。base64 字符、长度、填充位、媒体类型和资源大小均检查；不下载网络资源。外置 BIN 随模型部署，图片可额外使用 `--texture-dir`。文件后缀必须匹配 GLB 或 JSON 封装。
 
 支持静态 `TRIANGLES`、索引或非索引顶点、稀疏属性访问器（不含稀疏索引）、节点层级与镜像实例、法线、选定的 base-color UV 集、`KHR_texture_transform`、`KHR_mesh_quantization`、PNG/JPEG 基色图片及材质颜色、标量透明度、单双面。图片可来自 GLB 内部 bufferView，或模型目录及 `--texture-dir` 下的安全相对路径。URI 的常见百分号编码可解析，路径不能离开所选目录。GLB 的 V 原点在图片顶部；Scene Bundle 与 FileGDB 编码阶段做一次相应坐标转换。
 
@@ -15,4 +17,4 @@ geomodelbridge inspect model.glb --profile gis-static --report new-inspection.js
 geomodelbridge convert model.glb --profile gis-static --output new-model.gdb --wkid 32650 --origin 500000 3000000 100
 ```
 
-GLB 的布局与坐标约定依据 [Khronos glTF 2.0 规范](https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html)。解析器版本与许可见 [第三方声明](../THIRD_PARTY_NOTICES.md)。真实 GDB 与双平台验证状态见 [V0.4.0 验证记录](validation-v0.4.0.md)。
+布局与坐标约定依据 [Khronos glTF 2.0 规范](https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html)。解析器版本与许可见 [第三方声明](../THIRD_PARTY_NOTICES.md)。当前真实 GDB 与双平台验证状态见 [V0.5.0 验证记录](validation-v0.5.0.md)；历史记录保留原结论。

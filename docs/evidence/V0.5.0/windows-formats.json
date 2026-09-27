@@ -1,0 +1,70 @@
+{
+  "obj": {
+    "status": "written_and_readback_verified",
+    "coordinates": {
+      "origin": [
+        100.0,
+        100.0,
+        100.0
+      ],
+      "origin_explicit": true,
+      "space": "referenced",
+      "unit": "meter",
+      "up_axis": "Z",
+      "wkid": 3857
+    },
+    "texture_count": 1,
+    "texture_bytes_equal": true
+  },
+  "glb": {
+    "status": "written_and_readback_verified",
+    "coordinates": {
+      "origin": [
+        100.0,
+        100.0,
+        100.0
+      ],
+      "origin_explicit": true,
+      "space": "referenced",
+      "unit": "meter",
+      "up_axis": "Z",
+      "wkid": 3857
+    },
+    "texture_count": 1,
+    "texture_bytes_equal": true
+  },
+  "gltf": {
+    "status": "written_and_readback_verified",
+    "coordinates": {
+      "origin": [
+        100.0,
+        100.0,
+        100.0
+      ],
+      "origin_explicit": true,
+      "space": "referenced",
+      "unit": "meter",
+      "up_axis": "Z",
+      "wkid": 3857
+    },
+    "texture_count": 1,
+    "texture_bytes_equal": true
+  },
+  "wrl": {
+    "status": "written_and_readback_verified",
+    "coordinates": {
+      "origin": [
+        100.0,
+        100.0,
+        100.0
+      ],
+      "origin_explicit": true,
+      "space": "referenced",
+      "unit": "meter",
+      "up_axis": "Z",
+      "wkid": 3857
+    },
+    "texture_count": 1,
+    "texture_bytes_equal": true
+  }
+}

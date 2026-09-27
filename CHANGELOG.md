@@ -1,5 +1,13 @@
 # Changelog
 
+## V0.5.0 — 2026-09-27
+
+- 新增 `.gltf` JSON、外置 BIN/图片及严格 base64 data URI，复用 GLB 场景与材质验证。
+- 新增 WRL / VRML97 静态 IndexedFaceSet：实例、嵌套变换、凹多边形、独立角点、纹理与颜色/alpha 替换规则；明确拒绝未支持的节点和渲染语义。
+- OBJ、GLB、glTF、WRL 接通 CLI、Windows GUI、标准库 Python 客户端及安装/部署测试；真实 GDB 和双平台验收记录见 `docs/validation-v0.5.0.md`。
+- 修复 glTF 默认材质单双面、保留无贴图时已有 UV、法线修复/退化面统计；资源解析共用平台路径包含检查。
+- 新增 `.max` 分阶段设计路线，尚未实现 MAX 读取器。
+
 ## V0.4.0 — 2026-09-27
 
 - 新增 glTF 2.0 GLB → 共享 Scene Bundle → 原生 FileGDB 通路，包含节点层级与镜像实例、角点法线和 UV、嵌入/外置 PNG/JPEG、基色与透明度、`KHR_texture_transform` 以及位置与来源记录。CLI、Windows GUI 和标准库 Python 客户端均可选择 GLB。

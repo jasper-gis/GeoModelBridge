@@ -7,7 +7,7 @@
 #include <vector>
 
 namespace gmb {
-inline constexpr const char* version = "0.4.0";
+inline constexpr const char* version = "0.5.0";
 struct Vec2 { double x = 0, y = 0; };
 struct Vec3 { double x = 0, y = 0, z = 0; };
 struct Color { double r = 1, g = 1, b = 1, a = 1; };
@@ -73,6 +73,7 @@ struct ReaderOptions {
 };
 Scene read_fbx(const std::filesystem::path& input, const ReaderOptions& options = {});
 Scene read_glb(const std::filesystem::path& input, const ReaderOptions& options = {});
+Scene read_wrl(const std::filesystem::path& input, const ReaderOptions& options = {});
 Scene read_model(const std::filesystem::path& input, const ReaderOptions& options = {});
 std::vector<Diagnostic> validate(const Scene& scene);
 bool has_errors(const std::vector<Diagnostic>& diagnostics);

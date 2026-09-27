@@ -51,3 +51,9 @@ neutral exporter properties, empty versus active animation, saved static node
 poses, explicit lighting-channel omission, unsupported displacement/opacity/
 normal channels, missing images, and exact-zero versus tiny nonzero triangle
 areas. No private user model is included in these regressions.
+
+* `textured_quad.gltf` and `textured_quad.bin`: original CC0 static glTF 2.0
+  equivalent of the GLB fixture, with external BIN and checker PNG resources.
+* `textured_quad.wrl`: original CC0 VRML97 textured quad, Y-up metres, translation
+  (10,1,2), per-face normal, independent UV indices and TextureTransform. VRML97
+  RGBA image replacement intentionally differs from glTF color modulation.

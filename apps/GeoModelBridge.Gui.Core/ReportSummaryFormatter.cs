@@ -224,6 +224,11 @@ public static class ReportSummaryFormatter
     private static Description Describe(Entry entry)
     {
         var code = entry.Code;
+        if (code == "WRL_TEXTURE_COLOR_REPLACED") return new(code, "按 VRML97 规则使用纹理颜色", "RGB 纹理覆盖材质及顶点颜色，写入白色颜色因子；原图片字节不变。");
+        if (code == "WRL_TEXTURE_ALPHA_REPLACED") return new(code, "按 VRML97 规则使用图片透明度", "图片 alpha 覆盖材质透明度，写入透明度因子 1；缺图回退时仍保留原材质透明度。");
+        if (code == "WRL_DEFAULT_UV_GENERATED") return new(code, "已生成 VRML 默认 UV", "按源模型局部包围盒的最长与次长轴生成贴图坐标。");
+        if (code == "WRL_DEFAULT_NORMALS_GENERATED") return new(code, "已生成 VRML 默认平面法线", "源文件未提供法线且 creaseAngle 为 0，按表面方向生成平面法线。");
+        if (code is "GLTF_COORDINATE_CONVENTION" or "WRL_COORDINATE_CONVENTION") return new(code, "已转换源模型坐标轴", "源模型采用右手 Y-up 米制，已转换为右手 Z-up 米制；WKID 赋值不执行重投影。");
         if (code == "EMPTY_ANIMATION_IGNORED") return new(code, "已忽略空动画记录", "文件中只有空动画容器，不含实际动画曲线，不影响保存的静态姿态。");
         if (code == "DEFAULT_MATERIAL_ASSIGNED") return new(code, "未指定材质的表面已使用默认材质", "请在目标软件中检查默认颜色是否符合需要。");
         if (code == "UV_SETS_REDUCED") return new(code, "已保留当前漫反射贴图使用的 UV", "未参与当前贴图采样的额外 UV 通道不写入输出。");

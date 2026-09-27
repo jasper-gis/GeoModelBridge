@@ -1,10 +1,10 @@
-# 纯命令行与连续调用 EXE · V0.4.0
+# 纯命令行与连续调用 EXE · V0.5.0
 
 [首页](../README.md) · [构建和依赖排错](build-and-release.md) · [FileGDB API 调用与依赖说明](filegdb-api.md)
 
 ## 入口与一次转换
 
-Windows 使用 `dist/bin/geomodelbridge.exe`；Linux 使用 `dist/bin/geomodelbridge`。两者均为独立控制台程序，不启动 GUI、不需要 .NET、ArcPy 或 ArcGIS Pro。`geomodelbridgeGUI.exe` 才是 Windows GUI。主 CLI 解析 FBX、OBJ 或 GLB，启动原生 writer 子进程并等待其完成，核对成功报告后退出。
+Windows 使用 `dist/bin/geomodelbridge.exe`；Linux 使用 `dist/bin/geomodelbridge`。两者均为独立控制台程序，不启动 GUI、不需要 .NET、ArcPy 或 ArcGIS Pro。`geomodelbridgeGUI.exe` 才是 Windows GUI。主 CLI 解析 FBX、OBJ、GLB、glTF 或 WRL，启动原生 writer 子进程并等待其完成，核对成功报告后退出。
 
 在 PowerShell 中，从仓库根目录执行（测试定位值必须替换为模型实际坐标）：
 
@@ -19,7 +19,7 @@ if ($LASTEXITCODE -ne 0) { throw "转换失败，退出码 $LASTEXITCODE" }
 .\dist\bin\geomodelbridge.exe convert ".\my-model.obj" --obj-up-axis Y --obj-unit-meters 0.01 --output ".\new-obj.gdb" --wkid 32650 --origin 500000 3000000 100
 ```
 
-FBX 示例产生 `new-demo.gdb/Models` 和 `new-demo.json`；OBJ 示例产生 `new-obj.gdb` 及默认的 `new-obj.gdb.report.json`。GLB 可直接使用 `convert model.glb --output new-model.gdb --wkid 32650 --origin 500000 3000000 100`。不写 `--report` 时默认为 `<输出GDB路径>.report.json`。输出 GDB 与报告均必须不存在，报告必须位于 GDB 目录外。不能追加要素类、覆盖已有 GDB，也没有内置 `--batch` / 通配符参数。一个进程接收一个 FBX、OBJ 或 GLB；一个模型中多个 mesh 可形成多个要素。
+FBX 示例产生 `new-demo.gdb/Models` 和 `new-demo.json`；OBJ 示例产生 `new-obj.gdb` 及默认的 `new-obj.gdb.report.json`。GLB 可直接使用 `convert model.glb --output new-model.gdb --wkid 32650 --origin 500000 3000000 100`。不写 `--report` 时默认为 `<输出GDB路径>.report.json`。输出 GDB 与报告均必须不存在，报告必须位于 GDB 目录外。不能追加要素类、覆盖已有 GDB，也没有内置 `--batch` / 通配符参数。一个进程接收一个 FBX、OBJ、GLB、glTF 或 WRL；一个模型中多个 mesh 可形成多个要素。
 
 `doctor` 的 `writer_present=true` 只说明可执行文件存在；`--probe` 才实际加载 SDK 和检查坐标系目录。完整写入检查须运行上面的演示转换。普通 FBX 调用主 CLI，不把 FBX 或 `FileGDBAPI.dll` 传给 writer 的 `--input` / CLI 的 `--writer`。
 
@@ -27,9 +27,9 @@ FBX 示例产生 `new-demo.gdb/Models` 和 `new-demo.json`；OBJ 示例产生 `n
 
 | 参数 / 命令 | 含义与默认行为 |
 | --- | --- |
-| `convert INPUT.fbx\|INPUT.obj\|INPUT.glb` | 转换为新 FileGDB，写入后关闭、重新打开并核验 |
-| `inspect INPUT.fbx\|INPUT.obj\|INPUT.glb` | 解析和校验，只有指定 `--report` 才输出报告，不生成 GDB |
-| `prepare INPUT.fbx\|INPUT.obj\|INPUT.glb` | 生成含 `scene.json`、纹理和 `report.json` 的中间包，不生成 GDB |
+| `convert INPUT` | FBX/OBJ/GLB/glTF/WRL 转换为新 FileGDB，写入后关闭、重新打开并核验 |
+| `inspect INPUT` | 解析和校验，只有指定 `--report` 才输出报告，不生成 GDB |
+| `prepare INPUT` | 生成含 `scene.json`、纹理和 `report.json` 的中间包，不生成 GDB |
 | `fixture NAME\|all` | 生成合成测试中间包；不是 FBX 批量入口 |
 | `-h` / `--help` | 总帮助；五个子命令也支持 `COMMAND -h` / `COMMAND --help` |
 | `--version` | 当前引擎版本 |

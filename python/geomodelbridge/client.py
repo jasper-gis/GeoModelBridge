@@ -42,7 +42,7 @@ class Message:
 
 @dataclass(frozen=True)
 class ConversionRequest:
-    input_fbx: PathLike  # Source model (.fbx, .obj or .glb); name retained for API compatibility.
+    input_fbx: PathLike  # Source model (.fbx, .obj, .glb, .gltf or .wrl); name retained for API compatibility.
     output_gdb: PathLike
     wkid: int
     origin: Tuple[float, float, float]
@@ -333,7 +333,7 @@ class Engine:
         output = _path(request.output_gdb, "output GDB")
         report = _path(request.report_path if request.report_path is not None
                        else str(output) + ".report.json", "report")
-        _require(source.is_file() and source.suffix.lower() in (".fbx", ".obj", ".glb"), "Input must be an existing FBX, OBJ or GLB file")
+        _require(source.is_file() and source.suffix.lower() in (".fbx", ".obj", ".glb", ".gltf", ".wrl"), "Input must be an existing FBX, OBJ, GLB, glTF or WRL file")
         _require(request.obj_up_axis in ("Z", "Y"), "OBJ up axis must be Z or Y")
         _require(type(request.obj_unit_meters) in (int, float) and math.isfinite(request.obj_unit_meters)
                  and request.obj_unit_meters > 0, "OBJ unit size must be finite and positive")

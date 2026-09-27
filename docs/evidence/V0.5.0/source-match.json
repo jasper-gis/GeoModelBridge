@@ -1,0 +1,6 @@
+{
+  "status": "passed",
+  "file_count": 259,
+  "different": [],
+  "scope": "Implementation, build configuration, tests, fixtures, pinned libraries and Python/GUI sources; exact SHA-256 bytes"
+}

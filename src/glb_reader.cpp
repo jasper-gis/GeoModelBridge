@@ -1,4 +1,5 @@
 #include "gmb/scene.hpp"
+#include "reader_util.hpp"
 #define CGLTF_IMPLEMENTATION
 #include "cgltf/cgltf.h"
 
@@ -18,88 +19,7 @@
 
 namespace gmb {
 namespace {
-struct Issue : std::runtime_error {
-    std::string code, context;
-    Issue(std::string c, std::string message, std::string where)
-        : std::runtime_error(std::move(message)), code(std::move(c)), context(std::move(where)) {}
-};
-[[noreturn]] void reject(const char* code, const std::string& message, const std::string& context) {
-    throw Issue(code, message, context);
-}
-std::string label(const char* name, const std::string& fallback) { return name && *name ? name : fallback; }
-bool finite(double v) { return std::isfinite(v); }
-std::vector<std::uint8_t> read_bytes(const std::filesystem::path& path, std::uint64_t limit) {
-    std::error_code ec;
-    if (!std::filesystem::is_regular_file(path, ec) || ec)
-        throw std::runtime_error("GLB resource is not a regular readable file: " + path.u8string());
-    const auto size = std::filesystem::file_size(path, ec);
-    if (ec || size > limit || size > static_cast<std::uint64_t>((std::numeric_limits<std::streamsize>::max)()))
-        throw std::runtime_error("GLB resource exceeds its size limit or cannot be sized: " + path.u8string());
-    std::ifstream file(path, std::ios::binary);
-    if (!file) throw std::runtime_error("Cannot read GLB resource: " + path.u8string());
-    std::vector<std::uint8_t> bytes(static_cast<std::size_t>(size));
-    if (size && !file.read(reinterpret_cast<char*>(bytes.data()), static_cast<std::streamsize>(size)))
-        throw std::runtime_error("Incomplete GLB resource read: " + path.u8string());
-    return bytes;
-}
-bool inside(const std::filesystem::path& root, const std::filesystem::path& candidate) {
-    auto a = root.begin(), b = candidate.begin();
-    for (; a != root.end(); ++a, ++b) if (b == candidate.end() || *a != *b) return false;
-    return true;
-}
-std::filesystem::path resource_path(const std::filesystem::path& root, const std::string& uri) {
-    std::string decoded;
-    decoded.reserve(uri.size());
-    for (std::size_t i=0;i<uri.size();++i) {
-        if (uri[i]=='%') {
-            if (i+2>=uri.size() || !std::isxdigit(static_cast<unsigned char>(uri[i+1])) ||
-                !std::isxdigit(static_cast<unsigned char>(uri[i+2])))
-                reject("UNSAFE_GLTF_URI","GLB resource URI has invalid percent encoding.","scene");
-            const auto hex=[](char c) { return c>='0'&&c<='9'?c-'0':(c|32)-'a'+10; };
-            const char value=static_cast<char>((hex(uri[i+1])<<4)|hex(uri[i+2]));
-            if (value=='/' || value=='\\' || static_cast<unsigned char>(value)<32)
-                reject("UNSAFE_GLTF_URI","GLB resource URI encodes a separator or control byte.","scene");
-            decoded.push_back(value); i+=2;
-        } else decoded.push_back(uri[i]);
-    }
-    if (decoded.empty() || decoded.find(':') != std::string::npos || decoded.find('\\') != std::string::npos ||
-        decoded.find('?') != std::string::npos || decoded.find('#') != std::string::npos)
-        reject("UNSAFE_GLTF_URI", "Only plain relative GLB resource paths are supported: " + uri, "scene");
-    const auto relative = std::filesystem::u8path(decoded);
-    if (relative.is_absolute() || std::any_of(relative.begin(), relative.end(), [](const auto& part) { return part == ".."; }))
-        reject("UNSAFE_GLTF_URI", "GLB resource path escapes the model directory: " + uri, "scene");
-    const auto path = std::filesystem::weakly_canonical(root / relative);
-    if (!inside(root, path)) reject("UNSAFE_GLTF_URI", "GLB resource path escapes the model directory: " + uri, "scene");
-    return path;
-}
-std::array<double,16> identity() { return {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1}; }
-std::array<double,16> multiply(const std::array<double,16>& a, const std::array<double,16>& b) {
-    std::array<double,16> out{};
-    for (int c=0;c<4;++c) for (int r=0;r<4;++r)
-        for (int k=0;k<4;++k) out[c*4+r] += a[k*4+r]*b[c*4+k];
-    return out;
-}
-Vec3 cross(Vec3 a, Vec3 b) { return {a.y*b.z-a.z*b.y,a.z*b.x-a.x*b.z,a.x*b.y-a.y*b.x}; }
-double dot(Vec3 a, Vec3 b) { return a.x*b.x+a.y*b.y+a.z*b.z; }
-Vec3 z_up(Vec3 p) { return {p.x,-p.z,p.y}; }
-Vec3 point(const std::array<double,16>& m, Vec3 p) {
-    return z_up({m[0]*p.x+m[4]*p.y+m[8]*p.z+m[12],
-                 m[1]*p.x+m[5]*p.y+m[9]*p.z+m[13],
-                 m[2]*p.x+m[6]*p.y+m[10]*p.z+m[14]});
-}
-Vec3 normal(const std::array<double,16>& m, Vec3 n, double det) {
-    const Vec3 a{m[0],m[1],m[2]}, b{m[4],m[5],m[6]}, c{m[8],m[9],m[10]};
-    const Vec3 x=cross(b,c), y=cross(c,a), z=cross(a,b);
-    Vec3 v=z_up({(x.x*n.x+y.x*n.y+z.x*n.z)/det,
-                 (x.y*n.x+y.y*n.y+z.y*n.z)/det,
-                 (x.z*n.x+y.z*n.y+z.z*n.z)/det});
-    const auto length=std::hypot(v.x,v.y,v.z);
-    if (finite(length) && length>0) v={v.x/length,v.y/length,v.z/length};
-    return v;
-}
-double determinant(const std::array<double,16>& m) {
-    return dot({m[0],m[1],m[2]},cross({m[4],m[5],m[6]},{m[8],m[9],m[10]}));
-}
+using namespace reader;
 std::vector<std::uint8_t> image_bytes(const cgltf_image& image, const std::filesystem::path& root,
                                       const ReaderOptions& options, bool& missing) {
     missing=false;
@@ -112,34 +32,8 @@ std::vector<std::uint8_t> image_bytes(const cgltf_image& image, const std::files
     }
     if (!image.uri) reject("TEXTURE_READ_ERROR", "GLB image has no source.", "texture");
     const std::string uri=image.uri;
-    // The GLB pathway deliberately does not decode data URIs or network URIs.
-    std::vector<std::filesystem::path> roots{root};
-    for (const auto& directory:options.texture_directories)
-        roots.push_back(std::filesystem::weakly_canonical(std::filesystem::absolute(directory)));
-    for (const auto& candidate_root:roots) {
-        const auto path=resource_path(candidate_root,uri);
-        // Check an existing ancestor before deciding that a missing child is a
-        // missing texture. Windows reports ENOENT for children of regular files.
-        for (auto parent=path.parent_path(); !parent.empty(); parent=parent.parent_path()) {
-            std::error_code pec;
-            const auto parent_status=std::filesystem::status(parent,pec);
-            if (!pec && parent_status.type()!=std::filesystem::file_type::not_found) {
-                if (!std::filesystem::is_directory(parent_status))
-                    reject("TEXTURE_READ_ERROR","GLB image parent is not a directory: " + parent.u8string(),"texture");
-                break;
-            }
-            if (parent==parent.root_path()) break;
-        }
-        std::error_code ec;
-        const auto status=std::filesystem::status(path,ec);
-        if (ec == std::errc::no_such_file_or_directory || (!ec && status.type()==std::filesystem::file_type::not_found))
-            continue;
-        if (ec || !std::filesystem::is_regular_file(status))
-            reject("TEXTURE_READ_ERROR", "GLB image path is not a regular readable file: " + path.u8string(), "texture");
-        try { return read_bytes(path,options.max_texture_bytes); }
-        catch (const std::exception& e) { reject("TEXTURE_READ_ERROR",e.what(),"texture"); }
-    }
-    missing=true; return {};
+    if (uri.rfind("data:",0)==0) return data_uri(uri,options.max_texture_bytes,true);
+    return load_image_uri(uri,root,options,missing);
 }
 const cgltf_accessor* attribute(const cgltf_primitive& p, cgltf_attribute_type type, int index=0) {
     for (cgltf_size i=0;i<p.attributes_count;++i)
@@ -217,7 +111,10 @@ Scene read_glb(const std::filesystem::path& input, const ReaderOptions& options)
         cgltf_data* raw=nullptr;
         const auto parsed=cgltf_parse(&parse_options,bytes.data(),bytes.size(),&raw);
         std::unique_ptr<cgltf_data,decltype(&cgltf_free)> data(raw,&cgltf_free);
-        if (parsed!=cgltf_result_success || !data || data->file_type!=cgltf_file_type_glb)
+        auto extension=path.extension().u8string();
+        std::transform(extension.begin(),extension.end(),extension.begin(),[](unsigned char c){return static_cast<char>(std::tolower(c));});
+        const auto expected=extension==".gltf"?cgltf_file_type_gltf:cgltf_file_type_glb;
+        if (parsed!=cgltf_result_success || !data || data->file_type!=expected)
             reject("INVALID_GLB","GLB header, chunks or JSON could not be parsed.","scene");
         if (!data->asset.version || std::string(data->asset.version)!="2.0" ||
             (data->asset.min_version && std::string(data->asset.min_version)>"2.0"))
@@ -282,8 +179,9 @@ Scene read_glb(const std::filesystem::path& input, const ReaderOptions& options)
             if (i==0 && !b.uri && data->bin && data->bin_size>=b.size) {
                 b.data=const_cast<void*>(data->bin); b.data_free_method=cgltf_data_free_method_none;
             } else if (b.uri) {
-                const auto resource=resource_path(root,b.uri);
-                external_buffers.push_back(read_bytes(resource,options.max_file_bytes));
+                const std::string uri=b.uri;
+                external_buffers.push_back(uri.rfind("data:",0)==0?data_uri(uri,options.max_file_bytes,false):
+                    read_bytes(resource_path(root,uri),options.max_file_bytes));
                 if (external_buffers.back().size()<b.size)
                     reject("INVALID_GLTF_BUFFER","External GLB buffer is shorter than declared.","scene");
                 b.data=external_buffers.back().data(); b.data_free_method=cgltf_data_free_method_none;
@@ -312,10 +210,10 @@ Scene read_glb(const std::filesystem::path& input, const ReaderOptions& options)
                     s.values_byte_offset>s.values_buffer_view->size ||
                     s.count>(s.values_buffer_view->size-s.values_byte_offset)/element)
                     reject("INVALID_GLTF_ACCESSOR","GLB sparse accessor exceeds its buffer view.","scene");
-                const auto* raw=cgltf_buffer_view_data(s.indices_buffer_view)+s.indices_byte_offset;
+                const auto* sparse_indices=cgltf_buffer_view_data(s.indices_buffer_view)+s.indices_byte_offset;
                 cgltf_size previous=0;
                 for (cgltf_size k=0;k<s.count;++k) {
-                    const auto index=cgltf_component_read_index(raw+k*index_size,s.indices_component_type);
+                    const auto index=cgltf_component_read_index(sparse_indices+k*index_size,s.indices_component_type);
                     if (index>=a.count || (k && index<=previous))
                         reject("INVALID_GLTF_ACCESSOR","GLB sparse indices must be strictly increasing and in range.","scene");
                     previous=index;
@@ -340,7 +238,7 @@ Scene read_glb(const std::filesystem::path& input, const ReaderOptions& options)
         auto material_for=[&](const cgltf_material* source) -> int {
             if (!source) {
                 if (!options.gis_static) reject("UNSUPPORTED_GLTF_MATERIAL","Default glTF material uses PBR shading; use gis-static or an unlit material.","scene");
-                Material m; m.name="Default glTF PBR white";
+                Material m; m.name="Default glTF PBR white"; m.double_sided=false;
                 out.materials.push_back(m);
                 out.diagnostics.push_back({Severity::warning,"MATERIAL_CHANNEL_OMITTED","GIS static profile omits default glTF PBR lighting; white base color remains.","scene"});
                 return static_cast<int>(out.materials.size()-1);
@@ -403,7 +301,9 @@ Scene read_glb(const std::filesystem::path& input, const ReaderOptions& options)
                             "GLB OPAQUE mode ignores image alpha, but the FileGDB texture would retain it; export an opaque RGB image or use BLEND.",ctx);
                     Texture t; t.name=label(texture->image->name,"GLB image "+std::to_string(out.textures.size()));
                     t.mime_type=detected; t.source=texture->image->uri?texture->image->uri:"embedded:GLB";
-                    t.embedded=texture->image->buffer_view!=nullptr; t.bytes=std::move(image);
+                    t.embedded=texture->image->buffer_view!=nullptr || t.source.rfind("data:",0)==0;
+                    if (t.source.rfind("data:",0)==0) t.source="embedded:glTF-data-uri";
+                    t.bytes=std::move(image);
                     m.texture=static_cast<int>(out.textures.size()); out.textures.push_back(std::move(t));
                 }
             }
@@ -462,7 +362,7 @@ Scene read_glb(const std::filesystem::path& input, const ReaderOptions& options)
                     const auto& view=p.material?p.material->pbr_metallic_roughness.base_color_texture:cgltf_texture_view{};
                     const int uv_set=view.has_transform && view.transform.has_texcoord?view.transform.texcoord:view.texcoord;
                     const auto* uv=attribute(p,cgltf_attribute_type_texcoord,uv_set);
-                    if (out.materials[material].texture>=0 && (!uv || uv->type!=cgltf_type_vec2 || uv->count!=positions->count))
+                    if ((out.materials[material].texture>=0 && !uv) || (uv && (uv->type!=cgltf_type_vec2 || uv->count!=positions->count)))
                         reject("MISSING_UV","Textured GLB primitive has no complete selected TEXCOORD set.",pc);
                     for (cgltf_size ai=0;ai<p.attributes_count;++ai) {
                         const auto& a=p.attributes[ai];
@@ -482,7 +382,7 @@ Scene read_glb(const std::filesystem::path& input, const ReaderOptions& options)
                         reject("INVALID_GLTF_INDICES","GLB indices must be non-sparse unsigned scalars.",pc);
                     Mesh mesh; mesh.name=label(source->mesh->name,"GLB mesh "+std::to_string(mesh_index))+"/"+std::to_string(pi);
                     mesh.source_node=node.name; mesh.vertices.reserve(count); mesh.triangles.reserve(count/3);
-                    std::size_t repaired=0, discarded=0, discarded_normals=0;
+                    std::size_t repaired=0, repaired_triangles=0, discarded=0, discarded_normals=0;
                     for (cgltf_size ti=0;ti<count;ti+=3) {
                         std::array<Vertex,3> corners{};
                         for (int k=0;k<3;++k) {
@@ -501,7 +401,7 @@ Scene read_glb(const std::filesystem::path& input, const ReaderOptions& options)
                                 } else corners[k].normal=normal(world,raw_normal,det);
                                 corners[k].has_normal=true;
                             }
-                            if (out.materials[material].texture>=0) {
+                            if (uv) {
                                 const auto t=values(uv,ix,2,pc);
                                 double u=t[0],vcoord=t[1];
                                 if (view.has_transform) {
@@ -530,10 +430,12 @@ Scene read_glb(const std::filesystem::path& input, const ReaderOptions& options)
                         }
                         if (!finite(length) || length==0)
                             reject("DEGENERATE_TRIANGLE","GLB triangle has zero or nonfinite area.",pc);
+                        const auto before_repair=repaired;
                         for (auto& corner:corners) if (corner.has_normal && !valid_normal(corner.normal)) {
                             if (!options.gis_static) reject("INVALID_NORMAL","GLB normal is invalid.",pc);
                             corner.normal={face.x/length,face.y/length,face.z/length}; ++repaired;
                         }
+                        if (repaired!=before_repair) ++repaired_triangles;
                         Triangle tri; tri.material=material;
                         for (int k=0;k<3;++k) {
                             tri.indices[k]=static_cast<std::uint32_t>(mesh.vertices.size());
@@ -541,12 +443,13 @@ Scene read_glb(const std::filesystem::path& input, const ReaderOptions& options)
                         }
                         mesh.triangles.push_back(tri);
                     }
-                    if (discarded) out.diagnostics.push_back({Severity::warning,"ZERO_AREA_TRIANGLES_REMOVED",
-                        "GIS static removed " + std::to_string(discarded) + " finite zero-area GLB triangles.",pc});
+                    if (discarded) out.diagnostics.push_back({Severity::warning,"DEGENERATE_TRIANGLES_REMOVED",
+                        "GIS static profile removed " + std::to_string(discarded) + " strictly zero-area triangles; no area tolerance was used.",pc});
                     if (discarded_normals) out.diagnostics.push_back({Severity::warning,"DEGENERATE_NORMALS_DISCARDED",
                         "GIS static discarded " + std::to_string(discarded_normals) + " invalid normals with removed zero-area triangles.",pc});
                     if (repaired) out.diagnostics.push_back({Severity::warning,"NORMALS_REPAIRED",
-                        "GIS static rebuilt " + std::to_string(repaired) + " invalid GLB corner normals from transformed triangle edges.",pc});
+                        "GIS static profile rebuilt " + std::to_string(repaired) + " invalid corner normals across " +
+                        std::to_string(repaired_triangles) + " triangles from transformed triangle edges.",pc});
                     if (mesh.triangles.empty()) reject("EMPTY_MESH","GLB primitive has no retained triangles.",pc);
                     out.nodes[node_index].meshes.push_back(static_cast<std::uint32_t>(out.meshes.size()));
                     out.meshes.push_back(std::move(mesh));

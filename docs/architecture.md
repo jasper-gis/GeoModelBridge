@@ -9,8 +9,10 @@ flowchart LR
   C --> R
   FBX[静态 FBX 与图片] --> R[ufbx Reader / C++17]
   OBJ[OBJ/MTL 与图片] --> R
-  GLB[glTF 2.0 GLB 与图片] --> L[cgltf Reader / C++17]
+  GLB[glTF 2.0 GLB / JSON 与资源] --> L[cgltf Reader / C++17]
   L --> S
+  WRL[VRML97 WRL 与图片] --> W[静态节点解析 / C++17]
+  W --> S
   R --> S[统一 Scene 与严格验证]
   F[人工测试网格] --> S
   S --> B[Scene Bundle 与图片]
@@ -21,6 +23,8 @@ flowchart LR
 ```
 
 Reader 与数据库 SDK 无直接依赖。C++ 内核使用 `gmb::Scene` 表达 Nodes、Meshes、Materials、Textures、坐标元数据与诊断。节点实例展开为独立网格；顶点保留完整角点，不能只按位置合并 UV/法线接缝。节点变换、轴向、单位和 origin 在中间包前完成，写入端不得重复变换。
+
+GLB/glTF 与 WRL 共用 `reader_util.hpp` 的变换、受限资源加载与诊断；路径包含判断调用共享平台实现。WRL 使用限定节点/字段解析器和已有 ufbx 多边形三角化；不执行脚本或网络资源。新格式仍经完整 Scene 验证后才能启动 writer，不改变 Scene Bundle 契约。未来 MAX 预处理接口见 [.max 路线](max-roadmap.md)。
 
 V0.1.12 的 Reader 把贴图查询结果区分为“找到路径 / 确认缺失 / 查询失败”，按 ufbx texture 对象在本次读取内缓存；材质检查只对确认缺失的图片应用回退。查询失败与非普通文件产生明确的读取错误，路径成功解析不代替后续图片字节校验。Windows 将部分错误父路径报告为不存在，因此另行检查最近的已有父目录，保持两平台判定一致。
 
