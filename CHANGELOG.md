@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- MAX 导出核验要求网格、材质和纹理清单完整且不重复，防止重复记录掩盖遗漏；建立名称索引并缓存各纹理 SHA-256，减少重复扫描与图片哈希计算。
+- MAX 可选运行日志读取失败记录 `MAX_LOG_READ_ERROR` 警告，保留原始超时、材质拒绝和已核验成功结果。
+- 补充多网格、多材质、清单缺失/重复及日志故障回归；双平台构建和 GDB 回读结果见 [本次验证记录](docs/validation-max-hardening-2026-09-27.md)，实机 MAX 验收边界保持不变。
+
 ## V0.6.0 — 2026-09-27
 
 - 实现可选 Windows Max Batch → 静态 FBX → 共享 Scene Bundle / 原生 FileGDB 流程；CLI、GUI、标准库 Python 客户端支持 MAX 运行环境、显式采样帧和超时参数。

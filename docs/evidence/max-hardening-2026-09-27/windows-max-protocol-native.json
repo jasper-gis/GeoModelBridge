@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "real_max_runtime_used": false,
+  "real_filegdb_written": true,
+  "independent_copy_readback": true,
+  "installed_client": true,
+  "invalid_binding_rejected_before_gdb": true,
+  "rejected_manifest_modes": [
+    "binding",
+    "duplicate_mesh",
+    "duplicate_material",
+    "missing_material",
+    "missing_texture",
+    "duplicate_texture"
+  ],
+  "log_error_preserves_verified_result": true
+}

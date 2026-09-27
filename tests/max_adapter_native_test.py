@@ -30,16 +30,28 @@ shutil.copytree(result.output_gdb, work / "copy.gdb")
 subprocess.run([str(engine.writer), "--verify-gdb", str(work / "copy.gdb"),
     "--expected-report", str(result.report_path), "--report", str(work / "copy.json")], check=True)
 assert json.loads((work / "copy.json").read_text())["status"] == "standalone_copy_verified"
-bad = work / "rejected-stub.max"
-bad.write_text(json.dumps(dict(mode="binding", fbx=str(fixture))), encoding="utf-8")
-try:
-    engine.convert(ConversionRequest(bad, work / "rejected.gdb", 32650, (500000, 3000000, 100), max_batch=stub, max_frame=5))
-except ConversionError:
-    pass
-else:
-    raise AssertionError("Changed image binding was accepted")
-assert not (work / "rejected.gdb").exists()
+rejected = ("binding", "duplicate_mesh", "duplicate_material", "missing_material", "missing_texture", "duplicate_texture")
+for mode in rejected:
+    bad = work / (mode + ".max")
+    sample = ("instanced_mirror.fbx" if mode == "duplicate_mesh" else
+              "multi_material.fbx" if mode in ("duplicate_material", "missing_material") else fixture.name)
+    bad.write_text(json.dumps(dict(mode=mode, fbx=str(fixture.parent / sample))), encoding="utf-8")
+    output = work / (mode + ".gdb")
+    try:
+        engine.convert(ConversionRequest(bad, output, 32650, (500000, 3000000, 100), max_batch=stub, max_frame=5))
+    except ConversionError:
+        pass
+    else:
+        raise AssertionError("Invalid export manifest was accepted: " + mode)
+    assert not output.exists(), mode
+log_source = work / "log-error.max"
+log_source.write_text(json.dumps(dict(mode="ok_log_error", fbx=str(fixture))), encoding="utf-8")
+log_result = engine.convert(ConversionRequest(log_source, work / "log-error.gdb", 32650, (500000, 3000000, 100),
+    max_batch=stub, max_frame=5))
+log_report = json.loads(log_result.report_path.read_text(encoding="utf-8"))
+assert any(d["code"] == "MAX_LOG_READ_ERROR" for d in log_report["reader_diagnostics"])
 with (work / "test-results.json").open("x") as stream:
     json.dump(dict(status="passed", real_max_runtime_used=False, real_filegdb_written=True,
-                   independent_copy_readback=True, installed_client=True, invalid_binding_rejected_before_gdb=True), stream, indent=2)
+                   independent_copy_readback=True, installed_client=True, invalid_binding_rejected_before_gdb=True,
+                   rejected_manifest_modes=list(rejected), log_error_preserves_verified_result=True), stream, indent=2)
 print("MAX protocol substitute -> installed stdlib client -> real textured GDB and independent copy passed; no real MAX validation")

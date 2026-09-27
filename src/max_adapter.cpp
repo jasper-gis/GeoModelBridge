@@ -9,6 +9,8 @@
 #include <iostream>
 #include <cmath>
 #include <limits>
+#include <unordered_map>
+#include <unordered_set>
 
 namespace gmb {
 namespace fs=std::filesystem;
@@ -85,7 +87,16 @@ Scene read_max(const fs::path& input,const ReaderOptions& reader,const MaxOption
         io::write_exclusive(stage/"worker.py",std::string(script.begin(),script.end()));
         const auto process=io::run_max_process({fs::absolute(options.batch_executable).u8string(),(stage/"worker.py").u8string(),
             "-dm","on","-log",(stage/"max.log").u8string(),"-listenerLog",(stage/"listener.log").u8string()},stage,options.timeout_seconds);
-        const json runtime_logs={{"system",runtime_log(stage/"max.log")},{"listener",runtime_log(stage/"listener.log")}};
+        auto capture_log=[&](const fs::path& path) -> json {
+            try {return runtime_log(path);}
+            catch(const std::exception& error) {
+                // Optional logs must not replace a timeout, worker rejection,
+                // or a successfully validated export with a logging failure.
+                failure.diagnostics.push_back({Severity::warning,"MAX_LOG_READ_ERROR",error.what(),path.u8string()});
+                return {{"read_error",true},{"message",error.what()}};
+            }
+        };
+        const json runtime_logs={{"system",capture_log(stage/"max.log")},{"listener",capture_log(stage/"listener.log")}};
         failure.diagnostics.push_back({Severity::warning,"MAX_BATCH_LOG",json({
             {"stdout_tail",process.stdout_tail},{"stderr_tail",process.stderr_tail},
             {"stdout_truncated",process.stdout_truncated},{"stderr_truncated",process.stderr_truncated},{"runtime_logs",runtime_logs}}).dump(),options.batch_executable.u8string()});
@@ -121,13 +132,30 @@ Scene read_max(const fs::path& input,const ReaderOptions& reader,const MaxOption
         if(response.at("triangle_count")!=triangles||response.at("mesh_count")!=scene.meshes.size())
             throw std::runtime_error("MAX_EXPORT_MISMATCH: FBX mesh/triangle counts differ from the evaluated MAX scene.");
         const auto close=[](double a,double b){return std::isfinite(a)&&std::isfinite(b)&&std::abs(a-b)<=1e-5*std::max(1.0,std::max(std::abs(a),std::abs(b)));};
+        // Index once. A name can identify a mesh through either FBX field;
+        // aliases of the same mesh are valid, collisions between meshes are not.
+        std::unordered_map<std::string,const Mesh*> mesh_names;
+        for(const auto& mesh:scene.meshes)for(const auto* name:{&mesh.name,&mesh.source_node}) {
+            if(name->empty())continue;
+            const auto added=mesh_names.emplace(*name,&mesh);
+            if(!added.second&&added.first->second!=&mesh)added.first->second=nullptr;
+        }
+        std::unordered_map<std::string,const Material*> material_names;
+        for(const auto& material:scene.materials)
+            if(!material_names.emplace(material.name,&material).second)throw std::runtime_error("MAX_EXPORT_MISMATCH: Ambiguous exported material name.");
+        std::vector<std::string> texture_hashes;
+        std::unordered_set<std::string> exported_hashes;
+        for(const auto& texture:scene.textures) {
+            texture_hashes.push_back(sha256(texture.bytes));
+            exported_hashes.insert(texture_hashes.back());
+        }
+        std::unordered_set<const Mesh*> checked_meshes;
         if(response.at("nodes").size()!=scene.meshes.size())throw std::runtime_error("MAX_EXPORT_MISMATCH: Missing evaluated mesh records.");
         for(const auto& record:response.at("nodes")) {
-            const Mesh* found=nullptr;
-            for(const auto& mesh:scene.meshes)if(mesh.name==record.at("exported_name")||mesh.source_node==record.at("exported_name")) {
-                if(found)throw std::runtime_error("MAX_EXPORT_MISMATCH: Ambiguous exported mesh name.");found=&mesh;
-            }
+            const auto match=mesh_names.find(record.at("exported_name").get<std::string>());
+            const Mesh* found=match==mesh_names.end()?nullptr:match->second;
             if(!found||record.at("triangles")!=found->triangles.size())throw std::runtime_error("MAX_EXPORT_MISMATCH: Per-mesh triangles changed.");
+            if(!checked_meshes.insert(found).second)throw std::runtime_error("MAX_EXPORT_MISMATCH: Duplicate evaluated mesh record.");
             json assignments=json::object();
             for(const auto& triangle:found->triangles) {
                 if(triangle.material<0||std::size_t(triangle.material)>=scene.materials.size())throw std::runtime_error("MAX_EXPORT_MISMATCH: Unassigned face material.");
@@ -143,25 +171,29 @@ Scene read_max(const fs::path& input,const ReaderOptions& reader,const MaxOption
             for(unsigned axis=0;axis<3;++axis)if(!close(low[axis],record.at("bounds_metres").at(0).at(axis))||!close(high[axis],record.at("bounds_metres").at(1).at(axis)))
                 throw std::runtime_error("MAX_EXPORT_MISMATCH: Evaluated world bounds/units changed in FBX export.");
         }
-        if(!response.at("materials").is_array()||response.at("materials").empty())throw std::runtime_error("MAX_EXPORT_MISMATCH: Missing evaluated materials.");
+        if(!response.at("materials").is_array()||response.at("materials").empty()||response.at("materials").size()!=scene.materials.size())
+            throw std::runtime_error("MAX_EXPORT_MISMATCH: Missing or unexpected evaluated materials.");
+        std::unordered_set<const Material*> checked_materials;
         for(const auto& record:response.at("materials")) {
-            const Material* found=nullptr;
-            for(const auto& material:scene.materials)if(material.name==record.at("name")) {
-                if(found)throw std::runtime_error("MAX_EXPORT_MISMATCH: Ambiguous exported material name.");found=&material;
-            }
+            const auto match=material_names.find(record.at("name").get<std::string>());
+            const Material* found=match==material_names.end()?nullptr:match->second;
             if(!found)throw std::runtime_error("MAX_EXPORT_MISMATCH: An evaluated material was lost.");
+            if(!checked_materials.insert(found).second)throw std::runtime_error("MAX_EXPORT_MISMATCH: Duplicate evaluated material record.");
             const std::array<double,4> values={found->color.r,found->color.g,found->color.b,found->color.a};
             for(unsigned i=0;i<4;++i)if(!close(values[i],record.at("color").at(i)))throw std::runtime_error("MAX_EXPORT_MISMATCH: Material diffuse/opacity changed.");
             if(found->double_sided!=record.at("double_sided").get<bool>())throw std::runtime_error("MAX_EXPORT_MISMATCH: Material sidedness changed.");
             if(record.at("texture_sha256").is_null()) {
                 if(found->texture!=-1)throw std::runtime_error("MAX_EXPORT_MISMATCH: Unexpected material image binding.");
-            }else if(found->texture<0||std::size_t(found->texture)>=scene.textures.size()||sha256(scene.textures[found->texture].bytes)!=record.at("texture_sha256"))
+            }else if(found->texture<0||std::size_t(found->texture)>=texture_hashes.size()||texture_hashes[found->texture]!=record.at("texture_sha256"))
                 throw std::runtime_error("MAX_EXPORT_MISMATCH: Diffuse image binding changed.");
         }
+        std::unordered_set<std::string> checked_hashes;
         for(const auto& asset:response.at("textures")) {
-            bool found=false;for(const auto& texture:scene.textures)if(sha256(texture.bytes)==asset.at("sha256"))found=true;
-            if(!found)throw std::runtime_error("MAX_EXPORT_MISMATCH: An original texture was lost or changed in FBX export.");
+            const auto hash=asset.at("sha256").get<std::string>();
+            if(!checked_hashes.insert(hash).second)throw std::runtime_error("MAX_EXPORT_MISMATCH: Duplicate evaluated texture record.");
+            if(!exported_hashes.count(hash))throw std::runtime_error("MAX_EXPORT_MISMATCH: An original texture was lost or changed in FBX export.");
         }
+        if(checked_hashes!=exported_hashes)throw std::runtime_error("MAX_EXPORT_MISMATCH: Missing evaluated texture records.");
         response["process"]={{"exit_code",process.exit_code},{"stdout_tail",process.stdout_tail},{"stderr_tail",process.stderr_tail},
             {"stdout_truncated",process.stdout_truncated},{"stderr_truncated",process.stderr_truncated}};
         response["source"]=source.u8string();response["batch_executable"]=fs::absolute(options.batch_executable).u8string();
