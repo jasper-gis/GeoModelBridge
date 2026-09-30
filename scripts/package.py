@@ -82,7 +82,7 @@ for name in sorted(set(listing)):
     if path.is_file(): files[rel.as_posix()] = path
 binary_files = [cli_name, native_name, *[p.relative_to(install).as_posix() for p in runtimes],
                 "bin/demo/textured_quad.fbx", "bin/demo/textured_quad.obj", "bin/demo/textured_quad.mtl", "bin/demo/textured_quad.glb",
-                "bin/demo/textured_quad.gltf", "bin/demo/textured_quad.bin", "bin/demo/textured_quad.wrl", "bin/demo/checker.png", "bin/max-adapter/worker.py"]
+                "bin/demo/textured_quad.gltf", "bin/demo/textured_quad.bin", "bin/demo/textured_quad.wrl", "bin/demo/textured_quad.dae", "licenses/tinyxml2/LICENSE.txt", "bin/demo/checker.png", "bin/max-adapter/worker.py"]
 for name in binary_files:
     if not (install / name).is_file():
         raise SystemExit("Required release file is missing: " + name)

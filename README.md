@@ -2,7 +2,7 @@
 
 <h1>GeoModelBridge</h1>
 <p><strong>将静态三维模型转换为 GIS 数据</strong></p>
-<p>FBX / OBJ / GLB / glTF / WRL → 带颜色与贴图的 FileGDB Multipatch</p>
+<p>FBX / OBJ / GLB / glTF / WRL / DAE → 带颜色与贴图的 FileGDB Multipatch</p>
 
 <p>
   <a href="CHANGELOG.md"><code>V0.6.0</code></a> &nbsp;
@@ -33,11 +33,11 @@ V0.6.0 新增 Windows 可选 MAX Batch 适配器，CLI、GUI 和 Python 均可�
 - **缺图也能继续**：缺失的图片默认回退为材质颜色和标量透明度，保留警告及原路径；有效贴图照常写入。
 - **共用转换链路**：两平台使用同一套 C++17 核心、Scene Bundle 协议和报告格式，转换不覆盖已有模型或成果。
 
-格式边界和材质策略见 [GLB / glTF 输入](docs/glb.md)、[WRL 输入](docs/wrl.md)。不支持的渲染语义会明确拒绝或按照显式策略记录，格式支持不代表任意动态场景均可无损转换。
+格式边界和材质策略见 [GLB / glTF 输入](docs/glb.md)、[WRL 输入](docs/wrl.md)、[DAE / COLLADA 输入](docs/dae.md)。不支持的渲染语义会明确拒绝或按照显式策略记录，格式支持不代表任意动态场景均可无损转换。
 
 ```mermaid
 flowchart LR
-    A[FBX / OBJ / GLB / glTF / WRL + 纹理] --> B[解析与校验]
+    A[FBX / OBJ / GLB / glTF / WRL / DAE + 纹理] --> B[解析与校验]
     B --> C[Scene Bundle]
     C --> D[原生 FileGDB 写入]
     D --> E[GDB + 回读报告]
@@ -181,6 +181,8 @@ V0.1.12 会明确区分“文件缺失”和“路径 / 读取错误”：路径
 有效贴图缺少 UV、非有限位置、无法形成有效三角形的几何、损坏或无法读取的现有图片、未知材质以及不支持的 PBR、自发光、骨骼或形变仍会拒绝。PNG 保存为未预乘 RGBA8，JPEG 保留压缩数据，不静默转码；颜色、透明度、UV 与法线的存储量化会记录在报告中。详细格式范围、JPEG 封装兼容处理及精度说明见[兼容策略](docs/compatibility.md)和[原生存储规则](backends/native-filegdb/README.md#存储规则与范围)。
 
 <a id="verification"></a>
+
+**当前开发版本 DAE**：双平台 CTest 各 **18/18**、Windows GUI 服务 **247/247**；真实纹理 Alpha / 标量透明度及安装后 Python 客户端验证通过。样本、格式和路径边界见 [DAE 验证记录](docs/validation-dae-2026-09-30.md)。
 
 ## 已有验证
 

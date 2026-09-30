@@ -43,22 +43,22 @@ struct Options {
     bool missing_textures_explicit=false, obj_options_explicit=false;
 };
 void help(const std::string& command="") {
-    std::cout<<"GeoModelBridge V"<<gmb::version<<" - static FBX/OBJ/GLB/glTF/WRL/MAX to textured Multipatch pipeline\n\n"
+    std::cout<<"GeoModelBridge V"<<gmb::version<<" - static FBX/OBJ/GLB/glTF/WRL/DAE/MAX to textured Multipatch pipeline\n\n"
         "Usage: geomodelbridge COMMAND [ARGUMENTS]\n"
         "Help:  geomodelbridge -h | --help | COMMAND -h | COMMAND --help\n\n";
     if(command.empty())std::cout<<
         "Commands:\n"
         "  convert   Write a NEW textured FileGDB and verify its readback.\n"
-        "  inspect   Validate FBX, OBJ, GLB, glTF or WRL; optionally write a JSON report (no GDB).\n"
+        "  inspect   Validate FBX, OBJ, GLB, glTF, WRL or DAE; optionally write a JSON report (no GDB).\n"
         "  prepare   Write an intermediate Scene Bundle (no GDB).\n"
         "  fixture   Generate synthetic Scene Bundles for testing (no GDB).\n"
         "  doctor    Show writer discovery; does not load or test the SDK.\n\n"
         "  geomodelbridge --version\n"
         "  geomodelbridge doctor\n"
-        "  geomodelbridge inspect INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl|INPUT.max [--report NEW.json] [OPTIONS]\n"
-        "  geomodelbridge prepare INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl|INPUT.max --output NEW_BUNDLE [OPTIONS]\n"
+        "  geomodelbridge inspect INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl|INPUT.dae|INPUT.max [--report NEW.json] [OPTIONS]\n"
+        "  geomodelbridge prepare INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl|INPUT.dae|INPUT.max --output NEW_BUNDLE [OPTIONS]\n"
         "  geomodelbridge fixture NAME|all --output NEW_DIR [OPTIONS]\n"
-        "  geomodelbridge convert INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl|INPUT.max --output NEW.gdb [--backend native-filegdb]\n"
+        "  geomodelbridge convert INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl|INPUT.dae|INPUT.max --output NEW.gdb [--backend native-filegdb]\n"
         "      --wkid PROJECTED_METRIC_WKID --origin X Y Z [OPTIONS]\n\n";
     else if(command=="doctor") {
         std::cout<<"Usage: geomodelbridge doctor\n"
@@ -69,13 +69,13 @@ void help(const std::string& command="") {
             "For an end-to-end check, convert the installed demo/textured_quad.fbx.\n";
         return;
     } else if(command=="convert")std::cout<<
-        "Usage: geomodelbridge convert INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl|INPUT.max --output NEW.gdb\n"
+        "Usage: geomodelbridge convert INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl|INPUT.dae|INPUT.max --output NEW.gdb\n"
         "         --wkid PROJECTED_METRIC_WKID --origin X Y Z [OPTIONS]\n\n";
     else if(command=="inspect")std::cout<<
-        "Usage: geomodelbridge inspect INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl|INPUT.max [--report NEW.json] [OPTIONS]\n"
+        "Usage: geomodelbridge inspect INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl|INPUT.dae|INPUT.max [--report NEW.json] [OPTIONS]\n"
         "Validates the model; does not create a GDB or a Scene Bundle.\n\n";
     else if(command=="prepare")std::cout<<
-        "Usage: geomodelbridge prepare INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl|INPUT.max --output NEW_BUNDLE [OPTIONS]\n"
+        "Usage: geomodelbridge prepare INPUT.fbx|INPUT.obj|INPUT.glb|INPUT.gltf|INPUT.wrl|INPUT.dae|INPUT.max --output NEW_BUNDLE [OPTIONS]\n"
         "Creates scene.json, textures and report.json, not a GDB.\n"
         "Supply --wkid and --origin now if this bundle will be written to GDB.\n\n";
     else if(command=="fixture")std::cout<<
@@ -127,7 +127,7 @@ void help(const std::string& command="") {
         "Exit codes: 0 success; 2 arguments/path conflict; 3 model rejected;\n"
         "            4 backend unavailable; 5 writer failed; 6 operation/IO error.\n";
     if(command.empty()||command=="convert")std::cout<<
-        "\nSequential calls (one FBX/OBJ/GLB/glTF/WRL/MAX -> one NEW GDB per process; no batch flag):\n"
+        "\nSequential calls (one FBX/OBJ/GLB/glTF/WRL/DAE/MAX -> one NEW GDB per process; no batch flag):\n"
         "  geomodelbridge convert \"model A.fbx\" -o new-a.gdb --wkid 32650 --origin 500000 3000000 100\n"
         "  geomodelbridge convert \"model B.fbx\" -o new-b.gdb --wkid 32650 --origin 500000 3000000 100\n"
         "Replace sample placement with real coordinates. Wait for each process,\n"

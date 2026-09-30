@@ -142,7 +142,7 @@ internal static class Program
         var glbPath = Path.Combine(Work, "model.glb");
         File.WriteAllBytes(glbPath, [1, 2, 3]);
         Test("accept_glb_input", () => Valid(Settings with { InputPath = glbPath }));
-        foreach (var extension in new[] { ".gltf", ".wrl" })
+        foreach (var extension in new[] { ".gltf", ".wrl", ".dae" })
         {
             var modelPath = Path.Combine(Work, "model" + extension);
             File.WriteAllText(modelPath, "test");
@@ -1042,7 +1042,7 @@ internal static class Program
             Assert(report["status"]!.GetValue<string>() == "written_and_readback_verified", "GLB native readback failed.");
             Assert(report["textures"]!.AsArray().Any(t => t!["readback_bytes_equal"]!.GetValue<bool>()), "GLB texture was not verified.");
         });
-        foreach (var extension in new[] { "obj", "gltf", "wrl" })
+        foreach (var extension in new[] { "obj", "gltf", "wrl", "dae" })
         await TestAsync("real_native_" + extension + "_conversion_from_gui_service", async () =>
         {
             // Keep the original relative resource names beside each input model.

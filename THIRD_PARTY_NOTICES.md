@@ -1,5 +1,12 @@
 # Third-party notices
 
+## TinyXML-2 10.0.0
+
+- Source: https://github.com/leethomason/tinyxml2
+- Commit: `321ea883b7190d4e85cae5512a12e5eaa8f8731f` (tag `10.0.0`).
+- Unchanged `tinyxml2.cpp`, `tinyxml2.h` and zlib license `LICENSE.txt` are hash-pinned in `third_party/manifest.json`.
+- Used by the shared COLLADA 1.4.1 reader. DTDs and external entities are rejected; the parser performs no resource fetches. The original license is installed with the CLI.
+
 ## cgltf 1.15
 
 - Source: https://github.com/jkuhlmann/cgltf
@@ -14,7 +21,7 @@
 - Commit: `fcc5d6ba444cfd3eb80677dba5e37e493941abe5` (tag `v0.23.0`).
 - Files: `third_party/ufbx/ufbx.c`, `ufbx.h`, `LICENSE`.
 - Upstream license: dual MIT / public-domain alternative; original license text is included unchanged.
-- Used for FBX/OBJ reading and for triangulating validated VRML97 polygons.
+- Used for FBX/OBJ reading and for triangulating validated VRML97 / COLLADA polygons.
 
 ## nlohmann/json 3.12.0
 

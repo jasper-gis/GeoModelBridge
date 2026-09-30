@@ -57,3 +57,5 @@ areas. No private user model is included in these regressions.
 * `textured_quad.wrl`: original CC0 VRML97 textured quad, Y-up metres, translation
   (10,1,2), per-face normal, independent UV indices and TextureTransform. VRML97
   RGBA image replacement intentionally differs from glTF color modulation.
+
+* `textured_quad.dae`: project-authored COLLADA 1.4.1 quad with explicit normal/UV indices, material and sampler/surface/image bindings, Z-up metres, translation=(10,20,30), scalar opacity=0.75 and double_sided=1. Not evidence of third-party exporter or GIS visual acceptance.

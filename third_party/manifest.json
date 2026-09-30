@@ -1,6 +1,26 @@
 {
   "dependencies": [
     {
+      "name": "tinyxml2",
+      "version": "10.0.0",
+      "revision": "321ea883b7190d4e85cae5512a12e5eaa8f8731f",
+      "source": "https://github.com/leethomason/tinyxml2",
+      "files": [
+        {
+          "path": "third_party/tinyxml2/tinyxml2.cpp",
+          "sha256": "d5a7fd2ad255d716c4d2a64d5686f90c7e27a8285c49c59a5d105cb400bdf703"
+        },
+        {
+          "path": "third_party/tinyxml2/tinyxml2.h",
+          "sha256": "02f2389feb67fbb3efe42aaa6942034bc7d54695f357c5aac3cbd2f78a06ca4a"
+        },
+        {
+          "path": "third_party/tinyxml2/LICENSE.txt",
+          "sha256": "9332252e9b9e46db8285d4a3f0bf25f139bf1dca6781b956d57f2302efca6432"
+        }
+      ]
+    },
+    {
       "name": "cgltf",
       "version": "1.15",
       "revision": "360db1a95480fe102ae9c69b27c5d101167ff5ba",

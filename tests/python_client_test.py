@@ -96,6 +96,13 @@ class ClientTests(unittest.TestCase):
         self.assertIn(str(glb), args)
         self.assertNotIn("--obj-up-axis", args)
 
+    def test_dae_source(self):
+        dae = self.root / "模型.DAE"
+        dae.write_text("placeholder", encoding="utf-8")
+        args = self.engine.command(replace(self.request, input_fbx=dae))
+        self.assertIn(str(dae), args)
+        self.assertNotIn("--obj-up-axis", args)
+
     def test_invalid_requests(self):
         changes = [dict(wkid=True), dict(wkid="3857"), dict(wkid=0), dict(wkid=2**31),
                    dict(origin=(1, 2)), dict(origin=(1, 2, float("nan"))), dict(origin=(1, 2, float("inf"))),

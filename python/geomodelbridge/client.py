@@ -42,7 +42,7 @@ class Message:
 
 @dataclass(frozen=True)
 class ConversionRequest:
-    input_fbx: PathLike  # Source model (.fbx, .obj, .glb, .gltf or .wrl); name retained for API compatibility.
+    input_fbx: PathLike  # Source model (.fbx, .obj, .glb, .gltf, .wrl or .dae); name retained for API compatibility.
     output_gdb: PathLike
     wkid: int
     origin: Tuple[float, float, float]
@@ -336,7 +336,7 @@ class Engine:
         output = _path(request.output_gdb, "output GDB")
         report = _path(request.report_path if request.report_path is not None
                        else str(output) + ".report.json", "report")
-        _require(source.is_file() and source.suffix.lower() in (".fbx", ".obj", ".glb", ".gltf", ".wrl", ".max"), "Input must be an existing FBX, OBJ, GLB, glTF, WRL or MAX file")
+        _require(source.is_file() and source.suffix.lower() in (".fbx", ".obj", ".glb", ".gltf", ".wrl", ".dae", ".max"), "Input must be an existing FBX, OBJ, GLB, glTF, WRL, DAE or MAX file")
         batch = None
         if source.suffix.lower() == ".max":
             _require(os.name == "nt", "MAX preprocessing requires Windows", "MAX_PLATFORM_UNSUPPORTED")

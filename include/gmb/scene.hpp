@@ -74,6 +74,7 @@ struct ReaderOptions {
 Scene read_fbx(const std::filesystem::path& input, const ReaderOptions& options = {});
 Scene read_glb(const std::filesystem::path& input, const ReaderOptions& options = {});
 Scene read_wrl(const std::filesystem::path& input, const ReaderOptions& options = {});
+Scene read_dae(const std::filesystem::path& input, const ReaderOptions& options = {});
 Scene read_model(const std::filesystem::path& input, const ReaderOptions& options = {});
 std::vector<Diagnostic> validate(const Scene& scene);
 bool has_errors(const std::vector<Diagnostic>& diagnostics);

@@ -26,7 +26,7 @@ assert not engine.check().arcgis_pro_required
 fixtures = Path(__file__).resolve().parent / "fixtures"
 source_dir = work / "中文 模型 & 输入"
 source_dir.mkdir()
-for name in ("textured_quad.fbx", "textured_quad.obj", "textured_quad.glb", "textured_quad.gltf", "textured_quad.bin", "textured_quad.wrl", "textured_quad.mtl", "checker.png", "missing_texture.fbx"):
+for name in ("textured_quad.fbx", "textured_quad.obj", "textured_quad.glb", "textured_quad.gltf", "textured_quad.bin", "textured_quad.wrl", "textured_quad.dae", "textured_quad.mtl", "checker.png", "missing_texture.fbx"):
     shutil.copy2(fixtures / name, source_dir / name)
 base = (fixtures / "textured_quad.fbx").read_text(encoding="utf-8")
 broken = re.sub(r"Normals: \*\d+ \{ a: [^}]+", "Normals: *12 { a: " + ",".join(["0"] * 12) + " ", base)
@@ -34,6 +34,7 @@ normal_file = source_dir / "无效法线.fbx"
 normal_file.write_text(broken, encoding="utf-8")
 hashes = {p: hashlib.sha256(p.read_bytes()).hexdigest() for p in source_dir.iterdir()}
 results = []
+verified_gdbs = []
 request = ConversionRequest(source_dir / "textured_quad.fbx", work / "贴图 输出.gdb", 3857, (100, 100, 100), feature_class="ImportedFBX")
 
 def verify_copy(result):
@@ -49,6 +50,7 @@ def verify_copy(result):
                     "--report", str(copy_report)], check=True, stdout=subprocess.DEVNULL)
     assert json.loads(copy_report.read_text(encoding="utf-8"))["status"] == "standalone_copy_verified"
     results.append(result.output_gdb.stem)
+    verified_gdbs.append(result.output_gdb.stem)
     return report
 
 events = []
@@ -68,7 +70,7 @@ glb_result = engine.convert(glb_request)
 glb_report = verify_copy(glb_result)
 assert any(check["textured_patches"] > 0 for check in glb_report["verification"]["checks"])
 assert glb_report["coordinates"]["origin"] == [100, 100, 100]
-for extension in ("gltf", "wrl"):
+for extension in ("gltf", "wrl", "dae"):
     converted = engine.convert(replace(request, input_fbx=source_dir / ("textured_quad." + extension),
         output_gdb=work / (extension + ".gdb"), profile="strict"))
     verified = verify_copy(converted)
@@ -136,6 +138,6 @@ assert all(hashlib.sha256(path.read_bytes()).hexdigest() == digest for path, dig
 assert "arcpy" not in sys.modules
 assessment = dict(version=geomodelbridge.__version__, status="passed", python=sys.version,
                   cases=results, installed_client=True, arcpy_imported=False, input_unchanged=True,
-                  copied_gdb_readbacks=8, graphical_acceptance="not_performed", atbx_execution="not_performed")
+                  copied_gdb_readbacks=len(verified_gdbs), graphical_acceptance="not_performed", atbx_execution="not_performed")
 (work / "assessment.json").write_text(json.dumps(assessment, ensure_ascii=False, indent=2), encoding="utf-8")
-print(f"PASS installed Python client: {len(results)} cases, 8 GDBs independently copied and reopened")
+print(f"PASS installed Python client: {len(results)} cases, {len(verified_gdbs)} GDBs independently copied and reopened")

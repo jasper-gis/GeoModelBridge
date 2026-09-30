@@ -1021,7 +1021,8 @@ Scene read_model(const std::filesystem::path& input, const ReaderOptions& option
     std::transform(extension.begin(), extension.end(), extension.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     if (extension == ".glb" || extension == ".gltf") return read_glb(path, options);
     if (extension == ".wrl") return read_wrl(path, options);
-    if (extension != ".fbx" && extension != ".obj") throw std::invalid_argument("Input must be .fbx, .obj, .glb, .gltf or .wrl: " + path.u8string());
+    if (extension == ".dae") return read_dae(path, options);
+    if (extension != ".fbx" && extension != ".obj") throw std::invalid_argument("Input must be .fbx, .obj, .glb, .gltf, .wrl or .dae: " + path.u8string());
     const bool obj = extension == ".obj";
     const auto bytes = read_bytes(path, options.max_file_bytes);
     if (bytes.empty()) throw std::runtime_error("Model file is empty: " + path.u8string());

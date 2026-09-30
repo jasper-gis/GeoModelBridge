@@ -179,7 +179,7 @@ void write_report(const Scene& scene,const std::vector<Diagnostic>& ds,const std
         {"fidelity",{{"validation_passed",!has_errors(ds)},{"strict_validation_passed",scene.conversion_profile=="strict"&&!has_errors(ds)&&!compatibility_adjustments(ds)},
             {"compatibility_adjustments",compatibility_adjustments(ds)},{"gdb_written",false},{"gdb_readback_verified",false},{"visual_acceptance","pending"},
             {"note","Prepared/inspected geometry is not evidence of successful FileGDB conversion. Writer reports contain database verification results."}}},
-        {"coordinate_operation","FBX units/axes and static node transforms baked; optional origin translation. No CRS reprojection."},
+        {"coordinate_operation","Source units/axes and static node transforms baked; optional origin translation. No CRS reprojection."},
         {"diagnostics",diagnostic_json(ds)}};
     write_json_new(j,output);
 }

@@ -20,7 +20,7 @@ if (install / "bin/arcgis-pro").exists(): raise AssertionError("Removed backend 
 cli_name, writer_name = executable_names()
 runtime_names = ["bin/native-filegdb/" + Path(name).name for name in sdk_manifest()["runtime_files"]]
 python_files = ["python/geomodelbridge/" + name for name in ("__init__.py", "_version.py", "client.py")]
-for name in [cli_name, writer_name, *runtime_names, "bin/demo/textured_quad.fbx", "bin/demo/textured_quad.obj", "bin/demo/textured_quad.glb", "bin/demo/textured_quad.gltf", "bin/demo/textured_quad.bin", "bin/demo/textured_quad.wrl",
+for name in [cli_name, writer_name, *runtime_names, "bin/demo/textured_quad.fbx", "bin/demo/textured_quad.obj", "bin/demo/textured_quad.glb", "bin/demo/textured_quad.gltf", "bin/demo/textured_quad.bin", "bin/demo/textured_quad.wrl", "bin/demo/textured_quad.dae", "licenses/tinyxml2/LICENSE.txt",
              "bin/demo/textured_quad.mtl", "bin/demo/checker.png", *python_files]:
     destination = work / name
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -77,7 +77,7 @@ assert second["status"] == "written_and_readback_verified"
 assert second["coordinates"]["wkid"] == 3857 and second["coordinates"]["origin"] == [100, 200, 300]
 assert second["feature_class"] == "SecondModels"
 format_checks = {}
-for extension in ("obj", "glb", "gltf", "wrl"):
+for extension in ("obj", "glb", "gltf", "wrl", "dae"):
     output = work / (extension + ".gdb")
     report_path = work / (extension + ".gdb.report.json")
     run(cli, "convert", work / ("bin/demo/textured_quad." + extension), "--output", output,

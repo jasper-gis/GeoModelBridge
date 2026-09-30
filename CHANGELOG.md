@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- 新增共用 COLLADA 1.4.1 DAE 静态读取器：网格、节点实例和变换、单位与轴向、材质符号和纹理 UV 集、颜色/标量透明度、缺图及法线策略接入 Scene Bundle 和原生 FileGDB 流程。
+- CLI、WPF GUI、标准库 Python 客户端、安装演示和打包清单纳入 DAE；TinyXML-2 源码及许可固定并校验 SHA-256。格式边界见 [DAE 输入说明](docs/dae.md)。
+- DAE 双平台完整 CTest 各 18/18、安装后 Python 客户端 14 场景及 9 份 GDB 复制回读、Windows GUI 服务 247/247 通过；含实际纹理 Alpha 与标量透明度核验，验收边界及 Windows 长路径问题见 [本次验证记录](docs/validation-dae-2026-09-30.md)。
+
 - MAX 导出核验要求网格、材质和纹理清单完整且不重复，防止重复记录掩盖遗漏；建立名称索引并缓存各纹理 SHA-256，减少重复扫描与图片哈希计算。
 - MAX 可选运行日志读取失败记录 `MAX_LOG_READ_ERROR` 警告，保留原始超时、材质拒绝和已核验成功结果。
 - 补充多网格、多材质、清单缺失/重复及日志故障回归；双平台构建和 GDB 回读结果见 [本次验证记录](docs/validation-max-hardening-2026-09-27.md)，实机 MAX 验收边界保持不变。

@@ -1,0 +1,8 @@
+[1/8] cd <project>/build/native && /usr/bin/cmake -E make_directory <project>/build/native/bin/max-adapter && /usr/bin/cmake -E copy_if_different <project>/adapters/3dsmax/worker.py <project>/build/native/bin/max-adapter/worker.py
+[2/8] Copying official FileGDB runtime beside the native writer
+[3/8] Building CXX object CMakeFiles/GeoModelBridge.Core.dir/src/dae_reader.cpp.o
+[4/8] Linking CXX static library libGeoModelBridge.Core.a
+[5/8] Linking CXX executable bin/gmb_output_tests
+[6/8] Linking CXX executable bin/gmb_core_tests
+[7/8] Linking CXX executable bin/gmb_report_writer
+[8/8] Linking CXX executable bin/geomodelbridge

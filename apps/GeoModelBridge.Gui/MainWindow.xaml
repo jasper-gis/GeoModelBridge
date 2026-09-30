@@ -25,7 +25,7 @@
      <TextBlock Text="▣   模型转换" Foreground="White" FontWeight="SemiBold"/>
     </Border>
     <StackPanel Grid.Row="3">
-     <TextBlock Text="FBX / OBJ / GLB / glTF / WRL / MAX → MULTIPATCH" Foreground="#86A6B1" FontSize="10"/>
+     <TextBlock Text="FBX / OBJ / GLB / glTF / WRL / DAE / MAX → MULTIPATCH" Foreground="#86A6B1" FontSize="10"/>
      <TextBlock Text="V0.6.0  ·  Windows x64" Foreground="#C3D5DC" FontSize="11" Margin="0,9,0,0"/>
      <Button Content="使用说明 ↗" Click="Help_Click" Margin="0,19,0,0" Background="#1C4653" BorderBrush="#34616D" Foreground="White"/>
     </StackPanel>
@@ -35,7 +35,7 @@
    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
    <Grid Margin="0,0,0,22">
     <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-    <StackPanel><TextBlock Text="FBX / OBJ / GLB / glTF / WRL / MAX → FileGDB" FontSize="28" FontWeight="SemiBold"/><TextBlock Text="将静态模型转换为带材质的 Multipatch" Foreground="{StaticResource Muted}" Margin="0,7,0,0" FontSize="13"/></StackPanel>
+    <StackPanel><TextBlock Text="FBX / OBJ / GLB / glTF / WRL / DAE / MAX → FileGDB" FontSize="28" FontWeight="SemiBold"/><TextBlock Text="将静态模型转换为带材质的 Multipatch" Foreground="{StaticResource Muted}" Margin="0,7,0,0" FontSize="13"/></StackPanel>
     <Button Grid.Column="1" x:Name="DemoButton" Content="加载演示" Click="Demo_Click" VerticalAlignment="Center" ToolTip="加载项目测试模型，并填入仅供演示的坐标。不会立即转换。"/>
    </Grid>
    <Grid Grid.Row="1">

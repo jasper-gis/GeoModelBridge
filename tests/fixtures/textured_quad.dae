@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset><created>2026-09-30T00:00:00Z</created><modified>2026-09-30T00:00:00Z</modified><unit name="meter" meter="1"/><up_axis>Z_UP</up_axis></asset>
+  <library_images><image id="checker"><init_from>checker.png</init_from></image></library_images>
+  <library_effects><effect id="effect">
+    <profile_COMMON>
+      <newparam sid="surface"><surface type="2D"><init_from>checker</init_from></surface></newparam>
+      <newparam sid="sampler"><sampler2D><source>surface</source><wrap_s>WRAP</wrap_s><wrap_t>WRAP</wrap_t></sampler2D></newparam>
+      <technique sid="common"><lambert>
+        <diffuse><texture texture="sampler" texcoord="UVMap"/></diffuse>
+        <transparent opaque="A_ONE"><texture texture="sampler" texcoord="UVMap"/></transparent><transparency><float>0.75</float></transparency>
+      </lambert></technique>
+    </profile_COMMON>
+    <extra><technique profile="GOOGLEEARTH"><double_sided>1</double_sided></technique></extra>
+  </effect></library_effects>
+  <library_materials><material id="material" name="Textured material"><instance_effect url="#effect"/></material></library_materials>
+  <library_geometries><geometry id="quad" name="Quad"><mesh>
+    <source id="positions"><float_array id="positions-array" count="12">0 0 0 2 0 0 2 3 0 0 3 0</float_array><technique_common><accessor source="#positions-array" count="4" stride="3"><param name="X" type="float"/><param name="Y" type="float"/><param name="Z" type="float"/></accessor></technique_common></source>
+    <source id="normals"><float_array id="normals-array" count="3">0 0 1</float_array><technique_common><accessor source="#normals-array" count="1" stride="3"><param name="X" type="float"/><param name="Y" type="float"/><param name="Z" type="float"/></accessor></technique_common></source>
+    <source id="uv"><float_array id="uv-array" count="8">0 0 1 0 1 1 0 1</float_array><technique_common><accessor source="#uv-array" count="4" stride="2"><param name="S" type="float"/><param name="T" type="float"/></accessor></technique_common></source>
+    <vertices id="vertices"><input semantic="POSITION" source="#positions"/></vertices>
+    <polylist count="1" material="surface-symbol">
+      <input semantic="VERTEX" source="#vertices" offset="0"/><input semantic="NORMAL" source="#normals" offset="1"/><input semantic="TEXCOORD" source="#uv" offset="2" set="0"/>
+      <vcount>4</vcount><p>0 0 0 1 0 1 2 0 2 3 0 3</p>
+    </polylist>
+  </mesh></geometry></library_geometries>
+  <library_visual_scenes><visual_scene id="scene"><node id="node" name="Quad node"><translate>10 20 30</translate><instance_geometry url="#quad"><bind_material><technique_common><instance_material symbol="surface-symbol" target="#material"><bind_vertex_input semantic="UVMap" input_semantic="TEXCOORD" input_set="0"/></instance_material></technique_common></bind_material></instance_geometry></node></visual_scene></library_visual_scenes>
+  <scene><instance_visual_scene url="#scene"/></scene>
+</COLLADA>
