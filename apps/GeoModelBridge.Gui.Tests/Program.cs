@@ -196,6 +196,13 @@ internal static class Program
             var args = ConversionCommand.BuildArguments(Settings with { InputPath = obj, ObjUpAxis = "Y", ObjUnitMeters = "0.01" }).ToArray();
             Assert(After(args, "--obj-up-axis") == "Y" && After(args, "--obj-unit-meters") == "0.01", "OBJ coordinate options were lost.");
         });
+        Test("obj_arguments_preserve_axis_and_units_with_padded_input", () =>
+        {
+            var obj = Path.Combine(Work, "model.obj");
+            var args = ConversionCommand.BuildArguments(Settings with { InputPath = " \t" + obj + "\t ", ObjUpAxis = "Y", ObjUnitMeters = "0.01" }).ToArray();
+            Assert(args[1] == obj && After(args, "--obj-up-axis") == "Y" && After(args, "--obj-unit-meters") == "0.01",
+                "Trimming the model path changed its OBJ coordinate options.");
+        });
         foreach (var policy in new[] { "material-color", "error" })
             Test("arguments_preserve_missing_texture_policy_" + policy, () =>
             {
@@ -303,6 +310,12 @@ internal static class Program
         {
             var args = ConversionCommand.BuildArguments(settings).ToArray();
             Assert(After(args, "--max-batch") == batch && After(args, "--max-frame") == "-12" && After(args, "--max-timeout") == "90", "MAX argument mismatch.");
+        });
+        Test("max_arguments_preserve_options_with_padded_input", () =>
+        {
+            var args = ConversionCommand.BuildArguments(settings with { InputPath = " \t" + source + "\t ", MaxBatchPath = " " + batch + " " }).ToArray();
+            Assert(args[1] == source && After(args, "--max-batch") == batch && After(args, "--max-frame") == "-12" && After(args, "--max-timeout") == "90",
+                "Trimming the model path changed its MAX adapter options.");
         });
         foreach (var invalid in new[] { settings with { MaxFrame = "" }, settings with { MaxFrame = "1.5" },
             settings with { MaxBatchPath = "" }, settings with { MaxTimeout = "0" } })
@@ -750,22 +763,25 @@ internal static class Program
 
     private static async Task FakeEngineTests()
     {
+        foreach (var extension in new[] { "fbx", "max" })
         foreach (var phase in new[] { "before-launch", "after-process" })
-            await TestAsync("relative_request_paths_remain_bound_to_initial_directory_" + phase, async () =>
+            await TestAsync("relative_request_paths_remain_bound_to_initial_directory_" + extension + "_" + phase, async () =>
             {
-                var directory = CreateFakeEngine("valid-relative-" + phase);
-                var initial = Path.Combine(Work, "relative-initial-" + phase);
-                var changed = Path.Combine(Work, "relative-changed-" + phase);
+                var suffix = extension + "-" + phase;
+                var directory = CreateFakeEngine("valid-relative-" + suffix);
+                var initial = Path.Combine(Work, "relative-initial-" + suffix);
+                var changed = Path.Combine(Work, "relative-changed-" + suffix);
                 foreach (var path in new[] { initial, changed })
                 {
                     Directory.CreateDirectory(path);
-                    File.WriteAllText(Path.Combine(path, "model.fbx"), "source in " + path);
+                    File.WriteAllText(Path.Combine(path, "model." + extension), "source in " + path);
+                    File.WriteAllText(Path.Combine(path, "runtime.exe"), "argument-only runtime placeholder in " + path);
                     Directory.CreateDirectory(Path.Combine(path, "textures"));
                     Directory.CreateDirectory(Path.Combine(path, "other-textures"));
                 }
                 var textures = new List<string> { "textures" };
-                var request = Settings with { InputPath = "model.fbx", OutputPath = "new.gdb", ReportPath = "",
-                    TextureDirectories = textures };
+                var request = Settings with { InputPath = " model." + extension + " ", OutputPath = "new.gdb", ReportPath = "",
+                    TextureDirectories = textures, MaxBatchPath = " runtime.exe ", MaxFrame = "-12", MaxTimeout = "90" };
                 var previousDirectory = Environment.CurrentDirectory;
                 try
                 {
@@ -787,8 +803,11 @@ internal static class Program
                     Assert(result.Report!.OutputPath == Path.Combine(initial, "new.gdb") && result.ReportPath == Path.Combine(initial, "new.gdb.report.json"),
                         "Reported result paths changed after request validation.");
                     var arguments = JsonSerializer.Deserialize<string[]>(File.ReadAllText(Path.Combine(directory, "convert-invoked.txt")))!;
-                    Assert(arguments[1] == Path.Combine(initial, "model.fbx") && After(arguments, "--texture-dir") == Path.Combine(initial, "textures"),
+                    Assert(arguments[1] == Path.Combine(initial, "model." + extension) && After(arguments, "--texture-dir") == Path.Combine(initial, "textures"),
                         "Source or texture arguments did not retain the validated request snapshot.");
+                    if (extension == "max")
+                        Assert(After(arguments, "--max-batch") == Path.Combine(initial, "runtime.exe") && After(arguments, "--max-frame") == "-12",
+                            "MAX runtime or frame changed after request validation.");
                 }
                 finally { Environment.CurrentDirectory = previousDirectory; }
             });
@@ -964,6 +983,14 @@ internal static class Program
                 FeatureClass = After(args, "--feature-class"), Backend = After(args, "--backend"), Profile = After(args, "--profile"), MissingTexturePolicy = After(args, "--missing-textures")
             };
             var report = GoodReport(settings);
+            if (string.Equals(Path.GetExtension(settings.InputPath), ".max", StringComparison.OrdinalIgnoreCase))
+            {
+                var proof = new JsonObject { ["adapter_protocol_version"] = 1, ["engine_version"] = Version,
+                    ["status"] = "exported", ["frame"] = int.Parse(After(args, "--max-frame")),
+                    ["source"] = settings.InputPath, ["batch_executable"] = After(args, "--max-batch") };
+                report["reader_diagnostics"] = new JsonArray(new JsonObject { ["severity"] = "warning", ["code"] = "MAX_ADAPTER_PROVENANCE",
+                    ["message"] = proof.ToJsonString(), ["context"] = settings.InputPath });
+            }
             if (mode is "valid-callback" or "oversize-report" || mode.StartsWith("valid-relative-", StringComparison.Ordinal)) Directory.CreateDirectory(settings.OutputPath);
             if (mode == "bad-report")
             {

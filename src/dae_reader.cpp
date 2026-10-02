@@ -19,27 +19,130 @@ std::string attribute(Element* e,const char* key,const std::string& fallback={})
 }
 std::string context(Element* e) {return e?attribute(e,"id",attribute(e,"sid",e->Name())):"scene";}
 [[noreturn]] void bad(const std::string& text,Element* e=nullptr) {reject("INVALID_DAE",text,context(e));}
+// tinyxml2 does not enforce XML 1.0's character-reference range. In particular,
+// &#0; creates an embedded NUL that truncates its public C-string text values.
+// Check the original bytes without another file buffer; references inside XML
+// comments and CDATA are literal content and must not be interpreted here.
+void character_references(std::string_view xml) {
+    // Most model arrays contain no references. Only numeric references can
+    // trigger the decoder truncation checked here; XML structure is checked below.
+    if(xml.find("&#")==std::string_view::npos) return;
+    std::size_t at=0;bool tag=false;char quote=0;
+    while((at=xml.find_first_of(tag?"<&>'\"":"<&",at))!=std::string_view::npos) {
+        if(tag&&(xml[at]=='\''||xml[at]=='"')) {
+            if(!quote) quote=xml[at];else if(quote==xml[at]) quote=0;
+            ++at;continue;
+        }
+        if(tag&&xml[at]=='>') {if(!quote) tag=false;++at;continue;}
+        if(xml[at]=='<') {
+            if(tag) bad("Unexpected '<' inside an XML tag or attribute.");
+            if(xml.compare(at,2,"<?")==0) {
+                const auto end=xml.find("?>",at+2);
+                if(end==std::string_view::npos) bad("Unterminated XML processing instruction.");
+                at=end+2;continue;
+            }
+            if(xml.compare(at,4,"<!--")==0||xml.compare(at,9,"<![CDATA[")==0) {
+                const bool comment=xml[at+2]=='-';const auto end=xml.find(comment?"-->":"]]>",at+(comment?4:9));
+                if(end==std::string_view::npos) bad("Unterminated XML comment or CDATA section.");
+                at=end+3;continue;
+            }
+            if(xml.compare(at,2,"<!")==0) reject("UNSUPPORTED_DAE_XML","XML DTDs and external entities are not supported.","scene");
+            tag=true;++at;continue;
+        }
+        if(xml[at]=='&'&&at+1<xml.size()&&xml[at+1]=='#') {
+            auto start=at+2;int base=10;
+            if(start<xml.size()&&xml[start]=='x') {++start;base=16;}
+            const auto end=xml.find(';',start);
+            if(end==std::string_view::npos||end==start) bad("Invalid XML character reference.");
+            std::uint32_t value=0;const auto parsed=std::from_chars(xml.data()+start,xml.data()+end,value,base);
+            const bool allowed=value==9||value==10||value==13||(value>=0x20&&value<=0xd7ff)||
+                               (value>=0xe000&&value<=0xfffd)||(value>=0x10000&&value<=0x10ffff);
+            if(parsed.ec!=std::errc{}||parsed.ptr!=xml.data()+end||!allowed) bad("Invalid XML character reference.");
+            at=end+1;
+        } else ++at;
+    }
+}
 Element* one(Element* e,const char* key,bool required=false) {
     auto c=e?e->FirstChildElement(key):nullptr;
     if((required&&!c)||(c&&c->NextSiblingElement(key))) bad(std::string("Expected one ")+key+" element.",e);
     return c;
 }
-std::string_view text_view(Element* e) {
-    if(!e||e->FirstChildElement()) bad("Expected text content.",e);
-    const std::string_view value=e->GetText()?e->GetText():"";const auto start=value.find_first_not_of(" \t\r\n");
-    return start==std::string_view::npos?std::string_view{}:value.substr(start,value.find_last_not_of(" \t\r\n")-start+1);
+constexpr std::string_view whitespace=" \t\r\n";
+bool space(char c) {return whitespace.find(c)!=std::string_view::npos;}
+// XML comments are not character data; CDATA is. GetText() exposes only the
+// first text node. Walk every fragment without copying the complete index list.
+class TextFragments {
+    Element* element;const tinyxml2::XMLNode* next_node;
+    bool tokens,markup=false,ambiguous=false,seen=false,ended_space=false;
+public:
+    explicit TextFragments(Element* e,bool token_list=false):element(e),next_node(e?e->FirstChild():nullptr),tokens(token_list) {
+        if(!e||e->FirstChildElement()) bad("Expected text content.",e);
+    }
+    std::string_view next() {
+        while(next_node) {
+            const auto node=next_node;next_node=node->NextSibling();
+            if(const auto value=node->ToText()) {
+                const bool cdata=value->CData();ambiguous=ambiguous||(markup&&cdata);markup=cdata;
+                const std::string_view fragment=value->Value();if(fragment.empty()) continue;
+                // tinyxml2 discards whitespace-only gaps between markup nodes,
+                // even in PEDANTIC_WHITESPACE mode. Do not guess whether such a
+                // gap separated tokens. An already visible separator is enough
+                // for numeric lists; exact strings must reject any internal gap.
+                if(ambiguous&&seen&&(!tokens||(!ended_space&&!space(fragment.front()))))
+                    reject("UNSUPPORTED_DAE_XML","Ambiguous whitespace between XML comments/CDATA; keep a visible text separator or use a single text section.",context(element));
+                ambiguous=false;seen=true;ended_space=space(fragment.back());return fragment;
+            }
+            if(!node->ToComment()) bad("Expected text or comments.",element);
+            ambiguous=ambiguous||markup;markup=true;
+        }
+        return {};
+    }
+};
+std::string text(Element* e) {
+    TextFragments fragments(e);std::string value;
+    for(auto part=fragments.next();!part.empty();part=fragments.next()) value.append(part);
+    const auto start=value.find_first_not_of(whitespace);
+    return start==std::string::npos?std::string{}:value.substr(start,value.find_last_not_of(whitespace)-start+1);
 }
-std::string text(Element* e) {return std::string(text_view(e));}
+class TextTokens {
+    TextFragments fragments;std::string_view remaining;
+    bool more() {while(remaining.empty()) {remaining=fragments.next();if(remaining.empty()) return false;}return true;}
+public:
+    explicit TextTokens(Element* e):fragments(e,true) {}
+    std::string_view next(std::string& joined) {
+        joined.clear();
+        while(more()) {
+            const auto start=remaining.find_first_not_of(whitespace);
+            if(start!=std::string_view::npos) {remaining.remove_prefix(start);break;}
+            remaining={};
+        }
+        if(remaining.empty()) return {};
+        for(;;) {
+            const auto end=remaining.find_first_of(whitespace);const auto part=remaining.substr(0,end);
+            if(end!=std::string_view::npos) {
+                remaining.remove_prefix(end);
+                if(joined.empty()) return part;
+                joined.append(part);return joined;
+            }
+            remaining={};
+            if(!more()||space(remaining.front())) {
+                if(joined.empty()) return part;
+                joined.append(part);return joined;
+            }
+            // Only a token spanning multiple XML fragments needs an allocation.
+            joined.append(part);
+        }
+    }
+};
 std::vector<double> numbers(Element* e,std::size_t expected=0) {
-    auto remaining=text_view(e);std::vector<double> out;
-    while(!remaining.empty()) {
-        const auto start=remaining.find_first_not_of(" \t\r\n");if(start==std::string_view::npos) break;
-        remaining.remove_prefix(start);const auto end=remaining.find_first_of(" \t\r\n");
-        auto token=remaining.substr(0,end);double n=0;const char* p=token.data();if(*p=='+') ++p;
+    TextTokens tokens(e);std::string joined;std::vector<double> out;
+    for(auto token=tokens.next(joined);!token.empty();token=tokens.next(joined)) {
+        double n=0;const char* p=token.data();
+        if(*p=='+') {++p;if(p==token.data()+token.size()||*p=='-') bad("Invalid numeric token.",e);}
         const auto parsed=std::from_chars(p,token.data()+token.size(),n);
         if(parsed.ec!=std::errc{}||parsed.ptr!=token.data()+token.size()) bad("Invalid numeric token.",e);
         if(out.size()>=30000000) bad("Numeric array exceeds the reader limit.",e);
-        out.push_back(n);if(end==std::string_view::npos) break;remaining.remove_prefix(end);
+        out.push_back(n);
     }
     if(expected&&out.size()!=expected) bad("Numeric value count does not match its declaration.",e);
     return out;
@@ -47,32 +150,26 @@ std::vector<double> numbers(Element* e,std::size_t expected=0) {
 // Index lists remain in the XML document. Consume one face at a time instead
 // of retaining floating-point indices and a second copy for every face.
 class IndexList {
-    Element* element;std::string_view remaining;std::size_t decoded=0;
+    Element* element;TextTokens tokens;std::string scratch;std::size_t decoded=0;
 public:
-    explicit IndexList(Element* e):element(e),remaining(text_view(e)) {}
-    bool empty() const {return remaining.find_first_not_of(" \t\r\n")==std::string_view::npos;}
+    explicit IndexList(Element* e):element(e),tokens(e) {}
+    bool empty() const {auto rest=tokens;std::string joined;return rest.next(joined).empty();}
     std::uint32_t next() {
-        const auto start=remaining.find_first_not_of(" \t\r\n");
-        if(start==std::string_view::npos) bad("Incomplete primitive index/count list.",element);
-        remaining.remove_prefix(start);const auto end=remaining.find_first_of(" \t\r\n");
-        const auto token=remaining.substr(0,end);const char* begin=token.data();
+        const auto token=tokens.next(scratch);
+        if(token.empty()) bad("Incomplete primitive index/count list.",element);
+        const char* begin=token.data();
         if(*begin=='+') {++begin;if(begin==token.data()+token.size()||*begin=='-') bad("Invalid primitive index/count.",element);}
         std::int64_t value=0;const auto parsed=std::from_chars(begin,token.data()+token.size(),value);
         if(parsed.ec!=std::errc{}||parsed.ptr!=token.data()+token.size()||value<0||value>30000000)
             bad("Invalid or excessive primitive index/count.",element);
         if(++decoded>30000000) bad("Index/count list exceeds the reader limit.",element);
-        if(end==std::string_view::npos) remaining={};else remaining.remove_prefix(end);
         return static_cast<std::uint32_t>(value);
     }
     void finish() const {if(!empty()) bad("Trailing primitive indices/counts.",element);}
     std::size_t polygon_corners(std::size_t stride) const {
-        auto rest=remaining;std::size_t count=0;
-        while(!rest.empty()) {
-            const auto start=rest.find_first_not_of(" \t\r\n");if(start==std::string_view::npos) break;
-            rest.remove_prefix(start);const auto end=rest.find_first_of(" \t\r\n");
+        auto rest=tokens;std::string joined;std::size_t count=0;
+        while(!rest.next(joined).empty()) {
             if(++count>4096*stride) bad("Invalid polygon index count.",element);
-            if(end==std::string_view::npos) break;
-            rest.remove_prefix(end);
         }
         if(!stride||count%stride||count/stride<3) bad("Invalid polygon index count.",element);
         return count/stride;
@@ -532,6 +629,7 @@ Scene read_dae(const std::filesystem::path& input,const ReaderOptions& options) 
     try {
         const auto bytes=read_bytes(path,options.max_file_bytes);
         if(bytes.empty()||std::find(bytes.begin(),bytes.end(),0)!=bytes.end()) bad("COLLADA must be nonempty UTF-8 XML without NUL bytes.");
+        character_references({reinterpret_cast<const char*>(bytes.data()),bytes.size()});
         tinyxml2::XMLDocument doc;
         if(doc.Parse(reinterpret_cast<const char*>(bytes.data()),bytes.size())!=tinyxml2::XML_SUCCESS) bad("Malformed COLLADA XML: "+label(doc.ErrorStr(),"parse failure"));
         for(auto n=doc.FirstChild();n;n=n->NextSibling()) {

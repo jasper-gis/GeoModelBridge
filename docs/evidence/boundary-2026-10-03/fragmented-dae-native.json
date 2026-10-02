@@ -1,0 +1,49 @@
+{
+  "status": "passed",
+  "scope": "Windows native fragmented DAE conversion and standalone copied GDB verification",
+  "graphical_acceptance_performed": false,
+  "checks": [
+    "source_changes_applied",
+    "bundle_unchanged_meshes",
+    "bundle_unchanged_materials",
+    "bundle_unchanged_textures",
+    "bundle_unchanged_nodes",
+    "bundle_unchanged_coordinates",
+    "bundle_unchanged_diagnostics",
+    "exact_requested_coordinates",
+    "exact_expected_corners",
+    "normals_uv_material_alpha",
+    "source_texture_bytes_unchanged",
+    "native_write_and_reopen_verified",
+    "native_placement_and_texture_match",
+    "source_model_texture_and_bundles_unavailable",
+    "relocated_gdb_independently_verified",
+    "executable_stable_during_validation"
+  ],
+  "check_count": 16,
+  "cli_sha256": "7bf8903d7ddef8ebee0a3ac29c890c755ea1d7eaa3972a3d3d7638e453b0ba65",
+  "source_texture_sha256": "7f2538a6e81af23e034f8ca2efc2cb5f1d7d709f502fa30bdccfebe774e4ecab",
+  "corners": 6,
+  "triangles": 2,
+  "materials": 1,
+  "textures": 1,
+  "feature_count": 1,
+  "placement": {
+    "origin": [
+      500000.0,
+      3000000.0,
+      100.0
+    ],
+    "origin_explicit": true,
+    "space": "referenced",
+    "unit": "meter",
+    "up_axis": "Z",
+    "wkid": 32650
+  },
+  "plain_bundle": "C:\\gmb-fragment-20261003\\inputs\\plain-bundle",
+  "fragmented_bundle": "C:\\gmb-fragment-20261003\\inputs\\fragmented-bundle",
+  "gdb": "C:\\gmb-fragment-20261003\\fragmented.gdb",
+  "copied_gdb": "C:\\gmb-fragment-20261003\\relocated-copy.gdb",
+  "conversion_report": "C:\\gmb-fragment-20261003\\conversion-report.json",
+  "standalone_report": "C:\\gmb-fragment-20261003\\standalone-report.json"
+}

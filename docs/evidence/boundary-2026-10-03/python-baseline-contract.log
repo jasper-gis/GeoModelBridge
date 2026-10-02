@@ -1,0 +1,180 @@
+Baseline regression check against immutable Git source; corrected independent subtests
+Revision: cf250f6bcb8757bcefaaccb75a119ce1825b69c6
+Python: 3.11.15 (main, May 10 2026, 19:31:25) [MSC v.1944 64 bit (AMD64)]
+Client package: git show <revision>:python/geomodelbridge/{client.py,__init__.py,_version.py}
+Tests: current tests/python_client_test.py copied into isolated temporary root
+Repository working source was not changed.
+Selected tests: ClientTests.test_obj_source_and_coordinate_options, ClientTests.test_max_report_requires_matching_frame_and_runtime, ClientTests.test_malformed_max_provenance_retains_postprocess_error_context
+Exit code: 1
+
+EFFEEEEFFE
+======================================================================
+ERROR: test_obj_source_and_coordinate_options (__main__.ClientTests.test_obj_source_and_coordinate_options) (change={'obj_unit_meters': 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\tests\python_client_test.py", line 91, in test_obj_source_and_coordinate_options
+    self.engine.convert(replace(request, **change))
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 436, in convert
+    request = self.validate(request)
+              ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 354, in validate
+    _require(type(request.obj_unit_meters) in (int, float) and math.isfinite(request.obj_unit_meters)
+                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OverflowError: int too large to convert to float
+
+======================================================================
+ERROR: test_malformed_max_provenance_retains_postprocess_error_context (__main__.ClientTests.test_malformed_max_provenance_retains_postprocess_error_context) (message='{"adapter_protocol_version": 1, "engine_version": "0.6.0", "status": "exported",')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 231, in _path
+    raw = os.fspath(value)
+          ^^^^^^^^^^^^^^^^
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\tests\python_client_test.py", line 191, in test_malformed_max_provenance_retains_postprocess_error_context
+    self.engine.convert(request)
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 458, in convert
+    count = self._verify_report(report, request, diagnostics)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 532, in _verify_report
+    or _path(provenance.get("source"), "MAX source") != request.input_fbx
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 239, in _path
+    raise ValidationError(f"Invalid {label}: {error}", code="INVALID_PATH") from error
+geomodelbridge.client.ValidationError: Invalid MAX source: expected str, bytes or os.PathLike object, not NoneType
+
+======================================================================
+ERROR: test_malformed_max_provenance_retains_postprocess_error_context (__main__.ClientTests.test_malformed_max_provenance_retains_postprocess_error_context) (message='{"adapter_protocol_version": 1, "engine_version": "0.6.0", "status": "exported",')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 233, in _path
+    raise ValueError("empty, non-text, or NUL-containing path")
+ValueError: empty, non-text, or NUL-containing path
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\tests\python_client_test.py", line 191, in test_malformed_max_provenance_retains_postprocess_error_context
+    self.engine.convert(request)
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 458, in convert
+    count = self._verify_report(report, request, diagnostics)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 532, in _verify_report
+    or _path(provenance.get("source"), "MAX source") != request.input_fbx
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 239, in _path
+    raise ValidationError(f"Invalid {label}: {error}", code="INVALID_PATH") from error
+geomodelbridge.client.ValidationError: Invalid MAX source: empty, non-text, or NUL-containing path
+
+======================================================================
+ERROR: test_malformed_max_provenance_retains_postprocess_error_context (__main__.ClientTests.test_malformed_max_provenance_retains_postprocess_error_context) (message='{"adapter_protocol_version": 1, "engine_version": "0.6.0", "status": "exported",')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 231, in _path
+    raw = os.fspath(value)
+          ^^^^^^^^^^^^^^^^
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\tests\python_client_test.py", line 191, in test_malformed_max_provenance_retains_postprocess_error_context
+    self.engine.convert(request)
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 458, in convert
+    count = self._verify_report(report, request, diagnostics)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 533, in _verify_report
+    or _path(provenance.get("batch_executable"), "MAX runtime") != request.max_batch):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 239, in _path
+    raise ValidationError(f"Invalid {label}: {error}", code="INVALID_PATH") from error
+geomodelbridge.client.ValidationError: Invalid MAX runtime: expected str, bytes or os.PathLike object, not NoneType
+
+======================================================================
+ERROR: test_malformed_max_provenance_retains_postprocess_error_context (__main__.ClientTests.test_malformed_max_provenance_retains_postprocess_error_context) (message='{"adapter_protocol_version": 1, "engine_version": "0.6.0", "status": "exported",')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 233, in _path
+    raise ValueError("empty, non-text, or NUL-containing path")
+ValueError: empty, non-text, or NUL-containing path
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\tests\python_client_test.py", line 191, in test_malformed_max_provenance_retains_postprocess_error_context
+    self.engine.convert(request)
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 458, in convert
+    count = self._verify_report(report, request, diagnostics)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 533, in _verify_report
+    or _path(provenance.get("batch_executable"), "MAX runtime") != request.max_batch):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 239, in _path
+    raise ValidationError(f"Invalid {label}: {error}", code="INVALID_PATH") from error
+geomodelbridge.client.ValidationError: Invalid MAX runtime: empty, non-text, or NUL-containing path
+
+======================================================================
+ERROR: test_malformed_max_provenance_retains_postprocess_error_context (__main__.ClientTests.test_malformed_max_provenance_retains_postprocess_error_context) (message='{"nested":[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\tests\python_client_test.py", line 191, in test_malformed_max_provenance_retains_postprocess_error_context
+    self.engine.convert(request)
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 458, in convert
+    count = self._verify_report(report, request, diagnostics)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 528, in _verify_report
+    provenance = _json(entries[0].message)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\python\geomodelbridge\client.py", line 268, in _json
+    value = json.loads(text, object_pairs_hook=_unique_object,
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Jasper\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\json\__init__.py", line 359, in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Jasper\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\json\decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Jasper\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\json\decoder.py", line 353, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+RecursionError: maximum recursion depth exceeded while decoding a JSON array from a unicode string
+
+======================================================================
+FAIL: test_max_report_requires_matching_frame_and_runtime (__main__.ClientTests.test_max_report_requires_matching_frame_and_runtime) (changes={'adapter_protocol_version': True})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\tests\python_client_test.py", line 164, in test_max_report_requires_matching_frame_and_runtime
+    with self.subTest(changes=changes), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_max_report_requires_matching_frame_and_runtime (__main__.ClientTests.test_max_report_requires_matching_frame_and_runtime) (changes={'adapter_protocol_version': 1.0})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\tests\python_client_test.py", line 164, in test_max_report_requires_matching_frame_and_runtime
+    with self.subTest(changes=changes), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_malformed_max_provenance_retains_postprocess_error_context (__main__.ClientTests.test_malformed_max_provenance_retains_postprocess_error_context) (message='{"adapter_protocol_version": true, "engine_version": "0.6.0", "status": "exporte')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\tests\python_client_test.py", line 190, in test_malformed_max_provenance_retains_postprocess_error_context
+    with patch("geomodelbridge.client._run", side_effect=run), self.assertRaises(ConversionError) as failure:
+AssertionError: ConversionError not raised
+
+======================================================================
+FAIL: test_malformed_max_provenance_retains_postprocess_error_context (__main__.ClientTests.test_malformed_max_provenance_retains_postprocess_error_context) (message='{"adapter_protocol_version": 1.0, "engine_version": "0.6.0", "status": "exported')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Jasper\AppData\Local\Temp\gmb-python-baseline-ubagy8ai\tests\python_client_test.py", line 190, in test_malformed_max_provenance_retains_postprocess_error_context
+    with patch("geomodelbridge.client._run", side_effect=run), self.assertRaises(ConversionError) as failure:
+AssertionError: ConversionError not raised
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.245s
+
+FAILED (failures=4, errors=6)

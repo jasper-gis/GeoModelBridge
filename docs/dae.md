@@ -27,4 +27,8 @@ GUI 文件选择/拖放及标准库 Python 客户端的 `ConversionRequest.input
 
 解析文件上限 512 MiB，单纹理上限 256 MiB，XML 与实例图均有深度/数量限制。`p` 索引和 `vcount` 面角点数逐面读取，不构造全量索引浮点数组或逐面副本；这些列表必须使用整数文本，小数、指数、非有限值、负索引、超限或不完整列表均拒绝，未绑定的 offset 槽也会校验。源 XML 文档及最终 Scene 几何仍保留在内存中。输出仍由共享独占创建机制保护，已有 GDB、Bundle 或报告不会被覆盖。
 
-语义依据：[Khronos COLLADA 1.4.1 规范](https://www.khronos.org/files/collada_spec_1_4.pdf)。测试使用项目自制 fixture；外部导出器及目标 GIS 视觉验收须另外执行。
+文本按 XML 注释与 CDATA 的内容规则读取，完整检查分片后的数字、索引和变换，不忽略后续文本。固定版本 TinyXML-2 会丢弃相邻标记之间的纯空白；如果因此无法判定数字是否被分隔，或无法还原图片路径等字符串的内部空白，返回 `UNSUPPORTED_DAE_XML`。遇到此诊断时，将值写在一个普通文本/CDATA 区段内，或为数字列表在文本区段中保留明确的空白分隔。
+
+数字字符引用须符合 XML 1.0 字符范围；NUL、代理项、越界或非法数字文本在 XML 解码前拒绝，避免解码后的字符串截断。注释、CDATA 和处理指令中的引用样式文本保持字面含义。
+
+语义依据：[Khronos COLLADA 1.4.1 规范](https://www.khronos.org/files/collada_spec_1_4.pdf)、[W3C XML 1.0 的注释与 CDATA 规则](https://www.w3.org/TR/REC-xml/#sec-comments)。测试使用项目自制 fixture；外部导出器及目标 GIS 视觉验收须另外执行。

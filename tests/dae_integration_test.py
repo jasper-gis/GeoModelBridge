@@ -41,6 +41,63 @@ with tempfile.TemporaryDirectory(prefix='gmb-dae-') as directory:
     assert scene['materials'][0]['color'] == [1,1,1,.75]
     assert scene['materials'][0]['double_sided'] is True
     assert scene['coordinates']['origin'] == [500000,3000000,100]
+    # XML character data may span comments or CDATA. Preserve exact logical
+    # tokens, including tokens split inside a number, URI, or up-axis value.
+    plain_text=prepare('plain-xml-text',base)
+    fragmented=base.replace('<translate>10 20 30</translate>',
+                            '<translate><!--leading-->1<!--not data: 999-->0 2<![CDATA[0]]> 30<!--trailing--></translate>')
+    fragmented=fragmented.replace('Z_UP</up_axis>','Z_<![CDATA[UP]]></up_axis>')
+    fragmented=fragmented.replace('checker.png</init_from>','check<!--name-->er<![CDATA[.png]]></init_from>')
+    fragmented=fragmented.replace('0 0 0 2 0 0 2 3 0 0 3 0</float_array>',
+                                  '<!--leading-->0 0 0<!--point--> 2 <![CDATA[0 0]]> 2 3 0 0 3 0</float_array>')
+    fragmented=fragmented.replace('<vcount>4</vcount>', '<vcount><!--count--><![CDATA[4]]></vcount>')
+    fragmented=fragmented.replace('<p>0 0 0 1 0 1 2 0 2 3 0 3</p>',
+                                  '<p><!--leading-->+<!--sign-->0 0 0 1 0 1<![CDATA[ 2 0 2]]> 3 0 3<!--trailing--></p>')
+    logical_text=prepare('fragmented-xml-text',fragmented)
+    for key in ('meshes','materials','textures','nodes','coordinates','diagnostics'):
+        assert logical_text[key]==plain_text[key], key
+    numeric_fragments=base.replace('10 20 30</translate>',
+                                  '1<![CDATA[]]>0 2<!--exponent-->e1 +<![CDATA[3e1]]></translate>')
+    assert prepare('fragmented-numeric-tokens',numeric_fragments)['meshes']==plain_text['meshes']
+    references=base.replace('10 20 30</translate>', '&#49;0&#x20;20&#9;30</translate>')
+    assert prepare('numeric-character-references',references)['meshes']==plain_text['meshes']
+    for i,reference in enumerate(('&#0;','&#x0;','&#1;','&#xD800;','&#xFFFE;','&#x110000;',
+                                   '&#x200000;','&#4294967296;','&#999999999999999999999;',
+                                   '&#;','&#x;','&#+32;','&#-1;','&#x-1;')):
+        prepare('invalid-character-reference-'+str(i),base.replace('3 0 3</p>',
+                '3 0 3'+reference+' 999</p>'),'INVALID_DAE')
+    # Literal reference syntax in comments/CDATA is not decoded by XML.
+    literal_comment=base.replace('3 0 3</p>','3 0 3<!-- &#0; &#xD800; --></p>')
+    assert prepare('literal-references-comment',literal_comment)['meshes']==plain_text['meshes']
+    literal_pi=base.replace('<COLLADA ', '<?tool literal &#0;?>\n<COLLADA ',1)
+    assert prepare('literal-references-pi',literal_pi)['meshes']==plain_text['meshes']
+    literal_cdata=base.replace('<created>2026-09-30T00:00:00Z</created>',
+                             '<created><![CDATA[literal &#0; &#xD800;]]></created>')
+    assert prepare('literal-references-cdata',literal_cdata)['meshes']==plain_text['meshes']
+    for i,value in enumerate(('name&#0;tail','<![CDATA[&#0;]]>','<!-- &#0; -->')):
+        prepare('invalid-attribute-reference-'+str(i),base.replace('name="Quad node"',
+                'name="'+value+'"'),'INVALID_DAE')
+    for suffix_name,suffix in [('comment','<!--tail--> 999'),('cdata','<![CDATA[ 999]]>')]:
+        for target in ('p','vcount','float_array','translate'):
+            altered=base.replace('</'+target+'>',suffix+'</'+target+'>',1)
+            prepare('text-tail-'+target+'-'+suffix_name,altered,'INVALID_DAE')
+    for target in ('p','vcount','float_array','translate'):
+        altered=base.replace('</'+target+'>','<unexpected/> </'+target+'>',1)
+        prepare('text-child-'+target,altered,'INVALID_DAE')
+    for token in ('+-10','+','++10','+<!--split-->-10'):
+        prepare('float-sign-'+str(len(token))+'-'+token.replace('<','_').replace('>','_'),
+                base.replace('<translate>10 20 30</translate>','<translate>'+token+' 20 30</translate>'),'INVALID_DAE')
+    # tinyxml2 drops whitespace-only gaps between consecutive markup nodes.
+    # Reject ambiguous token joins; an explicit surviving separator is safe.
+    for i,value in enumerate(('1<!--a--> <!--b-->0 20 30',
+                              '1<!--a--> <![CDATA[0]]> 20 30',
+                              '<![CDATA[1]]> <![CDATA[0]]> 20 30',
+                              '<![CDATA[1]]> <!--a-->0 20 30')):
+        prepare('ambiguous-text-'+str(i),base.replace('10 20 30</translate>',value+'</translate>'),'UNSUPPORTED_DAE_XML')
+    separated=base.replace('10 20 30</translate>','10 <!--a--> <!--b--><![CDATA[20]]> 30</translate>')
+    assert prepare('separated-markup',separated)['meshes']==plain_text['meshes']
+    prepare('ambiguous-image-path',base.replace('checker.png</init_from>',
+            'check<!--a--> <!--b-->er.png</init_from>'),'UNSUPPORTED_DAE_XML')
     matrix = base.replace('<translate>10 20 30</translate>', '<matrix>1 0 0 10 0 1 0 20 0 0 1 30 0 0 0 1</matrix>')
     assert prepare('matrix', matrix)['meshes'][0]['vertices'][0]['position'] == [10,20,30]
     nested = base.replace('<node id="node"', '<node id="parent"><translate>1 2 3</translate><node id="node"').replace('</node></visual_scene>', '</node></node></visual_scene>')
@@ -128,6 +185,9 @@ with tempfile.TemporaryDirectory(prefix='gmb-dae-') as directory:
     assert all(large['vertices'][i:i+3]==large['vertices'][:3] for i in range(0,6144,3))
     assert all(t['indices']==[3*i,3*i+1,3*i+2] for i,t in enumerate(large['triangles']))
     prepare('many-faces-invalid-tail',many.replace('2 0 2 </p>','2 0 999 </p>'),'INVALID_DAE')
+    fragmented_many=many.replace('0 0 0 1 0 1 2 0 2 ','<!--face-->0 0 0 1 0 1 <![CDATA[2 0 2 ]]>')
+    assert prepare('many-fragmented-faces',fragmented_many)['meshes'][0]==large
+    prepare('many-fragmented-faces-invalid-tail',fragmented_many.replace('</p>','<!--tail-->999</p>'),'INVALID_DAE')
     separate=base.replace('polylist','polygons').replace('<vcount>4</vcount>','').replace('count="1" material=','count="2" material=')
     separate=separate.replace('3 0 3</p>','3 0 3</p><p>0 0 0 1 0 1 2 0 2</p>')
     assert len(prepare('separate-polygons',separate)['meshes'][0]['triangles'])==3

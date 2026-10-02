@@ -13,9 +13,10 @@ public static class ConversionCommand
     {
         var issues = ConversionValidator.Validate(settings);
         if (issues.Count > 0) throw new ArgumentException(string.Join(Environment.NewLine, issues), nameof(settings));
+        var input = PathRules.Normalize(settings.InputPath);
         var result = new List<string>
         {
-            "convert", PathRules.Normalize(settings.InputPath),
+            "convert", input,
             "--output", PathRules.Normalize(settings.OutputPath),
             "--backend", settings.Backend,
             "--profile", settings.Profile,
@@ -26,12 +27,12 @@ public static class ConversionCommand
             "--report", GetReportPath(settings)
         };
         foreach (var directory in settings.TextureDirectories) { result.Add("--texture-dir"); result.Add(PathRules.Normalize(directory)); }
-        if (string.Equals(Path.GetExtension(settings.InputPath), ".obj", StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(Path.GetExtension(input), ".obj", StringComparison.OrdinalIgnoreCase))
         {
             result.Add("--obj-up-axis"); result.Add(settings.ObjUpAxis);
             result.Add("--obj-unit-meters"); result.Add(Number(settings.ObjUnitMeters));
         }
-        if (string.Equals(Path.GetExtension(settings.InputPath), ".max", StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(Path.GetExtension(input), ".max", StringComparison.OrdinalIgnoreCase))
             result.AddRange(["--max-batch", Path.GetFullPath(settings.MaxBatchPath.Trim()),
                 "--max-frame", int.Parse(settings.MaxFrame.Trim(), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
                 "--max-timeout", settings.MaxTimeout.Trim()]);

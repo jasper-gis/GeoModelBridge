@@ -39,10 +39,11 @@ public sealed class EngineService
             // Bind the request before any callback or await. The host can change
             // its working directory or mutate the supplied texture list later.
             string FullPath(string path) => Path.TrimEndingDirectorySeparator(Path.GetFullPath(path.Trim(), requestDirectory));
+            var input = FullPath(settings.InputPath);
             settings = settings with
             {
-                InputPath = FullPath(settings.InputPath),
-                MaxBatchPath = string.Equals(Path.GetExtension(settings.InputPath), ".max", StringComparison.OrdinalIgnoreCase) ? FullPath(settings.MaxBatchPath) : settings.MaxBatchPath,
+                InputPath = input,
+                MaxBatchPath = string.Equals(Path.GetExtension(input), ".max", StringComparison.OrdinalIgnoreCase) ? FullPath(settings.MaxBatchPath) : settings.MaxBatchPath,
                 OutputPath = FullPath(settings.OutputPath),
                 ReportPath = FullPath(string.IsNullOrWhiteSpace(settings.ReportPath) ? FullPath(settings.OutputPath) + ".report.json" : settings.ReportPath),
                 TextureDirectories = settings.TextureDirectories.Select(FullPath).ToArray()

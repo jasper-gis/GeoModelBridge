@@ -1,0 +1,156 @@
+{
+  "date": "2026-10-03",
+  "engines": {
+    "before": {
+      "path": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\artifacts\\boundary-20261003\\baseline\\geomodelbridge.exe",
+      "sha256": "bb5e02a9291b44ca7b5395ae8659ef5723cae12d668956fb6ba3a5c61192e927"
+    },
+    "after": {
+      "path": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\build\\dae-native\\bin\\geomodelbridge.exe",
+      "sha256": "e4dda5ee5121f7423cee178939a09505638fa4837805f3c21321e78647938a95"
+    }
+  },
+  "cases": [
+    {
+      "name": "index-comment-tail",
+      "expected_after_success": false,
+      "before": {
+        "exit_code": 0,
+        "diagnostic_codes": [
+          "DAE_COORDINATE_CONVENTION"
+        ]
+      },
+      "after": {
+        "exit_code": 3,
+        "diagnostic_codes": [
+          "DAE_COORDINATE_CONVENTION",
+          "INVALID_DAE",
+          "EMPTY_SCENE"
+        ]
+      }
+    },
+    {
+      "name": "transform-comment-tail",
+      "expected_after_success": false,
+      "before": {
+        "exit_code": 0,
+        "diagnostic_codes": [
+          "DAE_COORDINATE_CONVENTION"
+        ]
+      },
+      "after": {
+        "exit_code": 3,
+        "diagnostic_codes": [
+          "DAE_COORDINATE_CONVENTION",
+          "INVALID_DAE",
+          "EMPTY_SCENE"
+        ]
+      }
+    },
+    {
+      "name": "index-cdata-tail",
+      "expected_after_success": false,
+      "before": {
+        "exit_code": 0,
+        "diagnostic_codes": [
+          "DAE_COORDINATE_CONVENTION"
+        ]
+      },
+      "after": {
+        "exit_code": 3,
+        "diagnostic_codes": [
+          "DAE_COORDINATE_CONVENTION",
+          "INVALID_DAE",
+          "EMPTY_SCENE"
+        ]
+      }
+    },
+    {
+      "name": "invalid-number-sign",
+      "expected_after_success": false,
+      "before": {
+        "exit_code": 0,
+        "diagnostic_codes": [
+          "DAE_COORDINATE_CONVENTION"
+        ]
+      },
+      "after": {
+        "exit_code": 3,
+        "diagnostic_codes": [
+          "DAE_COORDINATE_CONVENTION",
+          "INVALID_DAE",
+          "EMPTY_SCENE"
+        ]
+      }
+    },
+    {
+      "name": "nul-reference-tail",
+      "expected_after_success": false,
+      "before": {
+        "exit_code": 0,
+        "diagnostic_codes": [
+          "DAE_COORDINATE_CONVENTION"
+        ]
+      },
+      "after": {
+        "exit_code": 3,
+        "diagnostic_codes": [
+          "INVALID_DAE",
+          "EMPTY_SCENE"
+        ]
+      }
+    },
+    {
+      "name": "split-number",
+      "expected_after_success": true,
+      "before": {
+        "exit_code": 3,
+        "diagnostic_codes": [
+          "DAE_COORDINATE_CONVENTION",
+          "INVALID_DAE",
+          "EMPTY_SCENE"
+        ]
+      },
+      "after": {
+        "exit_code": 0,
+        "diagnostic_codes": [
+          "DAE_COORDINATE_CONVENTION"
+        ]
+      }
+    },
+    {
+      "name": "split-cdata",
+      "expected_after_success": true,
+      "before": {
+        "exit_code": 3,
+        "diagnostic_codes": [
+          "DAE_COORDINATE_CONVENTION",
+          "INVALID_DAE",
+          "EMPTY_SCENE"
+        ]
+      },
+      "after": {
+        "exit_code": 0,
+        "diagnostic_codes": [
+          "DAE_COORDINATE_CONVENTION"
+        ]
+      }
+    },
+    {
+      "name": "literal-pi-reference",
+      "expected_after_success": true,
+      "before": {
+        "exit_code": 0,
+        "diagnostic_codes": [
+          "DAE_COORDINATE_CONVENTION"
+        ]
+      },
+      "after": {
+        "exit_code": 0,
+        "diagnostic_codes": [
+          "DAE_COORDINATE_CONVENTION"
+        ]
+      }
+    }
+  ]
+}

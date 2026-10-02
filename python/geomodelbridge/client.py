@@ -351,8 +351,12 @@ class Engine:
             _require(request.max_batch is None and request.max_frame is None and request.max_timeout == 600,
                      "MAX settings apply only to .max input")
         _require(request.obj_up_axis in ("Z", "Y"), "OBJ up axis must be Z or Y")
-        _require(type(request.obj_unit_meters) in (int, float) and math.isfinite(request.obj_unit_meters)
-                 and request.obj_unit_meters > 0, "OBJ unit size must be finite and positive")
+        try:
+            valid_obj_units = (type(request.obj_unit_meters) in (int, float)
+                               and math.isfinite(request.obj_unit_meters) and request.obj_unit_meters > 0)
+        except OverflowError:
+            valid_obj_units = False
+        _require(valid_obj_units, "OBJ unit size must be finite and positive")
         _require(output.suffix == ".gdb", "Output must have the .gdb suffix")
         _require(not output.exists() and not report.exists(), "Output GDB and report must be new paths", "PATH_EXISTS")
         _require(output.parent.is_dir() and report.parent.is_dir(), "Output/report parent directories must already exist")
@@ -456,7 +460,7 @@ class Engine:
             if report_error is not None:
                 raise ValueError(f"Cannot read conversion report: {report_error}")
             count = self._verify_report(report, request, diagnostics)
-        except (ValueError, KeyError, TypeError, OSError) as error:
+        except (ValueError, KeyError, TypeError, OSError, RecursionError, ValidationError) as error:
             raise ConversionError(f"Cannot confirm conversion success: {error}", code="INVALID_REPORT", **context) from error
         converted = ConversionResult(request, request.output_gdb, request.output_gdb / request.feature_class,
                                      request.report_path, count, diagnostics, result.stdout, result.stderr,
@@ -526,7 +530,8 @@ class Engine:
             if len(entries) != 1:
                 raise ValueError("Missing or duplicate MAX provenance")
             provenance = _json(entries[0].message)
-            if (provenance.get("adapter_protocol_version") != 1 or provenance.get("engine_version") != __version__
+            if (type(provenance.get("adapter_protocol_version")) is not int
+                    or provenance["adapter_protocol_version"] != 1 or provenance.get("engine_version") != __version__
                     or type(provenance.get("frame")) is not int or provenance["frame"] != request.max_frame
                     or provenance.get("status") != "exported"
                     or _path(provenance.get("source"), "MAX source") != request.input_fbx

@@ -84,9 +84,13 @@ class ClientTests(unittest.TestCase):
         args = self.engine.command(request)
         self.assertEqual(args[args.index("--obj-up-axis") + 1], "Y")
         self.assertEqual(args[args.index("--obj-unit-meters") + 1], "0.01")
-        for change in (dict(obj_up_axis="X"), dict(obj_unit_meters=0), dict(obj_unit_meters=float("nan"))):
-            with self.subTest(change=change), self.assertRaises(ValidationError):
-                self.engine.validate(replace(request, **change))
+        for change in (dict(obj_up_axis="X"), dict(obj_unit_meters=0), dict(obj_unit_meters=float("nan")),
+                       dict(obj_unit_meters=10**400)):
+            with self.subTest(change=change):
+                with self.assertRaises(ValidationError) as failure, patch("geomodelbridge.client._run") as runner:
+                    self.engine.convert(replace(request, **change))
+                self.assertEqual(failure.exception.code, "INVALID_REQUEST")
+                runner.assert_not_called()
 
     def test_glb_source(self):
         glb = self.root / "模型.glb"
@@ -154,10 +158,53 @@ class ClientTests(unittest.TestCase):
         set_proof(proof)
         self.assertEqual(self.engine._verify_report(report, request, _diagnostics(report)), 1)
         for changes in (dict(frame=8), dict(frame=7.0), dict(batch_executable=str(self.engine.writer)),
-                        dict(engine_version="0.0.0"), dict(source=str(self.source))):
+                        dict(engine_version="0.0.0"), dict(source=str(self.source)),
+                        dict(adapter_protocol_version=True), dict(adapter_protocol_version=1.0)):
             set_proof(dict(proof, **changes))
             with self.subTest(changes=changes), self.assertRaises(ValueError):
                 self.engine._verify_report(report, request, _diagnostics(report))
+
+    @unittest.skipUnless(os.name == "nt", "Windows-only MAX client")
+    def test_malformed_max_provenance_retains_postprocess_error_context(self):
+        source = self.root / "模型.max"
+        source.touch()
+        request = replace(self.request, input_fbx=source, max_batch=self.exe, max_frame=7)
+        proof = dict(adapter_protocol_version=1, engine_version=__version__, status="exported",
+                     frame=7, source=str(source), batch_executable=str(self.exe))
+        malformed = [json.dumps(dict(proof, **change)) for change in
+                     (dict(source=None), dict(source=""), dict(batch_executable=None),
+                      dict(batch_executable="\0"), dict(adapter_protocol_version=True),
+                      dict(adapter_protocol_version=1.0))]
+        depth = sys.getrecursionlimit() + 100
+        malformed.append('{"nested":' + '[' * depth + '0' + ']' * depth + '}')
+        report_path = Path(str(request.output_gdb) + ".report.json")
+        for message in malformed:
+            report = self.success_report(request)
+            report["reader_diagnostics"] = [dict(severity="info", code="MAX_ADAPTER_PROVENANCE", message=message)]
+            fake = self.fake_run(report)
+            def run(command):
+                result = fake(command)
+                return replace(result, stdout_truncated=True, stderr_truncated=True) if "convert" in command else result
+            with self.subTest(message=message[:80]):
+                try:
+                    with patch("geomodelbridge.client._run", side_effect=run), self.assertRaises(ConversionError) as failure:
+                        self.engine.convert(request)
+                    error = failure.exception
+                    self.assertEqual(error.code, "INVALID_REPORT")
+                    self.assertEqual(error.exit_code, 0)
+                    self.assertEqual(error.report_path, report_path)
+                    self.assertEqual(error.diagnostics[0].message, message)
+                    self.assertEqual(error.stdout_tail, "done")
+                    self.assertEqual(error.stderr_tail, "warning details")
+                    self.assertTrue(error.stdout_truncated and error.stderr_truncated)
+                    self.assertTrue(request.output_gdb.is_dir())
+                    self.assertTrue(report_path.is_file())
+                finally:
+                    # Only fixtures created in this test's private directory.
+                    if request.output_gdb.is_dir():
+                        request.output_gdb.rmdir()
+                    if report_path.is_file():
+                        report_path.unlink()
 
     def test_existing_outputs_and_reports_are_preserved(self):
         for path in (self.request.output_gdb, Path(str(self.request.output_gdb) + ".report.json")):

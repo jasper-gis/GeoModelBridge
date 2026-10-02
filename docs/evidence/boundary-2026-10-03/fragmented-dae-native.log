@@ -1,0 +1,35 @@
+PASS source_changes_applied
+["C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\build\\dae-native\\bin\\geomodelbridge.exe", "prepare", "C:\\gmb-fragment-20261003\\inputs\\plain.dae", "--output", "C:\\gmb-fragment-20261003\\inputs\\plain-bundle", "--report", "C:\\gmb-fragment-20261003\\plain-prepare.json", "--wkid", "32650", "--origin", "500000", "3000000", "100", "--profile", "strict"]
+Scene bundle prepared: C:\gmb-fragment-20261003\inputs\plain-bundle
+This is an intermediate bundle, not a FileGDB.
+WARNING [DAE_COORDINATE_CONVENTION] scene: COLLADA right-handed Z_UP, 1 metres per source unit, converted once to right-handed Z-up metres; node transforms baked once.
+EXIT 0
+["C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\build\\dae-native\\bin\\geomodelbridge.exe", "prepare", "C:\\gmb-fragment-20261003\\inputs\\fragmented.dae", "--output", "C:\\gmb-fragment-20261003\\inputs\\fragmented-bundle", "--report", "C:\\gmb-fragment-20261003\\fragmented-prepare.json", "--wkid", "32650", "--origin", "500000", "3000000", "100", "--profile", "strict"]
+Scene bundle prepared: C:\gmb-fragment-20261003\inputs\fragmented-bundle
+This is an intermediate bundle, not a FileGDB.
+WARNING [DAE_COORDINATE_CONVENTION] scene: COLLADA right-handed Z_UP, 1 metres per source unit, converted once to right-handed Z-up metres; node transforms baked once.
+EXIT 0
+PASS bundle_unchanged_meshes
+PASS bundle_unchanged_materials
+PASS bundle_unchanged_textures
+PASS bundle_unchanged_nodes
+PASS bundle_unchanged_coordinates
+PASS bundle_unchanged_diagnostics
+PASS exact_requested_coordinates
+PASS exact_expected_corners
+PASS normals_uv_material_alpha
+PASS source_texture_bytes_unchanged
+["C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\build\\dae-native\\bin\\geomodelbridge.exe", "convert", "C:\\gmb-fragment-20261003\\inputs\\fragmented.dae", "--output", "C:\\gmb-fragment-20261003\\fragmented.gdb", "--report", "C:\\gmb-fragment-20261003\\conversion-report.json", "--writer", "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\build\\dae-native\\bin\\native-filegdb\\GeoModelBridge.NativeWriter.exe", "--wkid", "32650", "--origin", "500000", "3000000", "100", "--profile", "strict"]
+GDB written and checked by native-filegdb: C:\gmb-fragment-20261003\fragmented.gdb
+Report: C:\gmb-fragment-20261003\conversion-report.json
+Visual acceptance for this output requires separate inspection.
+WARNING [DAE_COORDINATE_CONVENTION] scene: COLLADA right-handed Z_UP, 1 metres per source unit, converted once to right-handed Z-up metres; node transforms baked once.
+EXIT 0
+PASS native_write_and_reopen_verified
+PASS native_placement_and_texture_match
+PASS source_model_texture_and_bundles_unavailable
+["C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\build\\dae-native\\bin\\native-filegdb\\GeoModelBridge.NativeWriter.exe", "--verify-gdb", "C:\\gmb-fragment-20261003\\relocated-copy.gdb", "--expected-report", "C:\\gmb-fragment-20261003\\conversion-report.json", "--report", "C:\\gmb-fragment-20261003\\standalone-report.json"]
+{"feature_count":1,"report":"C:\\gmb-fragment-20261003\\standalone-report.json","status":"standalone_copy_verified"}
+EXIT 0
+PASS relocated_gdb_independently_verified
+PASS executable_stable_during_validation
