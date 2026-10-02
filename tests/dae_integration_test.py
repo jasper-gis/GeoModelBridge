@@ -107,6 +107,38 @@ with tempfile.TemporaryDirectory(prefix='gmb-dae-') as directory:
     prepare('bad-index',base.replace('3 0 3</p>','9 0 3</p>'),'INVALID_DAE')
     prepare('count',base.replace('<vcount>4</vcount>','<vcount>3</vcount>'),'INVALID_DAE')
     prepare('bounded-count',triangles.replace('count="2" material=','count="30000000" material='),'INVALID_DAE')
+    # Consume the entire index/count stream, including unused offset slots and
+    # malformed tails, before any bundle can be committed.
+    for token in ('-1','1.0','1e0','nan','inf','30000001','18446744073709551616','+','+-0'):
+        prepare('index-token-'+token,triangles.replace('3 0 3</p>','3 0 '+token+'</p>'),'INVALID_DAE')
+        prepare('count-token-'+token,base.replace('<vcount>4</vcount>','<vcount>'+token+'</vcount>'),'INVALID_DAE')
+    signed=triangles.replace('<p>0 0 0','<p>+0 -0 0')
+    assert prepare('signed-zero-indices',signed)['meshes'][0]==prepare('plain-indices',triangles)['meshes'][0]
+    prepare('index-tail',triangles.replace('3 0 3</p>','3 0 3 0</p>'),'INVALID_DAE')
+    prepare('index-short',triangles.replace('3 0 3</p>','3 0</p>'),'INVALID_DAE')
+    prepare('count-tail',base.replace('<vcount>4</vcount>','<vcount>4 3</vcount>'),'INVALID_DAE')
+    prepare('count-short',base.replace('<vcount>4</vcount>','<vcount></vcount>'),'INVALID_DAE')
+    gap=triangles.replace('offset="2" set="0"','offset="3" set="0"')
+    gap=re.sub(r'<p>.*?</p>','<p>0 0 17 0 1 0 17 1 2 0 17 2 0 0 17 0 2 0 17 2 3 0 17 3</p>',gap)
+    assert prepare('unused-offset',gap)['meshes'][0]==prepare('plain-offsets',triangles)['meshes'][0]
+    prepare('invalid-unused-offset',gap.replace('3 0 17 3','3 0 nan 3'),'INVALID_DAE')
+    many=re.sub(r'<p>.*?</p>','<p>'+('0 0 0 1 0 1 2 0 2 '*2048)+'</p>',triangles.replace('count="2" material=','count="2048" material='))
+    large=prepare('many-faces',many)['meshes'][0]
+    assert len(large['triangles'])==2048 and len(large['vertices'])==6144
+    assert all(large['vertices'][i:i+3]==large['vertices'][:3] for i in range(0,6144,3))
+    assert all(t['indices']==[3*i,3*i+1,3*i+2] for i,t in enumerate(large['triangles']))
+    prepare('many-faces-invalid-tail',many.replace('2 0 2 </p>','2 0 999 </p>'),'INVALID_DAE')
+    separate=base.replace('polylist','polygons').replace('<vcount>4</vcount>','').replace('count="1" material=','count="2" material=')
+    separate=separate.replace('3 0 3</p>','3 0 3</p><p>0 0 0 1 0 1 2 0 2</p>')
+    assert len(prepare('separate-polygons',separate)['meshes'][0]['triangles'])==3
+    prepare('polygons-count-tail',separate.replace('count="2" material=','count="1" material='),'INVALID_DAE')
+    prepare('polygons-invalid-tail',separate.replace('2 0 2</p>','2 0 1.0</p>'),'INVALID_DAE')
+    excessive=base.replace('polylist','polygons').replace('<vcount>4</vcount>','')
+    excessive=re.sub(r'<p>.*?</p>','<p>'+('0 0 0 '*4097)+'</p>',excessive)
+    prepare('polygon-corner-limit',excessive,'INVALID_DAE')
+    mixed_faces=separate.replace('polygons','polylist').replace('<p>0 0 0 1 0 1 2 0 2</p>','0 0 0 1 0 1 2 0 2</p>')
+    mixed_faces=mixed_faces.replace('3 0 3</p>','3 0 3 ').replace('<p>','<vcount>4 3</vcount><p>',1)
+    assert prepare('mixed-polylist-faces',mixed_faces)['meshes'][0]==prepare('mixed-polygon-faces',separate)['meshes'][0]
     prepare('duplicate-id',base.replace('id="uv"','id="positions"'),'INVALID_DAE')
     prepare('cycle',base.replace('</node></visual_scene>', '<instance_node url="#node"/></node></visual_scene>'),'INVALID_DAE')
     prepare('uri-ref',base.replace('url="#quad"','url="remote.dae#quad"'),'UNSAFE_DAE_REFERENCE')

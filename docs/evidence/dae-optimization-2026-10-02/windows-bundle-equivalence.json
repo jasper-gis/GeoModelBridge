@@ -1,0 +1,50 @@
+{
+  "quad": {
+    "files_equal": true,
+    "sha256": {
+      "report.json": "b8cfdd7982beaf8046f5db70d42158ee4b10316ed923b3ff787d951568bfc879",
+      "scene.json": "d20fd3fbce99c8898d66b6f41505a9968d107728c6bf94e5af2f80e1fd3138ca",
+      "textures\\7f2538a6e81af23e034f8ca2efc2cb5f1d7d709f502fa30bdccfebe774e4ecab.png": "7f2538a6e81af23e034f8ca2efc2cb5f1d7d709f502fa30bdccfebe774e4ecab"
+    }
+  },
+  "mirrored": {
+    "files_equal": true,
+    "sha256": {
+      "report.json": "ada05bf4e229caa6e982713bc6816a478effd7b09280412be7bee487a9bbc02d",
+      "scene.json": "c400aeb4795422d3561c2686e90be439f7ab1bda087646e7cbf79fd636338c66",
+      "textures\\7f2538a6e81af23e034f8ca2efc2cb5f1d7d709f502fa30bdccfebe774e4ecab.png": "7f2538a6e81af23e034f8ca2efc2cb5f1d7d709f502fa30bdccfebe774e4ecab"
+    }
+  },
+  "triangles": {
+    "files_equal": true,
+    "sha256": {
+      "report.json": "3ac05ddfdfae471ada647143240f5207498ee7378300f04be24625a311814a7f",
+      "scene.json": "bf2c3de293bf086e654aaf3d9cecbfc02b3c2a185b7971c528bb41fdc6c8a73b",
+      "textures\\7f2538a6e81af23e034f8ca2efc2cb5f1d7d709f502fa30bdccfebe774e4ecab.png": "7f2538a6e81af23e034f8ca2efc2cb5f1d7d709f502fa30bdccfebe774e4ecab"
+    }
+  },
+  "many": {
+    "files_equal": true,
+    "sha256": {
+      "report.json": "927a056c669129e8701e8f054732eda1dafffbdb627e839e51102274974cf35a",
+      "scene.json": "0e58b999f69752f1dbc1261cbc7daadaba6a828e7efce36274df1af5f53a401b",
+      "textures\\7f2538a6e81af23e034f8ca2efc2cb5f1d7d709f502fa30bdccfebe774e4ecab.png": "7f2538a6e81af23e034f8ca2efc2cb5f1d7d709f502fa30bdccfebe774e4ecab"
+    }
+  },
+  "polygons": {
+    "files_equal": true,
+    "sha256": {
+      "report.json": "94ff61897d9095b080ce024229b7350ccbfea9cff9c5df38b925ebe11baf2ef5",
+      "scene.json": "ab33bbae2b75c23209b7b2e900f534cf4c418353a395641521213af85fe6d68e",
+      "textures\\7f2538a6e81af23e034f8ca2efc2cb5f1d7d709f502fa30bdccfebe774e4ecab.png": "7f2538a6e81af23e034f8ca2efc2cb5f1d7d709f502fa30bdccfebe774e4ecab"
+    }
+  },
+  "repair": {
+    "files_equal": true,
+    "sha256": {
+      "report.json": "45f01e4a79b604717b0cbf9ca4ab1cc3fb5b7c2290eda78ace791fecf2667cfb",
+      "scene.json": "4a52f9dbfdfccebd4e0c806d9eb39c3a24f19c7d32899fba3b695dec15c13716",
+      "textures\\7f2538a6e81af23e034f8ca2efc2cb5f1d7d709f502fa30bdccfebe774e4ecab.png": "7f2538a6e81af23e034f8ca2efc2cb5f1d7d709f502fa30bdccfebe774e4ecab"
+    }
+  }
+}

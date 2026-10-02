@@ -25,6 +25,6 @@ GUI 文件选择/拖放及标准库 Python 客户端的 `ConversionRequest.input
 
 当前不支持 COLLADA 1.5、动画、skin/morph/controller、关节、灯光/相机实例、顶点颜色、曲线、线段、带孔或非平面多边形、嵌套坐标约定、shader 参数覆盖或自定义渲染扩展；这些内容须先在来源软件中导出受支持的静态网格。
 
-解析文件上限 512 MiB，单纹理上限 256 MiB，XML 与实例图均有深度/数量限制。输出仍由共享独占创建机制保护，已有 GDB、Bundle 或报告不会被覆盖。
+解析文件上限 512 MiB，单纹理上限 256 MiB，XML 与实例图均有深度/数量限制。`p` 索引和 `vcount` 面角点数逐面读取，不构造全量索引浮点数组或逐面副本；这些列表必须使用整数文本，小数、指数、非有限值、负索引、超限或不完整列表均拒绝，未绑定的 offset 槽也会校验。源 XML 文档及最终 Scene 几何仍保留在内存中。输出仍由共享独占创建机制保护，已有 GDB、Bundle 或报告不会被覆盖。
 
 语义依据：[Khronos COLLADA 1.4.1 规范](https://www.khronos.org/files/collada_spec_1_4.pdf)。测试使用项目自制 fixture；外部导出器及目标 GIS 视觉验收须另外执行。

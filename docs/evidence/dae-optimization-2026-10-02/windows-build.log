@@ -1,0 +1,9 @@
+[1/9] C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\build\dae-native && C:\Users\Jasper\AppData\Local\Microsoft\WinGet\Packages\BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\mingw64\bin\cmake.exe -E make_directory C:/Users/Jasper/Documents/Codex/2026-09-20/gen/outputs/GeoModelBridge/build/dae-native/bin/max-adapter && C:\Users\Jasper\AppData\Local\Microsoft\WinGet\Packages\BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\mingw64\bin\cmake.exe -E copy_if_different C:/Users/Jasper/Documents/Codex/2026-09-20/gen/outputs/GeoModelBridge/adapters/3dsmax/worker.py C:/Users/Jasper/Documents/Codex/2026-09-20/gen/outputs/GeoModelBridge/build/dae-native/bin/max-adapter/worker.py"
+[2/9] Copying official FileGDB runtime beside the native writer
+[3/9] Building CXX object CMakeFiles\GeoModelBridge.Core.dir\src\dae_reader.cpp.obj
+[4/9] Linking CXX static library GeoModelBridge.Core.lib
+[5/9] Linking CXX executable bin\gmb_output_tests.exe
+[6/9] Linking CXX executable bin\gmb_core_tests.exe
+[7/9] Linking CXX executable bin\geomodelbridge.exe
+[8/9] Linking CXX executable bin\gmb_report_writer.exe
+[9/9] Linking CXX executable bin\gmb_max_batch_stub.exe

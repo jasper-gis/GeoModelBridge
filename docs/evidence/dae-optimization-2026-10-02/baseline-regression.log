@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\tests\dae_integration_test.py", line 113, in <module>
+    prepare('index-token-'+token,triangles.replace('3 0 3</p>','3 0 '+token+'</p>'),'INVALID_DAE')
+  File "C:\Users\Jasper\Documents\Codex\2026-09-20\gen\outputs\GeoModelBridge\tests\dae_integration_test.py", line 23, in prepare
+    assert (p.returncode == 0) == (code is None), (name, p.returncode, p.stdout, p.stderr)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('index-token-1.0', 0, 'Scene bundle prepared: C:\\Users\\Jasper\\AppData\\Local\\Temp\\gmb-dae-yjac0jia\\index-token-1.0-bundle\nThis is an intermediate bundle, not a FileGDB.\n', 'WARNING [DAE_COORDINATE_CONVENTION] scene: COLLADA right-handed Z_UP, 1 metres per source unit, converted once to right-handed Z-up metres; node transforms baked once.\n')

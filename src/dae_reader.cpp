@@ -24,13 +24,14 @@ Element* one(Element* e,const char* key,bool required=false) {
     if((required&&!c)||(c&&c->NextSiblingElement(key))) bad(std::string("Expected one ")+key+" element.",e);
     return c;
 }
-std::string text(Element* e) {
+std::string_view text_view(Element* e) {
     if(!e||e->FirstChildElement()) bad("Expected text content.",e);
-    auto value=label(e->GetText(),"");const auto start=value.find_first_not_of(" \t\r\n");
-    return start==std::string::npos?"":value.substr(start,value.find_last_not_of(" \t\r\n")-start+1);
+    const std::string_view value=e->GetText()?e->GetText():"";const auto start=value.find_first_not_of(" \t\r\n");
+    return start==std::string_view::npos?std::string_view{}:value.substr(start,value.find_last_not_of(" \t\r\n")-start+1);
 }
+std::string text(Element* e) {return std::string(text_view(e));}
 std::vector<double> numbers(Element* e,std::size_t expected=0) {
-    const auto value=text(e);std::string_view remaining(value);std::vector<double> out;
+    auto remaining=text_view(e);std::vector<double> out;
     while(!remaining.empty()) {
         const auto start=remaining.find_first_not_of(" \t\r\n");if(start==std::string_view::npos) break;
         remaining.remove_prefix(start);const auto end=remaining.find_first_of(" \t\r\n");
@@ -43,6 +44,40 @@ std::vector<double> numbers(Element* e,std::size_t expected=0) {
     if(expected&&out.size()!=expected) bad("Numeric value count does not match its declaration.",e);
     return out;
 }
+// Index lists remain in the XML document. Consume one face at a time instead
+// of retaining floating-point indices and a second copy for every face.
+class IndexList {
+    Element* element;std::string_view remaining;std::size_t decoded=0;
+public:
+    explicit IndexList(Element* e):element(e),remaining(text_view(e)) {}
+    bool empty() const {return remaining.find_first_not_of(" \t\r\n")==std::string_view::npos;}
+    std::uint32_t next() {
+        const auto start=remaining.find_first_not_of(" \t\r\n");
+        if(start==std::string_view::npos) bad("Incomplete primitive index/count list.",element);
+        remaining.remove_prefix(start);const auto end=remaining.find_first_of(" \t\r\n");
+        const auto token=remaining.substr(0,end);const char* begin=token.data();
+        if(*begin=='+') {++begin;if(begin==token.data()+token.size()||*begin=='-') bad("Invalid primitive index/count.",element);}
+        std::int64_t value=0;const auto parsed=std::from_chars(begin,token.data()+token.size(),value);
+        if(parsed.ec!=std::errc{}||parsed.ptr!=token.data()+token.size()||value<0||value>30000000)
+            bad("Invalid or excessive primitive index/count.",element);
+        if(++decoded>30000000) bad("Index/count list exceeds the reader limit.",element);
+        if(end==std::string_view::npos) remaining={};else remaining.remove_prefix(end);
+        return static_cast<std::uint32_t>(value);
+    }
+    void finish() const {if(!empty()) bad("Trailing primitive indices/counts.",element);}
+    std::size_t polygon_corners(std::size_t stride) const {
+        auto rest=remaining;std::size_t count=0;
+        while(!rest.empty()) {
+            const auto start=rest.find_first_not_of(" \t\r\n");if(start==std::string_view::npos) break;
+            rest.remove_prefix(start);const auto end=rest.find_first_of(" \t\r\n");
+            if(++count>4096*stride) bad("Invalid polygon index count.",element);
+            if(end==std::string_view::npos) break;
+            rest.remove_prefix(end);
+        }
+        if(!stride||count%stride||count/stride<3) bad("Invalid polygon index count.",element);
+        return count/stride;
+    }
+};
 std::size_t integer(Element* e,const char* key,std::size_t fallback=0,bool required=false) {
     auto s=attribute(e,key);if(s.empty()) {if(required) bad(std::string("Missing ")+key,e);return fallback;}
     std::size_t n=0;auto parsed=std::from_chars(s.data(),s.data()+s.size(),n);
@@ -169,10 +204,10 @@ class Converter {
         if(s.count&&((s.count-1)*s.stride+s.components.back()+1>s.values.size()-s.offset)) bad("Accessor exceeds its source array.",a);
         return sources.emplace(e,std::move(s)).first->second;
     }
-    std::vector<double> sample(const Input& input,std::size_t i,std::size_t width) {
+    std::array<double,3> sample(const Input& input,std::size_t i,std::size_t width) {
         const auto& s=source(input.source);
         if(i>=s.count||s.components.size()!=width) bad("Attribute index or component count is invalid.",input.source);
-        std::vector<double> v;for(auto c:s.components) v.push_back(s.values[s.offset+i*s.stride+c]);return v;
+        std::array<double,3> v{};for(std::size_t c=0;c<width;++c) v[c]=s.values[s.offset+i*s.stride+s.components[c]];return v;
     }
     Element* parameter(Element* profile,const std::string& sid,const char* kind) {
         Element* result=nullptr;
@@ -347,31 +382,20 @@ class Converter {
             if(b.uv_bound&&semantics.count({"TEXCOORD",b.uv_set})) selected_uv=b.uv_set;
             if(b.value.texture>=0&&!semantics.count({"TEXCOORD",b.uv_set})) reject("UNSUPPORTED_UV_SET","Bound texture UV set does not exist in the primitive.",context(primitive));
             if(uv_count>1) warning("DAE_UNUSED_UV_SETS","UV set "+std::to_string(selected_uv)+" is retained (diffuse binding, or lowest set for untextured material); other unbound UV sets are validated.",context(primitive));
-            std::vector<std::vector<double>> faces;
             const auto count=integer(primitive,"count",0,true);std::size_t face_count=0;
-            if(kind=="polygons") {
-                for(auto p=primitive->FirstChildElement("p");p;p=p->NextSiblingElement("p")) faces.push_back(numbers(p));
-            } else {
-                const auto data=numbers(one(primitive,"p",true));std::vector<double> counts;
-                if(kind=="polylist") counts=numbers(one(primitive,"vcount",true));
-                else {if(!stride||count>data.size()/stride/3) bad("Triangle count exceeds index data.",primitive);counts.assign(count,3);}
-                if(counts.size()!=count) bad("Primitive face count mismatch.",primitive);
-                std::size_t at=0;for(auto n:counts) {
-                    if(!finite(n)||n!=std::floor(n)||n<3||n>4096||n*stride>data.size()-at) bad("Invalid primitive face count.",primitive);
-                    const auto end=at+static_cast<std::size_t>(n)*stride;faces.emplace_back(data.begin()+at,data.begin()+end);at=end;
-                }
-                if(at!=data.size()) bad("Trailing primitive indices.",primitive);
-            }
-            for(const auto& face:faces) {
-                ++face_count;if(!stride||face.size()%stride||face.size()/stride<3||face.size()/stride>4096) bad("Invalid polygon index count.",primitive);
-                const auto corner_count=face.size()/stride;
+            std::vector<Vertex> corners;std::vector<ufbx_vec3> points;
+            std::vector<std::uint32_t> order,polygon_indices;
+            auto emit_face=[&](std::size_t corner_count,IndexList& indices) {
+                if(!stride||corner_count<3||corner_count>4096) bad("Invalid primitive face count.",primitive);
                 if(result.vertices.size()+(corner_count-2)*3>10000000) reject("MESH_TOO_LARGE","Expanded COLLADA mesh exceeds the corner limit.",context(g));
-                std::vector<Vertex> corners;std::vector<ufbx_vec3> points;
+                corners.clear();points.clear();
+                corners.reserve(corner_count);points.reserve(corner_count);
                 for(std::size_t k=0;k<corner_count;++k) {
-                    for(std::size_t offset=0;offset<stride;++offset) {const auto n=face[k*stride+offset];if(!finite(n)||n<0||n!=std::floor(n)||n>30000000) bad("Invalid primitive index.",primitive);}
+                    std::array<std::uint32_t,32> corner_indices{};
+                    for(std::size_t offset=0;offset<stride;++offset) corner_indices[offset]=indices.next();
                     Vertex v;
                     for(const auto& i:inputs) {
-                        auto values=sample(i,static_cast<std::size_t>(face[k*stride+i.offset]),i.semantic=="TEXCOORD"?2:3);
+                        const auto values=sample(i,corner_indices[i.offset],i.semantic=="TEXCOORD"?2:3);
                         if(i.semantic=="POSITION") {
                             v.position=point(transformed,{values[0],values[1],values[2]});
                             if(!finite(v.position.x)||!finite(v.position.y)||!finite(v.position.z)) reject("NONFINITE_VERTEX","COLLADA position is nonfinite.",context(g));
@@ -388,12 +412,12 @@ class Converter {
                     if(b.value.texture>=0&&!v.has_uv) reject("MISSING_UV","Retained COLLADA texture has no UV coordinates.",context(g));
                     corners.push_back(v);points.push_back({v.position.x,v.position.y,v.position.z});
                 }
-                polygon(corners);std::vector<std::uint32_t> order((corner_count-2)*3);
-                if(corner_count==3) order={0,1,2};
+                polygon(corners);order.resize((corner_count-2)*3);
+                if(corner_count==3) {order[0]=0;order[1]=1;order[2]=2;}
                 else {
                     ufbx_vertex_vec3 positions{};positions.exists=true;positions.values={points.data(),points.size()};
-                    std::vector<std::uint32_t> indices(corner_count);for(std::size_t k=0;k<corner_count;++k) indices[k]=static_cast<std::uint32_t>(k);
-                    positions.indices={indices.data(),indices.size()};ufbx_mesh temp{};temp.vertex_position=positions;temp.num_indices=corner_count;
+                    polygon_indices.resize(corner_count);for(std::size_t k=0;k<corner_count;++k) polygon_indices[k]=static_cast<std::uint32_t>(k);
+                    positions.indices={polygon_indices.data(),polygon_indices.size()};ufbx_mesh temp{};temp.vertex_position=positions;temp.num_indices=corner_count;
                     ufbx_panic panic{};
                     const auto n=ufbx_catch_triangulate_face(&panic,order.data(),order.size(),&temp,{0,static_cast<std::uint32_t>(corner_count)});
                     if(panic.did_panic||n!=corner_count-2) bad("Polygon triangulation was incomplete.",primitive);
@@ -419,6 +443,23 @@ class Converter {
                     if(repair) ++repaired_triangles;
                     result.triangles.push_back(triangle);
                 }
+                ++face_count;
+            };
+            if(kind=="polygons") {
+                for(auto p=primitive->FirstChildElement("p");p;p=p->NextSiblingElement("p")) {
+                    if(face_count>=count) bad("Primitive polygon count mismatch.",primitive);
+                    IndexList indices(p);emit_face(indices.polygon_corners(stride),indices);indices.finish();
+                }
+            } else {
+                IndexList indices(one(primitive,"p",true));
+                if(kind=="polylist") {
+                    IndexList counts(one(primitive,"vcount",true));
+                    for(std::size_t f=0;f<count;++f) emit_face(counts.next(),indices);
+                    counts.finish();
+                } else {
+                    for(std::size_t f=0;f<count;++f) emit_face(3,indices);
+                }
+                indices.finish();
             }
             if(face_count!=count) bad("Primitive polygon count mismatch.",primitive);
         }

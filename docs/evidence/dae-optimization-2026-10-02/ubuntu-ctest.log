@@ -1,0 +1,41 @@
+Test project /home/gmb/GeoModelBridge-dae-opt-20261002/build/native
+      Start  1: core
+ 1/18 Test  #1: core .............................   Passed    0.27 sec
+      Start  2: output_safety
+ 2/18 Test  #2: output_safety ....................   Passed    0.40 sec
+      Start  3: cli
+ 3/18 Test  #3: cli ..............................   Passed    2.99 sec
+      Start  4: reader_integration
+ 4/18 Test  #4: reader_integration ...............   Passed    0.88 sec
+      Start  5: binary_fbx
+ 5/18 Test  #5: binary_fbx .......................   Passed    0.50 sec
+      Start  6: obj_integration
+ 6/18 Test  #6: obj_integration ..................   Passed    0.57 sec
+      Start  7: glb_integration
+ 7/18 Test  #7: glb_integration ..................   Passed    1.00 sec
+      Start  8: gltf_integration
+ 8/18 Test  #8: gltf_integration .................   Passed    0.69 sec
+      Start  9: wrl_integration
+ 9/18 Test  #9: wrl_integration ..................   Passed    1.22 sec
+      Start 10: dae_integration
+10/18 Test #10: dae_integration ..................   Passed    3.54 sec
+      Start 11: profile_integration
+11/18 Test #11: profile_integration ..............   Passed    3.73 sec
+      Start 12: missing_textures
+12/18 Test #12: missing_textures .................   Passed    1.11 sec
+      Start 13: normal_repair
+13/18 Test #13: normal_repair ....................   Passed    0.75 sec
+      Start 14: python_client
+14/18 Test #14: python_client ....................   Passed    3.25 sec
+      Start 15: max_worker_policy
+15/18 Test #15: max_worker_policy ................   Passed    0.77 sec
+      Start 16: max_adapter
+16/18 Test #16: max_adapter ......................   Passed    0.80 sec
+      Start 17: native_runtime
+17/18 Test #17: native_runtime ...................   Passed    0.78 sec
+      Start 18: native_build_layout
+18/18 Test #18: native_build_layout ..............   Passed    4.76 sec
+
+100% tests passed, 0 tests failed out of 18
+
+Total Test time (real) =  28.11 sec
