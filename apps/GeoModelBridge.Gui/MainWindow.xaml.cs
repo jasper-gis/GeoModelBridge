@@ -16,6 +16,8 @@ public partial class MainWindow : Window
     private bool _running;
     private string _lastOutput = "";
     private string _lastReport = "";
+    private string _lastInspectionReport = "";
+    private InspectionSettings? _lastInspectionSettings;
     private string _suggestedOutput = "";
     private string _demoSourcePath = "";
 
@@ -84,6 +86,7 @@ public partial class MainWindow : Window
         ConvertButton.IsEnabled = !busy;
         DemoButton.IsEnabled = !busy;
         ProbeButton.IsEnabled = !busy;
+        InspectButton.IsEnabled = !busy;
         BusyIndicator.Visibility = busy ? Visibility.Visible : Visibility.Collapsed;
         ConvertButton.Content = busy ? "正在处理…" : "开始转换 →";
     }
@@ -162,6 +165,47 @@ public partial class MainWindow : Window
             AppendLog(result.Message);
         }
         catch (Exception ex) { SetStatus("检查未完成", ex.Message, true); AppendLog(ex.Message); }
+        finally { SetBusy(false); }
+    }
+
+    private async void Inspect_Click(object sender, RoutedEventArgs e)
+    {
+        if (_running) return;
+        try
+        {
+            var settings = InspectionSettings.FromConversion(Settings(), "");
+            var issues = InspectionValidator.ValidateReader(settings);
+            if (issues.Count > 0) { SetStatus("请完善模型设置", string.Join("\n", issues), true); return; }
+            settings = settings with
+            {
+                InputPath = Path.GetFullPath(settings.InputPath.Trim()),
+                MaxBatchPath = string.Equals(Path.GetExtension(settings.InputPath.Trim()), ".max", StringComparison.OrdinalIgnoreCase)
+                    ? Path.GetFullPath(settings.MaxBatchPath.Trim()) : settings.MaxBatchPath,
+                TextureDirectories = settings.TextureDirectories.Select(path => Path.GetFullPath(path.Trim())).ToArray()
+            };
+            var dialog = new SaveFileDialog
+            {
+                Title = "保存新的模型检查报告（已有文件不会覆盖）", Filter = "JSON 检查报告 (*.json)|*.json",
+                FileName = Path.GetFileNameWithoutExtension(settings.InputPath) + "_检查_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".json",
+                DefaultExt = ".json", AddExtension = true, OverwritePrompt = false
+            };
+            if (dialog.ShowDialog(this) != true) return;
+            settings = settings with { ReportPath = dialog.FileName };
+            issues = InspectionValidator.Validate(settings);
+            if (issues.Count > 0) { SetStatus("请选择新报告位置", string.Join("\n", issues), true); return; }
+            SetBusy(true);
+            LogBox.Clear();
+            SetStatus("正在检查模型", "按当前读取策略检查模型、材质和贴图；不应用 WKID 与原点，不写入 GDB。");
+            var result = await _engine.InspectAsync(settings, Progress());
+            _lastInspectionReport = result.ReportPath;
+            _lastInspectionSettings = settings;
+            InspectionReportButton.IsEnabled = File.Exists(_lastInspectionReport);
+            SetStatus(result.Success ? "模型检查通过" : "模型检查未通过", result.Message, !result.Success,
+                warning: result.Report?.WarningCount > 0);
+            AppendLog(result.Message);
+            if (File.Exists(_lastInspectionReport)) AppendLog("模型检查报告：" + _lastInspectionReport);
+        }
+        catch (Exception ex) { SetStatus("模型检查未完成", ex.Message, true); AppendLog(ex.Message); }
         finally { SetBusy(false); }
     }
 
@@ -316,6 +360,36 @@ public partial class MainWindow : Window
         catch (Exception ex) { SetStatus("无法读取报告", ex.Message, true); }
     }
 
+    private void InspectionReport_Click(object sender, RoutedEventArgs e)
+    {
+        if (!File.Exists(_lastInspectionReport) || _lastInspectionSettings is null) return;
+        try
+        {
+            const int limit = 8 * 1024 * 1024;
+            // Keep the reader open with no write sharing, bounding the viewer independently of verification.
+            using var stream = new FileStream(_lastInspectionReport, FileMode.Open, FileAccess.Read, FileShare.Read);
+            if (stream.Length > limit) { SetStatus("检查报告文件较大", "请直接打开报告：" + _lastInspectionReport, true); return; }
+            using var reader = new StreamReader(stream, new UTF8Encoding(false, true));
+            var json = reader.ReadToEnd();
+            string summary;
+            try
+            {
+                var report = InspectionReportVerifier.Verify(json, _lastInspectionSettings);
+                summary = report.SummaryText + "\n\n模型：" + report.Source + "\n\n诊断明细\n" + string.Join("\n", report.Diagnostics);
+            }
+            catch (InvalidDataException ex)
+            {
+                summary = "此报告未通过模型检查结果核验；不能作为 GDB 转换成功证据。\n" + ex.Message + "\n请查看原始 JSON 中的诊断。";
+            }
+            var tabs = new TabControl { Margin = new Thickness(12), FontSize = 13 };
+            tabs.Items.Add(new TabItem { Header = "模型检查 · 未写入 GDB", Content = TextViewer(summary) });
+            tabs.Items.Add(new TabItem { Header = "原始 JSON", Content = TextViewer(json, raw: true) });
+            new Window { Owner = this, Title = "GeoModelBridge · 模型检查报告", Content = tabs, Width = 900, Height = 700,
+                MinWidth = 600, MinHeight = 400, WindowStartupLocation = WindowStartupLocation.CenterOwner }.Show();
+        }
+        catch (Exception ex) { SetStatus("无法读取检查报告", ex.Message, true); }
+    }
+
     private void ShowText(string title, string content)
     {
         var viewer = TextViewer(content);
@@ -331,6 +405,7 @@ public partial class MainWindow : Window
         "GeoModelBridge V" + ProductInfo.Version + "\n\n" +
         "1. 选择一个静态 FBX、OBJ、GLB、glTF、WRL、DAE 或 MAX。外置 PNG/JPEG 通常放在模型目录中；其他位置可在转换选项中添加贴图目录。DAE 按 COLLADA 1.4.1 文件声明的单位和向上轴读取静态网格；动画、变形和未知渲染扩展须先导出静态快照。GLB 按 glTF 2.0 右手 Y-up、米制读取；普通 PBR 材质须使用 GIS 静态兼容策略并记录光照省略，严格策略接受无光照材质。缺图时默认保留材质颜色和标量透明度并继续，报告列出缺图项；取消“缺少贴图时使用材质颜色继续转换”勾选可要求图片完整。\n\n" +
         "2. 指定尚不存在的 .gdb 输出路径。默认要素类名为 Models，已有数据库不会被覆盖。\n\n" +
+        "可先点击“检查模型”，仅需输入模型与读取选项，并选择新的 JSON 检查报告。它显示网格、三角形、材质、贴图数量和本地米制范围，列出兼容处理与警告。检查不需要 FileGDB 写入端，不应用 WKID 或原点，也不会创建 GDB；通过检查仍不等于数据库写入或外观验收。\n\n" +
         "3. 填写米制投影坐标系 WKID 和 XYZ 原点。模型先统一 Z-up、米制，再进行平移。这里不会重投影、旋转配准或推断真实位置；已经使用目标坐标的模型也应明确填写所需偏移。\n\n" +
         "4. 使用原生 FileGDB 后端，无需安装 ArcGIS Pro；可先点击“检查运行环境”。\n\n" +
         "5. 默认 GIS 静态兼容按 FBX 保存的姿态转换，省略环境光、高光和反射通道，删除有限坐标的零面积面，并从有效三角形重建无效角点法线，保留已有有效法线、UV 和材质边界；还可修复符合条件的 JPEG 封装，保留原压缩图像数据，不重新压缩图像。每项处理都会记录。它不会选择动画第 0 帧，也不会跳过所有错误。如需保留某一动画帧或渲染外观，请先在建模软件中导出静态快照或烘焙漫反射贴图。可切换严格检查，遇到这些内容时停止。\n\n" +
@@ -343,6 +418,6 @@ public partial class MainWindow : Window
     {
         if (!_running) return;
         e.Cancel = true;
-        SetStatus("任务仍在运行", "请等待当前任务结束后关闭窗口，以便完整写入并核验数据库。此窗口不会强制中断写入。");
+        SetStatus("任务仍在运行", "请等待当前转换或检查结束后关闭窗口，以便保留完整结果。此窗口不会强制中断任务。");
     }
 }

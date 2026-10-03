@@ -78,6 +78,7 @@ Scene read_dae(const std::filesystem::path& input, const ReaderOptions& options 
 Scene read_model(const std::filesystem::path& input, const ReaderOptions& options = {});
 std::vector<Diagnostic> validate(const Scene& scene);
 bool has_errors(const std::vector<Diagnostic>& diagnostics);
+bool has_compatibility_adjustments(const std::vector<Diagnostic>& diagnostics);
 void apply_origin(Scene& scene, Vec3 origin, int wkid, bool origin_explicit);
 std::string sha256(const std::vector<std::uint8_t>& bytes);
 std::string mime_type(const std::vector<std::uint8_t>& bytes);

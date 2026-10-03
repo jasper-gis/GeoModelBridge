@@ -16,6 +16,14 @@ bool unit(double v) { return std::isfinite(v) && v >= 0 && v <= 1; }
 bool has_errors(const std::vector<Diagnostic>& diagnostics) {
     return std::any_of(diagnostics.begin(), diagnostics.end(), [](const auto& d) { return d.severity == Severity::error; });
 }
+bool has_compatibility_adjustments(const std::vector<Diagnostic>& diagnostics) {
+    return std::any_of(diagnostics.begin(), diagnostics.end(), [](const auto& d) {
+        return d.code == "STATIC_POSE_USED" || d.code == "MATERIAL_CHANNEL_OMITTED" ||
+            d.code == "DEGENERATE_TRIANGLES_REMOVED" || d.code == "JPEG_CONTAINER_NORMALIZED" ||
+            d.code == "MISSING_TEXTURE_FALLBACK" || d.code == "NORMALS_REPAIRED" ||
+            d.code == "DEGENERATE_NORMALS_DISCARDED" || d.code == "UNLIT_SHADING_MAPPED";
+    });
+}
 std::string mime_type(const std::vector<std::uint8_t>& b) {
     const std::uint8_t png[] = {137,80,78,71,13,10,26,10};
     if (b.size() >= 8 && std::equal(std::begin(png), std::end(png), b.begin())) return "image/png";

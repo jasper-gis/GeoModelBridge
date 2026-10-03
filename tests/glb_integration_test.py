@@ -82,6 +82,19 @@ with tempfile.TemporaryDirectory(prefix="gmb-glb-") as directory:
     assert (bundle / texture["path"]).read_bytes() == (Path(sys.argv[2]) / "checker.png").read_bytes()
     assert any(d["code"] == "GLTF_COORDINATE_CONVENTION" for d in scene["diagnostics"])
     assert any(d["code"] == "UNLIT_SHADING_MAPPED" for d in scene["diagnostics"])
+    prepared = json.loads((bundle / "report.json").read_text(encoding="utf-8"))
+    assert prepared["geometry_bounds"] == {"min": [500010, 2999998, 101], "max": [500012, 3000001, 101]}
+    assert prepared["fidelity"]["compatibility_adjustments"] is True
+    assert prepared["fidelity"]["strict_validation_passed"] is False
+    inspect_report = root / "inspection.json"
+    run("inspect", source, "--report", inspect_report)
+    inspected = json.loads(inspect_report.read_text(encoding="utf-8"))
+    assert inspected["status"] == "inspected" and inspected["backend"] == "none"
+    assert inspected["geometry_bounds"] == {"min": [10, -2, 1], "max": [12, 1, 1]}
+    assert inspected["fidelity"]["validation_passed"] is True
+    assert inspected["fidelity"]["compatibility_adjustments"] is True
+    assert inspected["fidelity"]["strict_validation_passed"] is False
+    assert inspected["fidelity"]["gdb_written"] is False and inspected["fidelity"]["gdb_readback_verified"] is False
     sole_scene = variation(root,"sole-scene",lambda d: d.pop("scene"))
     sole_report = root / "sole-scene.json"
     run("inspect",sole_scene,"--report",sole_report)

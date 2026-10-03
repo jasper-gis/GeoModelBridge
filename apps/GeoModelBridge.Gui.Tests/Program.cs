@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using GeoModelBridge.Gui.Core;
 
-internal static class Program
+internal static partial class Program
 {
     private const string Version = "0.6.0";
     private static readonly List<TestCase> Results = [];
@@ -47,11 +47,14 @@ internal static class Program
             SummaryTests();
             await MissingEngineTests();
             await FakeEngineTests();
+            InspectionContractTests();
+            await InspectionServiceTests();
             var integration = options.ContainsKey("--engine-dir");
             if (integration)
             {
                 if (!options.TryGetValue("--fixtures", out var fixtures))
                     throw new ArgumentException("--fixtures is required with --engine-dir.");
+                await InspectionIntegrationTests(Path.GetFullPath(options["--engine-dir"]), Path.GetFullPath(fixtures));
                 await IntegrationTests(Path.GetFullPath(options["--engine-dir"]), Path.GetFullPath(fixtures));
             }
             else
@@ -938,7 +941,7 @@ internal static class Program
         if (args.SequenceEqual(new[] { "--version" }))
         {
             if (mode == "version-overflow") Console.Write("invalid response" + new string(' ', 300000));
-            Console.WriteLine("GeoModelBridge V" + (mode == "old-version" ? "0.1.1" : Version));
+            Console.WriteLine("GeoModelBridge V" + (mode is "old-version" or "inspect-old-version" ? "0.1.1" : Version));
             return 0;
         }
         if (args.SequenceEqual(new[] { "--probe" }))
@@ -956,6 +959,7 @@ internal static class Program
             Console.WriteLine(mode == "probe-invalid-json" ? "not JSON" : probe);
             return 0;
         }
+        if (args.Length > 0 && args[0] == "inspect") return RunFakeInspector(args, directory, mode);
         if (args.Length == 0 || args[0] != "convert") return 2;
         File.WriteAllText(Path.Combine(directory, "convert-invoked.txt"), JsonSerializer.Serialize(args));
         if (mode.StartsWith("log-flood", StringComparison.Ordinal))

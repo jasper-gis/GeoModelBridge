@@ -129,12 +129,16 @@
        </ScrollViewer>
        <ProgressBar x:Name="BusyIndicator" Height="3" Margin="0,16,0,0" IsIndeterminate="True" Visibility="Collapsed" Foreground="{StaticResource Accent}"/>
       </StackPanel>
-      <Button Grid.Row="1" x:Name="ProbeButton" Content="检查运行环境" Click="Probe_Click" Margin="0,17,0,18"/>
+      <StackPanel Grid.Row="1" Margin="0,17,0,18">
+       <Button x:Name="InspectButton" Content="检查模型" Click="Inspect_Click" ToolTip="检查模型、材质与贴图并保存新的 JSON 报告；无需 GDB、WKID 或原点。不检查地理位置，也不写入 GDB。"/>
+       <Button x:Name="ProbeButton" Content="检查运行环境" Click="Probe_Click" Margin="0,8,0,0"/>
+      </StackPanel>
       <TextBlock Grid.Row="2" Text="转换日志" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,8"/>
       <TextBox Grid.Row="3" x:Name="LogBox" AutomationProperties.Name="转换日志" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Background="#F5F8FA" BorderThickness="0" Foreground="#45616C" FontFamily="Cascadia Mono, Consolas, Microsoft YaHei UI" FontSize="11" VerticalContentAlignment="Top" Padding="10"/>
       <StackPanel Grid.Row="4" Margin="0,16,0,0">
        <Button x:Name="OpenOutputButton" Content="打开输出目录 ↗" Click="OpenOutput_Click" IsEnabled="False"/>
        <Button x:Name="ReportButton" Content="查看转换报告" Click="Report_Click" IsEnabled="False" Margin="0,8,0,0"/>
+       <Button x:Name="InspectionReportButton" Content="查看模型检查报告" Click="InspectionReport_Click" IsEnabled="False" Margin="0,8,0,0"/>
       </StackPanel>
      </Grid>
     </Border>

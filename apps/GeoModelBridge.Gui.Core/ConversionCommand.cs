@@ -26,6 +26,13 @@ public static class ConversionCommand
             "--feature-class", settings.FeatureClass,
             "--report", GetReportPath(settings)
         };
+        AddReaderArguments(result, settings);
+        return result;
+    }
+
+    internal static void AddReaderArguments(List<string> result, ConversionSettings settings)
+    {
+        var input = PathRules.Normalize(settings.InputPath);
         foreach (var directory in settings.TextureDirectories) { result.Add("--texture-dir"); result.Add(PathRules.Normalize(directory)); }
         if (string.Equals(Path.GetExtension(input), ".obj", StringComparison.OrdinalIgnoreCase))
         {
@@ -36,7 +43,6 @@ public static class ConversionCommand
             result.AddRange(["--max-batch", Path.GetFullPath(settings.MaxBatchPath.Trim()),
                 "--max-frame", int.Parse(settings.MaxFrame.Trim(), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
                 "--max-timeout", settings.MaxTimeout.Trim()]);
-        return result;
     }
 
     public static ProcessStartInfo CreateStartInfo(string enginePath, ConversionSettings settings) => StartInfo(enginePath, BuildArguments(settings));

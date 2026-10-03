@@ -192,6 +192,41 @@ int main() {
         require(std::distance(std::filesystem::directory_iterator(output / "textures"),
                               std::filesystem::directory_iterator{}) == 1, "Texture content was not deduplicated");
     });
+    run("report bounds use retained triangles and already applied placement", [] {
+        ScratchDirectory temp;
+        auto scene = gmb::make_fixture("uv-plane");
+        auto& mesh = scene.meshes.front();
+        mesh.vertices.resize(4);
+        mesh.vertices[0].position = {-3,7,-1};
+        mesh.vertices[1].position = {2,-5,1};
+        mesh.vertices[2].position = {0,4,8};
+        mesh.vertices[3].position = {999,999,999}; // Valid but not used by a triangle.
+        mesh.triangles = {{{{0,1,2}},0}};
+        scene.meshes.push_back(mesh);
+        for (auto& v : scene.meshes.back().vertices) v.position.x -= 20;
+        scene.nodes.front().source_world_transform[12] = 123456; // Provenance only.
+        gmb::apply_origin(scene,{100,200,300},3857,true);
+        auto ds = gmb::validate(scene);
+        require(!gmb::has_errors(ds), "Bounds fixture must validate");
+        gmb::write_report(scene,ds,"inspected",temp.path/"bounds.json");
+        std::ifstream file(temp.path/"bounds.json"); nlohmann::json report; file >> report;
+        require(report.at("geometry_bounds").at("min") == nlohmann::json::array({77,195,299}), "Wrong bounds minimum");
+        require(report.at("geometry_bounds").at("max") == nlohmann::json::array({102,207,308}), "Wrong bounds maximum");
+        require(report.at("counts").at("corner_vertices") == 8, "Bounds changed stored corner counts");
+        require(report.at("coordinates").at("origin") == nlohmann::json::array({100,200,300}), "Bounds changed placement");
+        require(report.at("fidelity").at("gdb_written") == false, "Inspection claims GDB write");
+        // Unreferenced corners are excluded from bounds, but still validated.
+        scene.meshes[1].vertices[3].position.x = std::numeric_limits<double>::quiet_NaN();
+        ds = gmb::validate(scene);
+        gmb::write_report(scene,ds,"rejected",temp.path/"invalid.json");
+        std::ifstream invalid(temp.path/"invalid.json"); invalid >> report;
+        require(report.at("geometry_bounds").is_null(), "Invalid scene published partial bounds");
+        require(report.at("fidelity").at("validation_passed") == false, "Invalid scene claims validation");
+        scene.meshes.clear();
+        gmb::write_report(scene,gmb::validate(scene),"rejected",temp.path/"empty.json");
+        std::ifstream empty(temp.path/"empty.json"); empty >> report;
+        require(report.at("geometry_bounds").is_null(), "Empty scene invented bounds");
+    });
     run("invalid scene leaves no partial bundle", [] {
         ScratchDirectory temp;
         auto scene = gmb::make_fixture("uv-plane");

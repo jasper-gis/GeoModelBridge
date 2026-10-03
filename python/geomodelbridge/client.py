@@ -59,6 +59,53 @@ class ConversionRequest:
 
 
 @dataclass(frozen=True)
+class InspectionRequest:
+    """Validate a source model into a new report without loading a GDB writer."""
+    input_model: PathLike
+    report_path: PathLike
+    profile: str = "strict"
+    missing_textures: str = "material-color"
+    texture_dirs: Tuple[PathLike, ...] = ()
+    obj_up_axis: str = "Z"
+    obj_unit_meters: float = 1.0
+    max_batch: Optional[PathLike] = None
+    max_frame: Optional[int] = None
+    max_timeout: int = 600
+
+
+@dataclass(frozen=True)
+class InspectionCounts:
+    meshes: int
+    triangles: int
+    corner_vertices: int
+    materials: int
+    textures: int
+    texture_bytes: int
+
+
+@dataclass(frozen=True)
+class InspectionBounds:
+    """Model bounds after source axes, units and static transforms are applied."""
+    minimum: Tuple[float, float, float]
+    maximum: Tuple[float, float, float]
+
+
+@dataclass(frozen=True)
+class InspectionResult:
+    request: InspectionRequest
+    report_path: Path
+    counts: InspectionCounts
+    bounds: InspectionBounds
+    diagnostics: Tuple[Diagnostic, ...]
+    stdout_tail: str
+    stderr_tail: str
+    version: str = __version__
+    backend: str = "none"
+    stdout_truncated: bool = False
+    stderr_truncated: bool = False
+
+
+@dataclass(frozen=True)
 class ProbeResult:
     version: str
     executable: Path
@@ -107,13 +154,17 @@ class ConversionError(GeoModelBridgeError):
     """Failed process or unverifiable result; output paths must be inspected."""
 
 
+class InspectionError(GeoModelBridgeError):
+    """Failed inspection or unverifiable report, retaining process context."""
+
+
 class CallbackError(GeoModelBridgeError):
-    """Message delivery failed; result retains any already verified conversion."""
+    """Message delivery failed; result retains any already verified operation."""
     def __init__(self, event, result=None):
         completed = result is not None
         super().__init__(
-            "Message callback failed " + ("after verified conversion; use error.result, do not repeat the conversion"
-                                          if completed else "before conversion started"),
+            "Message callback failed " + ("after verified operation; use error.result, do not repeat the operation"
+                                          if completed else "before operation started"),
             code="CALLBACK_FAILED", exit_code=0 if completed else None,
             report_path=result.report_path if completed else None,
             diagnostics=result.diagnostics if completed else (),
@@ -248,6 +299,78 @@ def _no_gdb_parent(path):
     return not any(p.suffix.lower() == ".gdb" for p in path.parents)
 
 
+def _source_settings(request, source):
+    """Shared reader settings; inspection and conversion use the same policy."""
+    _require(source.is_file() and source.suffix.lower() in (".fbx", ".obj", ".glb", ".gltf", ".wrl", ".dae", ".max"),
+             "Input must be an existing FBX, OBJ, GLB, glTF, WRL, DAE or MAX file")
+    batch = None
+    if source.suffix.lower() == ".max":
+        _require(os.name == "nt", "MAX preprocessing requires Windows", "MAX_PLATFORM_UNSUPPORTED")
+        _require(request.max_batch is not None, "MAX requires max_batch pointing to 3dsmaxbatch.exe")
+        batch = _path(request.max_batch, "3ds Max Batch executable")
+        _require(batch.is_file() and batch.suffix.lower() == ".exe", "3ds Max Batch executable is missing")
+        _require(type(request.max_frame) is int and -1000000 <= request.max_frame <= 1000000,
+                 "MAX requires an explicit integer max_frame in -1000000..1000000")
+        _require(type(request.max_timeout) is int and 1 <= request.max_timeout <= 86400,
+                 "max_timeout must be an integer in 1..86400")
+    else:
+        _require(request.max_batch is None and request.max_frame is None and request.max_timeout == 600,
+                 "MAX settings apply only to .max input")
+    _require(request.obj_up_axis in ("Z", "Y"), "OBJ up axis must be Z or Y")
+    try:
+        valid_obj_units = (type(request.obj_unit_meters) in (int, float)
+                           and math.isfinite(request.obj_unit_meters) and request.obj_unit_meters > 0)
+    except OverflowError:
+        valid_obj_units = False
+    _require(valid_obj_units, "OBJ unit size must be finite and positive")
+    _require(request.profile in ("strict", "gis-static"), "Unknown rendering profile")
+    _require(request.missing_textures in ("material-color", "error"), "Unknown missing-texture policy")
+    _require(isinstance(request.texture_dirs, (tuple, list)), "texture_dirs must be a sequence of directories")
+    textures = tuple(_path(path, "texture directory") for path in request.texture_dirs)
+    _require(all(path.is_dir() for path in textures), "Texture directories must exist")
+    return batch, textures
+
+
+def _source_arguments(request, source):
+    values = ["--profile", request.profile, "--missing-textures", request.missing_textures]
+    if source.suffix.lower() == ".obj":
+        values.extend(("--obj-up-axis", request.obj_up_axis, "--obj-unit-meters", request.obj_unit_meters))
+    if source.suffix.lower() == ".max":
+        values.extend(("--max-batch", request.max_batch, "--max-frame", request.max_frame,
+                       "--max-timeout", request.max_timeout))
+    for directory in request.texture_dirs:
+        values.extend(("--texture-dir", directory))
+    return values
+
+
+def _verify_source_policy(report, request, source, diagnostics):
+    if (report.get("conversion_profile") != request.profile
+            or report.get("missing_texture_policy") != request.missing_textures):
+        raise ValueError("Report reader policy does not match the request")
+    reported_source = report.get("source")
+    if (not isinstance(reported_source, str) or not Path(reported_source).is_absolute()
+            or Path(reported_source).resolve() != source):
+        raise ValueError("Report source does not match the input model")
+    if any(d.severity == "error" for d in diagnostics):
+        raise ValueError("Success report contains errors")
+    if request.missing_textures == "error" and any(d.code == "MISSING_TEXTURE_FALLBACK" for d in diagnostics):
+        raise ValueError("Missing-texture fallback contradicts the requested policy")
+    if source.suffix.lower() == ".max":
+        entries = [d for d in diagnostics if d.code == "MAX_ADAPTER_PROVENANCE"]
+        if len(entries) != 1:
+            raise ValueError("Missing or duplicate MAX provenance")
+        provenance = _json(entries[0].message)
+        if (type(provenance.get("adapter_protocol_version")) is not int
+                or provenance["adapter_protocol_version"] != 1 or provenance.get("engine_version") != __version__
+                or type(provenance.get("frame")) is not int or provenance["frame"] != request.max_frame
+                or provenance.get("status") != "exported"
+                or not isinstance(provenance.get("source"), str) or not Path(provenance["source"]).is_absolute()
+                or not isinstance(provenance.get("batch_executable"), str) or not Path(provenance["batch_executable"]).is_absolute()
+                or _path(provenance.get("source"), "MAX source") != source
+                or _path(provenance.get("batch_executable"), "MAX runtime") != request.max_batch):
+            raise ValueError("MAX provenance does not match the requested runtime/frame/source")
+
+
 def _unique_object(pairs):
     result = {}
     for key, value in pairs:
@@ -275,7 +398,7 @@ def _json(text):
 def _read_report(path):
     _check_path_links(path)
     if not stat.S_ISREG(path.stat().st_mode):
-        raise ValueError("Conversion report must be a regular file")
+        raise ValueError("Report must be a regular file")
     with path.open("rb") as stream:
         contents = stream.read(REPORT_LIMIT_BYTES + 1)
     if len(contents) > REPORT_LIMIT_BYTES:
@@ -312,7 +435,7 @@ def _emit(callback, level, code, text, count=1, result=None):
 def _emit_diagnostics(callback, diagnostics, result):
     counts = Counter((item.severity, item.code) for item in diagnostics)
     for (level, code), count in counts.items():
-        _emit(callback, level, code, f"[{code}] {count} diagnostic(s); see the conversion report.", count, result)
+        _emit(callback, level, code, f"[{code}] {count} diagnostic(s); see the report.", count, result)
 
 
 class Engine:
@@ -336,27 +459,7 @@ class Engine:
         output = _path(request.output_gdb, "output GDB")
         report = _path(request.report_path if request.report_path is not None
                        else str(output) + ".report.json", "report")
-        _require(source.is_file() and source.suffix.lower() in (".fbx", ".obj", ".glb", ".gltf", ".wrl", ".dae", ".max"), "Input must be an existing FBX, OBJ, GLB, glTF, WRL, DAE or MAX file")
-        batch = None
-        if source.suffix.lower() == ".max":
-            _require(os.name == "nt", "MAX preprocessing requires Windows", "MAX_PLATFORM_UNSUPPORTED")
-            _require(request.max_batch is not None, "MAX requires max_batch pointing to 3dsmaxbatch.exe")
-            batch = _path(request.max_batch, "3ds Max Batch executable")
-            _require(batch.is_file() and batch.suffix.lower() == ".exe", "3ds Max Batch executable is missing")
-            _require(type(request.max_frame) is int and -1000000 <= request.max_frame <= 1000000,
-                     "MAX requires an explicit integer max_frame in -1000000..1000000")
-            _require(type(request.max_timeout) is int and 1 <= request.max_timeout <= 86400,
-                     "max_timeout must be an integer in 1..86400")
-        else:
-            _require(request.max_batch is None and request.max_frame is None and request.max_timeout == 600,
-                     "MAX settings apply only to .max input")
-        _require(request.obj_up_axis in ("Z", "Y"), "OBJ up axis must be Z or Y")
-        try:
-            valid_obj_units = (type(request.obj_unit_meters) in (int, float)
-                               and math.isfinite(request.obj_unit_meters) and request.obj_unit_meters > 0)
-        except OverflowError:
-            valid_obj_units = False
-        _require(valid_obj_units, "OBJ unit size must be finite and positive")
+        batch, textures = _source_settings(request, source)
         _require(output.suffix == ".gdb", "Output must have the .gdb suffix")
         _require(not output.exists() and not report.exists(), "Output GDB and report must be new paths", "PATH_EXISTS")
         _require(output.parent.is_dir() and report.parent.is_dir(), "Output/report parent directories must already exist")
@@ -373,13 +476,21 @@ class Engine:
             raise ValidationError("Origin is outside the supported numeric range", code="INVALID_REQUEST") from error
         _require(isinstance(request.feature_class, str) and re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{0,63}", request.feature_class),
                  "Feature class must start with a letter and contain up to 64 ASCII letters, digits or underscores")
-        _require(request.profile in ("strict", "gis-static"), "Unknown rendering profile")
-        _require(request.missing_textures in ("material-color", "error"), "Unknown missing-texture policy")
-        _require(isinstance(request.texture_dirs, (tuple, list)), "texture_dirs must be a sequence of directories")
-        textures = tuple(_path(path, "texture directory") for path in request.texture_dirs)
-        _require(all(path.is_dir() for path in textures), "Texture directories must exist")
         return replace(request, input_fbx=source, output_gdb=output, report_path=report,
                        origin=origin, texture_dirs=textures, max_batch=batch)
+
+    def validate_inspection(self, request: InspectionRequest) -> InspectionRequest:
+        """Return an absolute, immutable snapshot without creating output or starting a process."""
+        _require(isinstance(request, InspectionRequest), "Expected InspectionRequest")
+        source = _path(request.input_model, "input model")
+        report = _path(request.report_path, "inspection report")
+        batch, textures = _source_settings(request, source)
+        _require(not report.exists(), "Inspection report must be a new path", "PATH_EXISTS")
+        _require(report.parent.is_dir(), "Report parent directory must already exist")
+        _require(report.suffix.lower() != ".gdb" and _no_gdb_parent(report),
+                 "Inspection report must be outside a GDB")
+        return replace(request, input_model=source, report_path=report,
+                       texture_dirs=textures, max_batch=batch)
 
     def _execute(self, command, **context):
         try:
@@ -389,16 +500,20 @@ class Engine:
         except OSError as error:
             raise GeoModelBridgeError(f"Could not run the engine: {error}", code="LAUNCH_FAILED", **context) from error
 
-    def check(self) -> ProbeResult:
-        """Check exact release versions and load the native writer's runtime."""
-        for path in (self.executable, self.writer):
-            if not path.is_file() or (os.name == "nt" and path.suffix.lower() != ".exe"):
-                raise GeoModelBridgeError(f"Executable not found or unsupported: {path}", code="ENGINE_UNAVAILABLE")
+    def _check_executable(self):
+        if not self.executable.is_file() or (os.name == "nt" and self.executable.suffix.lower() != ".exe"):
+            raise GeoModelBridgeError(f"Executable not found or unsupported: {self.executable}", code="ENGINE_UNAVAILABLE")
         result = self._execute([self.executable, "--version"])
         if result.exit_code != 0 or result.stdout_truncated or result.stdout.strip() != f"GeoModelBridge V{__version__}":
             raise GeoModelBridgeError("Python library and executable versions must match", code="VERSION_MISMATCH",
                                       exit_code=result.exit_code, stdout_tail=result.stdout, stderr_tail=result.stderr,
                                       stdout_truncated=result.stdout_truncated, stderr_truncated=result.stderr_truncated)
+
+    def check(self) -> ProbeResult:
+        """Check exact release versions and load the native writer's runtime."""
+        if not self.writer.is_file() or (os.name == "nt" and self.writer.suffix.lower() != ".exe"):
+            raise GeoModelBridgeError(f"Executable not found or unsupported: {self.writer}", code="ENGINE_UNAVAILABLE")
+        self._check_executable()
         result = self._execute([self.writer, "--probe"])
         try:
             probe = _json(result.stdout)
@@ -418,16 +533,103 @@ class Engine:
         request = self.validate(request)
         values = [self.executable, "convert", request.input_fbx, "--output", request.output_gdb,
                   "--wkid", request.wkid, "--origin", *request.origin, "--feature-class", request.feature_class,
-                  "--profile", request.profile, "--missing-textures", request.missing_textures,
                   "--report", request.report_path, "--backend", "native-filegdb", "--writer", self.writer]
-        if request.input_fbx.suffix.lower() == ".obj":
-            values.extend(("--obj-up-axis", request.obj_up_axis, "--obj-unit-meters", request.obj_unit_meters))
-        if request.input_fbx.suffix.lower() == ".max":
-            values.extend(("--max-batch", request.max_batch, "--max-frame", request.max_frame,
-                           "--max-timeout", request.max_timeout))
-        for directory in request.texture_dirs:
-            values.extend(("--texture-dir", directory))
+        values.extend(_source_arguments(request, request.input_fbx))
         return tuple(map(str, values))
+
+    def inspection_command(self, request: InspectionRequest) -> Tuple[str, ...]:
+        """Validate and build a writer-independent model inspection argument vector."""
+        request = self.validate_inspection(request)
+        values = [self.executable, "inspect", request.input_model, "--report", request.report_path]
+        values.extend(_source_arguments(request, request.input_model))
+        return tuple(map(str, values))
+
+    def inspect(self, request: InspectionRequest, *, on_message: Optional[Callable[[Message], None]] = None) -> InspectionResult:
+        """Validate a model and verify its new report without loading the native writer.
+
+        Bounds describe normalized local Z-up metres with no origin translation.
+        Inspection does not establish that a GDB can be written or read back.
+        CallbackError.result retains a verified result after message failure.
+        """
+        _require(on_message is None or callable(on_message), "on_message must be callable")
+        request = self.validate_inspection(request)
+        _emit(on_message, "info", "CHECKING_ENGINE", "Checking GeoModelBridge version...")
+        self._check_executable()
+        _emit(on_message, "info", "INSPECTING", "Reading and validating model...")
+        command = self.inspection_command(request)
+        result = self._execute(command, report_path=request.report_path)
+        report, diagnostics, report_error = None, (), None
+        try:
+            report = _read_report(request.report_path)
+            diagnostics = _diagnostics(report)
+        except (OSError, ValueError, RecursionError) as error:
+            report_error = error
+        context = dict(exit_code=result.exit_code, report_path=request.report_path, diagnostics=diagnostics,
+                       stdout_tail=result.stdout, stderr_tail=result.stderr,
+                       stdout_truncated=result.stdout_truncated, stderr_truncated=result.stderr_truncated)
+        if result.exit_code != 0:
+            raise InspectionError(f"Inspection failed (exit code {result.exit_code}); inspect the report and diagnostics",
+                                  code="PROCESS_FAILED", **context)
+        try:
+            if report_error is not None:
+                raise ValueError(f"Cannot read inspection report: {report_error}")
+            counts, bounds = self._verify_inspection_report(report, request, diagnostics)
+        except (ValueError, KeyError, TypeError, OSError, OverflowError, RecursionError, ValidationError) as error:
+            raise InspectionError(f"Cannot confirm inspection success: {error}", code="INVALID_REPORT", **context) from error
+        inspected = InspectionResult(request, request.report_path, counts, bounds, diagnostics,
+                                     result.stdout, result.stderr, stdout_truncated=result.stdout_truncated,
+                                     stderr_truncated=result.stderr_truncated)
+        _emit_diagnostics(on_message, diagnostics, inspected)
+        _emit(on_message, "info", "INSPECTED", f"Inspected {counts.meshes} mesh(es), {counts.triangles} triangle(s): {request.report_path}", result=inspected)
+        return inspected
+
+    @staticmethod
+    def _verify_inspection_report(report, request, diagnostics):
+        for key, value in dict(status="inspected", version=__version__, backend="none").items():
+            if report.get(key) != value:
+                raise ValueError(f"Unexpected inspection report field: {key}")
+        if type(report.get("schema_version")) is not int or report["schema_version"] != 1:
+            raise ValueError("Invalid inspection report schema version")
+        _verify_source_policy(report, request, request.input_model, diagnostics)
+        if "diagnostics" not in report:
+            raise ValueError("Missing inspection diagnostics")
+        coordinates = report.get("coordinates")
+        if (not isinstance(coordinates, dict) or coordinates.get("unit") != "meter"
+                or coordinates.get("up_axis") != "Z" or coordinates.get("space") != "local"
+                or type(coordinates.get("wkid")) is not int or coordinates["wkid"] != 0
+                or coordinates.get("origin_explicit") is not False):
+            raise ValueError("Missing or inconsistent local model coordinates")
+        origin = coordinates.get("origin")
+        if (not isinstance(origin, list) or len(origin) != 3
+                or any(type(v) not in (int, float) or v != 0 for v in origin)):
+            raise ValueError("Inspection must preserve a zero, nonexplicit origin")
+        fidelity = report.get("fidelity")
+        if (not isinstance(fidelity, dict) or fidelity.get("validation_passed") is not True
+                or fidelity.get("gdb_written") is not False or fidelity.get("gdb_readback_verified") is not False
+                or type(fidelity.get("strict_validation_passed")) is not bool
+                or type(fidelity.get("compatibility_adjustments")) is not bool
+                or fidelity["strict_validation_passed"] != (request.profile == "strict" and not fidelity["compatibility_adjustments"])):
+            raise ValueError("Invalid model validation or GDB fidelity claims")
+        values = report.get("counts")
+        names = ("meshes", "triangles", "corner_vertices", "materials", "textures", "texture_bytes")
+        if (not isinstance(values, dict) or any(type(values.get(key)) is not int or values[key] < 0 for key in names)
+                or any(values[key] == 0 for key in names[:4])
+                or values["triangles"] < values["meshes"] or values["corner_vertices"] < 3 * values["meshes"]
+                or bool(values["textures"]) != bool(values["texture_bytes"])
+                or values["texture_bytes"] < values["textures"]):
+            raise ValueError("Invalid inspection geometry/material/texture counts")
+        counts = InspectionCounts(*(values[key] for key in names))
+        bounds = report.get("geometry_bounds")
+        if not isinstance(bounds, dict):
+            raise ValueError("Missing inspection geometry bounds")
+        for key in ("min", "max"):
+            values = bounds.get(key)
+            if (not isinstance(values, list) or len(values) != 3
+                    or any(type(v) not in (int, float) or not math.isfinite(v) for v in values)):
+                raise ValueError("Invalid inspection geometry bounds")
+        if any(a > b for a, b in zip(bounds["min"], bounds["max"])):
+            raise ValueError("Reversed inspection geometry bounds")
+        return counts, InspectionBounds(tuple(float(v) for v in bounds["min"]), tuple(float(v) for v in bounds["max"]))
 
     def convert(self, request: ConversionRequest, *, on_message: Optional[Callable[[Message], None]] = None) -> ConversionResult:
         """Convert into a NEW GDB and require a matching closed/reopened report.
@@ -480,9 +682,7 @@ class Engine:
         output = report.get("output")
         if not isinstance(output, str) or not Path(output).is_absolute() or Path(output).resolve() != request.output_gdb:
             raise ValueError("Report output does not match the requested GDB")
-        source = report.get("source")
-        if not isinstance(source, str) or not Path(source).is_absolute() or Path(source).resolve() != request.input_fbx:
-            raise ValueError("Report source does not match the input model")
+        _verify_source_policy(report, request, request.input_fbx, diagnostics)
         _check_path_links(request.output_gdb)
         if not request.output_gdb.is_dir():
             raise ValueError("Output GDB directory is missing or replaced by a link")
@@ -523,18 +723,4 @@ class Engine:
             raise ValueError("Report origin does not match the requested X, Y, Z")
         if "reader_diagnostics" not in report or any(d.severity == "error" for d in diagnostics):
             raise ValueError("Missing reader diagnostics or a success report containing errors")
-        if request.missing_textures == "error" and any(d.code == "MISSING_TEXTURE_FALLBACK" for d in diagnostics):
-            raise ValueError("Missing-texture fallback contradicts the requested policy")
-        if request.input_fbx.suffix.lower() == ".max":
-            entries = [d for d in diagnostics if d.code == "MAX_ADAPTER_PROVENANCE"]
-            if len(entries) != 1:
-                raise ValueError("Missing or duplicate MAX provenance")
-            provenance = _json(entries[0].message)
-            if (type(provenance.get("adapter_protocol_version")) is not int
-                    or provenance["adapter_protocol_version"] != 1 or provenance.get("engine_version") != __version__
-                    or type(provenance.get("frame")) is not int or provenance["frame"] != request.max_frame
-                    or provenance.get("status") != "exported"
-                    or _path(provenance.get("source"), "MAX source") != request.input_fbx
-                    or _path(provenance.get("batch_executable"), "MAX runtime") != request.max_batch):
-                raise ValueError("MAX provenance does not match the requested runtime/frame/source")
         return count

@@ -49,45 +49,54 @@ public static class ReportVerifier
                 Require(double.IsFinite(value) && value == double.Parse(expectedOrigin[i], CultureInfo.InvariantCulture),
                     "报告中的原点 X、Y、Z 与本次设置不一致。");
             }
-            var diagnostics = new List<string>();
-            var maxProvenanceCount = 0;
-            Require(root.TryGetProperty("reader_diagnostics", out _), "报告缺少模型诊断列表。");
-            foreach (var name in new[] { "diagnostics", "reader_diagnostics" })
-            {
-                if (!root.TryGetProperty(name, out var entries)) continue;
-                Require(entries.ValueKind == JsonValueKind.Array, "报告中的模型诊断格式无效。");
-                foreach (var entry in entries.EnumerateArray())
-                {
-                    var severity = Text(entry, "severity");
-                    var code = Text(entry, "code");
-                    var message = Text(entry, "message");
-                    Require(code.Length > 0, "报告中的模型诊断代码为空。");
-                    Require(severity is "info" or "warning" or "error", "报告中的模型诊断级别无效。");
-                    if (entry.TryGetProperty("context", out var context))
-                        Require(context.ValueKind == JsonValueKind.String, "报告中的模型诊断上下文格式无效。");
-                    Require(severity != "error", "成功报告仍包含模型错误，不能确认转换成功。");
-                    Require(settings.MissingTexturePolicy != "error" || code != "MISSING_TEXTURE_FALLBACK", "要求完整贴图时不能接受缺图回退报告。");
-                    diagnostics.Add($"[{code}] {message}");
-                    if (code == "MAX_ADAPTER_PROVENANCE" && string.Equals(Path.GetExtension(settings.InputPath), ".max", StringComparison.OrdinalIgnoreCase))
-                    {
-                        ++maxProvenanceCount;
-                        using var manifest = JsonDocument.Parse(message);
-                        var value = manifest.RootElement;
-                        RequireUniqueFields(value);
-                        Require(value.GetProperty("adapter_protocol_version").GetInt32() == 1 && Text(value, "engine_version") == ProductInfo.Version &&
-                            Text(value, "status") == "exported" && value.GetProperty("frame").GetInt32() == int.Parse(settings.MaxFrame, CultureInfo.InvariantCulture) &&
-                            PathRules.Equal(Text(value, "source"), settings.InputPath) && PathRules.Equal(Text(value, "batch_executable"), settings.MaxBatchPath),
-                            "MAX 来源、采样帧或运行环境与本次请求不一致。");
-                    }
-                }
-            }
-            if (string.Equals(Path.GetExtension(settings.InputPath), ".max", StringComparison.OrdinalIgnoreCase))
-                Require(maxProvenanceCount == 1, "报告缺少唯一的 MAX 来源与采样帧记录。");
+            var diagnostics = VerifyDiagnostics(root, settings, "reader_diagnostics", out _);
             return new ConversionReport(backend, ProductInfo.Version, PathRules.Normalize(output), settings.FeatureClass, featureCount, diagnostics)
                 { Summary = ReportSummaryFormatter.Parse(json) };
         }
         catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException or FormatException or OverflowException or ArgumentException)
         { throw new InvalidDataException("转换报告缺少必需信息或格式无效，无法确认成功。" + ex.Message, ex); }
+    }
+
+    internal static IReadOnlyList<string> VerifyDiagnostics(JsonElement root, ConversionSettings settings, string requiredList, out int warningCount)
+    {
+        var diagnostics = new List<string>();
+        var maxProvenanceCount = 0;
+        warningCount = 0;
+        Require(root.TryGetProperty(requiredList, out _), "报告缺少模型诊断列表。");
+        foreach (var name in new[] { "diagnostics", "reader_diagnostics" })
+        {
+            if (!root.TryGetProperty(name, out var entries)) continue;
+            Require(entries.ValueKind == JsonValueKind.Array, "报告中的模型诊断格式无效。");
+            foreach (var entry in entries.EnumerateArray())
+            {
+                var severity = Text(entry, "severity");
+                var code = Text(entry, "code");
+                var message = Text(entry, "message");
+                Require(code.Length > 0, "报告中的模型诊断代码为空。");
+                Require(severity is "info" or "warning" or "error", "报告中的模型诊断级别无效。");
+                if (entry.TryGetProperty("context", out var context))
+                    Require(context.ValueKind == JsonValueKind.String, "报告中的模型诊断上下文格式无效。");
+                Require(severity != "error", "成功报告仍包含模型错误，不能确认转换成功。");
+                Require(settings.MissingTexturePolicy != "error" || code != "MISSING_TEXTURE_FALLBACK", "要求完整贴图时不能接受缺图回退报告。");
+                if (severity == "warning") ++warningCount;
+                diagnostics.Add($"[{code}] {message}");
+                if (code == "MAX_ADAPTER_PROVENANCE" && string.Equals(Path.GetExtension(settings.InputPath), ".max", StringComparison.OrdinalIgnoreCase))
+                {
+                    ++maxProvenanceCount;
+                    using var manifest = JsonDocument.Parse(message);
+                    var value = manifest.RootElement;
+                    RequireUniqueFields(value);
+                    Require(value.GetProperty("adapter_protocol_version").GetInt32() == 1 && Text(value, "engine_version") == ProductInfo.Version &&
+                        Text(value, "status") == "exported" && value.GetProperty("frame").GetInt32() == int.Parse(settings.MaxFrame, CultureInfo.InvariantCulture) &&
+                        Path.IsPathFullyQualified(Text(value, "source")) && Path.IsPathFullyQualified(Text(value, "batch_executable")) &&
+                        PathRules.Equal(Text(value, "source"), settings.InputPath) && PathRules.Equal(Text(value, "batch_executable"), settings.MaxBatchPath),
+                        "MAX 来源、采样帧或运行环境与本次请求不一致。");
+                }
+            }
+        }
+        if (string.Equals(Path.GetExtension(settings.InputPath), ".max", StringComparison.OrdinalIgnoreCase))
+            Require(maxProvenanceCount == 1, "报告缺少唯一的 MAX 来源与采样帧记录。");
+        return diagnostics;
     }
 
     internal static string ExpectedBackend(string backend) => backend switch

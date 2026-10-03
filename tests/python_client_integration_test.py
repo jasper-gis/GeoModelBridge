@@ -1,4 +1,4 @@
-"""Exercise the INSTALLED Python library through real CLI/native GDB conversions."""
+"""Exercise the INSTALLED Python library through real inspections and GDB conversions."""
 import argparse
 from dataclasses import replace
 import hashlib
@@ -18,7 +18,8 @@ install, work = args.install_dir.resolve(), args.work.resolve()
 work.mkdir(parents=True, exist_ok=False)
 sys.path.insert(0, str(install / "python"))
 import geomodelbridge
-from geomodelbridge import CallbackError, ConversionRequest, ConversionError, Engine, ValidationError
+from geomodelbridge import (CallbackError, ConversionRequest, ConversionError, Engine,
+                            InspectionError, InspectionRequest, ValidationError)
 assert Path(geomodelbridge.__file__).resolve().is_relative_to(install / "python")
 assert "arcpy" not in sys.modules
 engine = Engine(install / "bin" / ("geomodelbridge.exe" if os.name == "nt" else "geomodelbridge"))
@@ -134,10 +135,125 @@ for profile in ('strict', 'gis-static'):
         assert not invalid_request.output_gdb.exists() and error.report_path.is_file()
         assert invalid_image.is_dir() and not list(invalid_image.iterdir())
     results.append('invalid-image-' + profile)
+
+# Inspection requires only the matching CLI. Its reports have their own fresh
+# destinations and never create GDBs, even with an explicitly unavailable writer.
+inspection_dir = work / "模型检查报告"
+inspection_dir.mkdir()
+unavailable_writer = work / ("unavailable-writer.exe" if os.name == "nt" else "unavailable-writer")
+assert not unavailable_writer.exists()
+inspection_engine = Engine(engine.executable, writer=unavailable_writer)
+inspect_cases = []
+local_coordinates = dict(unit="meter", up_axis="Z", space="local", wkid=0,
+                         origin=[0, 0, 0], origin_explicit=False)
+
+def verify_inspection(result, minimum, maximum, *, textured=True):
+    report = json.loads(result.report_path.read_text(encoding="utf-8"))
+    assert report["status"] == "inspected" and report["backend"] == result.backend == "none"
+    assert report["version"] == result.version == geomodelbridge.__version__
+    assert Path(report["source"]) == result.request.input_model
+    assert report["coordinates"] == local_coordinates
+    assert report["conversion_profile"] == result.request.profile
+    assert report["missing_texture_policy"] == result.request.missing_textures
+    assert report["fidelity"]["validation_passed"] is True
+    assert report["fidelity"]["gdb_written"] is False
+    assert report["fidelity"]["gdb_readback_verified"] is False
+    assert result.counts.meshes == result.counts.materials == 1
+    assert result.counts.triangles == 2 and result.counts.corner_vertices == 6
+    assert result.counts.textures == (1 if textured else 0)
+    assert result.counts.texture_bytes == (len((source_dir / "checker.png").read_bytes()) if textured else 0)
+    assert tuple(report["geometry_bounds"]["min"]) == result.bounds.minimum == minimum
+    assert tuple(report["geometry_bounds"]["max"]) == result.bounds.maximum == maximum
+    assert "output" not in report and "verification" not in report
+    assert not any(d.severity == "error" for d in result.diagnostics)
+    inspect_cases.append(result.report_path.stem)
+    return report
+
+expected_bounds = {
+    "fbx": ((0, 0, 0), (2, 3, 0)),
+    "obj": ((0, 0, 0), (2, 2, 0)),
+    "glb": ((10, -2, 1), (12, 1, 1)),
+    "gltf": ((10, -2, 1), (12, 1, 1)),
+    "wrl": ((10, -2, 1), (12, 1, 1)),
+    "dae": ((10, 20, 30), (12, 23, 30)),
+}
+for extension, bounds in expected_bounds.items():
+    inspection_request = InspectionRequest(source_dir / ("textured_quad." + extension),
+                                            inspection_dir / (extension + ".json"))
+    inspection_events = []
+    inspected = inspection_engine.inspect(inspection_request, on_message=inspection_events.append)
+    verify_inspection(inspected, *bounds)
+    assert inspection_events[-1].code == "INSPECTED"
+    assert not any(event.code == "VERIFIED" for event in inspection_events)
+
+obj_inspection = InspectionRequest(source_dir / "textured_quad.obj", inspection_dir / "obj-y-up-centimeters.json",
+                                   obj_up_axis="Y", obj_unit_meters=0.01)
+verify_inspection(inspection_engine.inspect(obj_inspection), (0, 0, 0), (0.02, 0, 0.02))
+
+# Existing bytes with a damaged PNG signature must be rejected, never treated
+# as an absent image. Full image decoding remains a separate writer-side check.
+corrupt_image = source_dir / "损坏图片.png"
+corrupt_image.write_bytes(b"\0" + (source_dir / "checker.png").read_bytes()[1:])
+corrupt_source = source_dir / "损坏贴图.fbx"
+corrupt_source.write_text(base.replace("checker.png", corrupt_image.name), encoding="utf-8")
+for path in (corrupt_image, corrupt_source):
+    hashes[path] = hashlib.sha256(path.read_bytes()).hexdigest()
+
+for profile in ("strict", "gis-static"):
+    fallback_request = InspectionRequest(source_dir / "missing_texture.fbx",
+                                         inspection_dir / ("missing-fallback-" + profile + ".json"), profile=profile)
+    fallback = inspection_engine.inspect(fallback_request)
+    verify_inspection(fallback, *expected_bounds["fbx"], textured=False)
+    assert any(d.code == "MISSING_TEXTURE_FALLBACK" for d in fallback.diagnostics)
+    for input_model, label, policy, expected_code in (
+        (fallback_request.input_model, "missing-required", "error", "MISSING_TEXTURE"),
+        (invalid_source, "invalid-image", "material-color", "TEXTURE_READ_ERROR"),
+        (corrupt_source, "corrupt-png-signature", "material-color", "UNSUPPORTED_TEXTURE_FORMAT"),
+    ):
+        rejected = InspectionRequest(input_model, inspection_dir / (label + "-" + profile + ".json"),
+                                     profile=profile, missing_textures=policy)
+        try:
+            inspection_engine.inspect(rejected)
+            raise AssertionError("Inspection accepted an invalid texture resource")
+        except InspectionError as error:
+            assert error.code == "PROCESS_FAILED" and error.exit_code == 3
+            assert any(d.code == expected_code for d in error.diagnostics)
+            assert not any(d.code == "MISSING_TEXTURE_FALLBACK" for d in error.diagnostics)
+            assert error.report_path == rejected.report_path and error.report_path.is_file()
+            assert json.loads(error.report_path.read_text(encoding="utf-8"))["coordinates"] == local_coordinates
+        inspect_cases.append(label + "-" + profile)
+
+existing_report = inspection_dir / "fbx.json"
+report_bytes = existing_report.read_bytes()
+try:
+    inspection_engine.inspect(InspectionRequest(source_dir / "textured_quad.fbx", existing_report))
+    raise AssertionError("Inspection overwrote an existing report")
+except ValidationError as error:
+    assert error.code == "PATH_EXISTS"
+assert existing_report.read_bytes() == report_bytes
+inspect_cases.append("existing-inspection-report-preserved")
+
+def fail_inspected_message(event):
+    if event.code == "INSPECTED":
+        raise RuntimeError("simulated inspection host message failure")
+
+try:
+    inspection_engine.inspect(InspectionRequest(source_dir / "textured_quad.fbx",
+                              inspection_dir / "verified-inspection-callback-failure.json"),
+                              on_message=fail_inspected_message)
+    raise AssertionError("Inspection callback failure disappeared")
+except CallbackError as error:
+    assert error.exit_code == 0 and error.result is not None
+    assert error.event.code == "INSPECTED"
+    verify_inspection(error.result, *expected_bounds["fbx"])
+assert all(path.is_file() and path.suffix == ".json" for path in inspection_dir.iterdir())
+assert not unavailable_writer.exists()
 assert all(hashlib.sha256(path.read_bytes()).hexdigest() == digest for path, digest in hashes.items())
 assert "arcpy" not in sys.modules
 assessment = dict(version=geomodelbridge.__version__, status="passed", python=sys.version,
-                  cases=results, installed_client=True, arcpy_imported=False, input_unchanged=True,
+                  cases=results, inspect_cases=inspect_cases, inspection_without_writer=True,
+                  installed_client=True, arcpy_imported=False, input_unchanged=True,
                   copied_gdb_readbacks=len(verified_gdbs), graphical_acceptance="not_performed", atbx_execution="not_performed")
 (work / "assessment.json").write_text(json.dumps(assessment, ensure_ascii=False, indent=2), encoding="utf-8")
-print(f"PASS installed Python client: {len(results)} cases, {len(verified_gdbs)} GDBs independently copied and reopened")
+print(f"PASS installed Python client: {len(results)} conversion cases, {len(inspect_cases)} inspection cases, "
+      f"{len(verified_gdbs)} GDBs independently copied and reopened")

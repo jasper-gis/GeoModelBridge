@@ -1,0 +1,93 @@
+{
+  "status": "windows_and_ubuntu_sources_match",
+  "files": [
+    {
+      "path": "apps/GeoModelBridge.Gui.Core/ConversionCommand.cs",
+      "sha256": "692b60c0be1745431da2f9b559454f81abf903a4c6a99d88286ddca745a64197"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui.Core/ConversionValidator.cs",
+      "sha256": "30351664ce400878754abaeae746990d5cf94b86d5c394c4577fe150f24aee80"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui.Core/EngineService.cs",
+      "sha256": "ac1484248d72b7782e9e2a6105d604caa1028c0300af1afbdd5eb8b2b4999be1"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui.Core/InspectionCommand.cs",
+      "sha256": "b666af1a23fdaf6ca7d6949d4ce4ab4290eb1069b9240576a6e04c929e8435b0"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui.Core/InspectionReportVerifier.cs",
+      "sha256": "dd99fb51891fd8b4667254c75d4cf239be09d547ad5db806ebf3fce7c2cd3dce"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui.Core/InspectionSettings.cs",
+      "sha256": "a06485f16af04cb54b5e197119ea23076c0af5dd0d336476453f996e5953267d"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui.Core/ReportVerifier.cs",
+      "sha256": "9c27554af20b7b126a067bf845e0258cbea77162ce7c807301696c4caa8cc16d"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui.Tests/InspectionTests.cs",
+      "sha256": "b321aff1a37fb71c9301a71a258fe4b532ec1c34aaebd24bbc6d5ffd585afe06"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui.Tests/Program.cs",
+      "sha256": "439e9c24a5ee72bab3db904329211eb5d1d1348aef5c3394482ceb02d4489807"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui/MainWindow.xaml",
+      "sha256": "7db6e4d667a4dd8b576deb070f76e84062caaaff060d1a5ee10aaf24162a71c8"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui/MainWindow.xaml.cs",
+      "sha256": "fbda97a73ff9989414583f8d09754158e954e5fdb27db48b6545921b6be0b1a4"
+    },
+    {
+      "path": "backends/native-filegdb/main.cpp",
+      "sha256": "88ed843db8ab762b71a86748aeb439256a80a2956ab37cf47c4b41ae842d2753"
+    },
+    {
+      "path": "include/gmb/scene.hpp",
+      "sha256": "204e8326b79f1e173773a8db6f23328fcb0f36125741f282c87a5d56269c4e54"
+    },
+    {
+      "path": "python/geomodelbridge/__init__.py",
+      "sha256": "b292418fe131b6d62b5fa5dfa4c62bab8fbc4a9d45301e454361bfc992e553f7"
+    },
+    {
+      "path": "python/geomodelbridge/client.py",
+      "sha256": "98e1afce7e388e6433ab6b8076961124e75751f3f9e5f26d97b14189730458c6"
+    },
+    {
+      "path": "src/bundle.cpp",
+      "sha256": "9955c919297e2e12f236265bf72d72c2c6aef31cc44df7e7ceba4fdce5608da7"
+    },
+    {
+      "path": "src/core.cpp",
+      "sha256": "697e44fe6425a7bc628298e4b16d5dee31ebeebd1d10c1c693e54ec2f1c45877"
+    },
+    {
+      "path": "tests/core_tests.cpp",
+      "sha256": "3274ea3686aa5b63fad98c5f3706de147879858d944173c81f3728bca021bd96"
+    },
+    {
+      "path": "tests/glb_integration_test.py",
+      "sha256": "5374c2544f40e2882ee71dc06c68d8f5b61d396bed27aa53fed66a73b1c450f8"
+    },
+    {
+      "path": "tests/native_build_layout_test.py",
+      "sha256": "281e217dd4ae5e047a6d7cfcd89e4c2be106bf51c370d0ada4f02439dba461b2"
+    },
+    {
+      "path": "tests/python_client_integration_test.py",
+      "sha256": "d586fb7126f32e1f13260098df40e3210f2c2ff6d0b493fd39efe3f790985114"
+    },
+    {
+      "path": "tests/python_client_test.py",
+      "sha256": "fff9e1ff9cd470d55200a12f755f0940992c143bf8d321c531289907d20b4318"
+    }
+  ]
+}

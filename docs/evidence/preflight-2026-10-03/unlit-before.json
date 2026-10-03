@@ -1,0 +1,53 @@
+{
+  "backend": "none",
+  "conversion_profile": "strict",
+  "coordinate_operation": "Source units/axes and static node transforms baked; optional origin translation. No CRS reprojection.",
+  "coordinates": {
+    "origin": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "origin_explicit": false,
+    "space": "local",
+    "unit": "meter",
+    "up_axis": "Z",
+    "wkid": 0
+  },
+  "counts": {
+    "corner_vertices": 6,
+    "materials": 1,
+    "meshes": 1,
+    "texture_bytes": 75,
+    "textures": 1,
+    "triangles": 2
+  },
+  "diagnostics": [
+    {
+      "code": "GLTF_COORDINATE_CONVENTION",
+      "context": "scene",
+      "message": "glTF right-handed Y-up metre coordinates were converted to right-handed Z-up metres; node transforms are baked once.",
+      "severity": "warning"
+    },
+    {
+      "code": "UNLIT_SHADING_MAPPED",
+      "context": "material:Unlit checker",
+      "message": "glTF unlit base color is mapped to FileGDB diffuse material; the target scene may light it differently because the shape material has no unlit flag.",
+      "severity": "warning"
+    }
+  ],
+  "fidelity": {
+    "compatibility_adjustments": false,
+    "gdb_readback_verified": false,
+    "gdb_written": false,
+    "note": "Prepared/inspected geometry is not evidence of successful FileGDB conversion. Writer reports contain database verification results.",
+    "strict_validation_passed": true,
+    "validation_passed": true,
+    "visual_acceptance": "pending"
+  },
+  "missing_texture_policy": "material-color",
+  "schema_version": 1,
+  "source": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\tests\\fixtures\\textured_quad.glb",
+  "status": "inspected",
+  "version": "0.6.0"
+}

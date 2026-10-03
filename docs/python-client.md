@@ -78,12 +78,40 @@ python D:\Tools\GeoModelBridge\python\examples\convert_fbx.py --engine D:\Tools\
 | `engine.validate(request)` | 不执行程序、不创建目录；返回路径绝对化后的新请求，原请求不变 |
 | `engine.command(request)` | 返回已验证的参数元组，可用于日志或预览，不能拼接为 shell 命令 |
 | `engine.convert(request, on_message=None)` | 同步调用 CLI，完成严格报告核对后返回 `ConversionResult` |
+| `engine.validate_inspection(request)` | 校验模型检查参数，固定绝对路径和贴图目录快照，不启动程序 |
+| `engine.inspection_command(request)` | 返回检查模型所需的已验证参数元组 |
+| `engine.inspect(request, on_message=None)` | 只核对 Python / CLI 版本，读取模型并核验新报告，返回 `InspectionResult`；不探测或运行 writer |
 
 `ConversionRequest` 必填 `input_fbx`、`output_gdb`、整数 `wkid`、三个有限数值 `origin`。可选 `feature_class`、`profile`、`missing_textures`、`texture_dirs` 和 `report_path`。不会把字符串 WKID 或布尔值默认为有效整数；工具箱脚本应显式转换类型。要素类名称使用字母开头、最长 64 位的 ASCII 字母 / 数字 / 下划线。输出后缀为小写 `.gdb`。
 
 `ConversionResult` 包含规范化 `request`、`output_gdb`、`feature_class_path`、`report_path`、`feature_count`、完整 `diagnostics`、`stdout_tail`、`stderr_tail`、`stdout_truncated`、`stderr_truncated`、`version` 和 `backend`。要素类路径供 GIS 使用；它不是 GDB 目录中的普通文件，不能用 `Path.is_file()` 判断要素类存在。
 
 库显式传入 writer，不读取 `GMB_NATIVE_WRITER`，避免外部环境改变实际使用的程序。需要其他 writer 位置时使用 `Engine(..., writer=...)`，仍要求版本匹配。库不修改当前工作目录、环境变量、`arcpy.env` 或地图状态；导入本身不会运行 EXE。
+
+## 模型检查
+
+```python
+from geomodelbridge import Engine, InspectionRequest
+
+engine = Engine(release / "bin" / "geomodelbridge.exe")  # Ubuntu 文件名无 .exe
+inspection = engine.inspect(InspectionRequest(
+    input_model=r"D:\Models\model.dae",
+    report_path=r"D:\Results\new-inspection.json",  # 必须不存在；父目录已存在
+    profile="gis-static",
+))
+print(inspection.counts.triangles, inspection.counts.texture_bytes)
+print(inspection.bounds.minimum, inspection.bounds.maximum)
+for diagnostic in inspection.diagnostics:
+    print(diagnostic.code, diagnostic.message)
+```
+
+`InspectionRequest` 必填 `input_model`、`report_path`；可选 `profile`（默认 `strict`）、`missing_textures`、`texture_dirs`、`obj_up_axis`、`obj_unit_meters`、`max_batch`、`max_frame`、`max_timeout`，含义与转换一致。MAX 仍需相应运行环境。报告不能覆盖现有文件，也不能位于 GDB 内。模型检查不要求 GDB、要素类、WKID 或原点，可以使用只构建核心的 CLI；不必先调用会探测 writer 的 `engine.check()`。
+
+`InspectionResult` 保留规范化 `request`、`report_path`、`counts`、`bounds`、完整 `diagnostics`、两路日志尾部及截断标记、`version`，`backend="none"`。不可变的 `InspectionCounts` 包含 `meshes`、`triangles`、`corner_vertices`、`materials`、`textures`、`texture_bytes`；`InspectionBounds` 包含三个数值组成的 `minimum` 与 `maximum`。范围来自保留三角形引用的角点，已应用源单位、轴向和静态节点变换，统一为右手 Z-up 米制；不含用户原点平移，WKID 为 0，不代表经纬度或地理定位。它不把未引用的角点计入范围，但这些角点仍须通过完整验证。
+
+客户端严格核对 `inspected` 状态、来源、版本、读取策略、局部坐标、有效计数、有限且有序的包围盒、诊断与 `gdb_written=false`。检查通过只表示模型读取和共享场景校验通过；writer 阶段还会完整解码图片、检查原生存储约束并实际写入/重开 GDB。不能用检查结果代替转换成功或外观验收。
+
+检查阶段消息为 `CHECKING_ENGINE`、`INSPECTING`、`INSPECTED`，诊断仍按代码汇总。CLI 非零退出或报告无法核验时抛出 `InspectionError`（继承 `GeoModelBridgeError`）；引擎不可用、版本、启动或日志读取失败使用 `GeoModelBridgeError`，参数错误仍为 `ValidationError`。有界日志和报告上限与转换相同。核验完成后的消息失败通过 `CallbackError.result` 保留 `InspectionResult`，直接使用已有结果，不要重试同名报告。转换接口及 `ConversionResult` 保持兼容。
 
 ## 消息与错误
 
@@ -141,7 +169,7 @@ except CallbackError as error:
 
 ```powershell
 python tests/python_client_test.py
-python tests/python_client_integration_test.py --install-dir releases/V0.2.2 --work artifacts/new-python-client-check
+python tests/python_client_integration_test.py --install-dir dist --work artifacts/new-python-client-check
 ```
 
-第一项在 CTest 中自动运行；第二项使用安装后的库和真实写入端，测试中文 / 空格路径、贴图、缺图策略、法线兼容、已有成果保护，以及成功回调异常恢复，并对四份 GDB 分别复制后独立回读。测试目录必须是新路径。Windows / Ubuntu CI 都已配置此入口；托管运行结果以 GitHub Actions 实际状态为准。
+第一项在 CTest 中自动运行；第二项使用安装后的库和真实写入端，测试中文 / 空格路径、六种输入格式、贴图、缺图策略、法线兼容、已有成果保护，以及成功回调异常恢复，并对九份 GDB 分别复制后独立回读。模型检查另覆盖六种格式、OBJ 单位/轴向、缺图与损坏图片、已有报告保护和回调异常，显式配置不存在的 writer 验证无后端依赖。测试目录必须是新路径。Windows / Ubuntu CI 都已配置此入口；托管运行结果以 GitHub Actions 实际状态为准。

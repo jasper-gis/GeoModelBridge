@@ -3,6 +3,7 @@
 #include <nlohmann/json.hpp>
 #include <chrono>
 #include <algorithm>
+#include <cmath>
 #include <fstream>
 #include <random>
 #include <set>
@@ -23,10 +24,24 @@ json diagnostic_json(const std::vector<Diagnostic>& ds) {
     for(const auto& d:ds) a.push_back({{"severity",d.severity==Severity::error?"error":"warning"},{"code",d.code},{"message",d.message},{"context",d.context}});
     return a;
 }
-bool compatibility_adjustments(const std::vector<Diagnostic>& ds) {
-    return std::any_of(ds.begin(), ds.end(), [](const auto& d) {
-        return d.code == "STATIC_POSE_USED" || d.code == "MATERIAL_CHANNEL_OMITTED" || d.code == "DEGENERATE_TRIANGLES_REMOVED" || d.code == "JPEG_CONTAINER_NORMALIZED" || d.code == "MISSING_TEXTURE_FALLBACK" || d.code == "NORMALS_REPAIRED" || d.code == "DEGENERATE_NORMALS_DISCARDED";
-    });
+json geometry_bounds(const Scene& scene, bool valid) {
+    if (!valid) return nullptr;
+    Vec3 low, high;
+    bool found = false;
+    // Positions are already normalized and placed. Only triangle-referenced
+    // corners contribute; unused vertices and provenance matrices do not.
+    for (const auto& mesh : scene.meshes) for (const auto& triangle : mesh.triangles)
+        for (const auto index : triangle.indices) {
+            if (index >= mesh.vertices.size()) return nullptr;
+            const auto p = mesh.vertices[index].position;
+            if (!std::isfinite(p.x) || !std::isfinite(p.y) || !std::isfinite(p.z)) return nullptr;
+            if (!found) { low = high = p; found = true; }
+            else {
+                low = {(std::min)(low.x,p.x), (std::min)(low.y,p.y), (std::min)(low.z,p.z)};
+                high = {(std::max)(high.x,p.x), (std::max)(high.y,p.y), (std::max)(high.z,p.z)};
+            }
+        }
+    return found ? json{{"min",vec(low)},{"max",vec(high)}} : json(nullptr);
 }
 fs::path unique_sibling(const fs::path& destination) {
     std::random_device rnd;
@@ -170,14 +185,16 @@ void write_report(const Scene& scene,const std::vector<Diagnostic>& ds,const std
     std::size_t vertices=0,triangles=0,texture_bytes=0;
     for(const auto& m:scene.meshes) {vertices+=m.vertices.size();triangles+=m.triangles.size();}
     for(const auto& t:scene.textures) texture_bytes+=t.bytes.size();
+    const bool valid=!has_errors(ds), adjustments=has_compatibility_adjustments(ds);
     json j={{"schema_version",1},{"version",version},{"status",status},{"backend",backend},{"source",scene.source},
         {"conversion_profile",scene.conversion_profile},
         {"missing_texture_policy",scene.missing_texture_policy},
         {"coordinates",coordinates_json(scene.coordinates)},
+        {"geometry_bounds",geometry_bounds(scene,valid)},
         {"counts",{{"meshes",scene.meshes.size()},{"triangles",triangles},{"corner_vertices",vertices},{"materials",scene.materials.size()},
             {"textures",scene.textures.size()},{"texture_bytes",texture_bytes}}},
-        {"fidelity",{{"validation_passed",!has_errors(ds)},{"strict_validation_passed",scene.conversion_profile=="strict"&&!has_errors(ds)&&!compatibility_adjustments(ds)},
-            {"compatibility_adjustments",compatibility_adjustments(ds)},{"gdb_written",false},{"gdb_readback_verified",false},{"visual_acceptance","pending"},
+        {"fidelity",{{"validation_passed",valid},{"strict_validation_passed",scene.conversion_profile=="strict"&&valid&&!adjustments},
+            {"compatibility_adjustments",adjustments},{"gdb_written",false},{"gdb_readback_verified",false},{"visual_acceptance","pending"},
             {"note","Prepared/inspected geometry is not evidence of successful FileGDB conversion. Writer reports contain database verification results."}}},
         {"coordinate_operation","Source units/axes and static node transforms baked; optional origin translation. No CRS reprojection."},
         {"diagnostics",diagnostic_json(ds)}};

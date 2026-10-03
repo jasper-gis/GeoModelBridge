@@ -51,7 +51,7 @@ V0.1.10 的报告保留 `coordinates`，三个调用入口核对目标 WKID 和�
 - 后端 `platform_windows.cpp` / `platform_linux.cpp` 负责 UTF-8 与 SDK wstring 转换、路径范围及平台运行时。Linux 使用 wchar32，不依赖系统 locale 的 filesystem wstring 转换。
 - `include/gmb/output.hpp` 与 `src/platform_files_windows.cpp` / `src/platform_files_linux.cpp` 供核心和原生后端共用，负责链接检查、独占文件创建和禁止覆盖的提交；不依赖 FileGDB SDK。两种 CMake 构建入口都编译同一份实现。
 - `images.cpp` 共享容器检查（含 PNG chunk CRC 与完整 IEND）；`images_png.cpp` / `images_jpeg.cpp` 在两平台共用严格 libpng/libjpeg 解码与扫描校验并拒绝解码恢复。PNG 为直通 RGBA8，不做 Gamma/ICC 或预乘；JPEG 检查后保留原字节。
-- 根 CMake 的 `GMB_BUILD_NATIVE` 可构建完整链路；单独 native CMake 入口仍保留。Python 构建、下载、验证、样例和打包共用 `scripts/gmb_platform.py` 的平台布局。
+- 根 CMake 是唯一构建入口，`GMB_BUILD_NATIVE` 默认构建完整链路；显式关闭后可仅构建核心。Python 构建、下载、验证、样例和打包共用 `scripts/gmb_platform.py` 的平台布局。
 - Linux install RPATH 只保留 `$ORIGIN`，两份 SDK 共享库可随目录移动；未附带 SDK 运行库时显式配置 `LD_LIBRARY_PATH`。从 PATH 启动的 CLI 通过 `/proc/self/exe` 找到相邻 writer。
 - Windows 与 Ubuntu CI 都运行 CTest、真实 GDB 集成、独立目录部署和 14 个完整样例；WPF 服务测试由 Windows 执行。维护 master 共享代码，平台适配修改必须回归两侧。
 

@@ -58,6 +58,9 @@ with tempfile.TemporaryDirectory(prefix="gmb-build-") as directory:
         assert report["status"] == "written_and_readback_verified"
         assert report["source"] == str(source)
         assert report["coordinates"]["origin"] == [500000, 3000000, 100]
+        if extension in (".glb", ".gltf"):
+            assert any(d["code"] == "UNLIT_SHADING_MAPPED" for d in report["reader_diagnostics"])
+            assert report["compatibility_adjustments"] is True
         assert any(check["textured_patches"] > 0 for check in report["verification"]["checks"])
         shutil.copytree(work / (label + ".gdb"), work / (label + "-copy.gdb"))
         run(writer, "--verify-gdb", work / (label + "-copy.gdb"), "--expected-report", report_path,

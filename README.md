@@ -29,6 +29,7 @@ V0.6.0 新增 Windows 可选 MAX Batch 适配器，CLI、GUI 和 Python 均可�
 **研发接入：** [统一构建入口](docs/build-and-release.md) · [纯命令行与连续调用 EXE](docs/command-line.md) · [FileGDB API 调用链](docs/filegdb-api.md)。项目只保留根目录一个 `CMakeLists.txt`；默认一次构建 CLI、原生 writer 和 SDK 运行库。源码下载不包含 EXE / DLL，先下载固定 SDK 再从根目录构建。
 
 - **保留模型表达**：处理漫反射颜色、PNG/JPEG 纹理、Alpha、UV 和法线角点边界，节点变换只烘焙一次。
+- **先检查再定位**：GUI“检查模型”和 Python `engine.inspect()` 可输出网格、三角形、材质、贴图数量及本地米制包围盒，无需填写 WKID、原点或安装 FileGDB 写入端。
 - **写入后核验**：生成真实 GDB，关闭并重开，核对几何、材质、纹理和空间参考后才报告成功。
 - **缺图也能继续**：缺失的图片默认回退为材质颜色和标量透明度，保留警告及原路径；有效贴图照常写入。
 - **共用转换链路**：两平台使用同一套 C++17 核心、Scene Bundle 协议和报告格式，转换不覆盖已有模型或成果。
@@ -93,7 +94,7 @@ python scripts/fetch_filegdb_sdk.py --output build/filegdb-sdk
 .\dist\bin\geomodelbridgeGUI.exe
 ```
 
-在界面选择 FBX、新的输出 GDB、目标 WKID 与米制原点坐标，然后转换。详见[GUI 使用说明](docs/gui.md)。
+在界面选择模型，可先点击“检查模型”保存新检查报告；转换时再填写新的输出 GDB、目标 WKID 与米制原点坐标。详见[GUI 使用说明](docs/gui.md)。
 
 只需要命令行时执行 `.\scripts\build.ps1`，无需 .NET SDK；writer 也会一起构建。SDK 默认从 `build/filegdb-sdk` 查找，可用 `FILEGDB_API_ROOT` 或 `-FileGDBApiRoot` 指定已有 SDK。安装后执行 `dist/bin/geomodelbridge.exe convert -h`。原生 writer 与 `FileGDBAPI.dll` 位于 `dist/bin/native-filegdb/`。
 
@@ -161,6 +162,8 @@ result = Engine(r"D:\Tools\GeoModelBridge\bin\geomodelbridge.exe").convert(
 print(result.feature_class_path)
 ```
 
+若只需了解模型规模、范围与诊断，可调用 `engine.inspect(InspectionRequest(input_model, new_report_path))`，详见 [Python 模型检查](docs/python-client.md#模型检查)。它复用读取策略但不写入 GDB；完整纹理解码、入库和回读仍在转换阶段验证。
+
 替换示例中的完整发布目录、模型 / 输出路径和定位参数。当前接口同步创建**新的 GDB**，不追加到已有库；本次不含 ATBX 文件或取消接口。调用库核对报告中的 WKID / XYZ、限制进程日志占用，并在完成回调异常时通过 `CallbackError.result` 保留已验证成果。完整接入方式见 [Python 函数库文档](docs/python-client.md)，可运行示例位于 [python/examples/convert_fbx.py](python/examples/convert_fbx.py)。
 
 V0.1.11 加强中间包与报告的并发输出保护：同名目标已被其他任务创建时提交失败，保留已有内容。输出及父目录不得经过符号链接 / Windows 重解析点；改用实际目录并为每个任务指定独立名称。详见[输出保护约定](docs/architecture.md#输出保护约定)。
@@ -182,7 +185,9 @@ V0.1.12 会明确区分“文件缺失”和“路径 / 读取错误”：路径
 
 <a id="verification"></a>
 
-**当前开发版本 DAE**：双平台 CTest 各 **18/18**、Windows GUI 服务 **247/247**；真实纹理 Alpha / 标量透明度及安装后 Python 客户端验证通过。样本、格式和路径边界见 [DAE 验证记录](docs/validation-dae-2026-09-30.md)。
+**当前开发版本模型检查**：双平台 CTest 各 **18/18**、GUI 服务与真实调用 **315/315**；安装后 Python 各 **17 项检查、14 项转换、9 份 GDB 复制回读**通过。新增入口与已知路径限制见 [模型检查验证记录](docs/validation-preflight-2026-10-03.md)。
+
+**DAE 功能验证**：双平台 CTest 各 **18/18**、Windows GUI 服务 **247/247**；真实纹理 Alpha / 标量透明度及安装后 Python 客户端验证通过。样本、格式和路径边界见 [DAE 验证记录](docs/validation-dae-2026-09-30.md)。
 
 ## 已有验证
 

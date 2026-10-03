@@ -25,10 +25,63 @@ public sealed class EngineService
         return delivery.Failed ? result with { Message = result.Message + ProgressFailureNotice } : result;
     }
 
+    public async Task<InspectionResult> InspectAsync(InspectionSettings settings, IProgress<EngineEvent>? progress = null)
+    {
+        var delivery = new ProgressDelivery(progress);
+        var result = await InspectCoreAsync(settings, delivery).ConfigureAwait(false);
+        return delivery.Failed ? result with { Message = result.Message + ProgressFailureNotice } : result;
+    }
+
+    private async Task<InspectionResult> InspectCoreAsync(InspectionSettings settings, IProgress<EngineEvent> progress)
+    {
+        if (Interlocked.CompareExchange(ref running, 1, 0) != 0)
+            return new(false, null, "已有转换或检查正在运行，请等待完成。", "", null);
+        var reportPath = "";
+        int? exitCode = null;
+        try
+        {
+            var requestDirectory = Environment.CurrentDirectory;
+            var issues = InspectionValidator.Validate(settings);
+            if (issues.Count > 0) return new(false, null, string.Join(Environment.NewLine, issues), "", null);
+            // Capture every path and the mutable list before any host callback or await.
+            string FullPath(string path) => Path.TrimEndingDirectorySeparator(Path.GetFullPath(path.Trim(), requestDirectory));
+            var input = FullPath(settings.InputPath);
+            settings = settings with
+            {
+                InputPath = input, ReportPath = FullPath(settings.ReportPath),
+                MaxBatchPath = string.Equals(Path.GetExtension(input), ".max", StringComparison.OrdinalIgnoreCase) ? FullPath(settings.MaxBatchPath) : settings.MaxBatchPath,
+                TextureDirectories = settings.TextureDirectories.Select(FullPath).ToArray()
+            };
+            reportPath = settings.ReportPath;
+            Stage(progress, "正在检查转换引擎版本…");
+            var version = await CheckEngineAsync(progress).ConfigureAwait(false);
+            if (!version.Success) return new(false, null, version.Message, reportPath, null);
+            // BuildArguments revalidates the new report destination after the version check.
+            var info = InspectionCommand.CreateStartInfo(EnginePath, settings);
+            Stage(progress, "正在检查模型、材质与贴图；不写入 GDB…");
+            var result = await RunAsync(info, progress).ConfigureAwait(false);
+            exitCode = result.ExitCode;
+            if (exitCode != 0)
+            {
+                var detail = await ReadFailureSummaryAsync(reportPath).ConfigureAwait(false) ?? ProcessDetails(result);
+                return new(false, exitCode, $"模型检查未通过（退出代码 {exitCode}）；未写入 GDB。\n" + detail, reportPath, null);
+            }
+            Stage(progress, "模型检查进程已结束，正在核对结果报告…");
+            var failure = await ReadFailureSummaryAsync(reportPath).ConfigureAwait(false);
+            if (failure is not null) return new(false, exitCode, "模型检查未通过；未写入 GDB。\n" + failure, reportPath, null);
+            if (!File.Exists(reportPath)) return new(false, exitCode, "检查进程退出，但未找到检查报告，不能确认检查通过。", reportPath, null);
+            var report = InspectionReportVerifier.Verify(await ReadReportAsync(reportPath).ConfigureAwait(false), settings);
+            return new(true, exitCode, report.SummaryText, reportPath, report);
+        }
+        catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException or Win32Exception or InvalidOperationException or ArgumentException)
+        { return new(false, exitCode, FriendlyError(ex), reportPath, null); }
+        finally { Volatile.Write(ref running, 0); }
+    }
+
     private async Task<ConversionResult> ConvertCoreAsync(ConversionSettings settings, IProgress<EngineEvent> progress)
     {
         if (Interlocked.CompareExchange(ref running, 1, 0) != 0)
-            return new(false, null, "已有转换或环境检查正在运行，请等待完成。", "", null);
+            return new(false, null, "已有转换或检查正在运行，请等待完成。", "", null);
         var reportPath = "";
         int? exitCode = null;
         try
@@ -85,7 +138,7 @@ public sealed class EngineService
     private async Task<ProbeResult> ProbeBackendCoreAsync(string backend, IProgress<EngineEvent> progress)
     {
         if (Interlocked.CompareExchange(ref running, 1, 0) != 0)
-            return new(false, "已有转换或环境检查正在运行，请等待完成。");
+            return new(false, "已有转换或检查正在运行，请等待完成。");
         try
         {
             if (backend != "native-filegdb") return new(false, "仅支持原生 FileGDB 转换方式。");

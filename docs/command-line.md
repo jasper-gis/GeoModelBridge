@@ -54,6 +54,19 @@ WKID 赋值和 origin 平移不执行重投影。输入的节点变换和单位�
 
 报告路径必须在输出目录之外，Windows 比较路径组件时不区分大小写，Linux 区分大小写。Windows 路径组件不能以点或空格结尾（正常的 `.` / `..` 路径片段除外）；这类不明确的路径会在写出前拒绝。
 
+## 模型检查报告
+
+```powershell
+.\dist\bin\geomodelbridge.exe inspect ".\model.obj" --obj-up-axis Y --obj-unit-meters 0.01 --profile gis-static --report ".\new-inspection.json"
+if ($LASTEXITCODE -ne 0) { throw "模型检查未通过，退出码 $LASTEXITCODE" }
+```
+
+`inspect` 不需要 writer、FileGDB SDK、输出 GDB、WKID 或原点。报告包含 `counts`（网格、三角形、角点、材质、贴图及图片字节数）、`diagnostics` 与 `geometry_bounds`。有效场景的包围盒为 `{"min":[x,y,z],"max":[x,y,z]}`，来自保留三角形引用的角点；无有效场景时为 `null`。源单位、轴向、静态节点变换已应用一次，未引用的角点不扩大包围盒，但仍需通过验证。
+
+默认范围为右手 Z-up 米制的本地坐标，WKID 为 0。若直接通过 CLI 显式提供 origin，范围包含该平移；WKID 只记录坐标系指定，不能视为重投影。Python 与 GUI 模型检查固定使用未定位的局部坐标。`prepare` 的核心报告也包含该字段；Scene Bundle 的 `scene.json` 格式不变。
+
+检查成功报告的状态是 `inspected`、后端是 `none`、`fidelity.gdb_written=false`，不能作为入库成功证据。共享读取与场景校验通过后，后续 writer 仍需完整图片解码和原生存储校验。报告的 `compatibility_adjustments` 会记录已支持的材质映射，包括 GLB/glTF 的 `UNLIT_SHADING_MAPPED`；即使 strict 接受该模型，存在此映射时 `strict_validation_passed` 仍为 false，具体原因见诊断。
+
 ## PowerShell 连续调用
 
 下例可保存为 `convert-many.ps1`。每项独立配置输入和定位；使用新的结果目录，碰到失败即停止。把示例输入与坐标改成实际值。在 PowerShell 中，变量表示的 EXE 必须用 `&` 调用；控制台 EXE 是同步执行的，不需要 `Start-Process`。示例成果写到系统临时目录的独立子目录，正式使用时可改成较短的成果根路径；Windows 过深的输出路径可能使内部中间贴图超过文件路径限制。
