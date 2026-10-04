@@ -1,6 +1,6 @@
 # WRL / VRML97 入库
 
-V0.5.0 支持 `#VRML V2.0 utf8` 的静态多边形模型，CLI、GUI 和标准库 Python 客户端共用 C++ 读取器与原生 FileGDB 后端。VRML1、X3D、压缩 WRL 不在当前读取范围。
+V0.5.0 起支持 `#VRML V2.0 utf8` 的静态多边形模型，CLI、GUI 和标准库 Python 客户端共用 C++ 读取器与原生 FileGDB 后端。VRML1、压缩 WRL 不在当前读取范围；新增的 [X3D XML](x3d.md) 使用独立编码入口并复用静态场景转换器。
 
 ```powershell
 geomodelbridge inspect model.wrl --profile gis-static --report inspection-new.json
@@ -25,7 +25,9 @@ geomodelbridge convert model.wrl --profile gis-static --output model-new.gdb --w
 | 未提供法线 | creaseAngle=0 生成平面法线；非零 creaseAngle 要求导出显式法线 |
 | WorldInfo | 明确记录未写入的非渲染元数据 |
 
-每个多边形最多 4096 角点，每个展开后网格最多 10,000,000 角点，层级最多 128 层、解析及实例展开分别最多 100,000 节点。超限会失败，不截断几何。非共面、自交及相互接触的多边形拒绝，建议在建模软件中三角化。有限零面积三角形仅在 GIS 静态策略下删除并报告；该策略可修复无效角点法线并报告角点数、三角形数。
+每个多边形最多 4096 角点，每个展开后网格最多 10,000,000 角点，层级最多 128 层、解析及实例展开分别最多 100,000 节点。超限会失败，不截断几何。非共面、自交及相互接触的多边形拒绝，建议在建模软件中三角化。有限零面积三角形仅在 GIS 静态策略下删除并报告；该策略可修复零角点法线并报告角点数、三角形数。VRML 文本数值仍须有限；两个 profile 都拒绝有限但非单位长度的显式法线，不改向。所有法线数组均需校验，未引用的无效法线无法修复，仍然拒绝。
+
+三角形非零但浮点叉积舍入为零，或坐标变换使非零源三角形塌缩时明确失败，不将其当成可删除的零面积面。
 
 未知节点/字段、ROUTE、Script、PROTO、动画、传感器、灯光、相机、Inline、LOD、Switch、程序化几何、视频与像素纹理均明确失败。应先导出当前静态姿态的 IndexedFaceSet。当前功能是静态模型入库，不执行 VRML 浏览器交互。
 

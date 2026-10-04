@@ -48,8 +48,8 @@ with tempfile.TemporaryDirectory(prefix="gmb-build-") as directory:
     run(writer, "--verify-gdb", work / "copy.gdb", "--expected-report", report_path,
         "--report", work / "copy.json")
     assert json.loads((work / "copy.json").read_text())["status"] == "standalone_copy_verified"
-    for extension in (".obj", ".glb", ".gltf", ".wrl", ".dae"):
-        source = fixture.with_suffix(extension)
+    for extension in (".obj", ".glb", ".gltf", ".wrl", ".dae", ".x3d", ".ply", ".stl"):
+        source = fixture.parent / {".ply":"colored_quad.ply", ".stl":"mesh_quad.stl"}.get(extension, "textured_quad" + extension)
         label = extension[1:]
         run(cli, "convert", source, "--output", work / (label + ".gdb"), "--wkid", 32650,
             "--origin", 500000, 3000000, 100)
@@ -61,7 +61,13 @@ with tempfile.TemporaryDirectory(prefix="gmb-build-") as directory:
         if extension in (".glb", ".gltf"):
             assert any(d["code"] == "UNLIT_SHADING_MAPPED" for d in report["reader_diagnostics"])
             assert report["compatibility_adjustments"] is True
-        assert any(check["textured_patches"] > 0 for check in report["verification"]["checks"])
+        if extension not in (".ply", ".stl"):
+            assert any(check["textured_patches"] > 0 for check in report["verification"]["checks"])
+        else:
+            assert not report["textures"]
+        if extension == ".ply":
+            patch = report["verification"]["checks"][0]["patches"][0]
+            assert patch["color_rgb8"] == [200,80,20] and patch["transparency_percent"] == 50
         shutil.copytree(work / (label + ".gdb"), work / (label + "-copy.gdb"))
         run(writer, "--verify-gdb", work / (label + "-copy.gdb"), "--expected-report", report_path,
             "--report", work / (label + "-copy.json"))
@@ -86,4 +92,45 @@ with tempfile.TemporaryDirectory(prefix="gmb-build-") as directory:
     shutil.copytree(work/'alpha.gdb',work/'alpha-copy.gdb')
     run(writer,'--verify-gdb',work/'alpha-copy.gdb','--expected-report',report_path,'--report',work/'alpha-copy.json')
     assert json.loads((work/'alpha-copy.json').read_text())['status']=='standalone_copy_verified'
-print("PASS root build layout: FBX/OBJ/GLB/glTF/WRL/DAE, DAE image alpha + scalar opacity, and standalone copy readback")
+    # X3D permits neutral material with image alpha; keep the source pixels exact.
+    source = work/'alpha.x3d'
+    source.write_text(fixture.with_suffix('.x3d').read_text(encoding='utf-8').replace('checker.png','alpha.png'),encoding='utf-8')
+    run(cli,'convert',source,'--output',work/'x3d-alpha.gdb','--wkid',32650,'--origin',500000,3000000,100)
+    report_path = work/'x3d-alpha.gdb.report.json'
+    report = json.loads(report_path.read_text(encoding='utf-8'))
+    texture = report['textures'][0]
+    assert texture['source_sha256'] == hashlib.sha256(png).hexdigest()
+    assert texture['stored_sha256'] == hashlib.sha256(rgba).hexdigest() and texture['readback_bytes_equal']
+    assert report['verification']['checks'][0]['patches'][0]['transparency_percent'] == 0
+    shutil.copytree(work/'x3d-alpha.gdb',work/'x3d-alpha-copy.gdb')
+    run(writer,'--verify-gdb',work/'x3d-alpha-copy.gdb','--expected-report',report_path,'--report',work/'x3d-alpha-copy.json')
+    assert json.loads((work/'x3d-alpha-copy.json').read_text())['status']=='standalone_copy_verified'
+    # Exercise both PLY endian paths and binary STL through the actual SDK.
+    points = [(0.,0.,0.), (2.,0.,0.), (2.,3.,0.), (0.,3.,0.)]
+    faces = [(0,1,2), (0,2,3)]
+    header = (fixture.parent/'colored_quad.ply').read_text(encoding='ascii').split('end_header')[0]
+    variants = {}
+    for endian, label in [('<','little'), ('>','big')]:
+        data = header.replace('format ascii', 'format binary_' + label + '_endian').encode('ascii') + b'end_header\n'
+        data += b''.join(struct.pack(endian+'6f', *point, 0,0,1) for point in points)
+        data += b''.join(struct.pack(endian+'B3i4B',3,*face,200,80,20,128) for face in faces)
+        variants['binary-'+label+'.ply'] = data
+    variants['binary.stl'] = b'GeoModelBridge binary test'.ljust(80,b'\0') + struct.pack('<I',2)
+    variants['binary.stl'] += b''.join(struct.pack('<12fH',0,0,1,*(c for i in face for c in points[i]),0) for face in faces)
+    for name, data in variants.items():
+        source = work/name
+        source.write_bytes(data)
+        output = work/(name+'.gdb')
+        run(cli,'convert',source,'--output',output,'--wkid',32650,'--origin',500000,3000000,100)
+        report_path = Path(str(output)+'.report.json')
+        report = json.loads(report_path.read_text(encoding='utf-8'))
+        assert report['status']=='written_and_readback_verified' and not report['textures']
+        patch = report['verification']['checks'][0]['patches'][0]
+        assert patch['color_rgb8'] == ([200,80,20] if source.suffix=='.ply' else [255,255,255])
+        assert patch['transparency_percent'] == (50 if source.suffix=='.ply' else 0)
+        copied = work/(name+'-copy.gdb')
+        shutil.copytree(output,copied)
+        copy_report = work/(name+'-copy.json')
+        run(writer,'--verify-gdb',copied,'--expected-report',report_path,'--report',copy_report)
+        assert json.loads(copy_report.read_text())['status']=='standalone_copy_verified'
+print("PASS root build layout: nine mesh formats, both binary PLY endians, binary STL, PLY color/alpha, DAE/X3D image alpha, and standalone copy readback")

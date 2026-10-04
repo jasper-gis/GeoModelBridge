@@ -2,7 +2,7 @@
 
 <h1>GeoModelBridge</h1>
 <p><strong>将静态三维模型转换为 GIS 数据</strong></p>
-<p>FBX / OBJ / GLB / glTF / WRL / DAE → 带颜色与贴图的 FileGDB Multipatch</p>
+<p>FBX / OBJ / GLB / glTF / WRL / DAE / PLY / STL / X3D → 带颜色与贴图的 FileGDB Multipatch</p>
 
 <p>
   <a href="CHANGELOG.md"><code>V0.6.0</code></a> &nbsp;
@@ -34,11 +34,13 @@ V0.6.0 新增 Windows 可选 MAX Batch 适配器，CLI、GUI 和 Python 均可�
 - **缺图也能继续**：缺失的图片默认回退为材质颜色和标量透明度，保留警告及原路径；有效贴图照常写入。
 - **共用转换链路**：两平台使用同一套 C++17 核心、Scene Bundle 协议和报告格式，转换不覆盖已有模型或成果。
 
-格式边界和材质策略见 [GLB / glTF 输入](docs/glb.md)、[WRL 输入](docs/wrl.md)、[DAE / COLLADA 输入](docs/dae.md)。不支持的渲染语义会明确拒绝或按照显式策略记录，格式支持不代表任意动态场景均可无损转换。
+格式边界和材质策略见 [GLB / glTF 输入](docs/glb.md)、[WRL 输入](docs/wrl.md)、[DAE / COLLADA 输入](docs/dae.md)、[PLY 输入](docs/ply.md)、[STL 输入](docs/stl.md)及 [X3D XML 输入](docs/x3d.md)。不支持的渲染语义会明确拒绝或按照显式策略记录，格式支持不代表任意动态场景均可无损转换。
+
+本轮优先补齐扫描网格交换用的 PLY、CAD / 制造三角面交换用的 STL，以及复用既有 WRL 场景能力的 X3D XML。完整支持范围和选择依据见[格式总览](docs/model-formats.md)。
 
 ```mermaid
 flowchart LR
-    A[FBX / OBJ / GLB / glTF / WRL / DAE + 纹理] --> B[解析与校验]
+    A[FBX / OBJ / GLB / glTF / WRL / DAE / PLY / STL / X3D] --> B[解析与校验]
     B --> C[Scene Bundle]
     C --> D[原生 FileGDB 写入]
     D --> E[GDB + 回读报告]
@@ -139,6 +141,7 @@ Ubuntu 在仓库根目录执行；Windows 将程序路径替换为 `.\dist\bin\g
 | `--profile strict\|gis-static` | CLI 默认 `strict`；兼容策略需显式选择 |
 | `--texture-dir DIR` | 添加外部贴图搜索目录，可重复指定 |
 | `--missing-textures material-color\|error` | 默认缺图时使用材质颜色继续；`error` 要求引用的贴图完整 |
+| `--mesh-up-axis Z\|Y` / `--mesh-unit-meters N` | PLY/STL 源坐标约定，默认 Z-up、每单位 1 米；OBJ 使用对应 `--obj-*` 参数 |
 | `--feature-class NAME` | 输出要素类名称，默认 `Models` |
 | `--report NEW.json` | 指定新的报告路径 |
 | `--writer PATH` | 指定原生写入程序，也可设置 `GMB_NATIVE_WRITER` |
@@ -185,7 +188,11 @@ V0.1.12 会明确区分“文件缺失”和“路径 / 读取错误”：路径
 
 <a id="verification"></a>
 
-**当前开发版本模型检查**：双平台 CTest 各 **18/18**、GUI 服务与真实调用 **315/315**；安装后 Python 各 **17 项检查、14 项转换、9 份 GDB 复制回读**通过。新增入口与已知路径限制见 [模型检查验证记录](docs/validation-preflight-2026-10-03.md)。
+## 验证结果
+
+**PLY / STL / X3D 扩展验证**：双平台完整 CTest 各 **21/21**，Windows GUI 服务 **379/379**；三种新格式真实 GDB、二进制端序、颜色/Alpha 和独立复制回读通过。安装后 Python 各 **17 项转换、22 项检查、12 份 GDB 复制回读**通过。支持边界与证据见 [本次验证记录](docs/validation-mesh-formats-2026-10-04.md)。
+
+**2026-10-03 模型检查**：双平台 CTest 各 **18/18**、GUI 服务与真实调用 **315/315**；安装后 Python 各 **17 项检查、14 项转换、9 份 GDB 复制回读**通过。新增入口与已知路径限制见 [模型检查验证记录](docs/validation-preflight-2026-10-03.md)。
 
 **DAE 功能验证**：双平台 CTest 各 **18/18**、Windows GUI 服务 **247/247**；真实纹理 Alpha / 标量透明度及安装后 Python 客户端验证通过。样本、格式和路径边界见 [DAE 验证记录](docs/validation-dae-2026-09-30.md)。
 
@@ -230,7 +237,7 @@ Windows ↔ Ubuntu 双向互读及归档解压验证见 [V0.1.6 历史记录](do
 | Windows 图形界面操作 | [GUI 使用说明](docs/gui.md) |
 | Python 函数调用、后续 ATBX 接入与错误处理 | [Python 调用库](docs/python-client.md) |
 | 支持的模型、材质与兼容行为 | [兼容策略](docs/compatibility.md) |
-| GLB/glTF、WRL 具体输入范围 | [glTF](docs/glb.md) · [WRL](docs/wrl.md) |
+| 各格式具体输入范围 | [glTF](docs/glb.md) · [WRL](docs/wrl.md) · [DAE](docs/dae.md) · [PLY](docs/ply.md) · [STL](docs/stl.md) · [X3D](docs/x3d.md) |
 | MAX 可选适配器与实机验收 | [MAX 使用说明](docs/max-adapter.md) · [后续烘焙路线](docs/max-roadmap.md) |
 | 原生写入、存储精度与独立回读 | [FileGDB 后端](backends/native-filegdb/README.md) |
 | 共享核心、平台适配与数据契约 | [架构](docs/architecture.md) · [Scene Bundle](docs/bundle-format.md) |

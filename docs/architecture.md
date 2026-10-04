@@ -1,4 +1,4 @@
-# V0.2.2 架构
+# 共享转换架构
 
 构建统一由仓库根目录一个 `CMakeLists.txt` 定义，默认产生 CLI、原生 writer 及 SDK 运行库。`backends/native-filegdb` 仍是源码模块，但不是独立构建工程。两程序继续通过子进程和 Scene Bundle 通信，构建合并不改变运行时协议。
 
@@ -11,7 +11,11 @@ flowchart LR
   OBJ[OBJ/MTL 与图片] --> R
   GLB[glTF 2.0 GLB / JSON 与资源] --> L[cgltf Reader / C++17]
   L --> S
-  WRL[VRML97 WRL 与图片] --> W[静态节点解析 / C++17]
+  WRL[VRML97 WRL / X3D XML 与图片] --> W[共享静态节点转换 / C++17]
+  DAE[COLLADA DAE] --> D[tinyxml2 Reader / C++17]
+  D --> S
+  M[PLY / STL] --> P[类型与编码校验 / C++17]
+  P --> S
   W --> S
   R --> S[统一 Scene 与严格验证]
   F[人工测试网格] --> S
@@ -24,7 +28,7 @@ flowchart LR
 
 Reader 与数据库 SDK 无直接依赖。C++ 内核使用 `gmb::Scene` 表达 Nodes、Meshes、Materials、Textures、坐标元数据与诊断。节点实例展开为独立网格；顶点保留完整角点，不能只按位置合并 UV/法线接缝。节点变换、轴向、单位和 origin 在中间包前完成，写入端不得重复变换。
 
-GLB/glTF 与 WRL 共用 `reader_util.hpp` 的变换、受限资源加载与诊断；路径包含判断调用共享平台实现。WRL 使用限定节点/字段解析器和已有 ufbx 多边形三角化；不执行脚本或网络资源。新格式仍经完整 Scene 验证后才能启动 writer，不改变 Scene Bundle 契约。MAX 通过可选 Windows Batch 工作进程导出 FBX，再进入共享验证器；系统进程操作位于 `platform_process_windows.cpp`，Linux 返回明确不支持诊断。接受范围及实机验收缺口见 [MAX 适配器](max-adapter.md)。
+GLB/glTF 与 WRL 共用 `reader_util.hpp` 的变换、受限资源加载与诊断；路径包含判断调用共享平台实现。WRL 使用限定节点/字段解析器和已有 ufbx 多边形三角化；不执行脚本或网络资源。X3D XML 经已有 tinyxml2 转成共享静态节点图，再复用 WRL 几何和材质转换；独立约束版本、字段、单位及纹理组合。PLY/STL 使用独立有界输入解析器，输出同一 Scene；二进制端序与长度在展开前核验，无纹理或颜色的来源采用有记录的材质约定。DAE 同样复用 tinyxml2。所有新格式仍经完整 Scene 验证后才能启动 writer，不改变 Scene Bundle 契约。MAX 通过可选 Windows Batch 工作进程导出 FBX，再进入共享验证器；系统进程操作位于 `platform_process_windows.cpp`，Linux 返回明确不支持诊断。接受范围及实机验收缺口见 [MAX 适配器](max-adapter.md)。
 
 V0.1.12 的 Reader 把贴图查询结果区分为“找到路径 / 确认缺失 / 查询失败”，按 ufbx texture 对象在本次读取内缓存；材质检查只对确认缺失的图片应用回退。查询失败与非普通文件产生明确的读取错误，路径成功解析不代替后续图片字节校验。Windows 将部分错误父路径报告为不存在，因此另行检查最近的已有父目录，保持两平台判定一致。
 
@@ -55,7 +59,7 @@ V0.1.10 的报告保留 `coordinates`，三个调用入口核对目标 WKID 和�
 - Linux install RPATH 只保留 `$ORIGIN`，两份 SDK 共享库可随目录移动；未附带 SDK 运行库时显式配置 `LD_LIBRARY_PATH`。从 PATH 启动的 CLI 通过 `/proc/self/exe` 找到相邻 writer。
 - Windows 与 Ubuntu CI 都运行 CTest、真实 GDB 集成、独立目录部署和 14 个完整样例；WPF 服务测试由 Windows 执行。维护 master 共享代码，平台适配修改必须回归两侧。
 
-V0.1.8 将原生 Scene JSON 读取改为缓冲输入与逐角点/三角形解码，避免整份 JSON 字节和 DOM 同时驻留。解析后仍保留类型化 Scene 与原生准备数据进行完整校验和回读；内存仍随模型规模增长，并非常量内存。GIS 静态法线修复只在 FBX Reader 进行，writer 保持严格验证。
+V0.1.8 将原生 Scene JSON 读取改为缓冲输入与逐角点/三角形解码，避免整份 JSON 字节和 DOM 同时驻留。解析后仍保留类型化 Scene 与原生准备数据进行完整校验和回读；内存仍随模型规模增长，并非常量内存。GIS 静态法线修复只在支持该策略的 Reader 进行，writer 保持严格验证。
 
 ## 输出保护约定
 

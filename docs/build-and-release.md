@@ -92,7 +92,7 @@ dist/
       GeoModelBridge.NativeWriter
       libFileGDBAPI.so
       libfgdbunixrtl.so
-    demo/                         # FBX + 贴图试运行输入
+    demo/                         # FBX/OBJ/GLB/glTF/WRL/DAE/PLY/STL/X3D 试运行输入
   licenses/filegdb-api/           # 上游许可、README、来源与散列
   docs/
 ```

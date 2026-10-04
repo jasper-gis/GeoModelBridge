@@ -1,0 +1,4 @@
+PASS PLY: 78 cases; ASCII/both binary orders, colors/alpha, normals, concave topology, strict limits and rejection
+PASS STL: 80 prepare cases, ASCII/binary, exact framing, corner normals, placement, rejection and output safety
+PASS X3D: 92 cases; XML grammar, static transforms/units, materials/alpha, corner bindings and fail-closed policies
+PASS root build layout: nine mesh formats, both binary PLY endians, binary STL, PLY color/alpha, DAE/X3D image alpha, and standalone copy readback

@@ -21,7 +21,7 @@ cli_name, writer_name = executable_names()
 runtime_names = ["bin/native-filegdb/" + Path(name).name for name in sdk_manifest()["runtime_files"]]
 python_files = ["python/geomodelbridge/" + name for name in ("__init__.py", "_version.py", "client.py")]
 for name in [cli_name, writer_name, *runtime_names, "bin/demo/textured_quad.fbx", "bin/demo/textured_quad.obj", "bin/demo/textured_quad.glb", "bin/demo/textured_quad.gltf", "bin/demo/textured_quad.bin", "bin/demo/textured_quad.wrl", "bin/demo/textured_quad.dae", "licenses/tinyxml2/LICENSE.txt",
-             "bin/demo/textured_quad.mtl", "bin/demo/checker.png", *python_files]:
+             "bin/demo/textured_quad.mtl", "bin/demo/checker.png", "bin/demo/colored_quad.ply", "bin/demo/mesh_quad.stl", "bin/demo/textured_quad.x3d", *python_files]:
     destination = work / name
     destination.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(install / name, destination)
@@ -77,22 +77,26 @@ assert second["status"] == "written_and_readback_verified"
 assert second["coordinates"]["wkid"] == 3857 and second["coordinates"]["origin"] == [100, 200, 300]
 assert second["feature_class"] == "SecondModels"
 format_checks = {}
-for extension in ("obj", "glb", "gltf", "wrl", "dae"):
+for extension in ("obj", "glb", "gltf", "wrl", "dae", "ply", "stl", "x3d"):
     output = work / (extension + ".gdb")
     report_path = work / (extension + ".gdb.report.json")
-    run(cli, "convert", work / ("bin/demo/textured_quad." + extension), "--output", output,
+    source_name = {"ply":"colored_quad.ply", "stl":"mesh_quad.stl"}.get(extension, "textured_quad." + extension)
+    run(cli, "convert", work / "bin/demo" / source_name, "--output", output,
         "--wkid", 3857, "--origin", 100, 200, 300)
     model_report = json.loads(report_path.read_text(encoding="utf-8"))
     assert model_report["status"] == "written_and_readback_verified"
     assert model_report["coordinates"]["origin"] == [100, 200, 300]
     assert model_report["coordinates"]["wkid"] == 3857
-    assert any(check["textured_patches"] > 0 for check in model_report["verification"]["checks"])
+    if extension not in ("ply", "stl"):
+        assert any(check["textured_patches"] > 0 for check in model_report["verification"]["checks"])
+    else:
+        assert not model_report["textures"]
     copied = work / (extension + "-copy.gdb")
     copy_check = work / (extension + "-copy-check.json")
     shutil.copytree(output, copied)
     run(writer, "--verify-gdb", copied, "--expected-report", report_path, "--report", copy_check)
     assert json.loads(copy_check.read_text(encoding="utf-8"))["status"] == "standalone_copy_verified"
-    format_checks[extension] = "textured GDB written and standalone copy verified"
+    format_checks[extension] = ("untextured" if extension in ("ply", "stl") else "textured") + " GDB written and standalone copy verified"
 shutil.copytree(work / "second.gdb", work / "second-copy.gdb")
 run(writer, "--verify-gdb", work / "second-copy.gdb", "--expected-report", work / "second.gdb.report.json",
     "--report", work / "second-copy-check.json")

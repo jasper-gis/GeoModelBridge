@@ -17,10 +17,13 @@
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <DebugType>none</DebugType>
     <Product>GeoModelBridge GUI</Product>
-    <Description>三维模型转换工具 · FBX/OBJ/GLB/glTF/WRL to FileGDB Multipatch</Description>
+    <Description>三维模型转换工具 · FBX/OBJ/GLB/glTF/WRL/DAE/PLY/STL/X3D to FileGDB Multipatch</Description>
   </PropertyGroup>
   <ItemGroup>
     <Resource Include="Assets/AppIcon.ico" />
+    <Content Include="../../tests/fixtures/colored_quad.ply" Link="demo/colored_quad.ply" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    <Content Include="../../tests/fixtures/mesh_quad.stl" Link="demo/mesh_quad.stl" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    <Content Include="../../tests/fixtures/textured_quad.x3d" Link="demo/textured_quad.x3d" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
     <ProjectReference Include="../GeoModelBridge.Gui.Core/GeoModelBridge.Gui.Core.csproj" />
     <Content Include="../../tests/fixtures/textured_quad.fbx" Link="demo/textured_quad.fbx" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
     <Content Include="../../tests/fixtures/textured_quad.glb" Link="demo/textured_quad.glb" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />

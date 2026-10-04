@@ -1,11 +1,14 @@
 #include "gmb/scene.hpp"
 #include "reader_util.hpp"
+#include "tinyxml2.h"
 #include "ufbx.h"
 #include <charconv>
+#include <iomanip>
 #include <map>
 #include <memory>
 #include <numeric>
 #include <set>
+#include <sstream>
 #include <string_view>
 
 namespace gmb {
@@ -150,6 +153,265 @@ public:
     explicit Parser(std::string_view text):source(text) {next();}
     std::vector<Ref> parse() {std::vector<Ref> result;while(!token.empty()||quoted) result.push_back(node(0));return result;}
 };
+
+// X3D XML is another encoding of the same static scene graph. Decode directly
+// into the shared graph; never serialize geometry through a temporary VRML file.
+class XParser {
+    using Element=const tinyxml2::XMLElement;
+    std::map<std::string,Ref> definitions;
+    std::size_t node_count=0;
+    double length_unit=1;
+    std::string version;
+    static bool space(char c) {return c==' '||c=='\t'||c=='\r'||c=='\n';}
+    static std::string value(Element* e,const char* key) {return label(e->Attribute(key),"");}
+    [[noreturn]] static void bad(const std::string& message,Element* e=nullptr) {
+        reject("INVALID_X3D",message,e?"line:"+std::to_string(e->GetLineNum()):"scene");
+    }
+    static void contents(Element* e) {
+        for(auto n=e->FirstChild();n;n=n->NextSibling()) {
+            if(n->ToComment()||n->ToElement()) continue;
+            if(auto t=n->ToText()) {
+                const std::string_view text=t->Value();
+                if(std::all_of(text.begin(),text.end(),space)) continue;
+            }
+            bad("Only child elements, comments and whitespace are supported inside X3D elements.",e);
+        }
+    }
+    static void attributes(Element* e,std::initializer_list<const char*> allowed) {
+        for(auto a=e->FirstAttribute();a;a=a->Next()) {
+            if(std::none_of(allowed.begin(),allowed.end(),[&](const char* key){return std::string_view(a->Name())==key;}))
+                reject("UNSUPPORTED_X3D_FIELD","Unsupported attribute: "+std::string(e->Name())+"."+a->Name(),"line:"+std::to_string(e->GetLineNum()));
+        }
+    }
+    static void declaration(std::string_view text) {
+        if(text.substr(0,4)!="xml ") reject("UNSUPPORTED_X3D_XML","XML processing instructions are not supported.","scene");
+        std::size_t at=4;std::map<std::string,std::string> values;
+        while(at<text.size()) {
+            while(at<text.size()&&space(text[at])) ++at;
+            if(at==text.size()) break;
+            const auto start=at;while(at<text.size()&&std::isalpha(static_cast<unsigned char>(text[at]))) ++at;
+            if(start==at) bad("Invalid XML declaration.");
+            const std::string key(text.substr(start,at-start));
+            while(at<text.size()&&space(text[at])) ++at;
+            if(at==text.size()||text[at++]!='=') bad("Invalid XML declaration.");
+            while(at<text.size()&&space(text[at])) ++at;
+            if(at==text.size()||(text[at]!='\''&&text[at]!='"')) bad("Invalid XML declaration.");
+            const auto quote=text[at++];const auto begin=at;const auto end=text.find(quote,at);
+            if(end==std::string_view::npos) bad("Invalid XML declaration.");
+            if(!values.emplace(key,text.substr(begin,end-begin)).second) bad("Duplicate XML declaration attribute.");
+            at=end+1;if(at<text.size()&&!space(text[at])) bad("Invalid XML declaration separator.");
+        }
+        for(const auto& item:values) if(item.first!="version"&&item.first!="encoding"&&item.first!="standalone") bad("Unknown XML declaration attribute.");
+        if(values["version"]!="1.0"||(values.count("encoding")&&values["encoding"]!="UTF-8"&&values["encoding"]!="utf-8")||
+            (values.count("standalone")&&values["standalone"]!="yes"&&values["standalone"]!="no"))
+            reject("UNSUPPORTED_X3D_XML","Only XML 1.0 with UTF-8 encoding is supported.","scene");
+    }
+    static double number(std::string_view token,bool integer,bool normal=false) {
+        if(token.empty()) bad("Expected a number.");
+        const char* begin=token.data();const char* end=begin+token.size();
+        if(*begin=='+') {++begin;if(begin==end||*begin=='+'||*begin=='-') bad("Invalid numeric sign.");}
+        if(integer) {
+            std::int64_t n=0;const auto parsed=std::from_chars(begin,end,n);
+            if(parsed.ec!=std::errc{}||parsed.ptr!=end||n < -1||n>2147483647) bad("Invalid integer index.");
+            return static_cast<double>(n);
+        }
+        double n=0;
+        if(normal&&(token=="NaN"||token=="INF"||token=="-INF"))
+            return token=="NaN"?std::numeric_limits<double>::quiet_NaN():token=="INF"?INFINITY:-INFINITY;
+        const auto parsed=std::from_chars(begin,end,n);
+        if(parsed.ec!=std::errc{}||parsed.ptr!=end||!finite(n)) bad("Expected a finite decimal number.");
+        return n;
+    }
+    static Field field_value(const std::string& kind,std::string_view text,bool normal) {
+        Field result;
+        if(kind=="string") {result.strings.emplace_back(text);return result;}
+        std::size_t at=0;
+        auto skip=[&] {while(at<text.size()&&(space(text[at])||text[at]==',')) ++at;};
+        if(kind=="strings") {
+            skip();
+            while(at<text.size()) {
+                if(text[at++]!='"') bad("MFString values must be double-quoted inside the XML attribute.");
+                std::string item;bool closed=false;
+                while(at<text.size()) {
+                    auto c=text[at++];
+                    if(c=='"') {closed=true;break;}
+                    if(c=='\\') {
+                        if(at==text.size()) bad("Unterminated MFString escape.");
+                        c=text[at++];if(c!='"'&&c!='\\') bad("Unsupported MFString escape.");
+                    }
+                    item.push_back(c);
+                }
+                if(!closed) bad("Unterminated MFString value.");
+                result.strings.push_back(std::move(item));
+                if(result.strings.size()>100000) bad("MFString count limit exceeded.");
+                if(at<text.size()&&!space(text[at])&&text[at]!=',') bad("MFString values require separators.");
+                skip();
+            }
+            return result;
+        }
+        skip();
+        while(at<text.size()) {
+            const auto begin=at;while(at<text.size()&&!space(text[at])&&text[at]!=',') ++at;
+            const auto token=text.substr(begin,at-begin);
+            if(token.size()>1048576) bad("Numeric token limit exceeded.");
+            if(kind=="bool") {
+                if(token!="true"&&token!="false") bad("X3D XML booleans must be true or false.");
+                result.numbers.push_back(token=="true"?1:0);
+            } else result.numbers.push_back(number(token,kind=="ints",normal));
+            if(result.numbers.size()>30000000) bad("Numeric field size limit exceeded.");
+            skip();
+        }
+        const bool multi=kind=="ints"||kind.rfind("multi",0)==0;
+        const auto width=kind=="bool"||kind=="ints"?1:std::stoi(multi?kind.substr(5):kind);
+        if((!multi&&result.numbers.size()!=static_cast<std::size_t>(width))||result.numbers.size()%width)
+            bad("X3D field has the wrong number of components.");
+        return result;
+    }
+    static std::string container(const std::string& type) {
+        if(type=="Appearance") return "appearance";
+        if(type=="IndexedFaceSet") return "geometry";
+        if(type=="Material") return "material";
+        if(type=="ImageTexture") return "texture";
+        if(type=="TextureTransform") return "textureTransform";
+        if(type=="Coordinate") return "coord";
+        if(type=="Normal") return "normal";
+        if(type=="TextureCoordinate") return "texCoord";
+        if(type=="Color") return "color";
+        return "children";
+    }
+    static void identifier(const std::string& name,Element* e) {
+        if(name.empty()||(!std::isalpha(static_cast<unsigned char>(name[0]))&&name[0]!='_'&&static_cast<unsigned char>(name[0])<128)) bad("Invalid DEF/USE name.",e);
+        for(unsigned char c:name) if(c<128&&!std::isalnum(c)&&c!='_'&&c!='-'&&c!='.') bad("Invalid DEF/USE name.",e);
+    }
+    Ref node(Element* e,std::size_t depth) {
+        if(depth>128||++node_count>100000) bad("Node depth/count limit exceeded.",e);
+        contents(e);const std::string type=e->Name();const auto schema=schemas.find(type);
+        if(schema==schemas.end()) reject("UNSUPPORTED_X3D_NODE","Unsupported X3D node or statement: "+type,"line:"+std::to_string(e->GetLineNum()));
+        if(e->Attribute("USE")) {
+            attributes(e,{"USE","containerField"});const auto name=value(e,"USE");identifier(name,e);
+            const auto found=definitions.find(name);
+            if(found==definitions.end()||found->second->type!=type||e->FirstChildElement()) bad("USE must reference a preceding completed DEF of the same type and have no child nodes.",e);
+            return found->second;
+        }
+        auto result=std::make_shared<WNode>();result->type=type;result->name=value(e,"DEF");
+        if(e->Attribute("DEF")) {
+            identifier(result->name,e);
+            if(definitions.count(result->name)) bad("Duplicate DEF name.",e);
+        }
+        for(auto a=e->FirstAttribute();a;a=a->Next()) {
+            const std::string key=a->Name();if(key=="DEF"||key=="containerField") continue;
+            const auto f=schema->second.find(key);
+            if(f==schema->second.end()||f->second=="node"||f->second=="nodes")
+                reject("UNSUPPORTED_X3D_FIELD","Unsupported X3D attribute: "+type+"."+key,"line:"+std::to_string(e->GetLineNum()));
+            result->fields.emplace(key,field_value(f->second,a->Value(),type=="Normal"&&key=="vector"));
+        }
+        for(auto c=e->FirstChildElement();c;c=c->NextSiblingElement()) {
+            const auto type_name=std::string(c->Name());
+            const auto field_name=c->Attribute("containerField")?value(c,"containerField"):container(type_name);
+            const auto f=schema->second.find(field_name);
+            if(f==schema->second.end()||(f->second!="node"&&f->second!="nodes")||field_name!=container(type_name))
+                reject("UNSUPPORTED_X3D_FIELD","Invalid containerField or child node: "+type+"."+field_name,"line:"+std::to_string(c->GetLineNum()));
+            auto& children=result->fields[field_name].nodes;
+            if(f->second=="node"&&!children.empty()) bad("Duplicate SFNode field.",c);
+            children.push_back(node(c,depth+1));
+        }
+        if(!result->name.empty()&&!definitions.emplace(result->name,result).second) bad("Duplicate DEF name.",e);
+        return result;
+    }
+public:
+    // tinyxml2's public text uses C strings, so reject invalid raw UTF-8/XML
+    // characters and invalid character references before decoding can truncate.
+    static void lexical(std::string_view text) {
+        for(std::size_t at=0;at<text.size();) {
+            const auto first=static_cast<unsigned char>(text[at++]);std::uint32_t code=first;int remaining=0;
+            if(first>=0xc2&&first<=0xdf) {code=first&31;remaining=1;}
+            else if(first>=0xe0&&first<=0xef) {code=first&15;remaining=2;}
+            else if(first>=0xf0&&first<=0xf4) {code=first&7;remaining=3;}
+            else if(first>=128) bad("Invalid UTF-8 XML input.");
+            const auto width=remaining;
+            while(remaining--) {if(at==text.size()||(static_cast<unsigned char>(text[at])&0xc0)!=0x80) bad("Invalid UTF-8 XML input.");code=(code<<6)|(static_cast<unsigned char>(text[at++])&63);}
+            if((width==1&&code<0x80)||(width==2&&code<0x800)||(width==3&&code<0x10000)||
+                !((code==9||code==10||code==13)||(code>=0x20&&code<=0xd7ff)||(code>=0xe000&&code<=0xfffd)||(code>=0x10000&&code<=0x10ffff))) bad("Invalid XML character.");
+        }
+        bool tag=false;char quote=0;
+        for(std::size_t at=0;at<text.size();) {
+            if(tag&&(text[at]=='\''||text[at]=='"')) {
+                if(!quote) quote=text[at];else if(quote==text[at]) quote=0;
+                ++at;continue;
+            }
+            if(tag&&text[at]=='>') {if(!quote) tag=false;++at;continue;}
+            if(text[at]=='<'&&tag) bad("Unexpected '<' inside an XML tag or attribute.");
+            if(text.compare(at,4,"<!--")==0||text.compare(at,9,"<![CDATA[")==0||text.compare(at,2,"<?")==0) {
+                const bool comment=text.compare(at,4,"<!--")==0,cdata=text.compare(at,9,"<![CDATA[")==0;
+                const auto end=text.find(comment?"-->":cdata?"]]>":"?>",at+(comment?4:cdata?9:2));
+                if(end==std::string_view::npos) bad("Unterminated XML markup.");
+                at=end+(comment||cdata?3:2);continue;
+            }
+            if(text.compare(at,2,"<!")==0) reject("UNSUPPORTED_X3D_XML","DTD and external entity declarations are not supported.","scene");
+            if(text[at]=='<') {tag=true;++at;continue;}
+            if(text[at]!='&') {++at;continue;}
+            const auto end=text.find(';',at+1);if(end==std::string_view::npos) bad("Unterminated XML entity.");
+            const auto entity=text.substr(at+1,end-at-1);
+            if(!entity.empty()&&entity[0]=='#') {
+                const auto start=entity.size()>1&&entity[1]=='x'?2u:1u;std::uint32_t code=0;
+                const auto p=std::from_chars(entity.data()+start,entity.data()+entity.size(),code,start==2?16:10);
+                if(p.ec!=std::errc{}||p.ptr!=entity.data()+entity.size()||
+                    !((code==9||code==10||code==13)||(code>=0x20&&code<=0xd7ff)||(code>=0xe000&&code<=0xfffd)||(code>=0x10000&&code<=0x10ffff))) bad("Invalid XML character reference.");
+            } else if(entity!="amp"&&entity!="lt"&&entity!="gt"&&entity!="apos"&&entity!="quot") bad("Unknown XML entity.");
+            at=end+1;
+        }
+    }
+    std::vector<Ref> parse(const tinyxml2::XMLDocument& doc,Scene& scene) {
+        const auto root=doc.RootElement();if(!root||std::string_view(root->Name())!="X3D") bad("Expected an X3D document root.");
+        for(auto n=doc.FirstChild();n;n=n->NextSibling()) {
+            if(n->ToComment()||n==root) continue;
+            if(auto d=n->ToDeclaration()) {
+                if(n!=doc.FirstChild()) reject("UNSUPPORTED_X3D_XML","Only a leading XML declaration is supported.","scene");
+                declaration(d->Value());
+                continue;
+            }
+            if(auto t=n->ToText()) {const std::string_view text=t->Value();if(std::all_of(text.begin(),text.end(),space)) continue;}
+            bad("Unexpected XML content outside the X3D root.");
+        }
+        attributes(root,{"profile","version","xmlns:xsd","xsd:noNamespaceSchemaLocation","xmlns:xsi","xsi:noNamespaceSchemaLocation"});contents(root);
+        version=value(root,"version");if(version!="3.0"&&version!="3.1"&&version!="3.2"&&version!="3.3")
+            reject("UNSUPPORTED_X3D_VERSION","Only X3D 3.0 through 3.3 XML static scenes are supported.","scene");
+        const auto profile=value(root,"profile");
+        if(profile!="Interchange"&&profile!="Interactive"&&profile!="Immersive"&&profile!="Full"&&profile!="CADInterchange")
+            reject("UNSUPPORTED_X3D_PROFILE","Export an Interchange/Interactive/Immersive/Full/CADInterchange static subset.","scene");
+        for(const auto key:{"xmlns:xsd","xmlns:xsi"}) if(root->Attribute(key)&&value(root,key)!="http://www.w3.org/2001/XMLSchema-instance") bad("Unsupported XML schema namespace.",root);
+        Element* graph=nullptr;bool head_seen=false,unit_seen=false;
+        for(auto e=root->FirstChildElement();e;e=e->NextSiblingElement()) {
+            const std::string kind=e->Name();contents(e);
+            if(kind=="head") {
+                if(head_seen||graph) bad("head must occur once before Scene.",e);
+                head_seen=true;attributes(e,{});
+                for(auto h=e->FirstChildElement();h;h=h->NextSiblingElement()) {
+                    if(++node_count>100000) bad("Node count limit exceeded.",h);
+                    contents(h);if(h->FirstChildElement()) bad("head entries cannot contain child elements.",h);
+                    if(std::string_view(h->Name())=="meta") {
+                        attributes(h,{"name","content"});if(!h->Attribute("name")||!h->Attribute("content")) bad("meta requires name and content.",h);
+                        scene.diagnostics.push_back({Severity::warning,"X3D_METADATA_OMITTED","X3D head metadata is not a render channel and is omitted.",value(h,"name")});
+                    } else if(std::string_view(h->Name())=="unit") {
+                        attributes(h,{"category","name","conversionFactor"});
+                        if(version!="3.3"||value(h,"category")!="length"||value(h,"name").empty()||unit_seen)
+                            reject("UNSUPPORTED_X3D_UNIT","Only one X3D 3.3 length unit declaration is supported.","scene");
+                        length_unit=number(value(h,"conversionFactor"),false);if(length_unit<=0) bad("Length unit must be positive.",h);unit_seen=true;
+                    } else reject("UNSUPPORTED_X3D_NODE","Unsupported head declaration: "+std::string(h->Name()),"scene");
+                }
+            } else if(kind=="Scene") {if(graph) bad("Expected one Scene element.",e);attributes(e,{});graph=e;}
+            else reject("UNSUPPORTED_X3D_NODE","Unsupported X3D root child: "+kind,"scene");
+        }
+        if(!graph) bad("Missing Scene element.");
+        std::vector<Ref> result;
+        for(auto e=graph->FirstChildElement();e;e=e->NextSiblingElement()) {
+            if(e->Attribute("containerField")&&value(e,"containerField")!="children") bad("Invalid root containerField.",e);
+            result.push_back(node(e,0));
+        }
+        return result;
+    }
+    double meters_per_unit() const {return length_unit;}
+};
 const Field& field(const Ref& n,const char* key) {
     static const Field empty;
     if(!n) return empty;
@@ -182,14 +444,31 @@ Matrix rotation(const Ref& n,const char* key,bool inverse=false) {
         t*x*z+s*y,t*y*z-s*x,t*z*z+c,0,0,0,0,1};
 }
 Vec3 subtract(Vec3 a,Vec3 b) {return {a.x-b.x,a.y-b.y,a.z-b.z};}
+// A rounded cross product of zero does not prove a triangle has zero area.
+// Preserve the same conservative exact-zero policy as the other mesh readers.
+bool zero_area(Vec3 a,Vec3 b) {
+    const auto sa=(std::max)({std::abs(a.x),std::abs(a.y),std::abs(a.z)}),sb=(std::max)({std::abs(b.x),std::abs(b.y),std::abs(b.z)});
+    if(sa==0||sb==0) return true;
+    int ea=0,eb=0;std::frexp(sa,&ea);std::frexp(sb,&eb);
+    const Vec3 u{std::scalbn(a.x,-ea),std::scalbn(a.y,-ea),std::scalbn(a.z,-ea)},v{std::scalbn(b.x,-eb),std::scalbn(b.y,-eb),std::scalbn(b.z,-eb)};
+    if((a.x!=0&&u.x==0)||(a.y!=0&&u.y==0)||(a.z!=0&&u.z==0)||(b.x!=0&&v.x==0)||(b.y!=0&&v.y==0)||(b.z!=0&&v.z==0)) return false;
+    const auto determinant_zero=[](double x,double y,double z,double w) {
+        const auto p=x*y,q=z*w;if(p!=q) return false;
+        if(p==0) return (x==0||y==0)&&(z==0||w==0);
+        if(std::abs(p)<std::scalbn((std::numeric_limits<double>::min)(),53)) return false;
+        return std::fma(x,y,-p)==std::fma(z,w,-q);
+    };
+    return determinant_zero(u.y,v.z,u.z,v.y)&&determinant_zero(u.z,v.x,u.x,v.z)&&determinant_zero(u.x,v.y,u.y,v.x);
+}
 Vec3 face_normal(Vec3 a,Vec3 b,Vec3 c) {
     auto u=subtract(b,a),v=subtract(c,a);
     const double scale=(std::max)({std::abs(u.x),std::abs(u.y),std::abs(u.z),std::abs(v.x),std::abs(v.y),std::abs(v.z)});
     if(!finite(scale)) reject("NONFINITE_VERTEX","Transformed edge is nonfinite.","geometry");
-    if(!scale) return {};
+    if(!scale||zero_area(u,v)) return {};
     u={u.x/scale,u.y/scale,u.z/scale};v={v.x/scale,v.y/scale,v.z/scale};
     const auto f=cross(u,v);const auto length=std::hypot(f.x,f.y,f.z);
-    return length?Vec3{f.x/length,f.y/length,f.z/length}:Vec3{};
+    if(!finite(length)||length==0) reject("INVALID_WRL_FACE","Cannot reliably normalize a nonzero triangle; export better-conditioned geometry.","geometry");
+    return {f.x/length,f.y/length,f.z/length};
 }
 using Faces=std::vector<std::vector<std::size_t>>;
 Faces faces(const std::vector<double>& indices) {
@@ -296,6 +575,7 @@ std::pair<bool,bool> image_semantics(const Texture& t) {
 
 class Converter {
     Scene& out;const ReaderOptions& options;std::filesystem::path root;
+    bool x3d=false;
     std::size_t expanded=0;
     void warning(const char* code,const std::string& text,const std::string& ctx) {out.diagnostics.push_back({Severity::warning,code,text,ctx});}
     void shape(const Ref& source,int node_index,const Matrix& world) {
@@ -307,6 +587,15 @@ class Converter {
         const auto cf=faces(field(geometry,"coordIndex").numbers);
         if(!coord||positions.empty()||cf.empty()) reject("EMPTY_MESH","IndexedFaceSet has no coordinates or faces.",source->name);
         const auto& ns=field(normals,"vector").numbers;const auto& ts=field(uv,"point").numbers;const auto& cs=field(colors,"color").numbers;
+        std::vector<bool> invalid_normals(ns.size()/3,false),used_normals(ns.size()/3,false);
+        for(std::size_t i=0;i<invalid_normals.size();++i) {
+            const Vec3 n{ns[i*3],ns[i*3+1],ns[i*3+2]};const auto length=std::hypot(n.x,n.y,n.z);
+            invalid_normals[i]=!finite(n.x)||!finite(n.y)||!finite(n.z)||length==0;
+            if(!invalid_normals[i]&&(!finite(length)||std::abs(length-1)>1e-3))
+                reject("INVALID_NORMAL","Finite nonzero WRL normals must have unit length, including unused normals; GIS static does not replace their direction.",source->name);
+            if(invalid_normals[i]&&!options.gis_static)
+                reject("INVALID_NORMAL","WRL explicit normal is zero or nonfinite, including unused normals.",source->name);
+        }
         const auto& ni=field(geometry,"normalIndex").numbers;const auto& ti=field(geometry,"texCoordIndex").numbers;const auto& ci=field(geometry,"colorIndex").numbers;
         const bool np=scalar(geometry,"normalPerVertex",1)!=0,cp=scalar(geometry,"colorPerVertex",1)!=0;
         const auto nf=np?faces(ni):Faces{},tf=faces(ti),colf=cp?faces(ci):Faces{};
@@ -349,6 +638,12 @@ class Converter {
                 texture.source=urls[i];texture.bytes=std::move(bytes);texture.mime_type=mime_type(texture.bytes);
                 if(texture.mime_type!="image/png"&&texture.mime_type!="image/jpeg") reject("UNSUPPORTED_TEXTURE_FORMAT","WRL image must be PNG or JPEG.",urls[i]);
                 const auto semantics=image_semantics(texture);replace_color=!semantics.first;replace_alpha=semantics.second;
+                // X3D 3.3 section 17.2.2.3's prose and table 17.3 disagree
+                // about modulation versus replacement. Accept only combinations
+                // whose result is identical under both rules, rather than guess.
+                if(x3d&&mat&&((replace_color&&(material.color.r!=1||material.color.g!=1||material.color.b!=1||
+                    std::any_of(cs.begin(),cs.end(),[](double c){return c!=1;})))||(replace_alpha&&material.color.a!=1)))
+                    reject("AMBIGUOUS_X3D_TEXTURE_MATERIAL","Export neutral white RGB/Color with RGB textures and scalar opacity 1 with alpha textures; X3D 3.x modulation/replacement semantics are ambiguous.",material.name);
                 material.texture=static_cast<int>(out.textures.size());out.textures.push_back(std::move(texture));
                 if(i) warning("WRL_URL_ALTERNATIVE_USED","Selected local ImageTexture URL alternative "+std::to_string(i+1)+" after absent files.",material.name);
                 break;
@@ -385,11 +680,16 @@ class Converter {
                 if(!finite(v.position.x)||!finite(v.position.y)||!finite(v.position.z)) reject("NONFINITE_VERTEX","Transformed WRL coordinate is nonfinite.",mesh.name);
                 if(normals) {
                     const auto index=binding(nf,ni,np,cf,fi,k,ns.size()/3);
+                    used_normals[index]=true;
                     Vec3 n{ns[index*3],ns[index*3+1],ns[index*3+2]};const double length=std::hypot(n.x,n.y,n.z);
-                    if(!finite(length)||std::abs(length-1)>1e-3) {
+                    if(!finite(n.x)||!finite(n.y)||!finite(n.z)||length==0) {
                         if(!options.gis_static) reject("INVALID_NORMAL","WRL normal must have unit length.",mesh.name);
                         v.normal={};
-                    } else v.normal=normal(world,n,det);
+                    } else {
+                        if(!finite(length)||std::abs(length-1)>1e-3)
+                            reject("INVALID_NORMAL","Finite nonzero WRL normals must have unit length; GIS static does not replace their direction.",mesh.name);
+                        v.normal=normal(world,n,det);
+                    }
                     v.has_normal=true;
                 }
                 if(colors) {
@@ -434,6 +734,10 @@ class Converter {
                 if(reverse) std::swap(tri[1],tri[2]);
                 const auto f=face_normal(tri[0].position,tri[1].position,tri[2].position);
                 if(f.x==0&&f.y==0&&f.z==0) {
+                    const auto a=points[triangles[i]],b=points[triangles[i+1]],c=points[triangles[i+2]];
+                    const Vec3 u{b.x-a.x,b.y-a.y,b.z-a.z},v{c.x-a.x,c.y-a.y,c.z-a.z};
+                    if(!finite(u.x)||!finite(u.y)||!finite(u.z)||!finite(v.x)||!finite(v.y)||!finite(v.z)||!zero_area(u,v))
+                        reject("INVALID_WRL_FACE","A nonzero source triangle collapsed under its coordinate transform; geometry cannot be preserved.",mesh.name);
                     if(!options.gis_static) reject("DEGENERATE_TRIANGLE","WRL triangle has zero area.",mesh.name);
                     ++discarded;for(const auto& v:tri) if(v.has_normal&&std::hypot(v.normal.x,v.normal.y,v.normal.z)==0) ++discarded_normals;
                     continue;
@@ -452,6 +756,8 @@ class Converter {
                 mesh.triangles.push_back(t);
             }
         }
+        for(std::size_t i=0;i<invalid_normals.size();++i) if(invalid_normals[i]&&!used_normals[i])
+            reject("INVALID_NORMAL","Unused WRL normal is zero or nonfinite; no retained source triangle can repair it.",mesh.name);
         if(material.texture>=0&&!uv) warning("WRL_DEFAULT_UV_GENERATED","Generated VRML97 bounding-box UVs in local coordinates.",mesh.name);
         if(!normals) warning("WRL_DEFAULT_NORMALS_GENERATED","Generated flat normals for creaseAngle 0.",mesh.name);
         if(repaired) warning("NORMALS_REPAIRED","GIS static profile rebuilt "+std::to_string(repaired)+" invalid corner normals across "+std::to_string(repaired_triangles)+" triangles.",mesh.name);
@@ -461,7 +767,7 @@ class Converter {
         out.nodes[node_index].meshes.push_back(static_cast<std::uint32_t>(out.meshes.size()));out.meshes.push_back(std::move(mesh));
     }
 public:
-    Converter(Scene& scene,const ReaderOptions& opts,std::filesystem::path directory):out(scene),options(opts),root(std::move(directory)){}
+    Converter(Scene& scene,const ReaderOptions& opts,std::filesystem::path directory,bool xml=false):out(scene),options(opts),root(std::move(directory)),x3d(xml){}
     void visit(const Ref& source,int parent,const Matrix& parent_matrix,std::size_t depth=0) {
         if(!source) return;
         if(depth>128||++expanded>100000) reject("WRL_EXPANSION_LIMIT","DEF/USE expansion exceeds node/depth limit.","scene");
@@ -479,7 +785,7 @@ public:
         }
         for(double x:world) if(!finite(x)) reject("NONFINITE_TRANSFORM","WRL transform is nonfinite.",source->name);
         Node node;node.name=source->name.empty()?source->type+" "+std::to_string(out.nodes.size()):source->name;
-        node.source_id="VRML97:"+node.name;node.parent=parent;node.source_world_transform=world;
+        node.source_id=(x3d?"X3D:":"VRML97:")+node.name;node.parent=parent;node.source_world_transform=world;
         const auto index=static_cast<int>(out.nodes.size());out.nodes.push_back(std::move(node));
         if(source->type=="Shape") shape(source,index,world);
         else for(const auto& c:field(source,"children").nodes) visit(c,index,world,depth+1);
@@ -497,6 +803,32 @@ Scene read_wrl(const std::filesystem::path& input,const ReaderOptions& options) 
         out.diagnostics.push_back({Severity::warning,"WRL_COORDINATE_CONVENTION","VRML97 right-handed Y-up metres converted once to right-handed Z-up metres.","scene"});
         for(const auto& node:nodes) converter.visit(node,-1,identity());
     } catch(const Issue& e) {out.diagnostics.push_back({Severity::error,e.code,e.what(),e.context});}
+    return out;
+}
+Scene read_x3d(const std::filesystem::path& input,const ReaderOptions& options) {
+    Scene out;const auto path=std::filesystem::absolute(input);out.name=path.stem().u8string();out.source=path.u8string();
+    out.conversion_profile=options.gis_static?"gis-static":"strict";out.missing_texture_policy=options.missing_texture_fallback?"material-color":"error";
+    try {
+        const auto bytes=read_bytes(path,options.max_file_bytes);
+        const std::string_view text(reinterpret_cast<const char*>(bytes.data()),bytes.size());
+        XParser::lexical(text);tinyxml2::XMLDocument doc;
+        if(doc.Parse(text.data(),text.size())!=tinyxml2::XML_SUCCESS)
+            reject("INVALID_X3D","Malformed X3D XML: "+label(doc.ErrorStr(),"parse failure"),"scene");
+        XParser parser;auto nodes=parser.parse(doc,out);auto basis=identity();
+        basis[0]=basis[5]=basis[10]=parser.meters_per_unit();
+        std::ostringstream unit;unit<<std::setprecision(std::numeric_limits<double>::max_digits10)<<parser.meters_per_unit();
+        out.diagnostics.push_back({Severity::warning,"X3D_COORDINATE_CONVENTION","X3D right-handed Y-up coordinates converted once to right-handed Z-up metres; source metres per unit="+unit.str(),"scene"});
+        Converter converter(out,options,std::filesystem::weakly_canonical(path.parent_path()),true);
+        for(const auto& node:nodes) converter.visit(node,-1,basis);
+    } catch(const Issue& e) {out.diagnostics.push_back({Severity::error,e.code,e.what(),e.context});}
+    // The converter and geometry validation are shared with WRL. Keep reports
+    // accurate about the source encoding without duplicating those algorithms.
+    for(auto& d:out.diagnostics) {
+        const auto replace=[](std::string& s,const std::string& from,const std::string& to) {
+            std::size_t at=0;while((at=s.find(from,at))!=std::string::npos) {s.replace(at,from.size(),to);at+=to.size();}
+        };
+        replace(d.code,"WRL","X3D");replace(d.message,"VRML97","X3D");replace(d.message,"VRML","X3D");replace(d.message,"WRL","X3D");
+    }
     return out;
 }
 } // namespace gmb

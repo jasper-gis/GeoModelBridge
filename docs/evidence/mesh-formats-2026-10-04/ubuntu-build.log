@@ -1,0 +1,217 @@
+Verified GeoModelBridge 0.6.0: 7 required declarations and runtime release references agree.
+Verified tinyxml2 10.0.0
+Verified cgltf 1.15
+Verified ufbx 0.23.0
+Verified nlohmann/json 3.12.0
+Verified libjpeg-turbo (Windows decoder) 3.1.4.1
+Verified libpng (Windows decoder) 1.6.58
+Verified zlib (Windows decoder) 1.3.2
+-- Native FileGDB runtime: bundled beside the built writer and installed to bin/native-filegdb (licenses in licenses/filegdb-api)
+-- Configuring done (1.6s)
+-- Generating done (0.3s)
+-- Build files have been written to: /home/gmb/GeoModelBridge-dae-opt-20261002/build/native
+[1/28] Building CXX object CMakeFiles/GeoModelBridge.Core.dir/src/core.cpp.o
+[2/28] Building CXX object CMakeFiles/GeoModelBridge.Core.dir/src/bundle.cpp.o
+[3/28] Building CXX object CMakeFiles/GeoModelBridge.Core.dir/src/fbx_reader.cpp.o
+[4/28] Building CXX object CMakeFiles/GeoModelBridge.Core.dir/src/glb_reader.cpp.o
+[5/28] Building CXX object CMakeFiles/GeoModelBridge.Core.dir/src/dae_reader.cpp.o
+[6/28] Building CXX object CMakeFiles/GeoModelBridge.Core.dir/src/ply_reader.cpp.o
+[7/28] Building CXX object CMakeFiles/GeoModelBridge.Core.dir/src/wrl_reader.cpp.o
+[8/28] Building CXX object CMakeFiles/GeoModelBridge.Core.dir/src/stl_reader.cpp.o
+[9/28] Building CXX object CMakeFiles/GeoModelBridge.Core.dir/src/fixtures.cpp.o
+[10/28] Building CXX object CMakeFiles/GeoModelBridge.Core.dir/src/max_adapter.cpp.o
+[11/28] Linking CXX static library libGeoModelBridge.Core.a
+[12/28] Building CXX object CMakeFiles/gmb_core_tests.dir/tests/core_tests.cpp.o
+[13/28] Linking CXX executable bin/gmb_core_tests
+[14/28] cd /home/gmb/GeoModelBridge-dae-opt-20261002/build/native && /usr/bin/cmake -E make_directory /home/gmb/GeoModelBridge-dae-opt-20261002/build/native/bin/max-adapter && /usr/bin/cmake -E copy_if_different /home/gmb/GeoModelBridge-dae-opt-20261002/adapters/3dsmax/worker.py /home/gmb/GeoModelBridge-dae-opt-20261002/build/native/bin/max-adapter/worker.py
+[15/28] Copying official FileGDB runtime beside the native writer
+[16/28] Building CXX object CMakeFiles/gmb_output_tests.dir/tests/output_tests.cpp.o
+[17/28] Linking CXX executable bin/gmb_output_tests
+[18/28] Building CXX object CMakeFiles/gmb_report_writer.dir/tests/report_writer.cpp.o
+[19/28] Linking CXX executable bin/gmb_report_writer
+[20/28] Building CXX object CMakeFiles/GeoModelBridge.NativeWriter.dir/backends/native-filegdb/images.cpp.o
+[21/28] Building CXX object CMakeFiles/GeoModelBridge.NativeWriter.dir/backends/native-filegdb/images_jpeg.cpp.o
+[22/28] Building CXX object CMakeFiles/GeoModelBridge.NativeWriter.dir/backends/native-filegdb/images_png.cpp.o
+[23/28] Building CXX object CMakeFiles/GeoModelBridge.NativeWriter.dir/src/core.cpp.o
+[24/28] Building CXX object CMakeFiles/GeoModelBridge.NativeWriter.dir/backends/native-filegdb/platform_linux.cpp.o
+[25/28] Building CXX object CMakeFiles/GeoModelBridge.NativeWriter.dir/backends/native-filegdb/main.cpp.o
+[26/28] Linking CXX executable bin/native-filegdb/GeoModelBridge.NativeWriter
+[27/28] Building CXX object CMakeFiles/geomodelbridge.dir/src/main.cpp.o
+[28/28] Linking CXX executable bin/geomodelbridge
+Internal ctest changing into directory: /home/gmb/GeoModelBridge-dae-opt-20261002/build/native
+Test project /home/gmb/GeoModelBridge-dae-opt-20261002/build/native
+      Start  1: core
+ 1/21 Test  #1: core .............................   Passed    0.29 sec
+      Start  2: output_safety
+ 2/21 Test  #2: output_safety ....................   Passed    0.34 sec
+      Start  3: cli
+ 3/21 Test  #3: cli ..............................   Passed    3.14 sec
+      Start  4: reader_integration
+ 4/21 Test  #4: reader_integration ...............   Passed    0.96 sec
+      Start  5: binary_fbx
+ 5/21 Test  #5: binary_fbx .......................   Passed    0.50 sec
+      Start  6: obj_integration
+ 6/21 Test  #6: obj_integration ..................   Passed    0.59 sec
+      Start  7: glb_integration
+ 7/21 Test  #7: glb_integration ..................   Passed    1.06 sec
+      Start  8: gltf_integration
+ 8/21 Test  #8: gltf_integration .................   Passed    0.67 sec
+      Start  9: wrl_integration
+ 9/21 Test  #9: wrl_integration ..................   Passed    1.41 sec
+      Start 10: dae_integration
+10/21 Test #10: dae_integration ..................   Passed    5.50 sec
+      Start 11: ply_integration
+11/21 Test #11: ply_integration ..................   Passed    2.50 sec
+      Start 12: stl_integration
+12/21 Test #12: stl_integration ..................   Passed    2.42 sec
+      Start 13: x3d_integration
+13/21 Test #13: x3d_integration ..................   Passed    2.93 sec
+      Start 14: profile_integration
+14/21 Test #14: profile_integration ..............   Passed    4.03 sec
+      Start 15: missing_textures
+15/21 Test #15: missing_textures .................   Passed    1.17 sec
+      Start 16: normal_repair
+16/21 Test #16: normal_repair ....................   Passed    0.79 sec
+      Start 17: python_client
+17/21 Test #17: python_client ....................   Passed    5.58 sec
+      Start 18: max_worker_policy
+18/21 Test #18: max_worker_policy ................   Passed    0.83 sec
+      Start 19: max_adapter
+19/21 Test #19: max_adapter ......................   Passed    0.62 sec
+      Start 20: native_runtime
+20/21 Test #20: native_runtime ...................   Passed    0.82 sec
+      Start 21: native_build_layout
+21/21 Test #21: native_build_layout ..............   Passed    9.35 sec
+
+100% tests passed, 0 tests failed out of 21
+
+Total Test time (real) =  45.62 sec
+-- Install configuration: "Release"
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/bin/max-adapter/worker.py
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/bin/geomodelbridge
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/bin/demo/textured_quad.fbx
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/bin/demo/textured_quad.obj
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/bin/demo/textured_quad.mtl
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/bin/demo/textured_quad.glb
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/bin/demo/textured_quad.gltf
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/bin/demo/textured_quad.bin
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/bin/demo/textured_quad.wrl
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/bin/demo/checker.png
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/licenses/cgltf/LICENSE
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/licenses/tinyxml2/LICENSE.txt
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/bin/demo/textured_quad.dae
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/bin/demo/colored_quad.ply
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/bin/demo/mesh_quad.stl
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/bin/demo/textured_quad.x3d
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/python/geomodelbridge
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/python/geomodelbridge/client.py
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/python/geomodelbridge/__init__.py
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/python/geomodelbridge/_version.py
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/python/examples/convert_fbx.py
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/bin/native-filegdb/GeoModelBridge.NativeWriter
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/bin/native-filegdb/libFileGDBAPI.so
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/bin/native-filegdb/libfgdbunixrtl.so
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/licenses/filegdb-api
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/licenses/filegdb-api/Acknowledgements
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/licenses/filegdb-api/userestrictions.txt
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/licenses/filegdb-api/Apache License.pdf
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/licenses/filegdb-api/AUTHORS
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/licenses/filegdb-api/Acknowledgements-FGDBUnixRTL
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/licenses/filegdb-api/README
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/licenses/filegdb-api/sdk-sources-linux.json
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.2.1.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/glb.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/max-adapter.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/gui.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-results.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/dae.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-preflight-2026-10-03.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.1.13.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.1.8.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.1.4.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.3.0.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.1.6.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.5.0.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/command-line.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/acceptance.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.1.2.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/model-formats.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/visual-acceptance-setup.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/architecture.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/compatibility.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.1.7.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.6.0.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-max-hardening-2026-09-27.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/bundle-format.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/filegdb-api.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-dae-optimization-2026-10-02.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/stl.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-dae-2026-09-30.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/wrl.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.1.3.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/x3d.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.4.0.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.1.14.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/build-and-release.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.1.10.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.1.11.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/max-roadmap.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/roadmap.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.1.5.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/python-client.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/ply.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.1.12.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-boundary-2026-10-03.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.2.2.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/ubuntu-python-client.log
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/ubuntu-dependencies.log
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/windows-gui.json
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/windows-build.log
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/windows-gui-deep-path-limit.json
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/ubuntu-ctest.log
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/unlit-after.json
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/windows-dependencies.log
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/windows-deployment.log
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/ubuntu-native.json
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/unlit-before.json
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/windows-version.log
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/ubuntu-build.log
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/windows-python-contract.log
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/ubuntu-deployment.log
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/windows-python-client.log
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/windows-deployment.json
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/windows-python-client.json
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/ubuntu-version.log
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/implementation-sha256.json
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/windows-ctest.log
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/windows-gui.log
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/windows-native.json
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/windows-native.log
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/ubuntu-python-client.json
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/ubuntu-deployment.json
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/ubuntu-python-contract.log
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/evidence/preflight-2026-10-03/ubuntu-native.log
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.2.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.1.1.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./docs/validation-v0.1.9.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./README.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./VERSION
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./CHANGELOG.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/./THIRD_PARTY_NOTICES.md
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/licenses/ufbx/LICENSE
+-- Installing: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/licenses/nlohmann/LICENSE.MIT
+Verified tinyxml2 10.0.0
+Verified cgltf 1.15
+Verified ufbx 0.23.0
+Verified nlohmann/json 3.12.0
+Verified libjpeg-turbo (Windows decoder) 3.1.4.1
+Verified libpng (Windows decoder) 1.6.58
+Verified zlib (Windows decoder) 1.3.2
+Verified FileGDB API 1.5.5.330 runtime and original license files
+{"arcgis_pro_required":false,"backend":"native-filegdb","filegdb_api":"1.5.5","status":"available","version":"0.6.0"}
+Installed native CLI: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/bin/geomodelbridge
+Native writer: /home/gmb/GeoModelBridge-dae-opt-20261002/releases/MeshFormats-20261004/bin/native-filegdb/GeoModelBridge.NativeWriter
+CLI help: geomodelbridge convert -h; sequential calling examples: docs/command-line.md

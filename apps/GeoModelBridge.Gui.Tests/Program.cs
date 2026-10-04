@@ -45,6 +45,7 @@ internal static partial class Program
             ReportTests();
             MaxTests();
             SummaryTests();
+            MeshFormatSummaryTests();
             await MissingEngineTests();
             await FakeEngineTests();
             InspectionContractTests();
@@ -145,7 +146,7 @@ internal static partial class Program
         var glbPath = Path.Combine(Work, "model.glb");
         File.WriteAllBytes(glbPath, [1, 2, 3]);
         Test("accept_glb_input", () => Valid(Settings with { InputPath = glbPath }));
-        foreach (var extension in new[] { ".gltf", ".wrl", ".dae" })
+        foreach (var extension in new[] { ".gltf", ".wrl", ".dae", ".ply", ".stl", ".x3d" })
         {
             var modelPath = Path.Combine(Work, "model" + extension);
             File.WriteAllText(modelPath, "test");
@@ -154,6 +155,22 @@ internal static partial class Program
 
         Test("reject_obj_bad_axis", () => Invalid(Settings with { InputPath = objPath, ObjUpAxis = "X" }));
         Test("reject_obj_bad_unit", () => Invalid(Settings with { InputPath = objPath, ObjUnitMeters = "0" }));
+        foreach (var extension in new[] { ".ply", ".stl" })
+        {
+            var modelPath = Path.Combine(Work, "model" + extension);
+            Test("mesh_source_arguments_" + extension, () =>
+            {
+                var request = Settings with { InputPath = " " + modelPath + " ", MeshUpAxis = "Y", MeshUnitMeters = "0.001" };
+                var args = ConversionCommand.BuildArguments(request).ToArray();
+                Assert(args[1] == modelPath && After(args, "--mesh-up-axis") == "Y" && After(args, "--mesh-unit-meters") == "0.001", "Mesh source coordinates omitted.");
+                var inspection = InspectionSettings.FromConversion(request, Path.Combine(Work, "mesh-options.json"));
+                var inspectArgs = InspectionCommand.BuildArguments(inspection).ToArray();
+                Assert(After(inspectArgs, "--mesh-up-axis") == "Y" && After(inspectArgs, "--mesh-unit-meters") == "0.001", "Inspection source coordinates differ.");
+                Assert(!inspectArgs.Contains("--origin") && !inspectArgs.Contains("--obj-up-axis"), "Wrong mesh reader arguments.");
+            });
+            Test("reject_mesh_bad_axis_" + extension, () => Invalid(Settings with { InputPath = modelPath, MeshUpAxis = "X" }));
+            Test("reject_mesh_bad_unit_" + extension, () => Invalid(Settings with { InputPath = modelPath, MeshUnitMeters = "NaN" }));
+        }
         var wrongPath = Path.Combine(Work, "wrong.txt");
         File.WriteAllText(wrongPath, "test");
         Test("reject_non_model_input", () => Invalid(Settings with { InputPath = wrongPath }));
@@ -1073,22 +1090,25 @@ internal static partial class Program
             Assert(report["status"]!.GetValue<string>() == "written_and_readback_verified", "GLB native readback failed.");
             Assert(report["textures"]!.AsArray().Any(t => t!["readback_bytes_equal"]!.GetValue<bool>()), "GLB texture was not verified.");
         });
-        foreach (var extension in new[] { "obj", "gltf", "wrl", "dae" })
+        foreach (var extension in new[] { "obj", "gltf", "wrl", "dae", "ply", "stl", "x3d" })
         await TestAsync("real_native_" + extension + "_conversion_from_gui_service", async () =>
         {
             // Keep the original relative resource names beside each input model.
             var formatDirectory = Path.Combine(caseDirectory, extension);
             Directory.CreateDirectory(formatDirectory);
-            foreach (var name in new[] { "textured_quad." + extension, "textured_quad.bin", "textured_quad.mtl", "checker.png" })
+            var sourceName = extension == "ply" ? "colored_quad.ply" : extension == "stl" ? "mesh_quad.stl" : "textured_quad." + extension;
+            foreach (var name in new[] { sourceName, "textured_quad.bin", "textured_quad.mtl", "checker.png" })
                 File.Copy(Path.Combine(fixtureDirectory, name), Path.Combine(formatDirectory, name));
-            var formatRequest = request with { InputPath = Path.Combine(formatDirectory, "textured_quad." + extension),
+            var formatRequest = request with { InputPath = Path.Combine(formatDirectory, sourceName),
                 OutputPath = Path.Combine(formatDirectory, "result.gdb"),
                 ReportPath = Path.Combine(formatDirectory, "verified.json"), Profile = "strict" };
             var result = await service.ConvertAsync(formatRequest);
             Assert(result.Success && result.ExitCode == 0, result.Message);
             ReportVerifier.Verify(File.ReadAllText(formatRequest.ReportPath), formatRequest);
             var report = JsonNode.Parse(File.ReadAllText(formatRequest.ReportPath))!;
-            Assert(report["textures"]!.AsArray().Any(t => t!["readback_bytes_equal"]!.GetValue<bool>()), extension + " texture was not verified.");
+            if (extension is "ply" or "stl")
+                Assert(report["textures"]!.AsArray().Count == 0, "Mesh reader invented an image.");
+            else Assert(report["textures"]!.AsArray().Any(t => t!["readback_bytes_equal"]!.GetValue<bool>()), extension + " texture was not verified.");
         });
         await TestAsync("repeat_conversion_refuses_to_overwrite_gdb_and_report", async () =>
         {

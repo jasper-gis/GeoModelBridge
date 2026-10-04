@@ -2,7 +2,9 @@
 
 V0.6.0 增加 Windows 可选 `.max` 预处理，设置 `max_batch`、`max_frame` 和 `max_timeout` 后复用同一函数。运行依赖、接受范围及真实 Max 验收状态见 [MAX 适配器](max-adapter.md)。
 
-`geomodelbridge` 把 FBX/OBJ/GLB/glTF/WRL/DAE 入库封装为普通 Python 函数调用，供以后 Windows ArcGIS `.atbx` 的脚本层复用，也可用于独立 Python 脚本或 Ubuntu。库仅使用 Python 标准库，不导入 `arcpy`，不在 Python 进程内加载 FileGDB SDK；实际转换仍由同版本 EXE 完成。`ConversionRequest.input_fbx` 为兼容既有调用保留字段名，接受 `.fbx`、`.obj`、`.glb`、`.gltf`、`.wrl`、`.dae`。OBJ 可指定 `obj_up_axis="Y"`、`obj_unit_meters=0.01` 等源坐标约定；GLB/glTF 和 WRL 按各自规范的右手 Y-up 米制读取；[DAE / COLLADA](dae.md) 按文件声明的单位和向上轴读取静态场景。
+`geomodelbridge` 把 FBX/OBJ/GLB/glTF/WRL/DAE/PLY/STL/X3D 入库封装为普通 Python 函数调用，供以后 Windows ArcGIS `.atbx` 的脚本层复用，也可用于独立 Python 脚本或 Ubuntu。库仅使用 Python 标准库，不导入 `arcpy`，不在 Python 进程内加载 FileGDB SDK；实际转换仍由同版本 EXE 完成。`ConversionRequest.input_fbx` 为兼容既有调用保留字段名，接受 `.fbx`、`.obj`、`.glb`、`.gltf`、`.wrl`、`.dae`、`.ply`、`.stl`、`.x3d`，另支持已配置的 Windows `.max`。OBJ 可指定 `obj_up_axis="Y"`、`obj_unit_meters=0.01` 等源坐标约定；GLB/glTF 和 WRL 按各自规范的右手 Y-up 米制读取；[DAE / COLLADA](dae.md) 按文件声明的单位和向上轴读取静态场景。
+
+`ConversionRequest` 与 `InspectionRequest` 均增加可选的 `mesh_up_axis="Z"`、`mesh_unit_meters=1.0`，仅用于 PLY/STL。Y-up 毫米模型可设 `mesh_up_axis="Y", mesh_unit_meters=0.001`；其他格式传入非默认值会在启动前拒绝。字段追加在原有字段后，保留既有位置参数调用。X3D 使用文件自身的规范与长度声明，不套用网格来源参数。格式边界见 [PLY](ply.md)、[STL](stl.md)、[X3D](x3d.md)。
 
 本次交付函数库、普通 Python 示例和测试，未制作 `.atbx` / `.pyt`，未进行 ArcGIS 工具箱内运行验收。
 
@@ -105,7 +107,7 @@ for diagnostic in inspection.diagnostics:
     print(diagnostic.code, diagnostic.message)
 ```
 
-`InspectionRequest` 必填 `input_model`、`report_path`；可选 `profile`（默认 `strict`）、`missing_textures`、`texture_dirs`、`obj_up_axis`、`obj_unit_meters`、`max_batch`、`max_frame`、`max_timeout`，含义与转换一致。MAX 仍需相应运行环境。报告不能覆盖现有文件，也不能位于 GDB 内。模型检查不要求 GDB、要素类、WKID 或原点，可以使用只构建核心的 CLI；不必先调用会探测 writer 的 `engine.check()`。
+`InspectionRequest` 必填 `input_model`、`report_path`；可选 `profile`（默认 `strict`）、`missing_textures`、`texture_dirs`、`obj_up_axis`、`obj_unit_meters`、`max_batch`、`max_frame`、`max_timeout`、`mesh_up_axis`、`mesh_unit_meters`，含义与转换一致。MAX 仍需相应运行环境。报告不能覆盖现有文件，也不能位于 GDB 内。模型检查不要求 GDB、要素类、WKID 或原点，可以使用只构建核心的 CLI；不必先调用会探测 writer 的 `engine.check()`。
 
 `InspectionResult` 保留规范化 `request`、`report_path`、`counts`、`bounds`、完整 `diagnostics`、两路日志尾部及截断标记、`version`，`backend="none"`。不可变的 `InspectionCounts` 包含 `meshes`、`triangles`、`corner_vertices`、`materials`、`textures`、`texture_bytes`；`InspectionBounds` 包含三个数值组成的 `minimum` 与 `maximum`。范围来自保留三角形引用的角点，已应用源单位、轴向和静态节点变换，统一为右手 Z-up 米制；不含用户原点平移，WKID 为 0，不代表经纬度或地理定位。它不把未引用的角点计入范围，但这些角点仍须通过完整验证。
 

@@ -48,8 +48,8 @@ public static partial class ConversionValidator
         var input = FullPath(settings.InputPath, "输入模型", issues);
         if (input is not null)
         {
-            if (!new[] { ".fbx", ".obj", ".glb", ".gltf", ".wrl", ".dae", ".max" }.Contains(Path.GetExtension(input), StringComparer.OrdinalIgnoreCase))
-                issues.Add("输入模型必须是 .fbx、.obj、.glb、.gltf、.wrl、.dae 或 .max 文件。");
+            if (!new[] { ".fbx", ".obj", ".glb", ".gltf", ".wrl", ".dae", ".ply", ".stl", ".x3d", ".max" }.Contains(Path.GetExtension(input), StringComparer.OrdinalIgnoreCase))
+                issues.Add("输入模型必须是 FBX、OBJ、GLB、glTF、WRL、DAE、PLY、STL、X3D 或 MAX 文件。");
             if (!File.Exists(input)) issues.Add("找不到输入模型文件，请重新选择。");
         }
         if (settings.Profile is not ("gis-static" or "strict"))
@@ -71,6 +71,12 @@ public static partial class ConversionValidator
                 issues.Add("MAX 必须明确填写采样帧（-1000000 到 1000000 的整数）。");
             if (!int.TryParse(settings.MaxTimeout?.Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out var timeout) || timeout < 1 || timeout > 86400)
                 issues.Add("MAX 超时秒数必须是 1 到 86400 的整数。");
+        }
+        if (input is not null && new[] { ".ply", ".stl" }.Contains(Path.GetExtension(input), StringComparer.OrdinalIgnoreCase))
+        {
+            if (settings.MeshUpAxis is not ("Z" or "Y")) issues.Add("PLY/STL 向上轴必须为 Z 或 Y。");
+            if (!double.TryParse(settings.MeshUnitMeters?.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out var unit) ||
+                !double.IsFinite(unit) || unit <= 0) issues.Add("PLY/STL 每单位米数必须为正的有限数值。");
         }
         if (settings.TextureDirectories is null) issues.Add("贴图目录列表无效。");
         else foreach (var directory in settings.TextureDirectories)

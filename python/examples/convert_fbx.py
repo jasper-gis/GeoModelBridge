@@ -17,11 +17,14 @@ def main():
     parser.add_argument("--origin", type=float, nargs=3, required=True)
     parser.add_argument("--profile", choices=("strict", "gis-static"), default="strict")
     parser.add_argument("--missing-textures", choices=("material-color", "error"), default="material-color")
+    parser.add_argument("--mesh-up-axis", choices=("Z", "Y"), default="Z", help="PLY/STL source up axis")
+    parser.add_argument("--mesh-unit-meters", type=float, default=1.0, help="Metres per PLY/STL source unit")
     args = parser.parse_args()
     try:
         result = Engine(args.engine).convert(ConversionRequest(
             args.input, args.output, args.wkid, tuple(args.origin),
             profile=args.profile, missing_textures=args.missing_textures,
+            mesh_up_axis=args.mesh_up_axis, mesh_unit_meters=args.mesh_unit_meters,
         ), on_message=lambda message: print(message.text, flush=True))
         print(f"Feature class: {result.feature_class_path}\nReport: {result.report_path}")
     except GeoModelBridgeError as error:

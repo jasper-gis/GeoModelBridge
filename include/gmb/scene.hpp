@@ -70,11 +70,16 @@ struct ReaderOptions {
     std::uint64_t max_texture_bytes = 256ull * 1024 * 1024;
     double obj_unit_meters = 1.0;
     bool obj_y_up = false;
+    double mesh_unit_meters = 1.0; // PLY/STL do not declare an interoperable unit or up axis.
+    bool mesh_y_up = false;
 };
 Scene read_fbx(const std::filesystem::path& input, const ReaderOptions& options = {});
 Scene read_glb(const std::filesystem::path& input, const ReaderOptions& options = {});
 Scene read_wrl(const std::filesystem::path& input, const ReaderOptions& options = {});
 Scene read_dae(const std::filesystem::path& input, const ReaderOptions& options = {});
+Scene read_ply(const std::filesystem::path& input, const ReaderOptions& options = {});
+Scene read_stl(const std::filesystem::path& input, const ReaderOptions& options = {});
+Scene read_x3d(const std::filesystem::path& input, const ReaderOptions& options = {});
 Scene read_model(const std::filesystem::path& input, const ReaderOptions& options = {});
 std::vector<Diagnostic> validate(const Scene& scene);
 bool has_errors(const std::vector<Diagnostic>& diagnostics);

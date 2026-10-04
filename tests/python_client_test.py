@@ -108,6 +108,29 @@ class ClientTests(unittest.TestCase):
         self.assertIn(str(dae), args)
         self.assertNotIn("--obj-up-axis", args)
 
+    def test_mesh_formats_and_source_units(self):
+        for extension in ("PLY", "STL", "X3D"):
+            source = self.root / ("模型." + extension)
+            source.touch()
+            request = replace(self.request, input_fbx=source)
+            if extension != "X3D":
+                request = replace(request, mesh_up_axis="Y", mesh_unit_meters=0.001)
+            args = self.engine.command(request)
+            self.assertIn(str(source), args)
+            self.assertNotIn("--obj-up-axis", args)
+            if extension != "X3D":
+                self.assertEqual(args[args.index("--mesh-up-axis") + 1], "Y")
+                self.assertEqual(args[args.index("--mesh-unit-meters") + 1], "0.001")
+            else:
+                self.assertNotIn("--mesh-up-axis", args)
+            for change in (dict(mesh_up_axis="X"), dict(mesh_unit_meters=True), dict(mesh_unit_meters=0),
+                           dict(mesh_unit_meters=float("inf")), dict(mesh_unit_meters=10**400)):
+                with self.assertRaises(ValidationError), patch("geomodelbridge.client._run") as runner:
+                    self.engine.convert(replace(request, **change))
+                runner.assert_not_called()
+        with self.assertRaises(ValidationError):
+            self.engine.command(replace(self.request, mesh_unit_meters=0.01))
+
     def test_invalid_requests(self):
         changes = [dict(wkid=True), dict(wkid="3857"), dict(wkid=0), dict(wkid=2**31),
                    dict(origin=(1, 2)), dict(origin=(1, 2, float("nan"))), dict(origin=(1, 2, float("inf"))),
@@ -639,6 +662,23 @@ class InspectionTests(unittest.TestCase):
             self.assertEqual(command[command.index("--max-batch") + 1], str(self.exe))
             self.assertEqual(command[command.index("--max-frame") + 1], "-7")
             self.assertEqual(command[command.index("--max-timeout") + 1], "90")
+
+    def test_mesh_inspection_uses_same_coordinate_options(self):
+        for extension in ("PLY", "STL", "X3D"):
+            source = self.root / ("source." + extension)
+            source.touch()
+            request = replace(self.request, input_model=source)
+            if extension != "X3D":
+                request = replace(request, mesh_up_axis="Y", mesh_unit_meters=0.001)
+            args = self.engine.inspection_command(request)
+            self.assertNotIn("--origin", args)
+            self.assertNotIn("--obj-up-axis", args)
+            if extension != "X3D":
+                self.assertEqual(args[args.index("--mesh-unit-meters") + 1], "0.001")
+            else:
+                self.assertNotIn("--mesh-up-axis", args)
+                with self.assertRaises(ValidationError):
+                    self.engine.inspection_command(replace(request, mesh_up_axis="Y"))
 
     def test_invalid_requests_never_start_process_or_create_outputs(self):
         changes = [dict(input_model=""), dict(input_model="\0"), dict(input_model=self.root),

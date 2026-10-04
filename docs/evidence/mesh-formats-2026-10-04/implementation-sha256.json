@@ -1,0 +1,137 @@
+{
+  "status": "windows_and_ubuntu_sources_match",
+  "files": [
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "159eddb60a38214779879e0047d919d97ffd4ac2390989140a4b3b63d7855d4d"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui.Core/ConversionCommand.cs",
+      "sha256": "e1705eb6596df2fc3499eef123363ed42471b03e0f4acadc57f1af7a787b690f"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui.Core/ConversionSettings.cs",
+      "sha256": "6ebd16af8ddce143c6b35f2808d2e73c9e47cad7d3bb4c29634a512ad73075eb"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui.Core/ConversionValidator.cs",
+      "sha256": "2fc6cab37757cc1dcb5ef700f4717e0c277c52411cf3b1799be415bdc5b2c981"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui.Core/InspectionSettings.cs",
+      "sha256": "e259643f270aaea6e25bd4c80464c03d2bd8e742556ec09cb6e92b690b01885a"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui.Core/ReportSummaryFormatter.cs",
+      "sha256": "88c797ae04aa86d44974e0ed08806fdbbe36cfc8868c158473a06227a01a4a80"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui.Tests/InspectionTests.cs",
+      "sha256": "5910cea64a2ac9e3c68c5caa51f298d2f23ce02476f6a93923355db2e33f6134"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui.Tests/MeshFormatSummaryTests.cs",
+      "sha256": "3a5b4f610d6e92bc641348942b561233ddb91042325f3d7cbe3bed2c91460d90"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui.Tests/Program.cs",
+      "sha256": "34c7ed908382ee2ee10039856b4418cbe94be02e0e3fe329de093a7142c86b5a"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui/GeoModelBridge.Gui.csproj",
+      "sha256": "2c39d7bc11f9b09164461555937713d0aaf2a87fd8ec63cd4e6535e2e2394dfb"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui/MainWindow.xaml",
+      "sha256": "efb0efad0755c81f97d41b40b249bfa432d7a41532db34670b0bcf8663f79e64"
+    },
+    {
+      "path": "apps/GeoModelBridge.Gui/MainWindow.xaml.cs",
+      "sha256": "440ae1aac51ce1e227fd6bf6c23a5b33a16d570cabd0ec887ca5e2c04f3cddd1"
+    },
+    {
+      "path": "include/gmb/scene.hpp",
+      "sha256": "129c26da90e7f1a4e3555003d4089ed9f9d6fa4852eeb367facc0966f5afdff8"
+    },
+    {
+      "path": "python/examples/convert_fbx.py",
+      "sha256": "222d6cbc129c07e7297764252b5499f5d586a6f1db56751b6f7e6936097057a8"
+    },
+    {
+      "path": "python/geomodelbridge/client.py",
+      "sha256": "81d4a79e658448a27fa759c907b925284fc16f5e11fc9ab3a2f848d319f9a4ec"
+    },
+    {
+      "path": "scripts/package.py",
+      "sha256": "cd54e3874e2a0f6af48dc6502809d25b3ffb253b4fdf6e65883caee73456e6f2"
+    },
+    {
+      "path": "src/fbx_reader.cpp",
+      "sha256": "a9fa119b5160fd967827ff3d6d5aac817907f08eaa000c1cd41ed533abecf338"
+    },
+    {
+      "path": "src/main.cpp",
+      "sha256": "855a2af28a90c7241b9bda16950772b44392d8015e3c06680e0a96cfe324919d"
+    },
+    {
+      "path": "src/ply_reader.cpp",
+      "sha256": "cb3204760bc76cb6c17707d52c95e8d6d78e2fbcba55da1ef050f7286c363b67"
+    },
+    {
+      "path": "src/stl_reader.cpp",
+      "sha256": "bb7c49cc3a8901d90be78052aef9399cf110320ab7791538c5d322a8f371b2d2"
+    },
+    {
+      "path": "src/wrl_reader.cpp",
+      "sha256": "925e9909cb339f237db2b4a5387d978455fa7436fe1591b4e9f6bb4fd15ac99a"
+    },
+    {
+      "path": "tests/cli_test.py",
+      "sha256": "e831bc7b17d09754f8f4035032cf1735d5bec8c9d554b8ef46f3812d78d340c1"
+    },
+    {
+      "path": "tests/fixtures/colored_quad.ply",
+      "sha256": "42929080116d57239a54dc338f19d91e6178e468660da587a5bad62151eff652"
+    },
+    {
+      "path": "tests/fixtures/mesh_quad.stl",
+      "sha256": "8e5d980a359298a1471f64ca9b9e24ffffe7f56604acccc730df145754c037b5"
+    },
+    {
+      "path": "tests/fixtures/textured_quad.x3d",
+      "sha256": "e0d6546cd154148f6c51afba56c9867d7282e304d28ab794de6c15a515b6e2c7"
+    },
+    {
+      "path": "tests/native_build_layout_test.py",
+      "sha256": "3ec57dd257195b3c1119230a5a52ec664775d787c6dc83dea00001812a173a85"
+    },
+    {
+      "path": "tests/native_deployment_test.py",
+      "sha256": "d025b66cb91552a493fc49762e7e0e95c8c96a18cb8421f9a554539dee92ecc3"
+    },
+    {
+      "path": "tests/ply_integration_test.py",
+      "sha256": "ae232391a0defcb69512424e8fbcbcc4e9a66529ac8bf326f41d3954ec8a887b"
+    },
+    {
+      "path": "tests/python_client_integration_test.py",
+      "sha256": "198cfede88dcfa215834fde2f6085eaf5514a009763673c684c16d13c90c1ae9"
+    },
+    {
+      "path": "tests/python_client_test.py",
+      "sha256": "5632f8553dbbede86bc346285e68fb6d7c991e20bd1faf9c4d91057d3cfcec8e"
+    },
+    {
+      "path": "tests/stl_integration_test.py",
+      "sha256": "9228b7be165cc249314ad9aa5bbd9c1d10d2ac0827d907239b31559ec397d6ba"
+    },
+    {
+      "path": "tests/wrl_integration_test.py",
+      "sha256": "d292287aed47a67e9cb2c4b644ee7ff7eff4e658da0cc8011d351bc3dc11992b"
+    },
+    {
+      "path": "tests/x3d_integration_test.py",
+      "sha256": "7bc832ebb4ce3801c51d757c080d37e0ea58fb58ca6b9ce4a9defc4e3ceae997"
+    }
+  ]
+}

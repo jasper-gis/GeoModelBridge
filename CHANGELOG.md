@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- 新增 PLY 1.0 ASCII / 大小端二进制、STL ASCII / 二进制、X3D XML 3.0–3.3 静态子集输入，三者复用 Scene Bundle 和原生 FileGDB 后端。PLY 支持逐面一致的 RGB/Alpha；STL 记录无色白色材质约定；X3D 复用 WRL 静态节点、角点、实例和纹理转换，不明确的材质组合显式拒绝。
+- CLI、Python、WPF 模型检查与转换、文件浏览/拖放、安装演示和打包均纳入三种格式。PLY/STL 提供 `--mesh-up-axis` / `--mesh-unit-meters` 及对应 Python/GUI 来源设置，默认 Z-up、米制并记录假设；坐标缩放下溢为零明确失败。
+- 修复共享 WRL/X3D 的极小非零三角形误删和非单位法线被 GIS 静态策略改向问题；有限非单位法线明确拒绝，只有零/非有限法线才进入支持的重建策略。
+- 双平台完整 CTest 各 21/21、原生集成/部署、安装后 Python 各 17 项转换及 22 项检查（12 份 GDB 独立复制回读）、Windows GUI 379/379 通过。新增格式、二进制端序、纹理 Alpha、保守边界与环境记录见 [本次验证](docs/validation-mesh-formats-2026-10-04.md)。
+
 - 新增 Python `InspectionRequest` / `engine.inspect()` 与 WPF“检查模型”：复用模型读取策略，输出数量、本地米制包围盒与诊断；无需 GDB、定位参数或 writer，独立核验检查报告并保留既有转换成果。
 - 核心报告增加 `geometry_bounds`，按保留三角形的已规范化角点计算，既不重复应用节点变换，也不扩大到未引用角点；无效场景返回 null，Scene Bundle 格式保持不变。
 - 核心与原生端共享兼容调整分类，修复 `UNLIT_SHADING_MAPPED` 已有警告却未设置兼容标记的问题。GLB/glTF 受支持的无光照材质映射继续接受，报告明确记录语义差异。

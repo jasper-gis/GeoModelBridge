@@ -94,6 +94,8 @@ def main():
             result = invoke(exe, "inspect", source, option, "", expect_success=False)
             assert result.returncode == 2, (option, result.stderr)
         assert invoke(exe, "inspect", "", expect_success=False).returncode == 2
+        for option, value in (("--mesh-up-axis", "Y"), ("--mesh-unit-meters", "0.001")):
+            assert invoke(exe, "inspect", source, option, value, expect_success=False).returncode == 2
         for option, value in (("--wkid", "3857"), ("--writer", "unused"),
                               ("--backend", "native-filegdb"), ("--feature-class", "Models")):
             result = invoke(exe, "inspect", source, option, value, option, value, expect_success=False)

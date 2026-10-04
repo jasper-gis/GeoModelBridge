@@ -79,6 +79,16 @@ with tempfile.TemporaryDirectory(prefix='gmb-wrl-') as directory:
     prepare('bad-normal', base.replace('vector [ 0 1 0 ]','vector [ 0 0 0 ]'), 'INVALID_NORMAL')
     repaired = prepare('repaired', base.replace('vector [ 0 1 0 ]','vector [ 0 0 0 ]'), options=('--profile','gis-static'))
     assert all(v['normal'] == [0,0,1] for v in repaired['meshes'][0]['vertices'])
+    for profile in ('strict', 'gis-static'):
+        prepare('nonunit-' + profile, base.replace('vector [ 0 1 0 ]','vector [ 1 1 0 ]'), 'INVALID_NORMAL', ('--profile', profile))
+        prepare('finite-overflow-normal-' + profile, base.replace('vector [ 0 1 0 ]','vector [ 1.7e308 1.7e308 1.7e308 ]'), 'INVALID_NORMAL', ('--profile', profile))
+    narrow = '#VRML V2.0 utf8\nShape { geometry IndexedFaceSet { coord Coordinate { point [0 0 0,1 1.0000000000000002 0,0.9999999999999998 1 0,2 0 0] } coordIndex [0 1 2 -1,0 1 3 -1] } }'
+    prepare('nonzero-rounded-cross', narrow, 'INVALID_WRL_FACE', ('--profile', 'gis-static'))
+    tiny_source = '#VRML V2.0 utf8\nTransform { scale 1e-100 1e-100 1e-100 children Shape { geometry IndexedFaceSet { coord Coordinate { point [0 0 0,1e-250 0 0,0 1e-250 0,1e100 0 0,0 1e100 0] } coordIndex [0 1 2 -1,0 3 4 -1] } } }'
+    prepare('transform-underflow', tiny_source, 'INVALID_WRL_FACE', ('--profile', 'gis-static'))
+    for i, normal in enumerate(('0 0 0', '1 1 0')):
+        for profile in ('strict', 'gis-static'):
+            prepare(f'unused-normal-{i}-{profile}', base.replace('vector [ 0 1 0 ]', f'vector [ 0 1 0,{normal} ]'), 'INVALID_NORMAL', ('--profile', profile))
     plain = '#VRML V2.0 utf8\nShape { geometry IndexedFaceSet { coord Coordinate { point [0 0 0, 2 0 0, 2 0 -2, 1 0 -1, 0 0 -2] } coordIndex [0 1 2 3 4 -1] convex FALSE } }'
     concave = prepare('concave', plain)
     assert len(concave['meshes'][0]['triangles']) == 3

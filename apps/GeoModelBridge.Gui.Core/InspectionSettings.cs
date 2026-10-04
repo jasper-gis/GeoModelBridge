@@ -9,6 +9,8 @@ public sealed record InspectionSettings
     public string MissingTexturePolicy { get; init; } = "material-color";
     public string ObjUpAxis { get; init; } = "Z";
     public string ObjUnitMeters { get; init; } = "1";
+    public string MeshUpAxis { get; init; } = "Z";
+    public string MeshUnitMeters { get; init; } = "1";
     public string MaxBatchPath { get; init; } = "";
     public string MaxFrame { get; init; } = "";
     public string MaxTimeout { get; init; } = "600";
@@ -19,6 +21,7 @@ public sealed record InspectionSettings
         InputPath = settings.InputPath, ReportPath = reportPath, Profile = settings.Profile,
         MissingTexturePolicy = settings.MissingTexturePolicy, ObjUpAxis = settings.ObjUpAxis,
         ObjUnitMeters = settings.ObjUnitMeters, MaxBatchPath = settings.MaxBatchPath,
+        MeshUpAxis = settings.MeshUpAxis, MeshUnitMeters = settings.MeshUnitMeters,
         MaxFrame = settings.MaxFrame, MaxTimeout = settings.MaxTimeout,
         TextureDirectories = settings.TextureDirectories
     };
@@ -27,6 +30,7 @@ public sealed record InspectionSettings
     {
         InputPath = InputPath, Profile = Profile, MissingTexturePolicy = MissingTexturePolicy,
         ObjUpAxis = ObjUpAxis, ObjUnitMeters = ObjUnitMeters, MaxBatchPath = MaxBatchPath,
+        MeshUpAxis = MeshUpAxis, MeshUnitMeters = MeshUnitMeters,
         MaxFrame = MaxFrame, MaxTimeout = MaxTimeout, TextureDirectories = TextureDirectories
     };
 }

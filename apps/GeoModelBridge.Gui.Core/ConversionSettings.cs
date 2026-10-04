@@ -14,6 +14,8 @@ public sealed record ConversionSettings
     public string MissingTexturePolicy { get; init; } = "material-color";
     public string ObjUpAxis { get; init; } = "Z";
     public string ObjUnitMeters { get; init; } = "1";
+    public string MeshUpAxis { get; init; } = "Z";
+    public string MeshUnitMeters { get; init; } = "1";
     public string MaxBatchPath { get; init; } = "";
     public string MaxFrame { get; init; } = "";
     public string MaxTimeout { get; init; } = "600";

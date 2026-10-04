@@ -27,7 +27,7 @@ assert not engine.check().arcgis_pro_required
 fixtures = Path(__file__).resolve().parent / "fixtures"
 source_dir = work / "中文 模型 & 输入"
 source_dir.mkdir()
-for name in ("textured_quad.fbx", "textured_quad.obj", "textured_quad.glb", "textured_quad.gltf", "textured_quad.bin", "textured_quad.wrl", "textured_quad.dae", "textured_quad.mtl", "checker.png", "missing_texture.fbx"):
+for name in ("textured_quad.fbx", "textured_quad.obj", "textured_quad.glb", "textured_quad.gltf", "textured_quad.bin", "textured_quad.wrl", "textured_quad.dae", "textured_quad.x3d", "colored_quad.ply", "mesh_quad.stl", "textured_quad.mtl", "checker.png", "missing_texture.fbx"):
     shutil.copy2(fixtures / name, source_dir / name)
 base = (fixtures / "textured_quad.fbx").read_text(encoding="utf-8")
 broken = re.sub(r"Normals: \*\d+ \{ a: [^}]+", "Normals: *12 { a: " + ",".join(["0"] * 12) + " ", base)
@@ -71,12 +71,21 @@ glb_result = engine.convert(glb_request)
 glb_report = verify_copy(glb_result)
 assert any(check["textured_patches"] > 0 for check in glb_report["verification"]["checks"])
 assert glb_report["coordinates"]["origin"] == [100, 100, 100]
-for extension in ("gltf", "wrl", "dae"):
+for extension in ("gltf", "wrl", "dae", "x3d"):
     converted = engine.convert(replace(request, input_fbx=source_dir / ("textured_quad." + extension),
         output_gdb=work / (extension + ".gdb"), profile="strict"))
     verified = verify_copy(converted)
     assert any(c["textured_patches"] > 0 for c in verified["verification"]["checks"])
     assert verified["coordinates"]["origin"] == [100, 100, 100]
+
+for extension, name in (("ply", "colored_quad.ply"), ("stl", "mesh_quad.stl")):
+    converted = engine.convert(replace(request, input_fbx=source_dir / name,
+        output_gdb=work / (extension + ".gdb"), mesh_up_axis="Y", mesh_unit_meters=0.01))
+    verified = verify_copy(converted)
+    assert not verified["textures"]
+    if extension == "ply":
+        patch = verified["verification"]["checks"][0]["patches"][0]
+        assert patch["color_rgb8"] == [200, 80, 20] and patch["transparency_percent"] == 50
 
 try:
     engine.convert(request)
@@ -176,6 +185,7 @@ expected_bounds = {
     "gltf": ((10, -2, 1), (12, 1, 1)),
     "wrl": ((10, -2, 1), (12, 1, 1)),
     "dae": ((10, 20, 30), (12, 23, 30)),
+    "x3d": ((10, -2, 1), (12, 1, 1)),
 }
 for extension, bounds in expected_bounds.items():
     inspection_request = InspectionRequest(source_dir / ("textured_quad." + extension),
@@ -189,6 +199,12 @@ for extension, bounds in expected_bounds.items():
 obj_inspection = InspectionRequest(source_dir / "textured_quad.obj", inspection_dir / "obj-y-up-centimeters.json",
                                    obj_up_axis="Y", obj_unit_meters=0.01)
 verify_inspection(inspection_engine.inspect(obj_inspection), (0, 0, 0), (0.02, 0, 0.02))
+
+for extension, name in (("ply", "colored_quad.ply"), ("stl", "mesh_quad.stl")):
+    for axis, scale, maximum in (("Z", 1, (2, 3, 0)), ("Y", 0.01, (0.02, 0, 0.03))):
+        inspected = inspection_engine.inspect(InspectionRequest(source_dir / name,
+            inspection_dir / (extension + "-" + axis + ".json"), mesh_up_axis=axis, mesh_unit_meters=scale))
+        verify_inspection(inspected, (0, 0, 0), maximum, textured=False)
 
 # Existing bytes with a damaged PNG signature must be rejected, never treated
 # as an absent image. Full image decoding remains a separate writer-side check.

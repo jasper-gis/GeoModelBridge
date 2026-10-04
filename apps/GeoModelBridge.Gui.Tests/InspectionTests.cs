@@ -284,13 +284,14 @@ internal static partial class Program
         var directory = Path.Combine(Work, "真实检查 无写入端 & spaces"); Directory.CreateDirectory(directory);
         File.Copy(Path.Combine(engineDirectory, "geomodelbridge.exe"), Path.Combine(directory, "geomodelbridge.exe"));
         var service = new EngineService(directory);
-        foreach (var extension in new[] { "fbx", "obj", "glb", "gltf", "wrl", "dae" })
+        foreach (var extension in new[] { "fbx", "obj", "glb", "gltf", "wrl", "dae", "ply", "stl", "x3d" })
             await TestAsync("real_model_inspection_without_writer_" + extension, async () =>
             {
-                var request = InspectionRequest("real-" + extension) with { InputPath = Path.Combine(fixtureDirectory, "textured_quad." + extension), Profile = "strict" };
+                var sourceName = extension == "ply" ? "colored_quad.ply" : extension == "stl" ? "mesh_quad.stl" : "textured_quad." + extension;
+                var request = InspectionRequest("real-" + extension) with { InputPath = Path.Combine(fixtureDirectory, sourceName), Profile = "strict" };
                 var result = await service.InspectAsync(request);
                 Assert(result.Success && result.Report is not null, result.Message);
-                Assert(result.Report!.Counts.Triangles == 2 && result.Report.Counts.Textures > 0, "Real model counts lost.");
+                Assert(result.Report!.Counts.Triangles == 2 && result.Report.Counts.Textures == (extension is "ply" or "stl" ? 0 : 1), "Real model counts lost.");
                 Assert(!Directory.EnumerateDirectories(Work, "*.gdb", SearchOption.TopDirectoryOnly).Contains(Path.ChangeExtension(request.ReportPath, ".gdb")), "Inspection generated a GDB.");
                 var before = SHA256.HashData(File.ReadAllBytes(request.ReportPath));
                 var repeated = await service.InspectAsync(request);

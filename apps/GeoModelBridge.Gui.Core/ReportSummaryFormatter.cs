@@ -224,6 +224,37 @@ public static class ReportSummaryFormatter
     private static Description Describe(Entry entry)
     {
         var code = entry.Code;
+        if (code is "PLY_COORDINATE_ASSUMPTION" or "STL_COORDINATE_ASSUMPTION")
+            return new(code, "已按源轴与单位设置解释 " + (code.StartsWith("PLY", StringComparison.Ordinal) ? "PLY" : "STL"),
+                "源格式没有统一的向上轴或单位声明。默认按右手 Z 向上、每单位一米解释；显式设置的 Y/Z 轴与单位已记录在原始报告，转换为 Z 向上米制后再应用原点，不执行重投影。");
+        if (code == "PLY_COLOR_MAPPED") return new(code, "已保留 PLY 面颜色与透明度", "8 位 RGB 与 alpha 按原值映射为漫反射颜色及标量透明度；不同面的颜色边界独立保留。不会平均顶点颜色或自动烘焙渐变。");
+        if (code == "PLY_DEFAULT_MATERIAL") return new(code, "未着色 PLY 已使用白色表面", "源文件没有颜色声明，使用不透明白色双面漫反射材质；当前 PLY 入口不读取贴图。");
+        if (code == "STL_MATERIAL_ASSUMPTION") return new(code, "STL 已使用标准无贴图材质", "标准 STL 不含材质或贴图，使用不透明白色双面表面。若需要源颜色或图像，请先导出支持这些内容的模型格式。");
+        if (code == "PLY_DEFAULT_NORMALS_GENERATED") return new(code, "已生成 PLY 平面法线", "源文件未声明法线，按每个保留三角形的表面方向生成平面法线；不同面的角点保持独立。");
+        if (code == "PLY_UNUSED_VERTICES") return new(code, "已检查未引用的 PLY 顶点", "这些顶点未参与任何面，不形成渲染几何；已检查其位置和法线，未引用的无效法线仍会拒绝。");
+        if (code is "PLY_METADATA_OMITTED" or "X3D_METADATA_OMITTED") return new(code, "已记录描述元数据的省略", "普通说明文字不作为渲染通道或位置变换处理；具体字段与数量见原始报告。");
+        if (code is "UNSUPPORTED_PLY_VERTEX_COLOR" or "UNSUPPORTED_X3D_VERTEX_COLOR") return new(code, "模型含无法保留的顶点颜色渐变", "同一面上的不同顶点颜色需要先在建模软件中烘焙；当前只接受可表示为统一面颜色的绑定，不平均或丢弃颜色。GIS 静态兼容也不会跳过此问题。");
+        if (code == "UNSUPPORTED_PLY_COLOR") return new(code, "PLY 颜色类型或绑定不受支持", "请使用完整的 8 位 RGB 和可选 alpha；面颜色与顶点颜色同时存在时须一致。冲突绑定和其他颜色编码不会自动替换。");
+        if (code == "UNSUPPORTED_PLY_NORMAL_BINDING") return new(code, "PLY 法线绑定存在歧义", "文件同时声明面法线和顶点法线，无法确定优先关系；请在源工具中保留一种明确绑定后重新导出。");
+        if (code == "UNSUPPORTED_PLY_METADATA") return new(code, "PLY 头部含未支持的渲染或位置声明", "当前入口不读取 TextureFile、贴图、材质或矩阵扩展；请在源工具中转换为能够完整保存这些内容的受支持格式。");
+        if (code is "UNSUPPORTED_PLY_PROPERTY" or "UNSUPPORTED_PLY_ELEMENT" or "UNSUPPORTED_PLY_HEADER") return new(code, "PLY 含未支持的元素或属性", "检查原始报告中的字段名；纹理坐标、边、材质扩展及未知属性不会静默跳过，请先在源工具中导出受支持的多边形内容。");
+        if (code is "UNSUPPORTED_STL_COLOR" or "UNSUPPORTED_STL_ATTRIBUTE") return new(code, "STL 含非标准颜色或属性扩展", "二进制 STL 的颜色和属性编码存在不同约定，当前不会猜测或丢弃。请转换为明确保留颜色的 PLY、OBJ、FBX 或 GLB。");
+        if (code == "X3D_COORDINATE_CONVENTION") return new(code, "已转换 X3D 源坐标约定", "按右手 Y 向上及源文件声明的长度单位转换为右手 Z 向上米制；节点变换仅应用一次，WKID 赋值不执行重投影。");
+        if (code == "X3D_DEFAULT_NORMALS_GENERATED") return new(code, "已生成 X3D 平面法线", "源文件未提供法线且使用零折痕角，按各面方向生成平面法线。");
+        if (code == "X3D_DEFAULT_UV_GENERATED") return new(code, "已生成 X3D 默认 UV", "按源模型局部包围盒的最长与次长轴生成纹理坐标；所用规则见原始报告。");
+        if (code == "X3D_URL_ALTERNATIVE_USED") return new(code, "已使用 X3D 本地图片备用路径", "前面的图片文件确实不存在，已选择后续声明的本地图片路径；已有路径的访问错误或损坏图片不会被当作缺失跳过。");
+        if (code == "AMBIGUOUS_X3D_TEXTURE_MATERIAL") return new(code, "X3D 纹理与材质组合存在歧义", "X3D 3.x 的纹理调制和替换规则有歧义。RGB 纹理须搭配中性白色材质及顶点颜色，带 alpha 的纹理须使用标量不透明度 1；复杂组合应先在源工具中烘焙。");
+        if (code == "UNSUPPORTED_X3D_XML") return new(code, "X3D XML 声明不受支持", "请导出 UTF-8 XML 1.0；DTD、外部实体与额外处理指令不会执行或加载。");
+        if (code is "UNSUPPORTED_X3D_VERSION" or "UNSUPPORTED_X3D_PROFILE") return new(code, "X3D 版本或配置不受支持", "请导出受支持的 X3D 3.0–3.3 XML 静态场景子集；动画、脚本与其他未知节点仍需先处理。");
+        if (code == "UNSUPPORTED_X3D_UNIT") return new(code, "X3D 单位声明不受支持", "当前接受一个 X3D 3.3 长度单位声明；重复或其他单位类别需在源工具中转换为标准静态数据。");
+        if (code == "UNSUPPORTED_X3D_MATERIAL") return new(code, "X3D 材质通道无法完整保留", "环境光和高光可在显式 GIS 静态兼容策略中省略并记录；发光等其他效果须先在源工具中烘焙到支持的颜色或贴图。");
+        if (code == "UNSUPPORTED_X3D_NORMALS") return new(code, "X3D 折痕角需要显式法线", "当前不推导非零折痕角的平滑法线，请在源工具中导出明确的角点法线以保留表面光照边界。");
+        if (code == "UNSUPPORTED_X3D_SAMPLER") return new(code, "X3D 纹理采样方式不受支持", "当前不能表达图片边界钳制采样；请在源工具中处理贴图和 UV 后再导出，程序不会自动改成重复采样。");
+        if (code is "UNSUPPORTED_X3D_NODE" or "UNSUPPORTED_X3D_FIELD") return new(code, "X3D 含未支持的节点或字段", "请按原始报告定位节点或属性。动画、脚本、未知渲染扩展不会自动忽略，须先导出受支持的静态内容。");
+        if (code is "INVALID_PLY" or "INVALID_PLY_FACE" or "INVALID_STL" or "INVALID_X3D" or "INVALID_X3D_FACE" or "INVALID_X3D_INDICES") return new(code, "模型文件结构或多边形无效", "检查数量、索引、文件截断以及多边形自交或不共面问题；必要时先在源工具中三角化。无效记录不会被截断后继续转换。");
+        if (code is "PLY_GEOMETRY_LIMIT" or "PLY_COMPLEXITY_LIMIT" or "PLY_MATERIAL_LIMIT" or "STL_SOLID_LIMIT" or "MESH_TOO_LARGE" or "X3D_EXPANSION_LIMIT") return new(code, "模型超过当前容量或复杂度限制", "具体限制见原始报告与格式说明。请在源工具中合理拆分模型；程序不会静默抽稀、删除面或合并颜色。");
+        if (code == "UNREPRESENTABLE_COORDINATE") return new(code, "单位换算超出可保留的坐标精度", "非零坐标在单位换算后下溢为零，无法保留原几何。请检查源单位及坐标数量级；不会把因此消失的面当作可删除的零面积面。");
+        if (code == "INVALID_MESH_UNITS") return new(code, "源网格单位无效", "每个源单位对应的米数必须为有限正数，请检查 PLY/STL 源单位设置。");
         if (code == "WRL_TEXTURE_COLOR_REPLACED") return new(code, "按 VRML97 规则使用纹理颜色", "RGB 纹理覆盖材质及顶点颜色，写入白色颜色因子；原图片字节不变。");
         if (code == "WRL_TEXTURE_ALPHA_REPLACED") return new(code, "按 VRML97 规则使用图片透明度", "图片 alpha 覆盖材质透明度，写入透明度因子 1；缺图回退时仍保留原材质透明度。");
         if (code == "WRL_DEFAULT_UV_GENERATED") return new(code, "已生成 VRML 默认 UV", "按源模型局部包围盒的最长与次长轴生成贴图坐标。");
@@ -307,7 +338,7 @@ public static class ReportSummaryFormatter
             return new(code + channel, "已省略" + channel + "通道", "保留常规颜色、漫反射贴图和 UV；环境光、高光或反射效果可能与源模型不同。");
         }
         if (code == "UNLIT_SHADING_MAPPED")
-            return new(code, "GLB 无光照材质已映射为漫反射材质", "保留基色与贴图；目标场景可能施加光照，因此实际外观仍需检查。");
+            return new(code, "无光照材质已映射为漫反射材质", "保留基色与贴图；目标场景可能施加光照，因此实际外观仍需检查。");
         return new(code, "已进行兼容处理：" + Clip(entry.Message, 100), "具体处理记录请查看原始报告。");
     }
 

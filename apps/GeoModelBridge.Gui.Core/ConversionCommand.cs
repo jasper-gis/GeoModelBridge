@@ -43,6 +43,8 @@ public static class ConversionCommand
             result.AddRange(["--max-batch", Path.GetFullPath(settings.MaxBatchPath.Trim()),
                 "--max-frame", int.Parse(settings.MaxFrame.Trim(), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
                 "--max-timeout", settings.MaxTimeout.Trim()]);
+        if (new[] { ".ply", ".stl" }.Contains(Path.GetExtension(input), StringComparer.OrdinalIgnoreCase))
+            result.AddRange(["--mesh-up-axis", settings.MeshUpAxis, "--mesh-unit-meters", Number(settings.MeshUnitMeters)]);
     }
 
     public static ProcessStartInfo CreateStartInfo(string enginePath, ConversionSettings settings) => StartInfo(enginePath, BuildArguments(settings));

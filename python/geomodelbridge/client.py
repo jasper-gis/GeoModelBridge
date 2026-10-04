@@ -42,7 +42,7 @@ class Message:
 
 @dataclass(frozen=True)
 class ConversionRequest:
-    input_fbx: PathLike  # Source model (.fbx, .obj, .glb, .gltf, .wrl or .dae); name retained for API compatibility.
+    input_fbx: PathLike  # Source model; name retained for API compatibility.
     output_gdb: PathLike
     wkid: int
     origin: Tuple[float, float, float]
@@ -56,6 +56,8 @@ class ConversionRequest:
     max_batch: Optional[PathLike] = None
     max_frame: Optional[int] = None
     max_timeout: int = 600
+    mesh_up_axis: str = "Z"
+    mesh_unit_meters: float = 1.0
 
 
 @dataclass(frozen=True)
@@ -71,6 +73,8 @@ class InspectionRequest:
     max_batch: Optional[PathLike] = None
     max_frame: Optional[int] = None
     max_timeout: int = 600
+    mesh_up_axis: str = "Z"
+    mesh_unit_meters: float = 1.0
 
 
 @dataclass(frozen=True)
@@ -301,8 +305,8 @@ def _no_gdb_parent(path):
 
 def _source_settings(request, source):
     """Shared reader settings; inspection and conversion use the same policy."""
-    _require(source.is_file() and source.suffix.lower() in (".fbx", ".obj", ".glb", ".gltf", ".wrl", ".dae", ".max"),
-             "Input must be an existing FBX, OBJ, GLB, glTF, WRL, DAE or MAX file")
+    _require(source.is_file() and source.suffix.lower() in (".fbx", ".obj", ".glb", ".gltf", ".wrl", ".dae", ".ply", ".stl", ".x3d", ".max"),
+             "Input must be an existing FBX, OBJ, GLB, glTF, WRL, DAE, PLY, STL, X3D or MAX file")
     batch = None
     if source.suffix.lower() == ".max":
         _require(os.name == "nt", "MAX preprocessing requires Windows", "MAX_PLATFORM_UNSUPPORTED")
@@ -323,6 +327,16 @@ def _source_settings(request, source):
     except OverflowError:
         valid_obj_units = False
     _require(valid_obj_units, "OBJ unit size must be finite and positive")
+    _require(request.mesh_up_axis in ("Z", "Y"), "PLY/STL up axis must be Z or Y")
+    try:
+        valid_mesh_units = (type(request.mesh_unit_meters) in (int, float)
+                            and math.isfinite(request.mesh_unit_meters) and request.mesh_unit_meters > 0)
+    except OverflowError:
+        valid_mesh_units = False
+    _require(valid_mesh_units, "PLY/STL unit size must be finite and positive")
+    if source.suffix.lower() not in (".ply", ".stl"):
+        _require(request.mesh_up_axis == "Z" and request.mesh_unit_meters == 1,
+                 "Mesh coordinate settings apply only to PLY/STL input")
     _require(request.profile in ("strict", "gis-static"), "Unknown rendering profile")
     _require(request.missing_textures in ("material-color", "error"), "Unknown missing-texture policy")
     _require(isinstance(request.texture_dirs, (tuple, list)), "texture_dirs must be a sequence of directories")
@@ -335,6 +349,8 @@ def _source_arguments(request, source):
     values = ["--profile", request.profile, "--missing-textures", request.missing_textures]
     if source.suffix.lower() == ".obj":
         values.extend(("--obj-up-axis", request.obj_up_axis, "--obj-unit-meters", request.obj_unit_meters))
+    if source.suffix.lower() in (".ply", ".stl"):
+        values.extend(("--mesh-up-axis", request.mesh_up_axis, "--mesh-unit-meters", request.mesh_unit_meters))
     if source.suffix.lower() == ".max":
         values.extend(("--max-batch", request.max_batch, "--max-frame", request.max_frame,
                        "--max-timeout", request.max_timeout))
