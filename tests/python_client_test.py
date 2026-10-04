@@ -101,6 +101,22 @@ class ClientTests(unittest.TestCase):
         self.assertIn(str(glb), args)
         self.assertNotIn("--obj-up-axis", args)
 
+    def test_obj_coordinate_overrides_require_obj_before_conversion(self):
+        for extension in ("fbx", "glb", "gltf", "wrl", "dae", "ply", "stl", "x3d"):
+            source = self.root / ("source." + extension)
+            source.write_bytes(b"unchanged source")
+            for change in (dict(obj_up_axis="Y"), dict(obj_unit_meters=0.01)):
+                request = replace(self.request, input_fbx=source, **change)
+                with self.subTest(extension=extension, change=change):
+                    with self.assertRaises(ValidationError) as failure, patch("geomodelbridge.client._run") as runner:
+                        self.engine.convert(request)
+                    self.assertEqual(failure.exception.code, "INVALID_REQUEST")
+                    self.assertIn("only to OBJ", str(failure.exception))
+                    runner.assert_not_called()
+                    self.assertEqual(source.read_bytes(), b"unchanged source")
+                    self.assertFalse(request.output_gdb.exists())
+                    self.assertFalse(Path(str(request.output_gdb) + ".report.json").exists())
+
     def test_dae_source(self):
         dae = self.root / "模型.DAE"
         dae.write_text("placeholder", encoding="utf-8")
@@ -679,6 +695,21 @@ class InspectionTests(unittest.TestCase):
                 self.assertNotIn("--mesh-up-axis", args)
                 with self.assertRaises(ValidationError):
                     self.engine.inspection_command(replace(request, mesh_up_axis="Y"))
+
+    def test_obj_coordinate_overrides_require_obj_before_inspection(self):
+        for extension in ("fbx", "glb", "gltf", "wrl", "dae", "ply", "stl", "x3d"):
+            source = self.root / ("source." + extension)
+            source.write_bytes(b"unchanged source")
+            for change in (dict(obj_up_axis="Y"), dict(obj_unit_meters=0.01)):
+                request = replace(self.request, input_model=source, **change)
+                with self.subTest(extension=extension, change=change):
+                    with self.assertRaises(ValidationError) as failure, patch("geomodelbridge.client._run") as runner:
+                        self.engine.inspect(request)
+                    self.assertEqual(failure.exception.code, "INVALID_REQUEST")
+                    self.assertIn("only to OBJ", str(failure.exception))
+                    runner.assert_not_called()
+                    self.assertEqual(source.read_bytes(), b"unchanged source")
+                    self.assertFalse(request.report_path.exists())
 
     def test_invalid_requests_never_start_process_or_create_outputs(self):
         changes = [dict(input_model=""), dict(input_model="\0"), dict(input_model=self.root),

@@ -90,7 +90,16 @@ run(['--input', bundle, '--output', root / 'nested-report.gdb', '--report', root
 assert not (bundle / 'writer.json').exists()
 print('PASS: existing outputs protected; report cannot be nested in source bundle or GDB')
 
+def hierarchy(parents):
+    return [dict(name='node-' + str(i), source_id=str(i), parent=parent,
+                 source_world_transform=[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+                 meshes=[]) for i, parent in enumerate(parents)]
+
+
 cases = {
+    'node-cycle-with-descendants': lambda s: s.update(nodes=hierarchy([1, 2, 1, 0])),
+    'node-self-cycle': lambda s: s.update(nodes=hierarchy([0])),
+    'node-invalid-parent-chain': lambda s: s.update(nodes=hierarchy([1, 99])),
     'non-object-streamed-mesh': lambda s: s.update(meshes=[7]),
     'nested-array-streamed-mesh': lambda s: s.update(meshes=[[]]),
     'unknown-streamed-mesh-field': lambda s: s['meshes'][1].update(unsupported=True),
@@ -145,6 +154,12 @@ def negative_case(item):
     mutate(data)
     (source / 'scene.json').write_text(json.dumps(data), encoding='utf8')
     result = run(['--input', source, '--output', case_root / 'result.gdb'], success=False)
+    if name.startswith('node-'):
+        expected = 'INVALID_NODE_PARENT' if name == 'node-invalid-parent-chain' else 'NODE_CYCLE'
+        # Self-parent nodes also have INVALID_NODE_PARENT before the cycle diagnostic.
+        if name == 'node-self-cycle':
+            expected = 'INVALID_NODE_PARENT'
+        assert expected in result.stderr, result.stderr
     assert not (case_root / 'result.gdb').exists()
     assert not list(case_root.glob('*.gmb-*.gdb'))
     assert not (case_root / 'result.writer-report.json').exists()

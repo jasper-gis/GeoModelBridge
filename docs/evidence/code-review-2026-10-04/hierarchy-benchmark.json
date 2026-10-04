@@ -1,0 +1,419 @@
+{
+  "date": "2026-10-04",
+  "platform": "Windows x64",
+  "compiler": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\work\\msvc-v011\\toolchain\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+  "release_flags": [
+    "/O2",
+    "/Ob2",
+    "/DNDEBUG"
+  ],
+  "repetitions": 5,
+  "timing_scope": "gmb::validate only; scene allocation excluded; process run alternates before then after",
+  "all_diagnostic_counts_match": true,
+  "source_hashes": [
+    {
+      "file": "core-before.cpp",
+      "sha256": "0c7b2cc083249c95823928a09583b70babbd488e079a07047b5484a61652577a"
+    },
+    {
+      "file": "core-after.cpp",
+      "sha256": "b931171d9da42478203fe242d9570701d03bc5ec9e75ccf669fb6badce12dcc8"
+    },
+    {
+      "file": "benchmark.cpp",
+      "sha256": "86ec05d9102793bab563a815b81a979a49bb43b55675f54f91092b35914f8da4"
+    }
+  ],
+  "compile_commands": [
+    {
+      "program": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\work\\msvc-v011\\toolchain\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+      "arguments": [
+        "/nologo",
+        "/std:c++17",
+        "/EHsc",
+        "/MD",
+        "/O2",
+        "/Ob2",
+        "/DNDEBUG",
+        "/utf-8",
+        "/IC:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\include",
+        "/Bv",
+        "core-before.cpp",
+        "benchmark.cpp",
+        "/Fe:msvc-before.exe"
+      ],
+      "working_directory": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\build\\core-hierarchy-benchmark-20261004"
+    },
+    {
+      "program": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\work\\msvc-v011\\toolchain\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+      "arguments": [
+        "/nologo",
+        "/std:c++17",
+        "/EHsc",
+        "/MD",
+        "/O2",
+        "/Ob2",
+        "/DNDEBUG",
+        "/utf-8",
+        "/IC:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\include",
+        "/Bv",
+        "core-after.cpp",
+        "benchmark.cpp",
+        "/Fe:msvc-after.exe"
+      ],
+      "working_directory": "C:\\Users\\Jasper\\Documents\\Codex\\2026-09-20\\gen\\outputs\\GeoModelBridge\\build\\core-hierarchy-benchmark-20261004"
+    }
+  ],
+  "samples": [
+    {
+      "variant": "before",
+      "run": 1,
+      "nodes": 10000,
+      "case": "valid-chain",
+      "elapsed_ms": 175.379,
+      "diagnostic_count": 0
+    },
+    {
+      "variant": "before",
+      "run": 1,
+      "nodes": 10000,
+      "case": "tail-cycle",
+      "elapsed_ms": 274.734,
+      "diagnostic_count": 10000
+    },
+    {
+      "variant": "before",
+      "run": 1,
+      "nodes": 30000,
+      "case": "valid-chain",
+      "elapsed_ms": 1844.6,
+      "diagnostic_count": 0
+    },
+    {
+      "variant": "before",
+      "run": 1,
+      "nodes": 30000,
+      "case": "tail-cycle",
+      "elapsed_ms": 3837.32,
+      "diagnostic_count": 30000
+    },
+    {
+      "variant": "after",
+      "run": 1,
+      "nodes": 10000,
+      "case": "valid-chain",
+      "elapsed_ms": 0.567,
+      "diagnostic_count": 0
+    },
+    {
+      "variant": "after",
+      "run": 1,
+      "nodes": 10000,
+      "case": "tail-cycle",
+      "elapsed_ms": 1.6978,
+      "diagnostic_count": 10000
+    },
+    {
+      "variant": "after",
+      "run": 1,
+      "nodes": 30000,
+      "case": "valid-chain",
+      "elapsed_ms": 1.3534,
+      "diagnostic_count": 0
+    },
+    {
+      "variant": "after",
+      "run": 1,
+      "nodes": 30000,
+      "case": "tail-cycle",
+      "elapsed_ms": 5.6297,
+      "diagnostic_count": 30000
+    },
+    {
+      "variant": "before",
+      "run": 2,
+      "nodes": 10000,
+      "case": "valid-chain",
+      "elapsed_ms": 87.3344,
+      "diagnostic_count": 0
+    },
+    {
+      "variant": "before",
+      "run": 2,
+      "nodes": 10000,
+      "case": "tail-cycle",
+      "elapsed_ms": 175.535,
+      "diagnostic_count": 10000
+    },
+    {
+      "variant": "before",
+      "run": 2,
+      "nodes": 30000,
+      "case": "valid-chain",
+      "elapsed_ms": 1061.72,
+      "diagnostic_count": 0
+    },
+    {
+      "variant": "before",
+      "run": 2,
+      "nodes": 30000,
+      "case": "tail-cycle",
+      "elapsed_ms": 1893.61,
+      "diagnostic_count": 30000
+    },
+    {
+      "variant": "after",
+      "run": 2,
+      "nodes": 10000,
+      "case": "valid-chain",
+      "elapsed_ms": 0.3314,
+      "diagnostic_count": 0
+    },
+    {
+      "variant": "after",
+      "run": 2,
+      "nodes": 10000,
+      "case": "tail-cycle",
+      "elapsed_ms": 1.2832,
+      "diagnostic_count": 10000
+    },
+    {
+      "variant": "after",
+      "run": 2,
+      "nodes": 30000,
+      "case": "valid-chain",
+      "elapsed_ms": 1.0791,
+      "diagnostic_count": 0
+    },
+    {
+      "variant": "after",
+      "run": 2,
+      "nodes": 30000,
+      "case": "tail-cycle",
+      "elapsed_ms": 5.0579,
+      "diagnostic_count": 30000
+    },
+    {
+      "variant": "before",
+      "run": 3,
+      "nodes": 10000,
+      "case": "valid-chain",
+      "elapsed_ms": 92.1014,
+      "diagnostic_count": 0
+    },
+    {
+      "variant": "before",
+      "run": 3,
+      "nodes": 10000,
+      "case": "tail-cycle",
+      "elapsed_ms": 173.307,
+      "diagnostic_count": 10000
+    },
+    {
+      "variant": "before",
+      "run": 3,
+      "nodes": 30000,
+      "case": "valid-chain",
+      "elapsed_ms": 1022.91,
+      "diagnostic_count": 0
+    },
+    {
+      "variant": "before",
+      "run": 3,
+      "nodes": 30000,
+      "case": "tail-cycle",
+      "elapsed_ms": 1979.21,
+      "diagnostic_count": 30000
+    },
+    {
+      "variant": "after",
+      "run": 3,
+      "nodes": 10000,
+      "case": "valid-chain",
+      "elapsed_ms": 0.381,
+      "diagnostic_count": 0
+    },
+    {
+      "variant": "after",
+      "run": 3,
+      "nodes": 10000,
+      "case": "tail-cycle",
+      "elapsed_ms": 1.3029,
+      "diagnostic_count": 10000
+    },
+    {
+      "variant": "after",
+      "run": 3,
+      "nodes": 30000,
+      "case": "valid-chain",
+      "elapsed_ms": 1.0715,
+      "diagnostic_count": 0
+    },
+    {
+      "variant": "after",
+      "run": 3,
+      "nodes": 30000,
+      "case": "tail-cycle",
+      "elapsed_ms": 6.7731,
+      "diagnostic_count": 30000
+    },
+    {
+      "variant": "before",
+      "run": 4,
+      "nodes": 10000,
+      "case": "valid-chain",
+      "elapsed_ms": 85.1096,
+      "diagnostic_count": 0
+    },
+    {
+      "variant": "before",
+      "run": 4,
+      "nodes": 10000,
+      "case": "tail-cycle",
+      "elapsed_ms": 175.093,
+      "diagnostic_count": 10000
+    },
+    {
+      "variant": "before",
+      "run": 4,
+      "nodes": 30000,
+      "case": "valid-chain",
+      "elapsed_ms": 997.235,
+      "diagnostic_count": 0
+    },
+    {
+      "variant": "before",
+      "run": 4,
+      "nodes": 30000,
+      "case": "tail-cycle",
+      "elapsed_ms": 1838.43,
+      "diagnostic_count": 30000
+    },
+    {
+      "variant": "after",
+      "run": 4,
+      "nodes": 10000,
+      "case": "valid-chain",
+      "elapsed_ms": 0.3287,
+      "diagnostic_count": 0
+    },
+    {
+      "variant": "after",
+      "run": 4,
+      "nodes": 10000,
+      "case": "tail-cycle",
+      "elapsed_ms": 1.2527,
+      "diagnostic_count": 10000
+    },
+    {
+      "variant": "after",
+      "run": 4,
+      "nodes": 30000,
+      "case": "valid-chain",
+      "elapsed_ms": 1.0711,
+      "diagnostic_count": 0
+    },
+    {
+      "variant": "after",
+      "run": 4,
+      "nodes": 30000,
+      "case": "tail-cycle",
+      "elapsed_ms": 4.4025,
+      "diagnostic_count": 30000
+    },
+    {
+      "variant": "before",
+      "run": 5,
+      "nodes": 10000,
+      "case": "valid-chain",
+      "elapsed_ms": 85.1162,
+      "diagnostic_count": 0
+    },
+    {
+      "variant": "before",
+      "run": 5,
+      "nodes": 10000,
+      "case": "tail-cycle",
+      "elapsed_ms": 188.883,
+      "diagnostic_count": 10000
+    },
+    {
+      "variant": "before",
+      "run": 5,
+      "nodes": 30000,
+      "case": "valid-chain",
+      "elapsed_ms": 977.02,
+      "diagnostic_count": 0
+    },
+    {
+      "variant": "before",
+      "run": 5,
+      "nodes": 30000,
+      "case": "tail-cycle",
+      "elapsed_ms": 1960.56,
+      "diagnostic_count": 30000
+    },
+    {
+      "variant": "after",
+      "run": 5,
+      "nodes": 10000,
+      "case": "valid-chain",
+      "elapsed_ms": 0.3436,
+      "diagnostic_count": 0
+    },
+    {
+      "variant": "after",
+      "run": 5,
+      "nodes": 10000,
+      "case": "tail-cycle",
+      "elapsed_ms": 1.4079,
+      "diagnostic_count": 10000
+    },
+    {
+      "variant": "after",
+      "run": 5,
+      "nodes": 30000,
+      "case": "valid-chain",
+      "elapsed_ms": 1.1358,
+      "diagnostic_count": 0
+    },
+    {
+      "variant": "after",
+      "run": 5,
+      "nodes": 30000,
+      "case": "tail-cycle",
+      "elapsed_ms": 5.3417,
+      "diagnostic_count": 30000
+    }
+  ],
+  "summaries": [
+    {
+      "nodes": 10000,
+      "case": "valid-chain",
+      "before_median_ms": 87.3344,
+      "after_median_ms": 0.3436,
+      "speedup": 254.17462165308498
+    },
+    {
+      "nodes": 10000,
+      "case": "tail-cycle",
+      "before_median_ms": 175.535,
+      "after_median_ms": 1.3029,
+      "speedup": 134.72637961470565
+    },
+    {
+      "nodes": 30000,
+      "case": "valid-chain",
+      "before_median_ms": 1022.91,
+      "after_median_ms": 1.0791,
+      "speedup": 947.9288295802057
+    },
+    {
+      "nodes": 30000,
+      "case": "tail-cycle",
+      "before_median_ms": 1960.56,
+      "after_median_ms": 5.3417,
+      "speedup": 367.0292229065653
+    }
+  ]
+}

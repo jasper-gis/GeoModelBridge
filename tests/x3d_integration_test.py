@@ -1,5 +1,6 @@
 """X3D XML static scene/material/corner/placement and fail-closed parsing contract."""
 import json
+import math
 from pathlib import Path
 import shutil
 import struct
@@ -57,6 +58,28 @@ with tempfile.TemporaryDirectory(prefix='gmb-x3d-') as directory:
         'translation="10 1 2" center="1 0 0" scale="2 3 4" rotation="0 1 0 1.5707963267948966" scaleOrientation="0 1 0 1.5707963267948966"'))
     assert {tuple(round(x, 6) for x in v['position']) for v in transformed['meshes'][0]['vertices']} == {
         (11, -6, 1), (11, 2, 1), (5, 2, 1), (5, -6, 1)}
+    # XML and VRML share rotation math; neither encoding may turn a finite
+    # large/subnormal axis into a scale or distort inverse scaleOrientation.
+    for field in ('rotation', 'scaleOrientation'):
+        transform = 'translation="10 1 2" scale="2 3 4" ' + field + '="{axis} 0.6"'
+        reference = prepare(field + '-reference', base.replace('translation="10 1 2"',
+            transform.format(axis='1 1 1')))
+        for magnitude in ('1.7e308', '5e-324'):
+            candidate = prepare(field + '-' + magnitude, base.replace('translation="10 1 2"',
+                transform.format(axis=' '.join([magnitude] * 3))))
+            assert len(candidate['nodes']) == len(reference['nodes'])
+            assert len(candidate['meshes']) == len(reference['meshes'])
+            assert len(candidate['meshes'][0]['vertices']) == len(reference['meshes'][0]['vertices'])
+            assert candidate['materials'] == reference['materials']
+            assert candidate['textures'] == reference['textures']
+            assert candidate['meshes'][0]['triangles'] == reference['meshes'][0]['triangles']
+            for actual, expected in zip(candidate['nodes'], reference['nodes']):
+                assert all(math.isclose(a, b, rel_tol=1e-12, abs_tol=1e-12) for a, b in
+                    zip(actual['source_world_transform'], expected['source_world_transform']))
+            for actual, expected in zip(candidate['meshes'][0]['vertices'], reference['meshes'][0]['vertices']):
+                for key in ('position', 'normal', 'uv'):
+                    assert all(math.isclose(a, b, rel_tol=1e-12, abs_tol=1e-12) for a, b in zip(actual[key], expected[key]))
+        prepare(field + '-zero', base.replace('translation="10 1 2"', transform.format(axis='0 0 0')), 'INVALID_TRANSFORM')
     instanced = prepare('instanced', base.replace('</Scene>', '<Transform translation="20 0 0"><Transform scale="-1 1 1"><Shape USE="Quad"/></Transform></Transform></Scene>'))
     assert len(instanced['meshes']) == 2
     for triangle in instanced['meshes'][1]['triangles']:

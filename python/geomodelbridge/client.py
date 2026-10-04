@@ -327,6 +327,9 @@ def _source_settings(request, source):
     except OverflowError:
         valid_obj_units = False
     _require(valid_obj_units, "OBJ unit size must be finite and positive")
+    if source.suffix.lower() != ".obj":
+        _require(request.obj_up_axis == "Z" and request.obj_unit_meters == 1,
+                 "OBJ coordinate settings apply only to OBJ input")
     _require(request.mesh_up_axis in ("Z", "Y"), "PLY/STL up axis must be Z or Y")
     try:
         valid_mesh_units = (type(request.mesh_unit_meters) in (int, float)

@@ -437,9 +437,12 @@ using Matrix=std::array<double,16>;
 Matrix translation(Vec3 p) {auto m=identity();m[12]=p.x;m[13]=p.y;m[14]=p.z;return m;}
 Matrix rotation(const Ref& n,const char* key,bool inverse=false) {
     const auto& v=field(n,key).numbers;if(v.empty()) return identity();
-    const double length=std::hypot(v[0],v[1],v[2]);
-    if(length==0) reject("INVALID_TRANSFORM","Rotation axis has zero length.",n->name);
-    const double x=v[0]/length,y=v[1]/length,z=v[2]/length,a=inverse?-v[3]:v[3],c=std::cos(a),s=std::sin(a),t=1-c;
+    // Normalize at unit scale: the length of a finite axis can overflow, and
+    // subnormal lengths can lose enough precision to introduce an unintended scale.
+    const double scale=(std::max)({std::abs(v[0]),std::abs(v[1]),std::abs(v[2])});
+    if(!finite(scale)||scale==0) reject("INVALID_TRANSFORM","Rotation axis is zero or nonfinite.",n->name);
+    const double sx=v[0]/scale,sy=v[1]/scale,sz=v[2]/scale,length=std::hypot(sx,sy,sz);
+    const double x=sx/length,y=sy/length,z=sz/length,a=inverse?-v[3]:v[3],c=std::cos(a),s=std::sin(a),t=1-c;
     return {t*x*x+c,t*x*y+s*z,t*x*z-s*y,0,t*x*y-s*z,t*y*y+c,t*y*z+s*x,0,
         t*x*z+s*y,t*y*z-s*x,t*z*z+c,0,0,0,0,1};
 }

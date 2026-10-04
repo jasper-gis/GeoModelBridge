@@ -1,0 +1,13 @@
+Compiler Passes:
+ C:\Users\Jasper\Documents\Codex\2026-09-20\gen\work\msvc-v011\toolchain\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\cl.exe:        Version 19.44.35226.0
+ C:\Users\Jasper\Documents\Codex\2026-09-20\gen\work\msvc-v011\toolchain\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\c1.dll:        Version 19.44.35226.0
+ C:\Users\Jasper\Documents\Codex\2026-09-20\gen\work\msvc-v011\toolchain\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\c1xx.dll:      Version 19.44.35226.0
+ C:\Users\Jasper\Documents\Codex\2026-09-20\gen\work\msvc-v011\toolchain\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\c2.dll:        Version 19.44.35226.0
+ C:\Users\Jasper\Documents\Codex\2026-09-20\gen\work\msvc-v011\toolchain\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\c1xx.dll:      Version 19.44.35226.0
+ C:\Users\Jasper\Documents\Codex\2026-09-20\gen\work\msvc-v011\toolchain\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\link.exe:      Version 14.44.35226.0
+ C:\Users\Jasper\Documents\Codex\2026-09-20\gen\work\msvc-v011\toolchain\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\mspdb140.dll:  Version 14.44.35226.0
+ C:\Users\Jasper\Documents\Codex\2026-09-20\gen\work\msvc-v011\toolchain\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\1033\clui.dll: Version 19.44.35226.0
+
+core-after.cpp
+benchmark.cpp
+Generating Code...

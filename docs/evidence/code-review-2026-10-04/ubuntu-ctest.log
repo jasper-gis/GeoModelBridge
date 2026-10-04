@@ -1,0 +1,47 @@
+Test project /home/gmb/GeoModelBridge-dae-opt-20261002/build/native
+      Start  1: core
+ 1/21 Test  #1: core .............................   Passed    0.76 sec
+      Start  2: output_safety
+ 2/21 Test  #2: output_safety ....................   Passed    0.39 sec
+      Start  3: cli
+ 3/21 Test  #3: cli ..............................   Passed    3.93 sec
+      Start  4: reader_integration
+ 4/21 Test  #4: reader_integration ...............   Passed    1.08 sec
+      Start  5: binary_fbx
+ 5/21 Test  #5: binary_fbx .......................   Passed    0.63 sec
+      Start  6: obj_integration
+ 6/21 Test  #6: obj_integration ..................   Passed    0.70 sec
+      Start  7: glb_integration
+ 7/21 Test  #7: glb_integration ..................   Passed    1.32 sec
+      Start  8: gltf_integration
+ 8/21 Test  #8: gltf_integration .................   Passed    0.72 sec
+      Start  9: wrl_integration
+ 9/21 Test  #9: wrl_integration ..................   Passed    2.18 sec
+      Start 10: dae_integration
+10/21 Test #10: dae_integration ..................   Passed    6.19 sec
+      Start 11: ply_integration
+11/21 Test #11: ply_integration ..................   Passed    2.93 sec
+      Start 12: stl_integration
+12/21 Test #12: stl_integration ..................   Passed    4.09 sec
+      Start 13: x3d_integration
+13/21 Test #13: x3d_integration ..................   Passed   11.96 sec
+      Start 14: profile_integration
+14/21 Test #14: profile_integration ..............   Passed   10.47 sec
+      Start 15: missing_textures
+15/21 Test #15: missing_textures .................   Passed    1.51 sec
+      Start 16: normal_repair
+16/21 Test #16: normal_repair ....................   Passed    1.12 sec
+      Start 17: python_client
+17/21 Test #17: python_client ....................   Passed    6.70 sec
+      Start 18: max_worker_policy
+18/21 Test #18: max_worker_policy ................   Passed    1.14 sec
+      Start 19: max_adapter
+19/21 Test #19: max_adapter ......................   Passed    0.58 sec
+      Start 20: native_runtime
+20/21 Test #20: native_runtime ...................   Passed    0.81 sec
+      Start 21: native_build_layout
+21/21 Test #21: native_build_layout ..............   Passed    9.62 sec
+
+100% tests passed, 0 tests failed out of 21
+
+Total Test time (real) =  69.01 sec

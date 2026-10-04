@@ -1,0 +1,37 @@
+{
+  "status": "windows_and_ubuntu_sources_match",
+  "files": [
+    {
+      "path": "backends/native-filegdb/tests/integration.py",
+      "sha256": "ec48f89476c67d31d99d73697cf12c11301743dfb264ed9a17e93510b9102bde"
+    },
+    {
+      "path": "python/geomodelbridge/client.py",
+      "sha256": "e6ba67a7966365d4866c0f7f69bbd521e94712aeb7d68ee59d4c572ceade2777"
+    },
+    {
+      "path": "src/core.cpp",
+      "sha256": "b931171d9da42478203fe242d9570701d03bc5ec9e75ccf669fb6badce12dcc8"
+    },
+    {
+      "path": "src/wrl_reader.cpp",
+      "sha256": "066543fb63b05493eb504dd554e99a76b511b5befe1fe9db9671ae9dd81dc74b"
+    },
+    {
+      "path": "tests/core_tests.cpp",
+      "sha256": "dac1b8de622c86c73ebaf2904d356e0fa4ce49a172aa656fdc16d2d0955e1a7d"
+    },
+    {
+      "path": "tests/python_client_test.py",
+      "sha256": "2275089add17eea74cd8598a274a654523431c4c1b71a878dfb23aabc491f266"
+    },
+    {
+      "path": "tests/wrl_integration_test.py",
+      "sha256": "d90415f4e600146ccad2252c92f29766f02218e98e3b103663dc7349f99f8214"
+    },
+    {
+      "path": "tests/x3d_integration_test.py",
+      "sha256": "c0ae0b8486416c17e939399356e36349a264180e5c76b9cec4ac2892de916c83"
+    }
+  ]
+}

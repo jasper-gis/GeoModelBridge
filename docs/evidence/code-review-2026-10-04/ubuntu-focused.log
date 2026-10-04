@@ -1,0 +1,4 @@
+PASS node hierarchy preserves cycle and invalid parent diagnostics
+PASS deep node chains and tails into cycles validate without recursion
+PASS WRL: placement, instances/mirrors, corner bindings, VRML material rules, concave polygons and rejection policies
+PASS X3D: 100 cases; XML grammar, static transforms/units, materials/alpha, corner bindings and fail-closed policies

@@ -93,6 +93,47 @@ int main() {
     invalid_scene("mismatched declared texture format", [](auto& s) { s.textures[0].mime_type = "image/jpeg"; });
     invalid_scene("repeated triangle index", [](auto& s) { s.meshes[0].triangles[0].indices = {0, 0, 2}; });
     invalid_scene("collinear triangle", [](auto& s) { s.meshes[0].vertices[2].position = {2, 0, 0}; });
+    run("node hierarchy preserves cycle and invalid parent diagnostics", [] {
+        auto scene = gmb::make_fixture("uv-plane");
+        // Include a cycle, tails into it, forward/backward acyclic parents,
+        // two self-cycles, and chains ending at both forms of invalid parent.
+        const std::vector<int> parents = {1,2,0,2,3,-1,5,8,-1,9,10,99,-2,11,12};
+        scene.nodes.resize(parents.size());
+        for (std::size_t i = 0; i < parents.size(); ++i) {
+            scene.nodes[i].name = std::to_string(i);
+            scene.nodes[i].parent = parents[i];
+        }
+        const auto diagnostics = gmb::validate(scene);
+        std::vector<std::string> cycles, invalid_parents;
+        for (const auto& d : diagnostics) {
+            require(d.severity == gmb::Severity::error, "Unexpected hierarchy warning");
+            if (d.code == "NODE_CYCLE") cycles.push_back(d.context);
+            else if (d.code == "INVALID_NODE_PARENT") invalid_parents.push_back(d.context);
+            else throw std::runtime_error("Unexpected hierarchy diagnostic: " + d.code);
+        }
+        require(cycles == std::vector<std::string>({"0","1","2","3","4","9","10"}),
+                "Cycle diagnostics lost a cycle or its descendant, or marked an acyclic node");
+        require(invalid_parents == std::vector<std::string>({"9","10","11","12"}),
+                "Invalid parent diagnostics changed");
+        // Ancestor cycle state must be recomputed on every validation call.
+        scene.nodes[2].parent = scene.nodes[9].parent = scene.nodes[10].parent = -1;
+        scene.nodes[11].parent = scene.nodes[12].parent = -1;
+        require(!gmb::has_errors(gmb::validate(scene)), "Hierarchy repair retained stale errors");
+    });
+    run("deep node chains and tails into cycles validate without recursion", [] {
+        auto scene = gmb::make_fixture("uv-plane");
+        constexpr std::size_t count = 100000;
+        scene.nodes.resize(count);
+        for (std::size_t i = 0; i + 1 < count; ++i)
+            scene.nodes[i].parent = static_cast<int>(i + 1);
+        require(!gmb::has_errors(gmb::validate(scene)), "Valid deep hierarchy was rejected");
+        scene.nodes.back().parent = static_cast<int>(count / 2);
+        const auto diagnostics = gmb::validate(scene);
+        require(diagnostics.size() == count, "Deep cycle did not report all affected nodes");
+        for (const auto& d : diagnostics)
+            require(d.severity == gmb::Severity::error && d.code == "NODE_CYCLE",
+                    "Deep cycle produced an incorrect diagnostic");
+    });
     run("explicit origin translates geometry only", [] {
         auto scene = gmb::make_fixture("seam-cube");
         const auto before = scene.meshes[0].vertices;

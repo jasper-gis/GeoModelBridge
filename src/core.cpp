@@ -103,18 +103,39 @@ std::vector<Diagnostic> validate(const Scene& scene) {
             if (!(area2 > 0) || !std::isfinite(area2)) error("DEGENERATE_TRIANGLE", "Triangle has zero or nonfinite area.", mesh.name);
         }
     }
+    // Memoize each parent chain. Restarting the full ancestor walk for every
+    // node makes deep, otherwise valid hierarchies quadratic. An active node
+    // can only belong to the current walk because each walk is finalized here.
+    enum class ParentState : std::uint8_t { unseen, active, acyclic, cyclic };
+    std::vector<ParentState> parent_state(scene.nodes.size(), ParentState::unseen);
+    const auto next_node = [&](std::size_t i) {
+        const auto parent = scene.nodes[i].parent;
+        return parent >= 0 && std::size_t(parent) < scene.nodes.size()
+            ? std::size_t(parent) : scene.nodes.size();
+    };
     for (std::size_t i=0; i<scene.nodes.size(); ++i) {
         const auto& n=scene.nodes[i];
         if (n.parent < -1 || (n.parent >= 0 && (std::size_t(n.parent) >= scene.nodes.size() || std::size_t(n.parent)==i)))
             error("INVALID_NODE_PARENT", "Node parent index is invalid.", n.name);
         for (auto m:n.meshes) if (m>=scene.meshes.size()) error("INVALID_NODE_MESH", "Node refers to nonexistent mesh.", n.name);
         for (auto f:n.source_world_transform) if (!std::isfinite(f)) { error("NONFINITE_TRANSFORM", "Source transform is nonfinite.", n.name); break; }
-        int cursor=n.parent;
-        std::size_t depth=0;
-        while (cursor>=0 && std::size_t(cursor)<scene.nodes.size()) {
-            if (++depth>scene.nodes.size()) { error("NODE_CYCLE", "Node hierarchy contains a cycle.", n.name); break; }
-            cursor=scene.nodes[cursor].parent;
+        if (parent_state[i] == ParentState::unseen) {
+            auto cursor = i;
+            while (cursor < scene.nodes.size() && parent_state[cursor] == ParentState::unseen) {
+                parent_state[cursor] = ParentState::active;
+                cursor = next_node(cursor);
+            }
+            const auto result = cursor < scene.nodes.size() &&
+                (parent_state[cursor] == ParentState::active || parent_state[cursor] == ParentState::cyclic)
+                ? ParentState::cyclic : ParentState::acyclic;
+            cursor = i;
+            while (cursor < scene.nodes.size() && parent_state[cursor] == ParentState::active) {
+                parent_state[cursor] = result;
+                cursor = next_node(cursor);
+            }
         }
+        if (parent_state[i] == ParentState::cyclic)
+            error("NODE_CYCLE", "Node hierarchy contains a cycle.", n.name);
     }
     return ds;
 }

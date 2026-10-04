@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- 将共享节点层级验证从 O(N²) 改为 O(N)，保留循环、非法父节点及逐节点诊断；新增 100,000 节点深链和原生入口回归。MSVC Release 的 30,000 节点有效链验证中位数从约 1023 ms 降至 1.08 ms（合成局部基准，非整机转换吞吐）。
+- 修复 WRL/X3D 极大及次正规旋转轴归一化误差导致的几何变形，覆盖正/逆 `scaleOrientation`；Python 转换和检查拒绝用于非 OBJ 输入的 OBJ 坐标设置，避免静默忽略。
+- 双平台完整 CTest 各 21/21、原生集成/部署、安装后 Python 各 17 项转换与 22 项检查及 12 份 GDB 独立复制回读、Windows GUI 379/379 通过。基准、回归及边界见[本次验证](docs/validation-code-review-2026-10-04.md)。
+
 - 新增 PLY 1.0 ASCII / 大小端二进制、STL ASCII / 二进制、X3D XML 3.0–3.3 静态子集输入，三者复用 Scene Bundle 和原生 FileGDB 后端。PLY 支持逐面一致的 RGB/Alpha；STL 记录无色白色材质约定；X3D 复用 WRL 静态节点、角点、实例和纹理转换，不明确的材质组合显式拒绝。
 - CLI、Python、WPF 模型检查与转换、文件浏览/拖放、安装演示和打包均纳入三种格式。PLY/STL 提供 `--mesh-up-axis` / `--mesh-unit-meters` 及对应 Python/GUI 来源设置，默认 Z-up、米制并记录假设；坐标缩放下溢为零明确失败。
 - 修复共享 WRL/X3D 的极小非零三角形误删和非单位法线被 GIS 静态策略改向问题；有限非单位法线明确拒绝，只有零/非有限法线才进入支持的重建策略。
