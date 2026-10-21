@@ -243,4 +243,10 @@ Windows ↔ Ubuntu 双向互读及归档解压验证见 [V0.1.6 历史记录](do
 | 共享核心、平台适配与数据契约 | [架构](docs/architecture.md) · [Scene Bundle](docs/bundle-format.md) |
 | 版本变化与历史证据 | [CHANGELOG](CHANGELOG.md) · [历史记录](docs/evidence/README.md) |
 
-项目直接在 **master** 维护一套共享代码，平台差异收敛到文件操作和图片解码适配层。版本以 [VERSION](VERSION) 为准；贡献约定见 [AGENTS.md](AGENTS.md)。SDK 与第三方依赖的来源、散列和许可见[第三方说明](THIRD_PARTY_NOTICES.md)。**项目自身尚未选择开源许可证。**
+项目直接在 **master** 维护一套共享代码，平台差异收敛到文件操作和图片解码适配层。版本以 [VERSION](VERSION) 为准；贡献约定见 [AGENTS.md](AGENTS.md)。
+
+## 许可证
+
+GeoModelBridge 自有代码、文档和自有测试素材采用 [MIT 许可证](LICENSE)，版权为 Copyright (c) 2026 Jasper (jasper-gis)。第三方代码、运行库及 `tests/fixtures/upstream/` 素材保留各自原始版权与许可证；来源、散列及许可见[第三方说明](THIRD_PARTY_NOTICES.md)。分发时保留 `LICENSE`、`THIRD_PARTY_NOTICES.md` 和适用的 `licenses/` 文件。
+
+项目 MIT 许可不授予商业 3ds Max 使用权，也不替代 FileGDB SDK 或其他第三方条款。Linux `libfgdbunixrtl.so` 使用 LGPL-2.1；发行前仍须核查对应源码供应等义务，当前未完整核验，不能据此认定所有 Linux 二进制分发均已合规。见[构建与发布指南](docs/build-and-release.md#许可分发检查)。

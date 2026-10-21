@@ -1,5 +1,9 @@
 # Third-party notices
 
+GeoModelBridge's own code, documentation and first-party test assets are licensed under the MIT License in the root `LICENSE`, Copyright (c) 2026 Jasper (jasper-gis). Third-party components and upstream fixtures retain their original copyrights and licenses below; the project MIT license does not relicense them. Distributions must retain `LICENSE`, this notice and applicable original notices in `licenses/`.
+
+The project MIT license does not grant a commercial 3ds Max license or replace Autodesk, FileGDB SDK or other third-party terms. Use of the optional MAX adapter requires a separately authorized 3ds Max installation.
+
 ## TinyXML-2 10.0.0
 
 - Source: https://github.com/leethomason/tinyxml2
@@ -72,12 +76,14 @@ V0.1.2 adds the self-contained Windows x64 `geomodelbridgeGUI.exe`. Its single-f
 
 ## Project and fixtures
 
-The C++/C# project and first-party fixtures were created for this project. ASCII FBX fixtures are authored test assets, and image fixtures are deterministic programmatic patterns. `tests/fixtures/upstream/` additionally includes two unmodified binary FBX regression models from the pinned ufbx repository; that directory retains the original `LICENSE`, exact source URLs, and SHA-256 digests in `manifest.json`. No user production models are included. No open-source license for the project's own code has been selected by the owner.
+The C++/C# project and first-party fixtures were created for this project and are covered by the root MIT license. ASCII FBX fixtures are authored test assets, and image fixtures are deterministic programmatic patterns. `tests/fixtures/upstream/` additionally includes two unmodified binary FBX regression models from the pinned ufbx repository; that directory retains the original `LICENSE`, exact source URLs, and SHA-256 digests in `manifest.json`. No user production models are included.
 
 ## Linux SDK and system image libraries (V0.1.6)
 
 The Ubuntu x86_64 writer links the official Linux FileGDB API 1.5.5.330 SDK. The immutable download URL, upstream commit, archive SHA-256, shared-library hashes and every installed original notice hash are in `backends/native-filegdb/sdk-sources-linux.json`. The API is Apache-2.0; the separate **libfgdbunixrtl.so uses LGPL 2.1**, as stated by the SDK README. Its upstream source is available from [Esri FGDB Linux Runtime](https://sourceforge.net/projects/esrifgdblinuxru/files/).
 
 With `GMB_INSTALL_FILEGDB_RUNTIME=ON`, installation copies the unmodified `libFileGDBAPI.so`, `libfgdbunixrtl.so`, complete SDK `license/` directory (including LGPL text and third-party acknowledgements), README and provenance manifest. Dynamic linking is retained. The complete SDK, development files and toolchain are not committed or packaged. Do not describe the whole Linux SDK runtime as Apache-only.
+
+Copying notices and retaining dynamic linking alone do not establish compliance for every binary distribution. Before shipping Linux binaries, verify the LGPL-2.1 obligations for the exact `libfgdbunixrtl.so` being distributed, including corresponding-source availability and the applicable method of providing it. That source-supply review has not been completed here; the upstream source link above is not a verification of the exact SDK binary's corresponding source.
 
 Ubuntu image decoding dynamically links the distribution's libpng and libjpeg-turbo; zlib is a transitive libpng dependency. These system libraries are installed through apt, not vendored in the project binary package. Their original notices are available on Ubuntu under `/usr/share/doc/libpng16-16t64/copyright`, `/usr/share/doc/libjpeg-turbo8/copyright`, and `/usr/share/doc/zlib1g/copyright`. See [libpng](http://www.libpng.org/pub/png/libpng.html) and [libjpeg-turbo](https://github.com/libjpeg-turbo/libjpeg-turbo). Their installed versions are recorded with the Ubuntu validation evidence; no source images are re-encoded through these libraries.

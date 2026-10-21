@@ -86,6 +86,8 @@ sudo apt-get install -y libstdc++6 libpng16-16t64 libjpeg-turbo8
 
 ```text
 dist/
+  LICENSE                         # 项目自有部分的 MIT 许可
+  THIRD_PARTY_NOTICES.md           # 第三方许可边界与来源
   bin/
     geomodelbridge
     native-filegdb/
@@ -93,7 +95,8 @@ dist/
       libFileGDBAPI.so
       libfgdbunixrtl.so
     demo/                         # FBX/OBJ/GLB/glTF/WRL/DAE/PLY/STL/X3D 试运行输入
-  licenses/filegdb-api/           # 上游许可、README、来源与散列
+  licenses/                       # 各组件原始许可，完整保留
+    filegdb-api/                   # SDK 上游许可、README、来源与散列
   docs/
 ```
 
@@ -135,6 +138,12 @@ CLI 退出码：
 | 6 | 解析、IO 或其他操作异常 |
 
 ## 测试与打包
+
+### 许可分发检查
+
+源码和安装目录均须包含根目录 `LICENSE` 与 `THIRD_PARTY_NOTICES.md`。`cmake --install` 安装这两个文件，`scripts/package.py` 将它们同时放入归档根目录和 `dist/`，并逐字节检查安装副本是否缺失或过期；`dist/licenses/` 仍完整收集原有第三方声明。修改说明后应重新安装再打包。无需 SDK 即可运行 `python tests/license_distribution_test.py`，检查缺失/过期声明的拒绝及 ZIP/tar.gz 许可分发；测试中的原生探测为模拟，不代表完整发布验证。
+
+项目自有部分采用 MIT，第三方依赖、SDK、上游测试模型保留原许可。MIT 不授予商业 3ds Max 使用权或替代 SDK 条款。Linux SDK 的 `libfgdbunixrtl.so` 使用 LGPL-2.1：发行前须核查实际二进制对应源码的可获得性、适用的源码提供方式及其他分发义务。本次未完整核验 SDK 对应源码供应，不能将打包检查通过视为所有 Linux 二进制分发已合规；仅保留许可文件、动态链接或上游源码链接不足以作出该结论。详见[第三方说明](../THIRD_PARTY_NOTICES.md)。
 
 Ubuntu：
 

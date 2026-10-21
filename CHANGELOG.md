@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- 项目自有部分采用 MIT（Copyright (c) 2026 Jasper (jasper-gis)）；保留第三方与上游测试素材原许可，明确 SDK、3ds Max 和 Linux LGPL 对应源码供应的发行核查边界。安装与源码/二进制打包纳入 LICENSE 和第三方声明，拒绝缺失或过期的安装副本，并补充轻量许可分发回归。
+
 - 将共享节点层级验证从 O(N²) 改为 O(N)，保留循环、非法父节点及逐节点诊断；新增 100,000 节点深链和原生入口回归。MSVC Release 的 30,000 节点有效链验证中位数从约 1023 ms 降至 1.08 ms（合成局部基准，非整机转换吞吐）。
 - 修复 WRL/X3D 极大及次正规旋转轴归一化误差导致的几何变形，覆盖正/逆 `scaleOrientation`；Python 转换和检查拒绝用于非 OBJ 输入的 OBJ 坐标设置，避免静默忽略。
 - 双平台完整 CTest 各 21/21、原生集成/部署、安装后 Python 各 17 项转换与 22 项检查及 12 份 GDB 独立复制回读、Windows GUI 379/379 通过。基准、回归及边界见[本次验证](docs/validation-code-review-2026-10-04.md)。

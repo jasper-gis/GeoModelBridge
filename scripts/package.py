@@ -26,6 +26,11 @@ if output is not None and (output.exists() or output.with_suffix(output.suffix +
     raise SystemExit("Archive and checksum must be new paths outside the project")
 if (install / "bin/arcgis-pro").exists():
     raise SystemExit("Install directory contains a removed backend; use a new native-only installation")
+# Refuse missing or stale project notices before running any native release checks.
+for name in ("LICENSE", "THIRD_PARTY_NOTICES.md"):
+    path = install / name
+    if not path.is_file() or path.read_bytes() != (root / name).read_bytes():
+        raise SystemExit("Installed license/notice is missing or stale: " + name)
 cli_name, native_name = executable_names()
 cli, native = install / cli_name, install / native_name
 runtimes = [native.with_name(Path(name).name) for name in sdk_manifest()["runtime_files"]]
@@ -69,7 +74,7 @@ with tempfile.TemporaryDirectory(prefix="gmb-package-check-") as work:
                     "--report", str(Path(work) / "standalone.json")], check=True, stdout=subprocess.DEVNULL)
 # Enumerate source through Git, never by recursively sweeping local results or older releases.
 source_roots = {"src", "include", "backends", "apps", "tests", "scripts", "third_party", "docs", ".github", "python", "adapters"}
-source_files = {"AGENTS.md", "README.md", "VERSION", "CHANGELOG.md", "THIRD_PARTY_NOTICES.md", "CMakeLists.txt", "CMakePresets.json", ".gitignore", ".gitattributes", "examples/README.md"}
+source_files = {"AGENTS.md", "LICENSE", "README.md", "VERSION", "CHANGELOG.md", "THIRD_PARTY_NOTICES.md", "CMakeLists.txt", "CMakePresets.json", ".gitignore", ".gitattributes", "examples/README.md"}
 files = {}
 listing = subprocess.check_output(["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=root).decode("utf-8").split("\0")
 for name in sorted(set(listing)):
@@ -80,7 +85,7 @@ for name in sorted(set(listing)):
         continue
     path = root / rel
     if path.is_file(): files[rel.as_posix()] = path
-binary_files = [cli_name, native_name, *[p.relative_to(install).as_posix() for p in runtimes],
+binary_files = ["LICENSE", "THIRD_PARTY_NOTICES.md", cli_name, native_name, *[p.relative_to(install).as_posix() for p in runtimes],
                 "bin/demo/textured_quad.fbx", "bin/demo/textured_quad.obj", "bin/demo/textured_quad.mtl", "bin/demo/textured_quad.glb",
                 "bin/demo/textured_quad.gltf", "bin/demo/textured_quad.bin", "bin/demo/textured_quad.wrl", "bin/demo/textured_quad.dae", "bin/demo/colored_quad.ply", "bin/demo/mesh_quad.stl", "bin/demo/textured_quad.x3d", "licenses/tinyxml2/LICENSE.txt", "bin/demo/checker.png", "bin/max-adapter/worker.py"]
 for name in binary_files:
