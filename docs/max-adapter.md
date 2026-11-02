@@ -53,13 +53,15 @@ result = Engine(r"D:\GeoModelBridge\bin\geomodelbridge.exe").convert(
 
 Max 的 100% 漫反射图替代漫反射 RGB；中间 FBX 使用白色乘数并保留标量 opacity，记录 `MAX_DIFFUSE_REPLACEMENT`。缺图默认恢复原材质色和 opacity，记录 `MISSING_TEXTURE_FALLBACK`；`--missing-textures error` 禁止回退。路径访问错误、非普通文件及无效父路径均失败。
 
+贴图按声明路径、MAX 同目录同名文件、显式 `--texture-dir` 的顺序查找。旧电脑的绝对路径已不存在时，可以直接使用随 MAX 一起交付的图片；已选路径的访问错误、无效父目录或非普通文件不会被后续同名文件掩盖。
+
 ## 流程与报告
 
 1. 核验源文件、运行环境路径、匹配版本的 worker，并在系统临时目录独占创建本次工作目录。
 2. 以 JSON 保存源文件 SHA-256、采样帧、策略和额外图像目录。所有路径是数据，不拼接进 MAXScript。
 3. 启动独立 Max Batch 进程。缺少插件 / XRef 会拒绝。唯一例外：保存的 Scanline 渲染器、`gis-static`，且缺项精确为 `mrmaterialattribs.gup - mental ray: material custom attribute`，可忽略这个不参与 Scanline 表面的旧属性扩展并记录；不放宽未知着色器、几何或修改器。普通图像缺失留给明确的贴图策略处理。
 4. 预检材质和几何，生成命名静态快照并仅导出快照选择集；关闭动画、Skin、Shape、PointCache 和贴图转码。原 MAX 文件不保存。
-5. 共享 FBX 读取器读取原始图片并完整校验。适配器核对源/FBX 哈希、逐网格三角形数和米制世界包围盒、面材质分配数量、颜色/opacity/单双面及图片绑定。网格、材质与按内容去重的纹理清单必须完整且记录不重复；名称索引和纹理哈希仅在本次核验中缓存。任何不一致停止，不创建 GDB。
+5. 共享 FBX 读取器读取原始图片并完整校验。适配器核对源/FBX 哈希、逐网格三角形数和米制世界包围盒、面材质分配数量、颜色/opacity/单双面及图片绑定。核验使用已报告的零面积面清理之前的三角形、面材质数量及角点包围盒；最终几何报告仍只统计保留的面。无面引用的有限顶点单独记录且仍检查非有限值；无面引用的已验证材质和图片记录在 `unreferenced_materials` / `unreferenced_textures`，不再误判为导出丢失。所有实际面引用的清单仍须完整且不重复；未知或不支持的未使用材质仍拒绝。任何不一致停止，不创建 GDB。
 6. 通过既有 Scene Bundle / FileGDB SDK 写入、关闭后重开读回校验。最终成功报告仍必须为 `written_and_readback_verified`。
 
 报告 `reader_diagnostics` 中的 `MAX_ADAPTER_PROVENANCE` 包含 JSON 清单：协议/引擎版本、请求标识、原 MAX 路径/哈希、采样帧和帧率、Max 版本、已加载插件路径和文件版本（包括 FBX 导出插件）、FBX 文件版本和参数、单位、源节点矩阵和导出统计、图像源/哈希、调整诊断及进程日志。GUI / Python 额外校验原 MAX 路径、Batch 程序和帧号。矩阵仅为追溯信息，不重复应用；WKID 与 origin 的规则不变。
@@ -67,6 +69,8 @@ Max 的 100% 漫反射图替代漫反射 RGB；中间 FBX 使用白色乘数并�
 每条日志流保留最多 256 KiB 原始尾部，并公开截断标志；无效 UTF-8 日志替换显示字符。超过超时，Windows Job Object 会结束整个进程树。外部终止 CLI 也会关闭该 Job 并结束 MAX 子进程；强制结束可能遗留本次临时目录，不会清理其他任务目录。GUI 仍沿用等待转换完成的交互，没有单独取消按钮。
 
 已完成 FBX 导出后，即使共享读取器拒绝，仍保存 `MAX_ADAPTER_PROVENANCE`，用于定位源节点和材质。清单中的 `exported` 只表示导出阶段完成，不能作为入库成功证据。只有原生后端的 `written_and_readback_verified` 才表示完成入库回读。
+
+预检发现缺失或不完整的 UV 时，逐节点 `MAX_MISSING_UV` 之外还提供 `MAX_REPAIR_MANIFEST`。其 JSON 消息列出原文件/哈希、帧号、是否完成全场景评估，以及每个节点的总面数、带贴图面数、所需 UV 通道、原材质名、原图路径和哈希。中途遇到其他错误时，`scene_evaluated=false` 表示清单尚不完整。它只提供修复依据，不补造 UV 或解除图片绑定。
 
 可选的系统/监听日志文件无法读取时，报告记录 `MAX_LOG_READ_ERROR` 警告及对应 `runtime_logs` 的 `read_error`、`message`。超时仍报告 `MAX_TIMEOUT`，worker 的原始拒绝原因仍保留；成功结果继续以完整导出清单及原生 GDB 回读为依据。
 

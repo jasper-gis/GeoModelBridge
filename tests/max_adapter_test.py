@@ -3,6 +3,7 @@ import concurrent.futures
 import hashlib
 import json
 import os
+import shutil
 import struct
 from pathlib import Path
 import subprocess
@@ -45,14 +46,35 @@ with tempfile.TemporaryDirectory(prefix="gmb-max-contract-") as temp:
                 assert jpeg[6:11] == b'JFIF\0'
                 adobe = b'\xff\xee\x00\x0eAdobe' + struct.pack('>HHHB',100,0,0,1)
                 (jpeg_dir / 'checker.png').write_bytes(jpeg[:2]+adobe+jpeg[20:])
-            model.write_text(json.dumps(dict(mode=mode, fbx=str(input_fbx))), encoding="utf-8")
+            control = dict(mode=mode, fbx=str(input_fbx))
+            if mode.startswith("cleanup_"):
+                # A valid triangle and an isolated zero-area face at an outlier.
+                # Cleanup changes count, bounds and per-material face counts.
+                case = root / mode
+                case.mkdir()
+                source_text = (fixtures / "textured_quad.fbx").read_text()
+                source_text = source_text.replace("0,0,0, 2,0,0, 2,3,0, 0,3,0",
+                                                  "0,0,0, 2,0,0, 0,3,0, 99,99,0")
+                source_text = source_text.replace("PolygonVertexIndex: *4 { a: 0,1,2,-4 }",
+                                                  "PolygonVertexIndex: *6 { a: 0,1,-3, 3,3,-4 }")
+                source_text = source_text.replace("Normals: *12 { a: 0,0,1, 0,0,1, 0,0,1, 0,0,1 }",
+                                                  "Normals: *18 { a: 0,0,1, 0,0,1, 0,0,1, 0,0,1, 0,0,1, 0,0,1 }")
+                source_text = source_text.replace("UV: *8 { a: 0,0, 0,0, 0,0, 0,0 }",
+                                                  "UV: *12 { a: 0,0, 0,0, 0,0, 0,0, 0,0, 0,0 }")
+                source_text = source_text.replace("UV: *8 { a: 0,0, 1,0, 1,1, 0,1 }",
+                                                  "UV: *12 { a: 0,0, 1,0, 0,1, 0,0, 0,0, 0,0 }")
+                input_fbx = case / "cleanup.fbx"
+                input_fbx.write_text(source_text)
+                shutil.copyfile(fixtures / "checker.png", case / "checker.png")
+                control.update(fbx=str(input_fbx), tamper=mode[len("cleanup_"):])
+            model.write_text(json.dumps(control), encoding="utf-8")
             report = root / (mode + ".json")
             begin = time.monotonic()
-            options = ["--profile", "gis-static"] if mode.startswith('jpeg_') else []
+            options = ["--profile", "gis-static"] if mode.startswith(('jpeg_', 'cleanup_')) and mode != "cleanup_strict" else []
             result = run("inspect", model, "--max-batch", stub, "--max-frame", -12,
                          "--max-timeout", 1 if mode.startswith("timeout") else 15, "--report", report, *options)
             body = json.loads(report.read_text(encoding="utf-8"))
-            if mode in ("ok", "flood", "ok_log_error", "multi_mesh", "multi_material", "jpeg_normalize"):
+            if mode in ("ok", "flood", "ok_log_error", "multi_mesh", "multi_material", "jpeg_normalize", "cleanup_ok"):
                 assert result.returncode == 0, result.stderr[-2000:]
                 assert body["source"] == str(model)
                 entries = [d for d in body["diagnostics"] if d["code"] == "MAX_ADAPTER_PROVENANCE"]
@@ -67,6 +89,15 @@ with tempfile.TemporaryDirectory(prefix="gmb-max-contract-") as temp:
                 assert result.returncode == 3, (mode, result.stderr[-2000:])
                 assert any(d["severity"] == "error" for d in body["diagnostics"])
             codes = {d["code"] for d in body["diagnostics"]}
+            if mode.startswith("cleanup_") and mode != "cleanup_strict":
+                assert "DEGENERATE_TRIANGLES_REMOVED" in codes, body
+                if mode == "cleanup_ok":
+                    assert body["counts"]["triangles"] == 1, body
+                    assert proof["triangle_count"] == 2 and proof["nodes"][0]["bounds_metres"][1] == [99,99,0]
+                else:
+                    assert any("MAX_EXPORT_MISMATCH" in d["message"] for d in body["diagnostics"]), body
+            if mode == "cleanup_strict":
+                assert "DEGENERATE_TRIANGLE" in codes, body
             if mode.startswith('jpeg_'):
                 assert 'JPEG_CONTAINER_NORMALIZED' in codes
                 if mode == 'jpeg_changed':
@@ -96,7 +127,8 @@ with tempfile.TemporaryDirectory(prefix="gmb-max-contract-") as temp:
             return mode
         modes = ("ok", "flood", "noresponse", "reject", "hash", "frame", "count", "bounds", "material", "binding", "face_material", "source", "duplicate", "exit", "timeout",
                  "multi_mesh", "multi_material", "duplicate_mesh", "duplicate_material", "missing_material", "missing_texture", "duplicate_texture",
-                 "ok_log_error", "reject_log_error", "timeout_log_error", "reader_reject", "jpeg_normalize", "jpeg_changed")
+                 "ok_log_error", "reject_log_error", "timeout_log_error", "reader_reject", "jpeg_normalize", "jpeg_changed",
+                 "cleanup_ok", "cleanup_strict", "cleanup_count", "cleanup_node_count", "cleanup_bounds", "cleanup_face_material")
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
             assert set(pool.map(check, modes)) == set(modes)
         # Existing reports prevent the runtime from launching at all.

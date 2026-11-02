@@ -27,6 +27,24 @@ class WorkerPolicy(unittest.TestCase):
     def test_version(self):
         self.assertEqual(worker.VERSION, (ROOT / "VERSION").read_text().strip())
 
+    def test_manifest_keeps_face_assets_and_records_unused_slots(self):
+        materials = [dict(name=name, texture_sha256=image) for name, image in
+                     [("used", "shared"), ("unused-shared", "shared"),
+                      ("unused-only", "other"), ("zero-area-only", None)]]
+        textures = {image: dict(sha256=image) for image in ("shared", "other")}
+        nodes = [dict(face_materials={"used": 5, "zero-area-only": 1})]
+        result = worker.referenced_assets(nodes, materials, textures)
+        self.assertEqual([m["name"] for m in result["materials"]], ["used", "zero-area-only"])
+        self.assertEqual([m["name"] for m in result["unreferenced_materials"]],
+                         ["unused-shared", "unused-only"])
+        self.assertEqual(result["textures"], [dict(sha256="shared")])
+        self.assertEqual(result["unreferenced_textures"], [dict(sha256="other")])
+        # Missing referenced assets must not be hidden by the partition.
+        for bad_materials, bad_textures in [(materials[1:], textures), (materials, {})]:
+            with self.assertRaises(worker.Rejected) as error:
+                worker.referenced_assets(nodes, bad_materials, bad_textures)
+            self.assertEqual(error.exception.code, "MAX_EXPORT_MISMATCH")
+
     def test_resolution(self):
         extra = self.root / "extra"
         extra.mkdir()
@@ -34,6 +52,43 @@ class WorkerPolicy(unittest.TestCase):
         image.write_bytes(b"original")
         self.assertEqual(worker.resolve_image(image.name, self.source, [extra]), image)
         self.assertIsNone(worker.resolve_image("missing.png", self.source, [extra]))
+
+    def test_stale_absolute_path_finds_model_sibling_before_extra_directory(self):
+        sibling = self.root / "中文 image.png"
+        sibling.write_bytes(b"model sibling")
+        extra = self.root / "extra"
+        extra.mkdir()
+        (extra / sibling.name).write_bytes(b"alternate")
+        stale = self.root / "absent-old-computer" / sibling.name
+        self.assertEqual(worker.resolve_image(str(stale), self.source, [extra]), sibling)
+        declared = extra / sibling.name
+        self.assertEqual(worker.resolve_image(str(declared), self.source, []), declared)
+
+    def test_invalid_declared_parent_never_uses_model_sibling(self):
+        sibling = self.root / "image.png"
+        sibling.write_bytes(b"must not mask an invalid selected path")
+        parent = self.root / "not-a-directory"
+        parent.write_bytes(b"file")
+        with self.assertRaises(worker.Rejected) as error:
+            worker.resolve_image(str(parent / "nested" / sibling.name), self.source, [])
+        self.assertEqual(error.exception.code, "TEXTURE_READ_ERROR")
+
+    def test_unreadable_path_metadata_preserves_read_error(self):
+        with patch.object(Path, "lstat", side_effect=PermissionError("denied metadata")):
+            with self.assertRaises(worker.Rejected) as error:
+                worker.resolve_image(str(self.source), self.source, [])
+        self.assertEqual(error.exception.code, "TEXTURE_READ_ERROR")
+
+    def test_uv_repair_manifest_identifies_original_bindings(self):
+        materials = {"image": dict(source_name="原材质", texture_sha256="normalized"),
+                     "color": dict(source_name="Color", texture_sha256=None)}
+        textures = {"normalized": dict(source="原图.png", original_sha256="original")}
+        result = worker.missing_uv_record("原节点", 9, {"image": 5, "color": 4}, materials, textures)
+        self.assertEqual(result["mesh_triangles"], 9)
+        self.assertEqual(result["textured_triangles"], 5)
+        self.assertEqual(result["required_uv_channel"], 1)
+        self.assertEqual(result["bindings"], [dict(source_material="原材质", triangles=5,
+                         source_image="原图.png", source_image_sha256="original")])
 
     def test_invalid_selected_path_never_falls_back(self):
         extra = self.root / "extra"

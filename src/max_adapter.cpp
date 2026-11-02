@@ -129,11 +129,16 @@ Scene read_max(const fs::path& input,const ReaderOptions& reader,const MaxOption
         // Keep source-node/material provenance even if the shared FBX reader
         // rejects the exported data. "exported" is not a verified GDB status.
         failure.diagnostics.push_back({Severity::warning,"MAX_ADAPTER_PROVENANCE",response.dump(),source.u8string()});
-        auto scene=read_fbx(stage/"model.fbx",reader);scene.source=input.u8string();
+        auto max_reader=reader;max_reader.capture_source_statistics=true;
+        auto scene=read_fbx(stage/"model.fbx",max_reader);scene.source=input.u8string();
         scene.diagnostics.insert(scene.diagnostics.begin(),failure.diagnostics.begin(),failure.diagnostics.end());
         if(has_errors(scene.diagnostics))return scene;
         failure.diagnostics=scene.diagnostics; // Keep reader policies if a manifest comparison fails below.
-        std::size_t triangles=0;for(const auto& mesh:scene.meshes)triangles+=mesh.triangles.size();
+        std::size_t triangles=0;
+        for(const auto& mesh:scene.meshes) {
+            if(!mesh.source_statistics.available)throw std::runtime_error("MAX_EXPORT_MISMATCH: Missing source mesh audit.");
+            triangles+=mesh.source_statistics.triangles;
+        }
         if(!response.at("triangle_count").is_number_integer()||!response.at("mesh_count").is_number_integer()||
            !response.at("nodes").is_array()||!response.at("textures").is_array())throw std::runtime_error("MAX_PROTOCOL_ERROR: Invalid export counts/arrays.");
         if(response.at("triangle_count")!=triangles||response.at("mesh_count")!=scene.meshes.size())
@@ -165,21 +170,17 @@ Scene read_max(const fs::path& input,const ReaderOptions& reader,const MaxOption
         for(const auto& record:response.at("nodes")) {
             const auto match=mesh_names.find(record.at("exported_name").get<std::string>());
             const Mesh* found=match==mesh_names.end()?nullptr:match->second;
-            if(!found||record.at("triangles")!=found->triangles.size())throw std::runtime_error("MAX_EXPORT_MISMATCH: Per-mesh triangles changed.");
+            if(!found||record.at("triangles")!=found->source_statistics.triangles)throw std::runtime_error("MAX_EXPORT_MISMATCH: Per-mesh triangles changed.");
             if(!checked_meshes.insert(found).second)throw std::runtime_error("MAX_EXPORT_MISMATCH: Duplicate evaluated mesh record.");
             json assignments=json::object();
-            for(const auto& triangle:found->triangles) {
-                if(triangle.material<0||std::size_t(triangle.material)>=scene.materials.size())throw std::runtime_error("MAX_EXPORT_MISMATCH: Unassigned face material.");
-                const auto& name=scene.materials[triangle.material].name;
-                assignments[name]=assignments.value(name,std::size_t(0))+1;
+            for(const auto& assignment:found->source_statistics.material_triangles) {
+                if(assignment.first<0||std::size_t(assignment.first)>=scene.materials.size())throw std::runtime_error("MAX_EXPORT_MISMATCH: Unassigned face material.");
+                const auto& name=scene.materials[assignment.first].name;
+                assignments[name]=assignments.value(name,std::size_t(0))+assignment.second;
             }
             if(assignments!=record.at("face_materials"))throw std::runtime_error("MAX_EXPORT_MISMATCH: Face material bindings changed.");
-            std::array<double,3> low,high;low.fill(std::numeric_limits<double>::infinity());high.fill(-std::numeric_limits<double>::infinity());
-            for(const auto& vertex:found->vertices) {
-                const std::array<double,3> v={vertex.position.x,vertex.position.y,vertex.position.z};
-                for(unsigned axis=0;axis<3;++axis){low[axis]=std::min(low[axis],v[axis]);high[axis]=std::max(high[axis],v[axis]);}
-            }
-            for(unsigned axis=0;axis<3;++axis)if(!close(low[axis],record.at("bounds_metres").at(0).at(axis))||!close(high[axis],record.at("bounds_metres").at(1).at(axis)))
+            const auto& audit=found->source_statistics;
+            for(unsigned axis=0;axis<3;++axis)if(!close(audit.lower[axis],record.at("bounds_metres").at(0).at(axis))||!close(audit.upper[axis],record.at("bounds_metres").at(1).at(axis)))
                 throw std::runtime_error("MAX_EXPORT_MISMATCH: Evaluated world bounds/units changed in FBX export.");
         }
         if(!response.at("materials").is_array()||response.at("materials").empty()||response.at("materials").size()!=scene.materials.size())

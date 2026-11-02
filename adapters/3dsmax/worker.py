@@ -61,11 +61,11 @@ def digest(path, limit):
 
 def resolve_image(filename, source, directories):
     path = Path(filename)
-    candidates = [path if path.is_absolute() else source.parent / path]
+    candidates = [path if path.is_absolute() else source.parent / path, source.parent / path.name]
     candidates += [Path(directory) / path.name for directory in directories]
     for candidate in dict.fromkeys(candidates):
-        no_links(candidate)
         try:
+            no_links(candidate)
             info = candidate.stat()
         except FileNotFoundError:
             # An absent ancestor is absent; ENOTDIR/permission errors propagate.
@@ -339,6 +339,35 @@ def material_leaves(tree):
 def exporter_parameter_matches(actual, expected):
     # String enum getters return MAXScript Name wrappers, not Python strings.
     return str(actual).casefold() == expected.casefold() if isinstance(expected, str) else actual == expected
+
+
+def referenced_assets(nodes, materials, textures):
+    """Partition validated assets by actual face references, including zero-area faces."""
+    used_names = {name for node in nodes for name in node["face_materials"]}
+    if not used_names.issubset({item["name"] for item in materials}):
+        reject("MAX_EXPORT_MISMATCH", "An evaluated face references an unrecorded material")
+    used = [item for item in materials if item["name"] in used_names]
+    unused = [item for item in materials if item["name"] not in used_names]
+    used_hashes = {item["texture_sha256"] for item in used if item["texture_sha256"] is not None}
+    if not used_hashes.issubset(textures):
+        reject("MAX_EXPORT_MISMATCH", "An evaluated material references an unrecorded texture")
+    return dict(materials=used, unreferenced_materials=unused,
+                textures=[item for key, item in textures.items() if key in used_hashes],
+                unreferenced_textures=[item for key, item in textures.items() if key not in used_hashes])
+
+
+def missing_uv_record(name, triangles, face_materials, materials, textures):
+    bindings = []
+    for key, count in face_materials.items():
+        material = materials[key]
+        image_hash = material["texture_sha256"]
+        if image_hash is not None:
+            image = textures[image_hash]
+            bindings.append(dict(source_material=material["source_name"], triangles=count,
+                                 source_image=image["source"], source_image_sha256=image["original_sha256"]))
+    return dict(code="MAX_MISSING_UV", source_node=name, mesh_triangles=triangles,
+                textured_triangles=sum(item["triangles"] for item in bindings),
+                required_uv_channel=1, bindings=bindings)
 
 
 def bake_corner_uvs(rt, mesh, transforms, context):
@@ -724,6 +753,7 @@ def export_scene(rt, request, response, directory):
 
     originals = list(rt.objects)
     response["nodes"] = []
+    response["required_repairs"] = []
     supported = {"editable_mesh", "editable_poly", "box", "sphere", "geosphere", "plane", "cylinder", "cone", "torus", "teapot", "pyramid", "tube"}
     static_modifiers = {"uvwmap", "uvw_unwrap", "smooth", "normalmodifier", "xform", "bend", "taper", "twist", "edit_mesh", "edit_poly"}
     for node in originals:
@@ -782,7 +812,10 @@ def export_scene(rt, request, response, directory):
         unassigned = {}
         face_bindings = {}
         uv_transforms = []
+        referenced_vertices = set()
         for face_index in range(1, triangles + 1):
+            face = rt.getFace(mesh, face_index)
+            referenced_vertices.update((int(face.x), int(face.y), int(face.z)))
             face_material = copied_material
             if is_multi:
                 material_id = int(rt.getFaceMatID(mesh, face_index))
@@ -833,6 +866,8 @@ def export_scene(rt, request, response, directory):
                                or int(rt.meshop.getNumMapVerts(mesh, 1)) == 0
                                or int(rt.meshop.getNumMapFaces(mesh, 1)) != triangles)
         if missing_uv:
+            response["required_repairs"].append(missing_uv_record(
+                context, triangles, face_materials, material_records, textures))
             warnings.append(dict(severity="error", code="MAX_MISSING_UV",
                 message="%s textured triangles require explicit UV channel 1; the source mesh has no complete channel. Repair source UVs; no coordinates were invented or textures removed" % textured_faces,
                 context=context))
@@ -847,10 +882,15 @@ def export_scene(rt, request, response, directory):
                 value = float(value) * metres
                 if not math.isfinite(value):
                     reject("MAX_NONFINITE_GEOMETRY", "Nonfinite evaluated geometry", context)
-                lower[axis] = min(lower[axis], value)
-                upper[axis] = max(upper[axis], value)
+                if vertex_index in referenced_vertices:
+                    lower[axis] = min(lower[axis], value)
+                    upper[axis] = max(upper[axis], value)
+        unreferenced_vertices = int(mesh.numverts) - len(referenced_vertices)
+        if unreferenced_vertices:
+            warn("MAX_UNREFERENCED_VERTICES", "%s finite vertices have no polygon references; surface bounds cover every face corner" % unreferenced_vertices, context)
         response["nodes"].append(dict(source_name=context, exported_name=str(snapshot.name),
             triangles=triangles, vertices=int(mesh.numverts),
+            unreferenced_vertices=unreferenced_vertices,
             bounds_metres=[lower, upper],
             face_materials=face_materials,
             object_transform=[[float(row.x), float(row.y), float(row.z)] for row in (matrix.row1, matrix.row2, matrix.row3, matrix.row4)],
@@ -862,8 +902,11 @@ def export_scene(rt, request, response, directory):
         reject("MAX_EMPTY_SCENE", "No supported mesh geometry")
     response["mesh_count"] = len(nodes)
     response["triangle_count"] = sum(item["triangles"] for item in response["nodes"])
-    response["materials"] = materials
-    response["textures"] = list(textures.values())
+    response["scene_evaluated"] = True
+    response.update(referenced_assets(response["nodes"], materials, textures))
+    if response["unreferenced_materials"]:
+        warn("MAX_UNREFERENCED_MATERIALS", "Recorded %s validated Standard leaf materials and %s images with no exported face references separately; every face and its binding is retained" %
+             (len(response["unreferenced_materials"]),len(response["unreferenced_textures"])), "scene")
     if any(item["severity"] == "error" for item in warnings):
         return
     # The originals remain only in this disposable process. Export selection
@@ -913,6 +956,13 @@ def main():
         response["diagnostics"].append(dict(severity="error", code=getattr(error, "code", "MAX_WORKER_FAILED"),
             message=str(error), context=getattr(error, "context", str(request["source"]))))
         response["status"] = "rejected"
+    if response.get("required_repairs"):
+        repairs = dict(source=request["source"], source_sha256=request["source_sha256"],
+                       frame=request["frame"], profile=request["profile"],
+                       scene_evaluated=response.get("scene_evaluated", False),
+                       required_repairs=response["required_repairs"])
+        response["diagnostics"].append(dict(severity="warning", code="MAX_REPAIR_MANIFEST",
+            message=json.dumps(repairs, ensure_ascii=False), context=request["source"]))
     with (directory / "response.json").open("x", encoding="utf-8") as stream:
         json.dump(response, stream, ensure_ascii=False, allow_nan=False)
 

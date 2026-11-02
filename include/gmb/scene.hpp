@@ -3,6 +3,7 @@
 #include <array>
 #include <cstdint>
 #include <filesystem>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -37,10 +38,19 @@ struct Vertex {
     bool has_normal = false, has_uv = false;
 };
 struct Triangle { std::array<std::uint32_t, 3> indices{}; int material = -1; };
+// Reader-only audit of the complete exported mesh before supported cleanup.
+// Not serialized in Scene Bundle or used to relax geometry/material checks.
+struct MeshSourceStatistics {
+    bool available = false;
+    std::size_t triangles = 0;
+    std::map<int, std::size_t> material_triangles;
+    std::array<double, 3> lower{}, upper{};
+};
 struct Mesh {
     std::string name, source_node;
     std::vector<Vertex> vertices;
     std::vector<Triangle> triangles;
+    MeshSourceStatistics source_statistics;
 };
 struct Node {
     std::string name, source_id;
@@ -75,6 +85,7 @@ struct ReaderOptions {
     bool obj_y_up = false;
     double mesh_unit_meters = 1.0; // PLY/STL do not declare an interoperable unit or up axis.
     bool mesh_y_up = false;
+    bool capture_source_statistics = false; // Internal MAX export verification.
 };
 Scene read_fbx(const std::filesystem::path& input, const ReaderOptions& options = {});
 Scene read_glb(const std::filesystem::path& input, const ReaderOptions& options = {});

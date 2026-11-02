@@ -14,6 +14,7 @@ int main() {
     const auto source=fs::u8path(request.at("source").get<std::string>());
     json control;std::ifstream(source)>>control;
     const auto mode=control.value("mode","");
+    const auto tamper=control.value("tamper",mode);
     if(mode.find("log_error")!=std::string::npos)fs::create_directory("max.log");
     if(mode=="timeout"||mode=="timeout_log_error"){std::this_thread::sleep_for(std::chrono::seconds(60));return 0;}
     if(mode=="noresponse")return 12;
@@ -48,12 +49,13 @@ int main() {
         }
         if(mode=="hash")response["fbx_sha256"]="bad";
         if(mode=="frame")response["frame"]=12345;
-        if(mode=="count")response["triangle_count"]=99999;
-        if(mode=="bounds")response["nodes"][0]["bounds_metres"][0][0]=99999;
+        if(tamper=="count")response["triangle_count"]=99999;
+        if(tamper=="node_count")response["nodes"][0]["triangles"]=99999;
+        if(tamper=="bounds")response["nodes"][0]["bounds_metres"][0][0]=99999;
         if(mode=="material")response["materials"][0]["color"][0]=0.123;
         if(mode=="binding")response["materials"][0]["texture_sha256"]=nullptr;
         if(mode=="jpeg_changed")response["materials"][0]["texture_sha256"]=std::string(64,'a');
-        if(mode=="face_material")response["nodes"][0]["face_materials"]=json::object();
+        if(tamper=="face_material")response["nodes"][0]["face_materials"]=json::object();
         if(mode=="duplicate_mesh")response["nodes"][1]=response["nodes"][0];
         if(mode=="duplicate_material")response["materials"][1]=response["materials"][0];
         if(mode=="missing_material")response["materials"].erase(response["materials"].begin());

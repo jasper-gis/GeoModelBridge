@@ -802,6 +802,9 @@ struct Reader {
         if (mesh.num_triangles > ((std::numeric_limits<std::uint32_t>::max)() / 3))
             throw std::runtime_error("Mesh exceeds the 32-bit corner index limit: " + context);
         Mesh target;
+        target.source_statistics.available = options.capture_source_statistics;
+        target.source_statistics.lower.fill(std::numeric_limits<double>::infinity());
+        target.source_statistics.upper.fill(-std::numeric_limits<double>::infinity());
         target.name = str(mesh.name);
         if (target.name.empty()) target.name = str(node.name);
         target.source_node = std::to_string(node.element_id);
@@ -849,6 +852,18 @@ struct Reader {
                         error("INVALID_POSITION", "A transformed position is non-finite.", context);
                 }
                 const bool remove_triangle = options.gis_static && zero_area(positions);
+                if (options.capture_source_statistics) {
+                    auto& audit = target.source_statistics;
+                    ++audit.triangles;
+                    ++audit.material_triangles[material];
+                    for (const auto& p : positions) {
+                        const double values[] = {p.x, p.y, p.z};
+                        for (unsigned axis=0;axis<3;++axis) {
+                            audit.lower[axis]=std::min(audit.lower[axis],values[axis]);
+                            audit.upper[axis]=std::max(audit.upper[axis],values[axis]);
+                        }
+                    }
+                }
                 bool repaired_triangle = false;
                 const auto first_corner = target.vertices.size();
                 for (std::size_t ci = 0; ci < 3; ++ci) {
