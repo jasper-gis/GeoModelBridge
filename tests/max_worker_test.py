@@ -7,6 +7,7 @@ import struct
 import tempfile
 from types import SimpleNamespace
 import unittest
+import zlib
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -89,6 +90,126 @@ class WorkerPolicy(unittest.TestCase):
         material.opacity = float("nan")
         with self.assertRaises(worker.Rejected):
             worker.rgba(material)
+
+    def test_inactive_mental_ray_requires_scanline_static_and_exact_plugin(self):
+        known = ["mrmaterialattribs.gup - mental ray: material custom attribute"]
+        worker.check_missing_plugins(known, "gis-static", "Default_Scanline_Renderer")
+        worker.check_missing_plugins([], "strict", "other")
+        for plugins, profile, renderer in [
+            (known, "strict", "Default_Scanline_Renderer"),
+            (known, "gis-static", "mental_ray_renderer"),
+            (known, "gis-static", "Arnold"),
+            (known + ["missing.dlo - Geometry"], "gis-static", "Default_Scanline_Renderer"),
+            (["mrmaterialattribs.gup - mental ray: Displacement Custom Attributes"], "gis-static", "Default_Scanline_Renderer"),
+        ]:
+            with self.assertRaises(worker.Rejected) as error:
+                worker.check_missing_plugins(plugins, profile, renderer)
+            self.assertEqual(error.exception.code, "MAX_MISSING_PLUGIN")
+
+    def test_standard_alpha_is_not_implicitly_surface_opacity(self):
+        rgba = bytes((200, 40, 80, 128, 10, 20, 30, 255, 0, 0, 0, 0))
+        original = bytes(rgba)
+        # Independently confirmed with Max 2024 Scanline, full-strength diffuse,
+        # green base, gamma-1 source: (200,167,80), opaque without opacity map.
+        self.assertEqual(worker.standard_pixels(rgba, (0, 1, 0), True, True, False),
+                         bytes((200, 167, 80, 255, 10, 20, 30, 255, 0, 255, 0, 255)))
+        self.assertEqual(worker.standard_pixels(rgba, (0, 1, 0), False, True, True), rgba)
+        self.assertEqual(worker.standard_pixels(rgba[:4], (0, 1, 0), True, False, True),
+                         bytes((100, 147, 40, 128)))
+        self.assertEqual(rgba, original)
+
+    def test_multimaterial_wrap_and_unassigned_holes(self):
+        # Independent Max Scanline samples are red/green for these bindings.
+        self.assertEqual(worker.effective_material_id(3, [1]), 1)
+        self.assertEqual(worker.effective_material_id(4, [1, 2]), 2)
+        self.assertEqual(worker.effective_material_id(6, [1, 3]), 3)
+        self.assertEqual(worker.effective_material_id(6, [2, 4]), 2)
+        for face, ids in [(2, [1, 3]), (5, [2, 4]), (0, [1]), (65537, [1]), (1, [])]:
+            with self.assertRaises(worker.Rejected):
+                worker.effective_material_id(face, ids)
+        self.assertIsNone(worker.effective_material_id(2, [1, 3], True))
+        with self.assertRaises(worker.Rejected):
+            worker.effective_material_id(0, [1], True)
+
+    def test_crop_pixel_centers_and_bounds(self):
+        pixels = bytes((10,20,30,40, 50,60,70,80, 90,100,110,120, 130,140,150,160))
+        self.assertEqual(worker.crop_pixels(2,2,pixels,(0,0,1,1)), (2,2,pixels))
+        self.assertEqual(worker.crop_pixels(2,2,pixels,(.5,0,.5,1)), (1,2,pixels[4:8]+pixels[12:16]))
+        self.assertEqual(worker.crop_pixels(2,2,pixels,(.25,.25,.5,.5)), (1,1,bytes((70,80,90,100))))
+        for crop in [(0,0,0,1),(-.1,0,1,1),(0,0,1.1,1),(0,float('nan'),1,1)]:
+            with self.assertRaises(worker.Rejected):
+                worker.crop_pixels(2,2,pixels,crop)
+
+    def test_nested_multimaterial_uses_original_face_id(self):
+        tree = ([1,2], [([1,2,3], ['red','green','blue']), 'yellow'])
+        self.assertEqual([worker.resolve_material_tree(tree, i) for i in range(1,8)],
+                         ['red','yellow','blue','yellow','green','yellow','red'])
+        self.assertEqual(list(worker.material_leaves(tree)), ['red','green','blue','yellow'])
+
+    def test_baked_uvs_preserve_material_corner_boundaries(self):
+        def point(x,y,z):
+            return SimpleNamespace(x=x,y=y,z=z)
+        original = [point(0,0,0),point(1,0,0),point(0,1,0)]
+        faces, vertices = {}, {}
+        ops = SimpleNamespace(getNumMapVerts=lambda m,c: 3,
+            getMapVert=lambda m,c,i: original[i-1],getMapFace=lambda m,c,i: point(1,2,3),
+            setNumMapVerts=lambda *a,**kw: None,
+            setMapVert=lambda m,c,i,v: vertices.update({i:v}),
+            setMapFace=lambda m,c,i,v: faces.update({i:v}))
+        rt = SimpleNamespace(meshop=ops,Point3=point)
+        self.assertTrue(worker.bake_corner_uvs(rt,None,[(.25,.25,True),(2,2,False)],'test'))
+        self.assertEqual(len(vertices),6)
+        self.assertEqual([faces[1].x,faces[2].x],[1,4])
+        self.assertEqual([(vertices[i].x,vertices[i].y) for i in range(1,7)],
+                         [(0,0),(.25,0),(0,.25),(-.5,-.5),(1.5,-.5),(-.5,1.5)])
+        ops.getMapFace=lambda m,c,i: point(0,2,3)
+        with self.assertRaises(worker.Rejected):
+            worker.bake_corner_uvs(rt,None,[(.25,.25,True)],'invalid')
+
+    def test_exporter_name_wrapper(self):
+        class MaxName:
+            def __str__(self):
+                return 'z'
+        self.assertTrue(worker.exporter_parameter_matches(MaxName(), 'Z'))
+        self.assertFalse(worker.exporter_parameter_matches(MaxName(), 'Y'))
+        self.assertFalse(worker.exporter_parameter_matches(False, True))
+
+    def test_normalized_png_pixels_and_corruption(self):
+        pixels = bytes((0, 1, 2, 0, 200, 40, 80, 128, 255, 254, 253, 255, 4, 5, 6, 255))
+        encoded = worker.encode_rgba(2, 2, pixels)
+        path = self.root / "surface.png"
+        path.write_bytes(encoded)
+        self.assertEqual(worker.png_rgba(path, 1000), (2, 2, pixels))
+        for bad in (encoded[:-1], encoded + b"extra", encoded[:44] + bytes([encoded[44] ^ 1]) + encoded[45:]):
+            path.write_bytes(bad)
+            with self.assertRaises(worker.Rejected) as error:
+                worker.png_rgba(path, 1000)
+            self.assertEqual(error.exception.code, "TEXTURE_READ_ERROR")
+
+    def test_png_all_filters_16bit_and_decoded_limit(self):
+        def chunk(kind, data):
+            return struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data) & 0xffffffff)
+        # Each PNG filter encodes the same two pixels in two equal rows.
+        row = bytes((0x80, 0x12, 0xff, 0xff, 0x20, 0x01, 0x00, 0x00))  # gray+alpha16
+        for mode in range(5):
+            rows = bytearray()
+            prev = bytes(len(row))
+            for _ in range(2):
+                rows.append(mode)
+                for i, value in enumerate(row):
+                    a, b, c = (row[i-4] if i >= 4 else 0), prev[i], (prev[i-4] if i >= 4 else 0)
+                    p = a+b-c
+                    distances = [abs(p-a), abs(p-b), abs(p-c)]
+                    predictors = [0, a, b, (a+b)//2, [a,b,c][distances.index(min(distances))]]
+                    rows.append((value-predictors[mode]) & 255)
+                prev = row
+            path = self.root / ("filter-%s.png" % mode)
+            path.write_bytes(b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", 2,2,16,4,0,0,0))
+                             + chunk(b"IDAT", zlib.compress(rows)) + chunk(b"IEND", b""))
+            expected = bytes((128,128,128,255,32,32,32,0))*2
+            self.assertEqual(worker.png_rgba(path, 1000), (2,2,expected))
+            with self.assertRaises(worker.Rejected):
+                worker.png_rgba(path, 15)
 
 
 if __name__ == "__main__":

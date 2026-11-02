@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- 按中文 Max 2024 真实场景修正 MAX 适配器：本地化 shader/FBX 参数、Scanline 的无效旧 mental ray 属性、嵌套 Multi/Sub 与循环 ID、显式黑色空洞策略、恒等顶点通道，以及 PNG Alpha/裁剪、真实尺寸 UV 原点和受限 Bricks 表面图处理。保留源图，逐项记录调整及哈希；未知材质、缺 UV、坏图和变形检查保持拒绝。
+- 新增真实 Scanline 材质对照；大型 MAX 样本能够加载并导出，但因源 UV 和 JPEG 保真条件仍未完整入库，不将其记为成功。共享 FBX 拒绝时保留 MAX 来源清单；详见 [验证记录](docs/validation-max-nanyi-2026-11-02.md)。
+
 - 项目自有部分采用 MIT（Copyright (c) 2026 Jasper (jasper-gis)）；保留第三方与上游测试素材原许可，明确 SDK、3ds Max 和 Linux LGPL 对应源码供应的发行核查边界。安装与源码/二进制打包纳入 LICENSE 和第三方声明，拒绝缺失或过期的安装副本，并补充轻量许可分发回归。
 
 - 将共享节点层级验证从 O(N²) 改为 O(N)，保留循环、非法父节点及逐节点诊断；新增 100,000 节点深链和原生入口回归。MSVC Release 的 30,000 节点有效链验证中位数从约 1023 ms 降至 1.08 ms（合成局部基准，非整机转换吞吐）。

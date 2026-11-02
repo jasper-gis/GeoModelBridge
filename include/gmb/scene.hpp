@@ -20,6 +20,9 @@ struct Texture {
     std::string name, mime_type, source;
     std::vector<std::uint8_t> bytes;
     bool embedded = false;
+    // Reader-only provenance for the conservative JPEG APP0 policy. Not part
+    // of Scene Bundle serialization; populated only by the shared reader.
+    std::string pre_normalization_sha256;
 };
 struct Material {
     std::string name;

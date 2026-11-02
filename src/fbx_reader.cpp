@@ -417,6 +417,7 @@ struct Reader {
         if (options.max_texture_bytes < sizeof(jfif) || texture.bytes.size() > options.max_texture_bytes-sizeof(jfif))
             throw std::runtime_error("JPEG normalization would exceed the configured texture byte limit.");
         const auto original_hash = sha256(texture.bytes);
+        texture.pre_normalization_sha256 = original_hash;
         texture.bytes.insert(texture.bytes.begin()+2, std::begin(jfif), std::end(jfif));
         const auto normalized_hash = sha256(texture.bytes);
         warning("JPEG_CONTAINER_NORMALIZED", "Added an 18-byte JFIF marker to explicit Adobe YCbCr JPEG; original image scan and all original metadata bytes are retained without recompression. Source SHA-256 " +
@@ -498,7 +499,11 @@ struct Reader {
             const auto normalized_hash = normalize_jpeg(target);
             const auto hash = normalized_hash.empty() ? sha256(target.bytes) : normalized_hash;
             const auto existing = texture_hashes.find(hash);
-            if (existing != texture_hashes.end()) return textures[texture] = existing->second;
+            if (existing != texture_hashes.end()) {
+                if (!target.pre_normalization_sha256.empty())
+                    result.textures[existing->second].pre_normalization_sha256 = target.pre_normalization_sha256;
+                return textures[texture] = existing->second;
+            }
             const int index = static_cast<int>(result.textures.size());
             result.textures.push_back(std::move(target));
             texture_hashes[hash] = index;

@@ -21,7 +21,13 @@ bool has_compatibility_adjustments(const std::vector<Diagnostic>& diagnostics) {
         return d.code == "STATIC_POSE_USED" || d.code == "MATERIAL_CHANNEL_OMITTED" ||
             d.code == "DEGENERATE_TRIANGLES_REMOVED" || d.code == "JPEG_CONTAINER_NORMALIZED" ||
             d.code == "MISSING_TEXTURE_FALLBACK" || d.code == "NORMALS_REPAIRED" ||
-            d.code == "DEGENERATE_NORMALS_DISCARDED" || d.code == "UNLIT_SHADING_MAPPED";
+            d.code == "DEGENERATE_NORMALS_DISCARDED" || d.code == "UNLIT_SHADING_MAPPED" ||
+            d.code == "MAX_LIGHTING_OMITTED" || d.code == "MAX_TWO_SIDED_POLICY" ||
+            d.code == "MAX_NONMESH_OMITTED" || d.code == "MAX_INACTIVE_MENTAL_RAY_ATTRIBUTES" ||
+            d.code == "MAX_BITMAP_SURFACE_NORMALIZED" || d.code == "MAX_BITMAP_CROP_RESAMPLED" ||
+            d.code == "MAX_BITMAP_UV_SCALE" || d.code == "MAX_BRICKS_BAKED" ||
+            d.code == "MAX_NEUTRAL_VERTEX_CHANNEL" || d.code == "MAX_MATERIAL_ID_WRAPPED" ||
+            d.code == "MAX_NESTED_MULTIMATERIAL_FLATTENED" || d.code == "MAX_UNASSIGNED_SUBMATERIAL_BLACK";
     });
 }
 std::string mime_type(const std::vector<std::uint8_t>& b) {

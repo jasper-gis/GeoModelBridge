@@ -12,7 +12,7 @@
 | [PLY（本轮新增）](ply.md) | 扫描网格交换：PLY 1.0 ASCII、大小端二进制；逐面 RGB / Alpha、可选法线 | 顶点颜色须在每个原始面内一致；保留不同面的材质边界。拒绝颜色渐变、贴图属性及未知元素；不接受仅有点的点云。 |
 | [STL（本轮新增）](stl.md) | CAD / 制造交换中的无色三角面：ASCII、little-endian binary、多 solid | 不含材质/UV/图片，明确使用白色材质；有色 STL 扩展拒绝。严格模式拒绝零/非有限法线；不作可打印性认证。 |
 | [X3D（本轮新增）](x3d.md) | X3D 3.0–3.3 XML 静态场景，复用 WRL 转换器，保留支持的纹理、UV、实例与变换 | 限定 IndexedFaceSet 等节点；不接受脚本、动画、外部 Inline 或任意 profile 全集。材质和图片 Alpha 组合采用文档列出的保守边界。 |
-| [MAX](max-adapter.md) | Windows 可选 Batch 适配器，指定采样帧后经受限静态网格/Standard 材质检查导出 FBX | 需要已授权的 3ds Max Batch 及场景依赖；Linux 不直接读取。已接入适配流程，真实 MAX 实机兼容性仍未验收。 |
+| [MAX](max-adapter.md) | Windows 可选 Batch 适配器，指定采样帧后经受限静态网格/Standard 材质检查导出 FBX | 需要已授权的 Max Batch 及场景依赖；Linux 不直接读取。Max 2024 已实测加载/导出和材质对照；大型样本仍因源 UV/图片条件未完整入库，见使用说明。 |
 
 本轮优先补齐 PLY、STL、X3D，是为了覆盖三类不同来源：PLY 增加带颜色的扫描网格交换，STL 增加 CAD / 制造三角面交换，X3D 则利用已有 WRL 场景处理能力扩展 XML 编码的贴图场景。选择依据是功能覆盖及与现有引擎的契合程度，不是市场占有率排名。
 

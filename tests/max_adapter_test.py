@@ -3,6 +3,7 @@ import concurrent.futures
 import hashlib
 import json
 import os
+import struct
 from pathlib import Path
 import subprocess
 import sys
@@ -34,13 +35,24 @@ with tempfile.TemporaryDirectory(prefix="gmb-max-contract-") as temp:
             fixture = ("instanced_mirror.fbx" if mode in ("multi_mesh", "duplicate_mesh") else
                        "multi_material.fbx" if mode in ("multi_material", "duplicate_material", "missing_material") else
                        "textured_quad.fbx")
-            model.write_text(json.dumps(dict(mode=mode, fbx=str(fixtures / fixture))), encoding="utf-8")
+            input_fbx = fixtures / fixture
+            if mode in ("jpeg_normalize", "jpeg_changed"):
+                jpeg_dir = root / mode
+                jpeg_dir.mkdir()
+                input_fbx = jpeg_dir / fixture
+                input_fbx.write_bytes((fixtures / fixture).read_bytes())
+                jpeg = (fixtures / 'project_rgb.jpg').read_bytes()
+                assert jpeg[6:11] == b'JFIF\0'
+                adobe = b'\xff\xee\x00\x0eAdobe' + struct.pack('>HHHB',100,0,0,1)
+                (jpeg_dir / 'checker.png').write_bytes(jpeg[:2]+adobe+jpeg[20:])
+            model.write_text(json.dumps(dict(mode=mode, fbx=str(input_fbx))), encoding="utf-8")
             report = root / (mode + ".json")
             begin = time.monotonic()
+            options = ["--profile", "gis-static"] if mode.startswith('jpeg_') else []
             result = run("inspect", model, "--max-batch", stub, "--max-frame", -12,
-                         "--max-timeout", 1 if mode.startswith("timeout") else 15, "--report", report)
+                         "--max-timeout", 1 if mode.startswith("timeout") else 15, "--report", report, *options)
             body = json.loads(report.read_text(encoding="utf-8"))
-            if mode in ("ok", "flood", "ok_log_error", "multi_mesh", "multi_material"):
+            if mode in ("ok", "flood", "ok_log_error", "multi_mesh", "multi_material", "jpeg_normalize"):
                 assert result.returncode == 0, result.stderr[-2000:]
                 assert body["source"] == str(model)
                 entries = [d for d in body["diagnostics"] if d["code"] == "MAX_ADAPTER_PROVENANCE"]
@@ -55,6 +67,15 @@ with tempfile.TemporaryDirectory(prefix="gmb-max-contract-") as temp:
                 assert result.returncode == 3, (mode, result.stderr[-2000:])
                 assert any(d["severity"] == "error" for d in body["diagnostics"])
             codes = {d["code"] for d in body["diagnostics"]}
+            if mode.startswith('jpeg_'):
+                assert 'JPEG_CONTAINER_NORMALIZED' in codes
+                if mode == 'jpeg_changed':
+                    assert any('Diffuse image binding changed' in d['message'] for d in body['diagnostics'])
+            if mode == "reader_reject":
+                assert "UNSUPPORTED_TEXTURE_FORMAT" in codes
+                assert "MAX_ADAPTER_PROVENANCE" in codes
+                proof = json.loads(next(d["message"] for d in body["diagnostics"] if d["code"] == "MAX_ADAPTER_PROVENANCE"))
+                assert proof["status"] == "exported" and proof["source"] == str(model)
             if "log_error" in mode:
                 assert "MAX_LOG_READ_ERROR" in codes
                 logs = json.loads(next(d["message"] for d in body["diagnostics"] if d["code"] == "MAX_BATCH_LOG"))
@@ -75,7 +96,7 @@ with tempfile.TemporaryDirectory(prefix="gmb-max-contract-") as temp:
             return mode
         modes = ("ok", "flood", "noresponse", "reject", "hash", "frame", "count", "bounds", "material", "binding", "face_material", "source", "duplicate", "exit", "timeout",
                  "multi_mesh", "multi_material", "duplicate_mesh", "duplicate_material", "missing_material", "missing_texture", "duplicate_texture",
-                 "ok_log_error", "reject_log_error", "timeout_log_error")
+                 "ok_log_error", "reject_log_error", "timeout_log_error", "reader_reject", "jpeg_normalize", "jpeg_changed")
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
             assert set(pool.map(check, modes)) == set(modes)
         # Existing reports prevent the runtime from launching at all.

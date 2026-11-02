@@ -52,6 +52,7 @@ int main() {
         if(mode=="bounds")response["nodes"][0]["bounds_metres"][0][0]=99999;
         if(mode=="material")response["materials"][0]["color"][0]=0.123;
         if(mode=="binding")response["materials"][0]["texture_sha256"]=nullptr;
+        if(mode=="jpeg_changed")response["materials"][0]["texture_sha256"]=std::string(64,'a');
         if(mode=="face_material")response["nodes"][0]["face_materials"]=json::object();
         if(mode=="duplicate_mesh")response["nodes"][1]=response["nodes"][0];
         if(mode=="duplicate_material")response["materials"][1]=response["materials"][0];
@@ -59,6 +60,7 @@ int main() {
         if(mode=="missing_texture")response["textures"]=json::array();
         if(mode=="duplicate_texture")response["textures"].push_back(response["textures"][0]);
         if(mode=="source") {std::ofstream change(source,std::ios::app);change<<" ";}
+        if(mode=="reader_reject") {std::ofstream corrupt("checker.png",std::ios::binary|std::ios::trunc);corrupt<<"not an image";}
     }
     auto text=response.dump();
     if(mode=="duplicate")text.insert(1,"\"status\":\"exported\",");

@@ -123,9 +123,16 @@ Scene read_max(const fs::path& input,const ReaderOptions& reader,const MaxOption
         if(process.exit_code!=0)return reject("MAX_BATCH_FAILED","Max Batch exited with code "+std::to_string(process.exit_code)+" after export. "+logs);
         if(sha256(bytes(source,reader.max_file_bytes))!=source_hash)throw std::runtime_error("MAX_SOURCE_CHANGED: Source changed while preprocessing.");
         if(response.at("fbx_sha256")!=sha256(bytes(stage/"model.fbx",reader.max_file_bytes)))throw std::runtime_error("MAX_PROTOCOL_ERROR: Exported FBX hash mismatch.");
+        response["process"]={{"exit_code",process.exit_code},{"stdout_tail",process.stdout_tail},{"stderr_tail",process.stderr_tail},
+            {"stdout_truncated",process.stdout_truncated},{"stderr_truncated",process.stderr_truncated}};
+        response["source"]=source.u8string();response["batch_executable"]=fs::absolute(options.batch_executable).u8string();
+        // Keep source-node/material provenance even if the shared FBX reader
+        // rejects the exported data. "exported" is not a verified GDB status.
+        failure.diagnostics.push_back({Severity::warning,"MAX_ADAPTER_PROVENANCE",response.dump(),source.u8string()});
         auto scene=read_fbx(stage/"model.fbx",reader);scene.source=input.u8string();
         scene.diagnostics.insert(scene.diagnostics.begin(),failure.diagnostics.begin(),failure.diagnostics.end());
         if(has_errors(scene.diagnostics))return scene;
+        failure.diagnostics=scene.diagnostics; // Keep reader policies if a manifest comparison fails below.
         std::size_t triangles=0;for(const auto& mesh:scene.meshes)triangles+=mesh.triangles.size();
         if(!response.at("triangle_count").is_number_integer()||!response.at("mesh_count").is_number_integer()||
            !response.at("nodes").is_array()||!response.at("textures").is_array())throw std::runtime_error("MAX_PROTOCOL_ERROR: Invalid export counts/arrays.");
@@ -144,10 +151,14 @@ Scene read_max(const fs::path& input,const ReaderOptions& reader,const MaxOption
         for(const auto& material:scene.materials)
             if(!material_names.emplace(material.name,&material).second)throw std::runtime_error("MAX_EXPORT_MISMATCH: Ambiguous exported material name.");
         std::vector<std::string> texture_hashes;
-        std::unordered_set<std::string> exported_hashes;
+        std::unordered_map<std::string,std::size_t> exported_hashes;
         for(const auto& texture:scene.textures) {
             texture_hashes.push_back(sha256(texture.bytes));
-            exported_hashes.insert(texture_hashes.back());
+            exported_hashes.emplace(texture_hashes.back(),texture_hashes.size()-1);
+            // The trusted shared reader records only its conservative APP0
+            // insertion. Worker claims alone cannot authorize changed bytes.
+            if(!texture.pre_normalization_sha256.empty())
+                exported_hashes.emplace(texture.pre_normalization_sha256,texture_hashes.size()-1);
         }
         std::unordered_set<const Mesh*> checked_meshes;
         if(response.at("nodes").size()!=scene.meshes.size())throw std::runtime_error("MAX_EXPORT_MISMATCH: Missing evaluated mesh records.");
@@ -184,20 +195,21 @@ Scene read_max(const fs::path& input,const ReaderOptions& reader,const MaxOption
             if(found->double_sided!=record.at("double_sided").get<bool>())throw std::runtime_error("MAX_EXPORT_MISMATCH: Material sidedness changed.");
             if(record.at("texture_sha256").is_null()) {
                 if(found->texture!=-1)throw std::runtime_error("MAX_EXPORT_MISMATCH: Unexpected material image binding.");
-            }else if(found->texture<0||std::size_t(found->texture)>=texture_hashes.size()||texture_hashes[found->texture]!=record.at("texture_sha256"))
+            }else if(found->texture<0||std::size_t(found->texture)>=texture_hashes.size()||
+                     (texture_hashes[found->texture]!=record.at("texture_sha256")&&
+                      scene.textures[found->texture].pre_normalization_sha256!=record.at("texture_sha256")))
                 throw std::runtime_error("MAX_EXPORT_MISMATCH: Diffuse image binding changed.");
         }
         std::unordered_set<std::string> checked_hashes;
+        std::unordered_set<std::size_t> checked_textures;
         for(const auto& asset:response.at("textures")) {
             const auto hash=asset.at("sha256").get<std::string>();
             if(!checked_hashes.insert(hash).second)throw std::runtime_error("MAX_EXPORT_MISMATCH: Duplicate evaluated texture record.");
-            if(!exported_hashes.count(hash))throw std::runtime_error("MAX_EXPORT_MISMATCH: An original texture was lost or changed in FBX export.");
+            const auto match=exported_hashes.find(hash);
+            if(match==exported_hashes.end())throw std::runtime_error("MAX_EXPORT_MISMATCH: An original texture was lost or changed in FBX export.");
+            checked_textures.insert(match->second);
         }
-        if(checked_hashes!=exported_hashes)throw std::runtime_error("MAX_EXPORT_MISMATCH: Missing evaluated texture records.");
-        response["process"]={{"exit_code",process.exit_code},{"stdout_tail",process.stdout_tail},{"stderr_tail",process.stderr_tail},
-            {"stdout_truncated",process.stdout_truncated},{"stderr_truncated",process.stderr_truncated}};
-        response["source"]=source.u8string();response["batch_executable"]=fs::absolute(options.batch_executable).u8string();
-        scene.diagnostics.push_back({Severity::warning,"MAX_ADAPTER_PROVENANCE",response.dump(),source.u8string()});
+        if(checked_textures.size()!=scene.textures.size())throw std::runtime_error("MAX_EXPORT_MISMATCH: Missing evaluated texture records.");
         return scene;
     }catch(const std::exception& error){return reject("MAX_ADAPTER_FAILED",error.what());}
 #endif
